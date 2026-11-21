@@ -19,7 +19,10 @@ export function formatInt(value: number): string {
 
 /** Pesos colombianos en la escala que usa la administración pública: millones o mil millones. */
 export function formatCop(value: number): string {
-  if (Math.abs(value) >= 1e9) return `$ ${formatNumber(value / 1e9, 0)} mil M`;
+  if (Math.abs(value) >= 1e9) {
+    const milM = value / 1e9;
+    return `$ ${formatNumber(milM, Math.abs(milM) < 100 ? 1 : 0)} mil M`;
+  }
   if (Math.abs(value) >= 1e6) return `$ ${formatNumber(value / 1e6, 0)} M`;
   return `$ ${formatInt(value)}`;
 }

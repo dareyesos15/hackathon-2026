@@ -14,6 +14,7 @@ x-api-env: &api-env
   TOKEN_COE: ${TOKEN_COE:-coe-demo}
   TOKEN_INSPECTOR: ${TOKEN_INSPECTOR:-inspector-demo}
   TOKEN_AGENCIA: ${TOKEN_AGENCIA:-agencia-demo}
+  TOKEN_ADMIN: ${TOKEN_ADMIN:-admin-demo}
   API_BASE_URL: http://127.0.0.1:8000/api/v1
   SIMULATE_TRACKS: ${SIMULATE_TRACKS:-true}
   TRACK_SPEEDUP: ${TRACK_SPEEDUP:-20}

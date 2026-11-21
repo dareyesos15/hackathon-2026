@@ -62,3 +62,46 @@ export const VULN_LABEL = {
 export function errorText(err: unknown, fallback: string): string {
   return (err as { detail?: string } | undefined)?.detail ?? fallback;
 }
+
+// ------------------------------------------------------------- tablero unificado
+
+export type RecoveryDashboard = S["RecoveryDashboard"];
+export type DashFigure = S["DashFigure"];
+export type DashIndicator = S["Indicator"];
+export type Need = S["Need"];
+export type BarrioRecovery = S["BarrioRecovery"];
+export type CurvePoint = S["CurvePoint"];
+export type Stage = S["Stage"];
+export type StageStatus = Stage["status"];
+export type ContractRow = S["ContractRow"];
+export type SourceInfo = S["SourceInfo"];
+
+/** Semáforo de etapas: siempre con texto, el color no va solo. */
+export const STAGE_STATUS: Record<StageStatus, { label: string; hex: string }> = {
+  verde: { label: "A tiempo", hex: "#2f7d55" },
+  amarillo: { label: "Con retraso", hex: "#e8a92a" },
+  rojo: { label: "Estancada", hex: "#d21f2b" },
+  pendiente: { label: "Aún no empieza", hex: "#b9adab" },
+  sin_fuente: { label: "Sin fuente para medir", hex: "#ffffff" },
+};
+
+export const SOURCE_STATUS: Record<SourceInfo["status"], string> = {
+  conectada: "Conectada",
+  sin_copia: "Sin copia descargada",
+  sin_convenio: "Requiere convenio",
+};
+
+export const NEED_SEVERITY: Record<Need["severity"], { label: string; cls: string }> = {
+  critica: { label: "Crítica", cls: "border-senal bg-senal-fondo text-senal" },
+  alta: { label: "Alta", cls: "border-amber-300 bg-amber-50 text-amber-900" },
+  media: { label: "Media", cls: "border-linea bg-white text-tinta" },
+};
+
+export const CHANNEL_LABEL: Record<string, string> = {
+  pwa: "App ciudadana",
+  sms: "SMS",
+  whatsapp: "WhatsApp",
+  call_123: "Línea 123",
+  entity: "Entidades",
+  lora: "LoRa",
+};

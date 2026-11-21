@@ -703,6 +703,79 @@
         "title": "AlertType",
         "type": "string"
       },
+      "BarrioRecovery": {
+        "properties": {
+          "amarillo": {
+            "title": "Amarillo",
+            "type": "integer"
+          },
+          "barrio": {
+            "title": "Barrio",
+            "type": "string"
+          },
+          "colapso": {
+            "title": "Colapso",
+            "type": "integer"
+          },
+          "comuna": {
+            "title": "Comuna",
+            "type": "string"
+          },
+          "damage_reported": {
+            "description": "Manzanas con daño reportado por la ciudadanía",
+            "title": "Damage Reported",
+            "type": "integer"
+          },
+          "families": {
+            "title": "Families",
+            "type": "integer"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "pending": {
+            "description": "De esas manzanas, las que aún no tienen evaluación",
+            "title": "Pending",
+            "type": "integer"
+          },
+          "rojo": {
+            "title": "Rojo",
+            "type": "integer"
+          },
+          "service_incidents": {
+            "description": "Incidentes abiertos de servicios caídos",
+            "title": "Service Incidents",
+            "type": "integer"
+          },
+          "verde": {
+            "title": "Verde",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "barrio",
+          "comuna",
+          "index",
+          "verde",
+          "amarillo",
+          "rojo",
+          "colapso",
+          "damage_reported",
+          "pending",
+          "service_incidents",
+          "families"
+        ],
+        "title": "BarrioRecovery",
+        "type": "object"
+      },
       "BatchIn": {
         "properties": {
           "items": {
@@ -859,6 +932,24 @@
         "title": "Channel",
         "type": "string"
       },
+      "ChannelCount": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "channel",
+          "count"
+        ],
+        "title": "ChannelCount",
+        "type": "object"
+      },
       "CircleIn": {
         "properties": {
           "lat": {
@@ -888,6 +979,99 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "ContractRow": {
+        "description": "Contrato de SECOP II ligado al sismo (sin datos personales del contratista).",
+        "properties": {
+          "entity": {
+            "title": "Entity",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "invoiced_cop": {
+            "title": "Invoiced Cop",
+            "type": "number"
+          },
+          "object": {
+            "title": "Object",
+            "type": "string"
+          },
+          "paid_cop": {
+            "title": "Paid Cop",
+            "type": "number"
+          },
+          "signed_at": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Signed At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "value_cop": {
+            "title": "Value Cop",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "signed_at",
+          "status",
+          "object",
+          "value_cop",
+          "invoiced_cop",
+          "paid_cop",
+          "url"
+        ],
+        "title": "ContractRow",
+        "type": "object"
+      },
+      "CurvePoint": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "day": {
+            "title": "Day",
+            "type": "integer"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "at",
+          "day",
+          "value"
+        ],
+        "title": "CurvePoint",
+        "type": "object"
+      },
       "DamageLevel": {
         "enum": [
           "menor",
@@ -897,6 +1081,115 @@
         ],
         "title": "DamageLevel",
         "type": "string"
+      },
+      "DashFigure": {
+        "description": "Cifra del tablero con nombre del diccionario de indicadores y su respaldo.\n\n`state = \"sin_fuente\"`: no hay fuente conectada; `value` es `None` y `note` dice qué entidad\no convenio la provee. Nunca se muestra un número inventado.",
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "simulated": {
+            "default": false,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "state": {
+            "default": "neutral",
+            "enum": [
+              "ok",
+              "alerta",
+              "neutral",
+              "sin_fuente"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "unit": {
+            "enum": [
+              "conteo",
+              "%",
+              "dias",
+              "cop",
+              "mm",
+              "magnitud"
+            ],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value",
+          "unit",
+          "source",
+          "version",
+          "cutoff_at"
+        ],
+        "title": "DashFigure",
+        "type": "object"
       },
       "DeliveryOut": {
         "properties": {
@@ -2259,6 +2552,55 @@
         "title": "IncidentSummary",
         "type": "object"
       },
+      "Indicator": {
+        "description": "Uno de los 10 indispensables (bloque encabezado, operación o economía).",
+        "properties": {
+          "block": {
+            "enum": [
+              "encabezado",
+              "operacion",
+              "economia"
+            ],
+            "title": "Block",
+            "type": "string"
+          },
+          "figures": {
+            "items": {
+              "$ref": "#/components/schemas/DashFigure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "number": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Number",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "number",
+          "key",
+          "title",
+          "block",
+          "source",
+          "figures"
+        ],
+        "title": "Indicator",
+        "type": "object"
+      },
       "InspectionColor": {
         "enum": [
           "verde",
@@ -3003,6 +3345,45 @@
         "title": "MetricUnit",
         "type": "string"
       },
+      "Need": {
+        "description": "Necesidad que hoy exige acción, derivada de los indicadores.",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "critica",
+              "alta",
+              "media"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "detail",
+          "severity",
+          "value"
+        ],
+        "title": "Need",
+        "type": "object"
+      },
       "PlanLineOut": {
         "properties": {
           "agency": {
@@ -3366,6 +3747,154 @@
         ],
         "title": "RecipientRole",
         "type": "string"
+      },
+      "RecoveryDashboard": {
+        "properties": {
+          "barrios": {
+            "items": {
+              "$ref": "#/components/schemas/BarrioRecovery"
+            },
+            "title": "Barrios",
+            "type": "array"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelCount"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "contracts": {
+            "items": {
+              "$ref": "#/components/schemas/ContractRow"
+            },
+            "title": "Contracts",
+            "type": "array"
+          },
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "day": {
+            "description": "Días desde el sismo principal",
+            "title": "Day",
+            "type": "integer"
+          },
+          "event_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event At"
+          },
+          "event_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Label"
+          },
+          "event_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Url"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "index_components": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Index Components",
+            "type": "object"
+          },
+          "index_curve": {
+            "items": {
+              "$ref": "#/components/schemas/CurvePoint"
+            },
+            "title": "Index Curve",
+            "type": "array"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/Indicator"
+            },
+            "title": "Indicators",
+            "type": "array"
+          },
+          "needs": {
+            "items": {
+              "$ref": "#/components/schemas/Need"
+            },
+            "title": "Needs",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceInfo"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/Stage"
+            },
+            "title": "Stages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cutoff_at",
+          "event_at",
+          "event_label",
+          "event_url",
+          "day",
+          "index",
+          "index_components",
+          "needs",
+          "indicators",
+          "barrios",
+          "index_curve",
+          "channels",
+          "contracts",
+          "sources",
+          "stages"
+        ],
+        "title": "RecoveryDashboard",
+        "type": "object"
       },
       "RecoverySummary": {
         "properties": {
@@ -4399,6 +4928,201 @@
           "items"
         ],
         "title": "SnapshotsIn",
+        "type": "object"
+      },
+      "SourceInfo": {
+        "description": "Respaldo de una fuente: de dónde sale, cuándo se consultó y si la copia está íntegra.",
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution"
+          },
+          "feeds": {
+            "description": "Indicadores que alimenta",
+            "title": "Feeds",
+            "type": "string"
+          },
+          "fetched_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fetched At"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License"
+          },
+          "query_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Url"
+          },
+          "record_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Count"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "conectada",
+              "sin_copia",
+              "sin_convenio"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "source",
+          "status",
+          "feeds"
+        ],
+        "title": "SourceInfo",
+        "type": "object"
+      },
+      "Stage": {
+        "properties": {
+          "end_day": {
+            "title": "End Day",
+            "type": "integer"
+          },
+          "figures": {
+            "items": {
+              "$ref": "#/components/schemas/DashFigure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "progress_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cómo se mide el avance",
+            "title": "Progress Basis"
+          },
+          "progress_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Pct"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "start_day": {
+            "title": "Start Day",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pendiente",
+              "verde",
+              "amarillo",
+              "rojo",
+              "sin_fuente"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "number",
+          "title",
+          "question",
+          "start_day",
+          "end_day",
+          "status",
+          "progress_pct",
+          "figures"
+        ],
+        "title": "Stage",
         "type": "object"
       },
       "TrackIn": {
@@ -7220,6 +7944,43 @@
           }
         ],
         "summary": "Post Aid",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/dashboard": {
+      "get": {
+        "description": "Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.",
+        "operationId": "dashboard_api_v1_recovery_dashboard_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryDashboard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Dashboard",
         "tags": [
           "recuperación"
         ]

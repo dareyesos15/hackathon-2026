@@ -1,6 +1,6 @@
 import { EtiquetaSimulado } from "./EtiquetaSimulado";
 import { DEMO_MODE } from "@/lib/env";
-import { formatDateTime, formatInt, formatNumber, formatPercent } from "@/lib/format";
+import { formatCop, formatDateTime, formatInt, formatNumber, formatPercent } from "@/lib/format";
 
 /**
  * Toda cifra visible exige fuente, versión y fecha de corte (principio V).
@@ -9,7 +9,7 @@ import { formatDateTime, formatInt, formatNumber, formatPercent } from "@/lib/fo
 export interface CifraProps {
   etiqueta: string;
   valor: number | null;
-  unidad: "%" | "conteo" | "min" | "ms";
+  unidad: "%" | "conteo" | "min" | "ms" | "dias" | "cop" | "mm" | "magnitud";
   fuente: string;
   version: number | string;
   corte: string;
@@ -28,6 +28,14 @@ function formatValue(valor: number, unidad: CifraProps["unidad"]): string {
       return `${formatNumber(valor, 0)} min`;
     case "ms":
       return `${formatInt(valor)} ms`;
+    case "dias":
+      return `${formatInt(valor)} ${valor === 1 ? "día" : "días"}`;
+    case "cop":
+      return formatCop(valor);
+    case "mm":
+      return `${formatNumber(valor, 1)} mm`;
+    case "magnitud":
+      return `M ${formatNumber(valor, 1)}`;
   }
 }
 

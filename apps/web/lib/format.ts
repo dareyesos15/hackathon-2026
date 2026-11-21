@@ -17,6 +17,16 @@ export function formatInt(value: number): string {
   return intFmt.format(value);
 }
 
+/** Pesos colombianos en la escala que usa la administración pública: millones o mil millones. */
+export function formatCop(value: number): string {
+  if (Math.abs(value) >= 1e9) {
+    const milM = value / 1e9;
+    return `$ ${formatNumber(milM, Math.abs(milM) < 100 ? 1 : 0)} mil M`;
+  }
+  if (Math.abs(value) >= 1e6) return `$ ${formatNumber(value / 1e6, 0)} M`;
+  return `$ ${formatInt(value)}`;
+}
+
 export function formatPercent(value: number, decimals = 1): string {
   return `${formatNumber(value, decimals)} %`;
 }
@@ -31,6 +41,20 @@ export function formatDateTime(iso: string | Date): string {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
+  }).format(date);
+}
+
+/** Fecha sin hora (p. ej. fecha estimada de restablecimiento): "28 nov 2026". */
+export function formatDate(iso: string | Date): string {
+  const date =
+    typeof iso === "string" && iso.length === 10
+      ? new Date(`${iso}T12:00:00-05:00`)
+      : new Date(iso);
+  return new Intl.DateTimeFormat("es-CO", {
+    timeZone: TIME_ZONE,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   }).format(date);
 }
 

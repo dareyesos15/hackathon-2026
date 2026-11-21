@@ -655,6 +655,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recovery/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dashboard
+         * @description Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.
+         */
+        get: operations["dashboard_api_v1_recovery_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recovery/households": {
         parameters: {
             query?: never;
@@ -1347,6 +1367,40 @@ export interface components {
          * @enum {string}
          */
         AlertType: "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
+        /** BarrioRecovery */
+        BarrioRecovery: {
+            /** Amarillo */
+            amarillo: number;
+            /** Barrio */
+            barrio: string;
+            /** Colapso */
+            colapso: number;
+            /** Comuna */
+            comuna: string;
+            /**
+             * Damage Reported
+             * @description Manzanas con daño reportado por la ciudadanía
+             */
+            damage_reported: number;
+            /** Families */
+            families: number;
+            /** Index */
+            index: number | null;
+            /**
+             * Pending
+             * @description De esas manzanas, las que aún no tienen evaluación
+             */
+            pending: number;
+            /** Rojo */
+            rojo: number;
+            /**
+             * Service Incidents
+             * @description Incidentes abiertos de servicios caídos
+             */
+            service_incidents: number;
+            /** Verde */
+            verde: number;
+        };
         /** BatchIn */
         BatchIn: {
             /** Items */
@@ -1404,6 +1458,13 @@ export interface components {
          * @enum {string}
          */
         Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "entity" | "lora";
+        /** ChannelCount */
+        ChannelCount: {
+            /** Channel */
+            channel: string;
+            /** Count */
+            count: number;
+        };
         /** CircleIn */
         CircleIn: {
             /** Lat */
@@ -1414,10 +1475,92 @@ export interface components {
             radius_m: number;
         };
         /**
+         * ContractRow
+         * @description Contrato de SECOP II ligado al sismo (sin datos personales del contratista).
+         */
+        ContractRow: {
+            /** Entity */
+            entity: string;
+            /** Id */
+            id: string;
+            /** Invoiced Cop */
+            invoiced_cop: number;
+            /** Object */
+            object: string;
+            /** Paid Cop */
+            paid_cop: number;
+            /** Signed At */
+            signed_at: string | null;
+            /** Status */
+            status: string;
+            /** Url */
+            url: string | null;
+            /** Value Cop */
+            value_cop: number;
+        };
+        /** CurvePoint */
+        CurvePoint: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Day */
+            day: number;
+            /** Value */
+            value: number;
+        };
+        /**
          * DamageLevel
          * @enum {string}
          */
         DamageLevel: "menor" | "mediano_uso_restringido" | "mayor" | "colapso";
+        /**
+         * DashFigure
+         * @description Cifra del tablero con nombre del diccionario de indicadores y su respaldo.
+         *
+         *     `state = "sin_fuente"`: no hay fuente conectada; `value` es `None` y `note` dice qué entidad
+         *     o convenio la provee. Nunca se muestra un número inventado.
+         */
+        DashFigure: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Note */
+            note?: string | null;
+            /**
+             * Simulated
+             * @default false
+             */
+            simulated: boolean;
+            /** Source */
+            source: string;
+            /** Source Url */
+            source_url?: string | null;
+            /**
+             * State
+             * @default neutral
+             * @enum {string}
+             */
+            state: "ok" | "alerta" | "neutral" | "sin_fuente";
+            /** Target */
+            target?: string | null;
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "conteo" | "%" | "dias" | "cop" | "mm" | "magnitud";
+            /** Value */
+            value: number | null;
+            /** Version */
+            version: number;
+        };
         /** DeliveryOut */
         DeliveryOut: {
             /**
@@ -1934,6 +2077,27 @@ export interface components {
             updated_at: string;
         };
         /**
+         * Indicator
+         * @description Uno de los 10 indispensables (bloque encabezado, operación o economía).
+         */
+        Indicator: {
+            /**
+             * Block
+             * @enum {string}
+             */
+            block: "encabezado" | "operacion" | "economia";
+            /** Figures */
+            figures: components["schemas"]["DashFigure"][];
+            /** Key */
+            key: string;
+            /** Number */
+            number: number;
+            /** Source */
+            source: string;
+            /** Title */
+            title: string;
+        };
+        /**
          * InspectionColor
          * @enum {string}
          */
@@ -2201,6 +2365,25 @@ export interface components {
          * @enum {string}
          */
         MetricUnit: "%" | "conteo" | "min" | "ms";
+        /**
+         * Need
+         * @description Necesidad que hoy exige acción, derivada de los indicadores.
+         */
+        Need: {
+            /** Detail */
+            detail: string;
+            /** Key */
+            key: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "critica" | "alta" | "media";
+            /** Title */
+            title: string;
+            /** Value */
+            value: number;
+        };
         /** PlanLineOut */
         PlanLineOut: {
             agency: components["schemas"]["AgencyRef"];
@@ -2349,6 +2532,47 @@ export interface components {
          * @enum {string}
          */
         RecipientRole: "lider" | "apoyo" | "informada";
+        /** RecoveryDashboard */
+        RecoveryDashboard: {
+            /** Barrios */
+            barrios: components["schemas"]["BarrioRecovery"][];
+            /** Channels */
+            channels: components["schemas"]["ChannelCount"][];
+            /** Contracts */
+            contracts: components["schemas"]["ContractRow"][];
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /**
+             * Day
+             * @description Días desde el sismo principal
+             */
+            day: number;
+            /** Event At */
+            event_at: string | null;
+            /** Event Label */
+            event_label: string | null;
+            /** Event Url */
+            event_url: string | null;
+            /** Index */
+            index: number | null;
+            /** Index Components */
+            index_components: {
+                [key: string]: number | null;
+            };
+            /** Index Curve */
+            index_curve: components["schemas"]["CurvePoint"][];
+            /** Indicators */
+            indicators: components["schemas"]["Indicator"][];
+            /** Needs */
+            needs: components["schemas"]["Need"][];
+            /** Sources */
+            sources: components["schemas"]["SourceInfo"][];
+            /** Stages */
+            stages: components["schemas"]["Stage"][];
+        };
         /** RecoverySummary */
         RecoverySummary: {
             /**
@@ -2719,6 +2943,69 @@ export interface components {
         SnapshotsIn: {
             /** Items */
             items: components["schemas"]["SnapshotIn"][];
+        };
+        /**
+         * SourceInfo
+         * @description Respaldo de una fuente: de dónde sale, cuándo se consultó y si la copia está íntegra.
+         */
+        SourceInfo: {
+            /** Attribution */
+            attribution?: string | null;
+            /**
+             * Feeds
+             * @description Indicadores que alimenta
+             */
+            feeds: string;
+            /** Fetched At */
+            fetched_at?: string | null;
+            /** Key */
+            key: string;
+            /** License */
+            license?: string | null;
+            /** Query Url */
+            query_url?: string | null;
+            /** Record Count */
+            record_count?: number | null;
+            /** Sha256 */
+            sha256?: string | null;
+            /** Source */
+            source: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "conectada" | "sin_copia" | "sin_convenio";
+            /** Title */
+            title: string;
+            /** Verified */
+            verified?: boolean | null;
+        };
+        /** Stage */
+        Stage: {
+            /** End Day */
+            end_day: number;
+            /** Figures */
+            figures: components["schemas"]["DashFigure"][];
+            /** Number */
+            number: number;
+            /**
+             * Progress Basis
+             * @description Cómo se mide el avance
+             */
+            progress_basis?: string | null;
+            /** Progress Pct */
+            progress_pct: number | null;
+            /** Question */
+            question: string;
+            /** Start Day */
+            start_day: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pendiente" | "verde" | "amarillo" | "rojo" | "sin_fuente";
+            /** Title */
+            title: string;
         };
         /** TrackIn */
         TrackIn: {
@@ -4351,6 +4638,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AidOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_api_v1_recovery_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryDashboard"];
                 };
             };
             /** @description Validation Error */

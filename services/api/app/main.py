@@ -30,6 +30,7 @@ from app.routers import (
     mass_alerts,
     metrics,
     recovery,
+    recovery_dashboard,
     reports,
     review,
     stream,
@@ -158,6 +159,7 @@ for module in (
     stream,
     metrics,
     recovery,
+    recovery_dashboard,
     zone_sensors,
     demo,
 ):

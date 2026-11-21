@@ -30,46 +30,69 @@ export default function Inicio() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
-      <header className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">Dacora</h1>
-          <EtiquetaSimulado />
+    <main className="flex flex-1 flex-col">
+      <header className="bg-sangre text-white">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pt-10 pb-8">
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-6xl font-semibold leading-none">Dacora</h1>
+            <EtiquetaSimulado sobreOscuro />
+          </div>
+          <p className="max-w-[60ch] text-lg leading-snug text-white/85">
+            Datos, alerta y coordinación para la respuesta al sismo de Manizales: reportes
+            ciudadanos verificados, agrupados y puestos en el mapa del PMU.
+          </p>
+          <dl className="grid max-w-md grid-cols-3 border-t border-white/25 pt-3 text-sm">
+            <div>
+              <dt className="text-white/65">Sismo</dt>
+              <dd className="font-display text-2xl font-semibold">M 7,4</dd>
+            </div>
+            <div>
+              <dt className="text-white/65">Fecha</dt>
+              <dd className="font-display text-2xl font-semibold">10 ago 2026</dd>
+            </div>
+            <div>
+              <dt className="text-white/65">Hora</dt>
+              <dd className="font-display text-2xl font-semibold">7:34 a. m.</dd>
+            </div>
+          </dl>
         </div>
-        <p className="text-slate-600">
-          Datos, alerta y coordinación para la respuesta al sismo del 10 de agosto de 2026 en
-          Manizales. Prototipo de la Hackathon UNAL Manizales 2026 · Vertical 05.
-        </p>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        {(Object.keys(DESTINO) as Role[]).map((role) => (
-          <div key={role} className="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm">
-            <h2 className="font-semibold">{ROLE_LABELS[role]}</h2>
-            <p className="flex-1 text-sm text-slate-600">{DESTINO[role].descripcion}</p>
-            <label className="text-xs text-slate-500">
-              Token de demo
-              <input
-                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 font-mono text-xs"
-                value={tokens[role]}
-                onChange={(e) => setTokens({ ...tokens, [role]: e.target.value })}
-              />
-            </label>
-            <button
-              type="button"
-              onClick={() => entrar(role)}
-              className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
-            >
-              Entrar
-            </button>
-          </div>
-        ))}
-      </section>
+      <section className="mx-auto flex w-full max-w-3xl flex-col px-4 py-8">
+        <h2 className="mb-3 font-display text-2xl font-semibold">¿Cómo vas a entrar?</h2>
+        <ul className="divide-y divide-linea rounded-md border border-linea bg-white">
+          {(Object.keys(DESTINO) as Role[]).map((role) => (
+            <li key={role} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+              <div className="flex-1">
+                <h3 className="font-display text-xl font-semibold">{ROLE_LABELS[role]}</h3>
+                <p className="text-sm text-tinta-suave">{DESTINO[role].descripcion}</p>
+                <details className="mt-1 text-xs text-tinta-suave">
+                  <summary className="cursor-pointer">Token de demo</summary>
+                  <input
+                    aria-label={`Token de demo para ${ROLE_LABELS[role]}`}
+                    className="mt-1 w-full max-w-xs rounded-sm border border-linea px-2 py-1 font-mono text-xs"
+                    value={tokens[role]}
+                    onChange={(e) => setTokens({ ...tokens, [role]: e.target.value })}
+                  />
+                </details>
+              </div>
+              <button
+                type="button"
+                onClick={() => entrar(role)}
+                aria-label={`Entrar: ${ROLE_LABELS[role]}`}
+                className="rounded-sm bg-senal px-6 py-2.5 font-bold text-white hover:bg-sangre-claro"
+              >
+                Entrar
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      <footer className="text-xs text-slate-500">
-        La IA solo sugiere; decide un humano. Ningún dato personal se guarda en claro (Ley 1581 de
-        2012). Todos los datos de esta demo son sintéticos.
-      </footer>
+        <p className="mt-6 max-w-[65ch] text-sm text-tinta-suave">
+          La IA solo sugiere; decide un humano. Ningún dato personal se guarda en claro (Ley 1581 de
+          2012). Todos los datos de esta demo son sintéticos.
+        </p>
+      </section>
     </main>
   );
 }

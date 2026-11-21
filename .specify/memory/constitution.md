@@ -168,6 +168,10 @@ contrato explícito que permite repartir frontend y backend entre integrantes si
 - Puerta de demo: antes de la Mentoría 2 (sáb 21 nov, 10:30 a. m.) se ejecuta la lista de
   CLAUDE.md §14 y `evaluate_kpis.py`; lo que falle se corta del guion o se etiqueta SIMULADO.
 - Cambios a esquema de datos o contratos de API se reflejan en la spec/plan antes del código.
+- **Commits atómicos y continuos** (detalle en CLAUDE.md §0.1): un commit por componente,
+  especificación o tarea, hecho en cuanto queda terminado y verificado; nunca commits masivos
+  que mezclen componentes. Formato Conventional Commits en inglés; cada commit es revertible
+  por sí solo y pasa las pruebas de lo que toca. Push después de cada grupo de commits.
 
 ## Governance
 
@@ -181,4 +185,4 @@ contrato explícito que permite repartir frontend y backend entre integrantes si
 - Toda revisión de código y todo `/speckit-analyze` verifica cumplimiento de los principios I,
   III, IV y X en primer lugar.
 
-**Version**: 1.1.0 | **Ratified**: 2026-11-20 | **Last Amended**: 2026-11-20
+**Version**: 1.2.0 | **Ratified**: 2026-11-20 | **Last Amended**: 2026-11-20

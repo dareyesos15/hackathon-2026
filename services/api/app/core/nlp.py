@@ -45,7 +45,6 @@ LEXICON: dict[Category, tuple[str, ...]] = {
     Category.colapso_estructura: (
         "colaps",
         "se derrumb",
-        "derrumbe de",
         "edificio caido",
         "casa caida",
         "se vino abajo",
@@ -56,6 +55,7 @@ LEXICON: dict[Category, tuple[str, ...]] = {
         "se cayo una casa",
         "se cayo la iglesia",
         "se cayo la catedral",
+        "se cayo la torre",
     ),
     Category.dano_estructural: (
         "griet",

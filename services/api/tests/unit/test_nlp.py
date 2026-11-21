@@ -21,6 +21,8 @@ from app.domain import Category, TriageLevel
         ("huele muchísimo a gas en el edificio", Category.fuga_gas, "critico"),
         ("deslizamiento tapó dos viviendas en la ladera", Category.deslizamiento, "critico"),
         ("se vino el talud sobre la vía", Category.deslizamiento, "alto"),
+        ("derrumbe de tierra en la ladera, afectó viviendas", Category.deslizamiento, "critico"),
+        ("se cayó la torre del Cable Aéreo", Category.colapso_estructura, "alto"),
         ("la vía al hospital está bloqueada por escombros", Category.via_bloqueada, "alto"),
         ("sin luz ni agua en todo el barrio", Category.servicios_caidos, "medio"),
         ("necesitamos albergue, quedamos sin casa", Category.necesidad_albergue, "medio"),

@@ -135,3 +135,12 @@ def owner_hash(document: str, *, salt: str) -> str:
     if len(normalized) < 5:
         raise ValueError("Documento del propietario inválido")
     return hmac.new(salt.encode(), f"propietario:{normalized}".encode(), hashlib.sha256).hexdigest()
+
+
+def housing_status_for(color: str | None, damage: str | None) -> str | None:
+    """Estado de la vivienda del RUD a partir del semáforo NSR-10 vigente del predio."""
+    if color is None:
+        return None
+    if damage == "colapso":
+        return "destruida"
+    return "no_habitable" if color == "rojo" else "habitable"

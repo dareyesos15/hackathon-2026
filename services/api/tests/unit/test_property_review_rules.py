@@ -24,3 +24,13 @@ def test_owner_hash_never_contains_the_document() -> None:
     digest = owner_hash("1.053.123.456", salt="sal")
     assert "1053123456" not in digest and len(digest) == 64
     assert digest == owner_hash("1053123456", salt="sal")
+
+
+def test_housing_status_follows_semaphore() -> None:
+    from app.core.recovery import housing_status_for
+
+    assert housing_status_for("verde", "menor") == "habitable"
+    assert housing_status_for("amarillo", "mediano_uso_restringido") == "habitable"
+    assert housing_status_for("rojo", "mayor") == "no_habitable"
+    assert housing_status_for("rojo", "colapso") == "destruida"
+    assert housing_status_for(None, None) is None

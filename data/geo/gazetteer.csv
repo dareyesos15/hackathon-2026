@@ -1,0 +1,51 @@
+name,kind,lat,lon,barrio,comuna,aliases,source
+Centro,barrio,5.06890,-75.51740,Centro,Cumanday,centro|centro historico|el centro,SIMULADO
+Chipre,barrio,5.07050,-75.52850,Chipre,Atardeceres,chipre,SIMULADO
+Villa Pilar,barrio,5.06120,-75.52120,Villa Pilar,Atardeceres,villa pilar|villapilar,SIMULADO
+Arenillo,barrio,5.05600,-75.52620,Arenillo,Atardeceres,arenillo,SIMULADO
+San José,barrio,5.07220,-75.50980,San José,San José,san jose,SIMULADO
+Los Agustinos,barrio,5.07030,-75.51280,Los Agustinos,Cumanday,agustinos|los agustinos,SIMULADO
+Marmato,barrio,5.07420,-75.51420,Marmato,San José,marmato,SIMULADO
+Galán,barrio,5.07480,-75.52050,Galán,Cumanday,galan,SIMULADO
+Solferino,barrio,5.07620,-75.50880,Solferino,San José,solferino,SIMULADO
+Campohermoso,barrio,5.07320,-75.50480,Campohermoso,San José,campo hermoso|campohermoso,SIMULADO
+Fundadores,barrio,5.06520,-75.50520,Fundadores,Cumanday,fundadores,SIMULADO
+Aranjuez,barrio,5.06280,-75.50720,Aranjuez,La Estación,aranjuez,SIMULADO
+Belén,barrio,5.06410,-75.50020,Belén,La Estación,belen,SIMULADO
+Laureles,barrio,5.06120,-75.49820,Laureles,Palogrande,laureles,SIMULADO
+El Cable,barrio,5.05900,-75.49580,El Cable,Palogrande,cable|el cable,SIMULADO
+Estrella,barrio,5.05620,-75.49720,Estrella,Palogrande,estrella|la estrella,SIMULADO
+Palogrande,barrio,5.05750,-75.49300,Palogrande,Palogrande,palogrande,SIMULADO
+Versalles,barrio,5.05680,-75.48980,Versalles,Palogrande,versalles,SIMULADO
+Palermo,barrio,5.05450,-75.48780,Palermo,Palogrande,palermo,SIMULADO
+Baja Suiza,barrio,5.05400,-75.49080,Baja Suiza,Ecoturístico Cerro de Oro,baja suiza,SIMULADO
+Alta Suiza,barrio,5.05280,-75.48680,Alta Suiza,Ecoturístico Cerro de Oro,alta suiza,SIMULADO
+Milán,barrio,5.05050,-75.48250,Milán,Ecoturístico Cerro de Oro,milan,SIMULADO
+Sancancio,barrio,5.04820,-75.49580,Sancancio,Ecoturístico Cerro de Oro,sancancio,SIMULADO
+La Florida,barrio,5.04680,-75.47880,La Florida,Ecoturístico Cerro de Oro,florida|la florida,SIMULADO
+La Sultana,barrio,5.04220,-75.48780,La Sultana,Tesorito,la sultana|sultana,SIMULADO
+La Francia,barrio,5.04850,-75.49180,La Francia,Universitaria,francia|la francia,SIMULADO
+La Enea,barrio,5.03020,-75.46520,La Enea,La Fuente,enea|la enea,SIMULADO
+Bosques del Norte,barrio,5.08980,-75.49520,Bosques del Norte,Ciudadela del Norte,bosques|bosques del norte,SIMULADO
+La Linda,barrio,5.08180,-75.52480,La Linda,Atardeceres,la linda,SIMULADO
+El Carmen,barrio,5.07820,-75.51520,El Carmen,San José,carmen|el carmen,SIMULADO
+Comuna Cumanday,comuna,5.06520,-75.50520,Centro,Cumanday,comuna cumanday,SIMULADO
+Comuna Atardeceres,comuna,5.08180,-75.52480,Chipre,Atardeceres,comuna atardeceres,SIMULADO
+Comuna San José,comuna,5.07820,-75.51520,San José,San José,comuna san jose,SIMULADO
+Comuna La Estación,comuna,5.06410,-75.50020,Aranjuez,La Estación,comuna la estacion,SIMULADO
+Comuna Palogrande,comuna,5.05450,-75.48780,Laureles,Palogrande,comuna palogrande,SIMULADO
+Comuna Ecoturístico Cerro de Oro,comuna,5.04680,-75.47880,Baja Suiza,Ecoturístico Cerro de Oro,comuna ecoturistico cerro de oro,SIMULADO
+Comuna Tesorito,comuna,5.04220,-75.48780,La Sultana,Tesorito,comuna tesorito,SIMULADO
+Comuna Universitaria,comuna,5.04850,-75.49180,La Francia,Universitaria,comuna universitaria,SIMULADO
+Comuna La Fuente,comuna,5.03020,-75.46520,La Enea,La Fuente,comuna la fuente,SIMULADO
+Comuna Ciudadela del Norte,comuna,5.08980,-75.49520,Bosques del Norte,Ciudadela del Norte,comuna ciudadela del norte,SIMULADO
+Avenida Santander,via,5.06120,-75.50020,Laureles,Palogrande,av santander|avenida santander|santander,SIMULADO
+Avenida Paralela,via,5.05780,-75.49920,Estrella,Palogrande,av paralela|avenida paralela|paralela,SIMULADO
+Carrera 23,via,5.06680,-75.51420,Centro,Cumanday,carrera 23|cr 23|cra 23|cra23|kra 23|la 23,SIMULADO
+Catedral,referencia,5.06870,-75.51730,Centro,Cumanday,catedral|catedral basilica|la catedral|plaza de bolivar,SIMULADO
+Coliseo Mayor,referencia,5.06120,-75.50480,Aranjuez,La Estación,coliseo|coliseo mayor,SIMULADO
+Hospital Santa Sofía,referencia,5.06380,-75.49920,Belén,La Estación,hospital santa sofia|santa sofia,SIMULADO
+Torre del Cable Aéreo,referencia,5.05970,-75.49660,El Cable,Palogrande,cable aereo|torre del cable|torre del cable aereo,SIMULADO
+Estadio Palogrande,referencia,5.05600,-75.49200,Palogrande,Palogrande,estadio|estadio palogrande,SIMULADO
+Monumento a los Colonizadores,referencia,5.07230,-75.53020,Chipre,Atardeceres,colonizadores|monumento|monumento a los colonizadores,SIMULADO
+Plaza de Mercado,referencia,5.07220,-75.52120,Galán,Cumanday,galerias|la galeria|plaza de mercado,SIMULADO

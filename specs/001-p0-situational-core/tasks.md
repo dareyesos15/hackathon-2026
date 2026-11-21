@@ -36,13 +36,13 @@ Commits en inglés) en cuanto queda verificada; push al cerrar cada fase.
 
 **Purpose**: esqueleto de los dos servicios y de Compose.
 
-- [ ] T001 Verificar `docker info` y crear `.gitignore` raíz (Python, Node, `.env`, `node_modules`, `.next`, `out`, `__pycache__`, `.venv`) en `.gitignore`
-- [ ] T002 Inicializar el proyecto Python con `uv` (Python 3.12; FastAPI, uvicorn, pydantic-settings, SQLAlchemy 2 async, asyncpg, GeoAlchemy2, Alembic, scikit-learn, shapely, httpx; dev: pytest, pytest-asyncio, ruff, black, mypy) en `services/api/pyproject.toml` y `services/api/uv.lock`
-- [ ] T003 [P] Inicializar Next.js + TypeScript strict + Tailwind + ESLint + Prettier + Vitest con `output: "export"` en `apps/web/package.json`, `apps/web/next.config.ts`, `apps/web/tsconfig.json`
-- [ ] T004 [P] Configurar ruff, black y mypy (estricto en `app/core`) en `services/api/pyproject.toml`
-- [ ] T005 Crear `services/api/Dockerfile` (python:3.12-slim + uv, monta `scripts/` y `data/`, healthcheck a `/api/v1/health`)
-- [ ] T006 [P] Crear `apps/web/Dockerfile` (build estático con Node 22 → nginx) y `apps/web/nginx.conf` (estáticos, fallback a `index.html` por ruta, proxy `/api/` → `api:8000` con `proxy_buffering off` y timeouts largos para SSE)
-- [ ] T007 Crear `docker-compose.yml` con `db` (`imresamu/postgis:16-3.5`, healthcheck, volumen), `api` (depende de db healthy; volúmenes `./data` y `./scripts` de solo lectura) y `web` (puerto 8080, depende de api), y `.env.example` con `PII_SALT`, `DATABASE_URL`, `SIMILARITY_PROVIDER=tfidf` y `TOKEN_*` por rol (research R9)
+- [X] T001 Verificar `docker info` y crear `.gitignore` raíz (Python, Node, `.env`, `node_modules`, `.next`, `out`, `__pycache__`, `.venv`) en `.gitignore`
+- [X] T002 Inicializar el proyecto Python con `uv` (Python 3.12; FastAPI, uvicorn, pydantic-settings, SQLAlchemy 2 async, asyncpg, GeoAlchemy2, Alembic, scikit-learn, shapely, httpx; dev: pytest, pytest-asyncio, ruff, black, mypy) en `services/api/pyproject.toml` y `services/api/uv.lock`
+- [X] T003 [P] Inicializar Next.js + TypeScript strict + Tailwind + ESLint + Prettier + Vitest con `output: "export"` en `apps/web/package.json`, `apps/web/next.config.ts`, `apps/web/tsconfig.json`
+- [X] T004 [P] Configurar ruff, black y mypy (estricto en `app/core`) en `services/api/pyproject.toml`
+- [X] T005 Crear `services/api/Dockerfile` (python:3.12-slim + uv, monta `scripts/` y `data/`, healthcheck a `/api/v1/health`)
+- [X] T006 [P] Crear `apps/web/Dockerfile` (build estático con Node 22 → nginx) y `apps/web/nginx.conf` (estáticos, fallback a `index.html` por ruta, proxy `/api/` → `api:8000` con `proxy_buffering off` y timeouts largos para SSE)
+- [X] T007 Crear `docker-compose.yml` con `db` (`imresamu/postgis:16-3.5`, healthcheck, volumen), `api` (depende de db healthy; volúmenes `./data` y `./scripts` de solo lectura) y `web` (puerto 8080, depende de api), y `.env.example` con `PII_SALT`, `DATABASE_URL`, `SIMILARITY_PROVIDER=tfidf` y `TOKEN_*` por rol (research R9)
 
 **Checkpoint**: `docker compose build` termina y `docker compose up` levanta los tres contenedores.
 

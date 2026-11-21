@@ -41,6 +41,20 @@ export function formatDateTime(iso: string | Date): string {
   }).format(date);
 }
 
+/** Fecha sin hora (p. ej. fecha estimada de restablecimiento): "28 nov 2026". */
+export function formatDate(iso: string | Date): string {
+  const date =
+    typeof iso === "string" && iso.length === 10
+      ? new Date(`${iso}T12:00:00-05:00`)
+      : new Date(iso);
+  return new Intl.DateTimeFormat("es-CO", {
+    timeZone: TIME_ZONE,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
 export function formatTime(iso: string | Date): string {
   const date = typeof iso === "string" ? new Date(iso) : iso;
   return new Intl.DateTimeFormat("es-CO", {

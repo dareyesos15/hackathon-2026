@@ -1,7 +1,8 @@
 "use client";
 /**
- * Recuperación post-sismo (specs/003, bloque 6 del diagrama): semáforo de habitabilidad por
- * predio, censo único de damnificados, ayudas sin duplicidad y albergues.
+ * Recuperación post-sismo (specs/003, bloque 6 del diagrama): tablero unificado para el COE,
+ * semáforo de habitabilidad por predio, censo único de damnificados, ayudas sin duplicidad y
+ * albergues.
  *
  * Habeas Data: el documento del jefe de hogar se envía solo a la API (que guarda un hash con sal)
  * y se borra del formulario al terminar; nunca se guarda en el navegador.
@@ -30,46 +31,25 @@ import {
   type InspectionOut,
   type ManzanaRef,
   type PropertyOut,
-  type RecoverySummary,
   type ShelterOut,
 } from "@/lib/recovery";
 import { clearSession, getSession } from "@/lib/session";
+import { TableroRecuperacion } from "./TableroRecuperacion";
+import { Card } from "./ui";
 
-type Tab = "resumen" | "habitabilidad" | "censo" | "ayudas" | "albergues";
+type Tab = "tablero" | "habitabilidad" | "censo" | "ayudas" | "albergues";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "resumen", label: "Resumen" },
+  { id: "tablero", label: "Tablero" },
   { id: "habitabilidad", label: "Habitabilidad" },
   { id: "censo", label: "Censo único" },
   { id: "ayudas", label: "Ayudas" },
   { id: "albergues", label: "Albergues" },
 ];
 
-const REFRESH_MS = 5000;
-
 const input = "rounded border border-linea bg-white px-2 py-1.5 text-sm";
 const button =
   "rounded bg-sangre px-3 py-1.5 text-sm font-semibold text-white hover:bg-sangre-claro disabled:opacity-40";
-
-function Card({
-  title,
-  children,
-  extra,
-}: {
-  title: string;
-  children: ReactNode;
-  extra?: ReactNode;
-}) {
-  return (
-    <section className="flex flex-col gap-3 rounded-lg bg-white p-4 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-display text-lg font-semibold">{title}</h2>
-        {extra}
-      </div>
-      {children}
-    </section>
-  );
-}
 
 function Notice({ tone, children }: { tone: "ok" | "warn" | "error"; children: ReactNode }) {
   const cls = {
@@ -149,58 +129,6 @@ function propertyBody(p: typeof EMPTY_PROPERTY) {
     manzana_id: p.manzana_id || null,
     address: p.address.trim() || null,
   };
-}
-
-// --------------------------------------------------------------------------- resumen
-
-function Resumen({ summary }: { summary: RecoverySummary | null }) {
-  if (!summary) return <p className="text-sm text-tinta-suave">Cargando cifras…</p>;
-  const fig = Object.fromEntries(summary.figures.map((f) => [f.key, f]));
-  const value = (key: string) => {
-    const v = fig[key]?.value;
-    return v === null || v === undefined ? "< 5" : formatInt(v);
-  };
-  const groups: { title: string; keys: string[] }[] = [
-    {
-      title: "Habitabilidad",
-      keys: ["predios_evaluados", "visitas", "predios_verde", "predios_amarillo", "predios_rojo"],
-    },
-    { title: "Censo único", keys: ["hogares", "personas", "rud_inscritos"] },
-    { title: "Ayudas", keys: ["ayudas", "ayudas_duplicadas"] },
-    {
-      title: "Albergues",
-      keys: ["albergue_personas", "albergue_mascotas", "albergue_capacidad"],
-    },
-  ];
-  const visits = fig.visitas?.value ?? 0;
-  const props = fig.predios_evaluados?.value ?? 0;
-  return (
-    <div className="flex flex-col gap-4">
-      {groups.map((g) => (
-        <Card key={g.title} title={g.title}>
-          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-            {g.keys.map((k) => (
-              <div key={k} className="flex flex-col">
-                <dt className="text-xs text-tinta-suave">{fig[k]?.label}</dt>
-                <dd className="font-display text-3xl font-semibold tabular-nums">{value(k)}</dd>
-              </div>
-            ))}
-          </dl>
-          {g.title === "Habitabilidad" && props > 0 && visits > props && (
-            <p className="text-xs text-tinta-suave">
-              {formatInt(visits - props)} visitas repetidas quedaron unidas a su predio: el conteo
-              es por predio, no por visita.
-            </p>
-          )}
-        </Card>
-      ))}
-      <p className="text-xs text-tinta-suave">
-        Fuente: {summary.source} · versión {summary.version} · corte{" "}
-        {formatDateTime(summary.cutoff_at)}
-        {summary.suppressed && " · cifras menores a 5 suprimidas (Habeas Data)"}
-      </p>
-    </div>
-  );
 }
 
 // --------------------------------------------------------------------------- habitabilidad
@@ -839,9 +767,8 @@ function Albergues({ tick }: { tick: number }) {
 export default function PanelRecuperacion() {
   const router = useRouter();
   const [session] = useState(getSession);
-  const [tab, setTab] = useState<Tab>("resumen");
+  const [tab, setTab] = useState<Tab>("tablero");
   const [manzanas, setManzanas] = useState<ManzanaRef[]>([]);
-  const [summary, setSummary] = useState<RecoverySummary | null>(null);
   const [tick, setTick] = useState(0);
   const allowed = session?.role === "pmu";
 
@@ -852,24 +779,6 @@ export default function PanelRecuperacion() {
     }
     api.GET("/api/v1/recovery/manzanas").then(({ data }) => data && setManzanas(data));
   }, [allowed, router]);
-
-  useEffect(() => {
-    if (!allowed) return;
-    let active = true;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const loop = () =>
-      api
-        .GET("/api/v1/recovery/summary")
-        .then(({ data }) => data && setSummary(data))
-        .finally(() => {
-          if (active) timer = setTimeout(loop, REFRESH_MS);
-        });
-    void loop();
-    return () => {
-      active = false;
-      if (timer) clearTimeout(timer);
-    };
-  }, [allowed, tick]);
 
   if (!allowed) return null;
 
@@ -919,8 +828,10 @@ export default function PanelRecuperacion() {
           </button>
         ))}
       </div>
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6">
-        {tab === "resumen" && <Resumen summary={summary} />}
+      <main
+        className={`mx-auto flex w-full flex-col gap-4 px-4 py-6 ${tab === "tablero" ? "max-w-6xl" : "max-w-5xl"}`}
+      >
+        {tab === "tablero" && <TableroRecuperacion />}
         {tab === "habitabilidad" && <Habitabilidad manzanas={manzanas} tick={tick} />}
         {tab === "censo" && <Censo manzanas={manzanas} tick={tick} />}
         {tab === "ayudas" && <Ayudas tick={tick} />}

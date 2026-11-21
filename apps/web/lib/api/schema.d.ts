@@ -759,6 +759,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sensors/zones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Sensors */
+        get: operations["list_sensors_api_v1_sensors_zones_get"];
+        put?: never;
+        /**
+         * Install Sensor
+         * @description Instala un sensor (SIMULADO) en un incidente o en un punto.
+         */
+        post: operations["install_sensor_api_v1_sensors_zones_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sensors/zones/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Events */
+        get: operations["list_events_api_v1_sensors_zones_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sensors/zones/events/{event_id}/ack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Acknowledge
+         * @description Marca una alarma como atendida (queda el rol y la hora).
+         */
+        post: operations["acknowledge_api_v1_sensors_zones_events__event_id__ack_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sensors/zones/{sensor_id}/readings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Reading
+         * @description Lectura del dispositivo (ultrasonido, infrarrojo, RFID, batería).
+         */
+        post: operations["post_reading_api_v1_sensors_zones__sensor_id__readings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/stream": {
         parameters: {
             query?: never;
@@ -2141,6 +2219,197 @@ export interface components {
              */
             pregnancy: boolean;
         };
+        /**
+         * ZoneDetector
+         * @enum {string}
+         */
+        ZoneDetector: "ultrasonido" | "infrarrojo" | "ambos";
+        /**
+         * ZoneEventKind
+         * @enum {string}
+         */
+        ZoneEventKind: "intrusion" | "acceso_autorizado" | "bateria_baja" | "manipulacion";
+        /** ZoneEventList */
+        ZoneEventList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["ZoneEventOut"][];
+        };
+        /** ZoneEventOut */
+        ZoneEventOut: {
+            /** Acknowledged At */
+            acknowledged_at: string | null;
+            /** Acknowledged By */
+            acknowledged_by: string | null;
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Authorized */
+            authorized: boolean;
+            /** Badge Agency */
+            badge_agency: string | null;
+            /** Battery Pct */
+            battery_pct: number | null;
+            /** Bearing Deg */
+            bearing_deg: number | null;
+            detector: components["schemas"]["ZoneDetector"] | null;
+            /** Distance M */
+            distance_m: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["ZoneEventKind"];
+            /** Rfid Tag */
+            rfid_tag: string | null;
+            /** Sensor Code */
+            sensor_code: string;
+            /**
+             * Sensor Id
+             * Format: uuid
+             */
+            sensor_id: string;
+            /** Sensor Label */
+            sensor_label: string;
+            /** Source */
+            source: string;
+        };
+        /** ZoneLastEvent */
+        ZoneLastEvent: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            kind: components["schemas"]["ZoneEventKind"];
+        };
+        /**
+         * ZoneReadingIn
+         * @description Lectura cruda del dispositivo (punto de integración con el hardware real).
+         */
+        ZoneReadingIn: {
+            /**
+             * Battery Pct
+             * @default 100
+             */
+            battery_pct: number;
+            /**
+             * Bearing Deg
+             * @default 0
+             */
+            bearing_deg: number;
+            /**
+             * Infrared
+             * @default false
+             */
+            infrared: boolean;
+            /** Rfid Tag */
+            rfid_tag?: string | null;
+            /**
+             * Tamper
+             * @default false
+             */
+            tamper: boolean;
+            /** Ultrasonic M */
+            ultrasonic_m?: number | null;
+        };
+        /** ZoneReadingResult */
+        ZoneReadingResult: {
+            /** Confirmed Incidents */
+            confirmed_incidents: string[];
+            /** Events */
+            events: components["schemas"]["ZoneEventOut"][];
+        };
+        /**
+         * ZoneSensorIn
+         * @description Instalación de un sensor: en un incidente (usa su ubicación) o en un punto.
+         */
+        ZoneSensorIn: {
+            /**
+             * Half Angle Deg
+             * @default 30
+             */
+            half_angle_deg: number;
+            /**
+             * Heading Deg
+             * @default 0
+             */
+            heading_deg: number;
+            /** Incident Id */
+            incident_id?: string | null;
+            /** Label */
+            label: string;
+            /** Lat */
+            lat?: number | null;
+            /** Lon */
+            lon?: number | null;
+            /**
+             * Range M
+             * @default 12
+             */
+            range_m: number;
+        };
+        /** ZoneSensorList */
+        ZoneSensorList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["ZoneSensorOut"][];
+        };
+        /** ZoneSensorOut */
+        ZoneSensorOut: {
+            /** Battery Pct */
+            battery_pct: number;
+            /** Code */
+            code: string;
+            /**
+             * Cone
+             * @description Anillo [lon, lat] del cono de vigilancia
+             */
+            cone: number[][];
+            /** Half Angle Deg */
+            half_angle_deg: number;
+            /** Heading Deg */
+            heading_deg: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Incident Id */
+            incident_id: string | null;
+            /** Label */
+            label: string;
+            last_event: components["schemas"]["ZoneLastEvent"] | null;
+            /** Last Seen At */
+            last_seen_at: string | null;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Open Alarms */
+            open_alarms: number;
+            /** Range M */
+            range_m: number;
+            /** Source */
+            source: string;
+            status: components["schemas"]["ZoneSensorStatus"];
+        };
+        /**
+         * ZoneSensorStatus
+         * @enum {string}
+         */
+        ZoneSensorStatus: "armado" | "desarmado";
     };
     responses: never;
     parameters: never;
@@ -3732,6 +4001,167 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RainOut"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_sensors_api_v1_sensors_zones_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoneSensorList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    install_sensor_api_v1_sensors_zones_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ZoneSensorIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoneSensorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_events_api_v1_sensors_zones_events_get: {
+        parameters: {
+            query?: {
+                since?: string | null;
+                only_alarms?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoneEventList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    acknowledge_api_v1_sensors_zones_events__event_id__ack_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoneEventOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_reading_api_v1_sensors_zones__sensor_id__readings_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sensor_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ZoneReadingIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ZoneReadingResult"];
                 };
             };
             /** @description Validation Error */

@@ -53,6 +53,9 @@ from app.domain import (
     TrackOrigin,
     TriageLevel,
     TrustLabel,
+    ZoneDetector,
+    ZoneEventKind,
+    ZoneSensorStatus,
 )
 
 
@@ -504,3 +507,61 @@ class Shelter(CommonMixin, Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+# ------------------------------------------- sensor de zonas inseguras (specs/004, NC2025/0015763)
+
+
+class ZoneSensor(CommonMixin, Base):
+    """Dispositivo de monitoreo de zonas inseguras instalado en un sitio acordonado."""
+
+    __tablename__ = "zone_sensors"
+
+    code: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    label: Mapped[str] = mapped_column(String(120), nullable=False)
+    geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    heading_deg: Mapped[float] = mapped_column(Float, nullable=False)
+    range_m: Mapped[float] = mapped_column(Float, nullable=False)
+    half_angle_deg: Mapped[float] = mapped_column(Float, nullable=False)
+    # Sin llave foránea: el reinicio de la demo trunca incidentes y debe conservar los sensores.
+    incident_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    status: Mapped[ZoneSensorStatus] = mapped_column(
+        _enum(ZoneSensorStatus, "zone_sensor_status"),
+        nullable=False,
+        default=ZoneSensorStatus.armado,
+    )
+    battery_pct: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=100)
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class RfidBadge(CommonMixin, Base):
+    """Credencial RFID de personal autorizado (módulo 300). Código institucional, no personal."""
+
+    __tablename__ = "rfid_badges"
+
+    tag: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    agency_code: Mapped[str] = mapped_column(String(32), nullable=False)
+    role_label: Mapped[str] = mapped_column(String(80), nullable=False)
+
+
+class ZoneSensorEvent(CommonMixin, Base):
+    """Evento del sensor. Solo-agregar salvo la atención (quién y cuándo)."""
+
+    __tablename__ = "zone_sensor_events"
+    __table_args__ = (Index("ix_zone_sensor_events_at", "at"),)
+
+    sensor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("zone_sensors.id"), nullable=False)
+    kind: Mapped[ZoneEventKind] = mapped_column(
+        _enum(ZoneEventKind, "zone_event_kind"), nullable=False
+    )
+    detector: Mapped[ZoneDetector | None] = mapped_column(
+        _enum(ZoneDetector, "zone_detector"), nullable=True
+    )
+    distance_m: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bearing_deg: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rfid_tag: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    authorized: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    battery_pct: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    acknowledged_by: Mapped[str | None] = mapped_column(String(32), nullable=True)

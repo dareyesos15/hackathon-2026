@@ -21,7 +21,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.domain import EmreFunction, PlaceKind, ResourceStatus, ResourceType
-from app.models import Agency, Alert, Incident, Manzana, Place, Report, Resource, Shelter
+from app.models import (
+    Agency,
+    Alert,
+    Incident,
+    Manzana,
+    Place,
+    Report,
+    Resource,
+    RfidBadge,
+    Shelter,
+    ZoneSensor,
+)
 
 log = logging.getLogger("dacora.seed")
 
@@ -252,3 +263,48 @@ async def seed_shelters(session: AsyncSession) -> None:
         )
     await session.commit()
     log.info("Albergues SIMULADOS cargados: %s", len(SHELTERS))
+
+
+ZONE_SENSORS = [
+    ("ZI-001", "Edificio acordonado · Catedral", 5.06738, -75.51732, 90),
+    ("ZI-002", "Edificio acordonado · carrera 23", 5.06716, -75.51535, 180),
+    ("ZI-003", "Torre residencial · Av. Santander", 5.06216, -75.49415, 45),
+    ("ZI-004", "Bodega con daño mayor · Av. Paralela", 5.06062, -75.49559, 270),
+    ("ZI-005", "Casa en bahareque · San José", 5.07203, -75.51488, 135),
+    ("ZI-006", "Edificio con colapso parcial · Milán", 5.04590, -75.47986, 315),
+]
+
+RFID_BADGES = [
+    *((f"BOM-{n:04d}", "BOMBEROS", "Bombero") for n in range(101, 109)),
+    *((f"DC-{n:04d}", "DEFENSA_CIVIL", "Socorrista Defensa Civil") for n in range(201, 206)),
+    *((f"CR-{n:04d}", "CRUZ_ROJA", "Socorrista Cruz Roja") for n in range(301, 305)),
+    *((f"INF-{n:04d}", "SEC_INFRAESTRUCTURA", "Ingeniero evaluador") for n in range(401, 405)),
+]
+
+
+async def seed_zone_sensors(session: AsyncSession) -> None:
+    """Sensores de zonas inseguras y credenciales RFID SIMULADOS (specs/004). Solo si no existen."""
+    if await session.scalar(select(func.count()).select_from(ZoneSensor)):
+        return
+    source = "SIMULADO · patente NC2025/0015763"
+    for code, label, lat, lon, heading in ZONE_SENSORS:
+        session.add(
+            ZoneSensor(
+                code=code,
+                label=label,
+                geom=WKTElement(f"POINT({lon} {lat})", srid=4326),
+                heading_deg=heading,
+                range_m=12,
+                half_angle_deg=30,
+                battery_pct=100,
+                source=source,
+            )
+        )
+    for tag, agency, role_label in RFID_BADGES:
+        session.add(RfidBadge(tag=tag, agency_code=agency, role_label=role_label, source=source))
+    await session.commit()
+    log.info(
+        "Sensores de zonas inseguras SIMULADOS: %s · credenciales RFID: %s",
+        len(ZONE_SENSORS),
+        len(RFID_BADGES),
+    )

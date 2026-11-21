@@ -25,6 +25,7 @@ from app.core.nlp import classify
 from app.core.privacy import redact, reporter_hash
 from app.core.similarity import SimilarityProvider
 from app.core.trust import ReportSignals, compute_trust
+from app.core.zone_sensor import CONFIRM_RADIUS_M, CONFIRM_WINDOW_H, CONFIRMABLE_CATEGORIES
 from app.domain import (
     Category,
     Channel,
@@ -34,8 +35,10 @@ from app.domain import (
     ReportAction,
     ReportStatus,
     Role,
+    ZoneDetector,
+    ZoneEventKind,
 )
-from app.models import Incident, Manzana, Place, Report, ReportEvent
+from app.models import Incident, Manzana, Place, Report, ReportEvent, ZoneSensor, ZoneSensorEvent
 
 DEDUP_LOCK_KEY = 0xDAC0A  # bloqueo asesor: agrupación serializada (research R10)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
@@ -113,10 +116,36 @@ async def _manzana_for(
     return None, nearest
 
 
+async def sensor_confirmation(session: AsyncSession, incident: Incident) -> bool:
+    """Intrusión con ambos detectores cerca del incidente (patente NC2025/0015763, specs/004)."""
+    if incident.category.value not in CONFIRMABLE_CATEGORIES or incident.centroid is None:
+        return False
+    since = datetime.now(UTC) - timedelta(hours=CONFIRM_WINDOW_H)
+    hit = await session.scalar(
+        select(ZoneSensorEvent.id)
+        .join(ZoneSensor, ZoneSensor.id == ZoneSensorEvent.sensor_id)
+        .where(
+            ZoneSensorEvent.kind == ZoneEventKind.intrusion,
+            ZoneSensorEvent.detector == ZoneDetector.ambos,
+            ZoneSensorEvent.at >= since,
+            func.ST_DWithin(
+                func.Geography(ZoneSensor.geom),
+                func.Geography(
+                    select(Incident.centroid).where(Incident.id == incident.id).scalar_subquery()
+                ),
+                CONFIRM_RADIUS_M,
+            ),
+        )
+        .limit(1)
+    )
+    return hit is not None
+
+
 async def refresh_trust(session: AsyncSession, engine: Engine, incident: Incident) -> None:
     """Recalcula agregados y trust score del incidente (FR-020)."""
     reports = await recompute_incident(session, incident)
     consistency = engine.hazard.consistency(incident.manzana_id, incident.category.value)
+    confirmed = await sensor_confirmation(session, incident)
     result = compute_trust(
         [
             ReportSignals(r.channel, r.geo_precision, r.has_media, tuple(r.misinfo_signals))
@@ -125,6 +154,7 @@ async def refresh_trust(session: AsyncSession, engine: Engine, incident: Inciden
         incident.independent_sources,
         consistency,
         engine.settings.trust,
+        sensor_confirmed=confirmed,
     )
     incident.trust_score = result.score
     incident.trust_label = result.label

@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from sqlalchemy import text
 
 from app.adapters.tracks import SimulatedRfidFeed
+from app.adapters.zone_sensor import SimulatedZoneSensorFeed
 from app.config import get_settings
 from app.db import SessionLocal
 from app.routers import (
@@ -28,8 +29,9 @@ from app.routers import (
     reports,
     review,
     stream,
+    zone_sensors,
 )
-from app.seed import seed_catalog, seed_geography, seed_shelters
+from app.seed import seed_catalog, seed_geography, seed_shelters, seed_zone_sensors
 from app.state import load_state
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -44,6 +46,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await seed_geography(session)
         await seed_catalog(session)
         await seed_shelters(session)
+        await seed_zone_sensors(session)
         await load_state(session)
     settings = get_settings()
     log.info("Dacora API lista (similitud: %s)", settings.similarity_provider)
@@ -56,9 +59,21 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             speedup=settings.track_speedup,
         )
         feed_task = asyncio.create_task(feed.run())
+    zone_task: asyncio.Task[None] | None = None
+    if settings.simulate_zone_sensors:
+
+        async def process(session, sensor, reading, now):  # type: ignore[no-untyped-def]
+            return await zone_sensors.process_reading(
+                session, ingest.get_engine(), sensor, reading, now
+            )
+
+        zone_task = asyncio.create_task(
+            SimulatedZoneSensorFeed(SessionLocal, process, tick_s=settings.zone_tick_s).run()
+        )
     yield
-    if feed_task is not None:
-        feed_task.cancel()
+    for task in (feed_task, zone_task):
+        if task is not None:
+            task.cancel()
 
 
 app = FastAPI(
@@ -134,6 +149,7 @@ for module in (
     stream,
     metrics,
     recovery,
+    zone_sensors,
     demo,
 ):
     app.include_router(module.router, prefix=API_PREFIX)

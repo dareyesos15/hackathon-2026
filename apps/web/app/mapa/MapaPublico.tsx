@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
 import { api } from "@/lib/api/client";
@@ -16,6 +17,8 @@ import { clearSession, getSession } from "@/lib/session";
 type FC = GeoJSON.FeatureCollection & { cutoff_at?: string };
 
 const REFRESH_MS = 10000;
+// Alertas oficiales vigentes: < 5 s desde su emisión (specs/002 SC-006).
+const ALERTS_MS = 4000;
 const NO_INCIDENTS: never[] = [];
 const noop = () => {};
 
@@ -31,6 +34,7 @@ export default function MapaPublico() {
   const [session] = useState(getSession);
   const [barrios, setBarrios] = useState<FC | null>(null);
   const [manzanas, setManzanas] = useState<FC | null>(null);
+  const [alerts, setAlerts] = useState<FC | null>(null);
   const allowed = session?.role === "publico" || session?.role === "operador_pmu";
 
   useEffect(() => {
@@ -45,9 +49,18 @@ export default function MapaPublico() {
       api.GET("/api/v1/map/manzanas").then(({ data }) => {
         if (data) setManzanas(data as unknown as FC);
       });
+    const loadAlerts = () =>
+      api.GET("/api/v1/alerts/active").then(({ data }) => {
+        if (data) setAlerts(data as unknown as FC);
+      });
     void load();
+    void loadAlerts();
     const timer = setInterval(() => void load(), REFRESH_MS);
-    return () => clearInterval(timer);
+    const alertTimer = setInterval(() => void loadAlerts(), ALERTS_MS);
+    return () => {
+      clearInterval(timer);
+      clearInterval(alertTimer);
+    };
   }, [allowed, router]);
 
   if (!allowed) return null;
@@ -82,6 +95,10 @@ export default function MapaPublico() {
         </nav>
       </header>
 
+      <div className="px-4 pt-3">
+        <AvisoAlerta alerts={alertsFromGeoJSON(alerts)} />
+      </div>
+
       <main className="grid flex-1 grid-cols-1 gap-3 overflow-hidden p-4 lg:grid-cols-[1fr_300px]">
         <div className="min-h-[420px] overflow-hidden rounded-xl bg-white shadow-sm">
           <Mapa
@@ -90,6 +107,7 @@ export default function MapaPublico() {
             manzanas={manzanas}
             selectedId={null}
             onSelect={noop}
+            alertAreas={alerts}
           />
         </div>
         <aside className="flex flex-col gap-4 overflow-y-auto rounded-xl bg-white p-4 text-sm shadow-sm">

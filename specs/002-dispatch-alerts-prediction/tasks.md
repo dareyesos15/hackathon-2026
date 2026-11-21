@@ -131,7 +131,7 @@ público y SMS a cuadrillas, con advertencia de desinformación y bitácora.
 - [X] T045 [P] [US2] Crear `AvisoAlerta` (alerta vigente destacada con tipo, mensaje, hora de emisión y etiqueta SIMULADO en los envíos) en `apps/web/components/AvisoAlerta.tsx`
 - [X] T046 [US2] Agregar a `Mapa` la capa de áreas de alerta vigentes y un modo "elegir centro" por clic para el círculo del editor, en `apps/web/components/Mapa.tsx`
 - [X] T047 [US2] Integrar `EditorAlerta`, `BandejaAlertas` (visible para el COE) y `AvisoAlerta` en el tablero, y el botón "Crear alerta desde este incidente" en el detalle, en `apps/web/app/pmu/TableroPmu.tsx` y `apps/web/components/DetalleIncidente.tsx`
-- [ ] T048 [US2] Mostrar las alertas vigentes (área sombreada y `AvisoAlerta`) consultando `GET /alerts/active` cada 4 s en `apps/web/app/mapa/MapaPublico.tsx`
+- [X] T048 [US2] Mostrar las alertas vigentes (área sombreada y `AvisoAlerta`) consultando `GET /alerts/active` cada 4 s en `apps/web/app/mapa/MapaPublico.tsx`
 - [ ] T049 [P] [US2] Pruebas `vitest` del contador de caracteres para SMS y de la construcción del cuerpo `area` (barrios o círculo) en `apps/web/tests/alerts.test.ts`
 
 **Checkpoint**: US2 funciona sola: [quickstart.md](quickstart.md) §Escenario 2 pasa completo.

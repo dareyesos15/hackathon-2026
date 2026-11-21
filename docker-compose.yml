@@ -1,0 +1,58 @@
+# Dacora — prototipo P0. Servicios principales: api (FastAPI) y web (Next.js estático + Nginx).
+# Servicio de soporte: db (PostgreSQL 16 + PostGIS). Ver specs/001-p0-situational-core/plan.md
+# Arranque: docker compose up   (sin .env usa los valores de demo; ver .env.example)
+
+name: dacora
+
+x-api-env: &api-env
+  DATABASE_URL: postgresql+asyncpg://dacora:${POSTGRES_PASSWORD:-dacora}@db:5432/dacora
+  PII_SALT: ${PII_SALT:-demo-salt-cambiar-en-produccion}
+  SIMILARITY_PROVIDER: ${SIMILARITY_PROVIDER:-tfidf}
+  TOKEN_OPERADOR_PMU: ${TOKEN_OPERADOR_PMU:-pmu-demo}
+  TOKEN_CIUDADANO: ${TOKEN_CIUDADANO:-ciudadano-demo}
+  TOKEN_PUBLICO: ${TOKEN_PUBLICO:-publico-demo}
+  TOKEN_COE: ${TOKEN_COE:-coe-demo}
+  TOKEN_INSPECTOR: ${TOKEN_INSPECTOR:-inspector-demo}
+  TOKEN_AGENCIA: ${TOKEN_AGENCIA:-agencia-demo}
+  API_BASE_URL: http://127.0.0.1:8000/api/v1
+
+services:
+  db:
+    image: imresamu/postgis:16-3.5
+    environment:
+      POSTGRES_DB: dacora
+      POSTGRES_USER: dacora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dacora}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dacora -d dacora"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  api:
+    build: ./services/api
+    environment: *api-env
+    volumes:
+      - ./data:/srv/data:ro
+      - ./scripts:/srv/api/scripts:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  web:
+    build: ./apps/web
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  db-data:

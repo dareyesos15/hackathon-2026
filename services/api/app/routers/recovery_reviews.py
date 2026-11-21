@@ -35,7 +35,14 @@ from app.core.recovery import (
 )
 from app.db import get_session
 from app.domain import Affectation, ReferralEntity, Role, RudStatus
-from app.models import BuildingInspection, Household, HouseholdVulnerability, PropertyReview
+from app.models import (
+    AidDelivery,
+    BuildingInspection,
+    Household,
+    HouseholdVulnerability,
+    PropertyReview,
+    Shelter,
+)
 from app.recovery_schemas import (
     PropertyReviewIn,
     PropertyReviewOut,
@@ -288,7 +295,29 @@ async def post_review(
             "único si la familia está damnificada."
         )
     if body.evacuation_recommended:
-        steps.append(CRUZ_ROJA)
+        housed = None
+        if household is not None and not created:
+            housed = (
+                await session.execute(
+                    select(AidDelivery.aid_type, Shelter.name)
+                    .outerjoin(Shelter, Shelter.id == AidDelivery.shelter_id)
+                    .where(
+                        AidDelivery.household_id == household.id,
+                        AidDelivery.aid_type.in_(("albergue", "subsidio_arriendo")),
+                        AidDelivery.ended_at.is_(None),
+                    )
+                    .order_by(AidDelivery.at.desc())
+                    .limit(1)
+                )
+            ).first()
+        if housed is None:
+            steps.append(CRUZ_ROJA)
+        elif str(housed[0]) == "albergue":
+            steps.append(
+                f"La familia ya está alojada en {housed[1] or 'un albergue'}: no repite ruta."
+            )
+        else:
+            steps.append("La familia ya tiene subsidio de arriendo vigente: no repite ruta.")
     if body.referrals:
         names = ", ".join(ENTITY_LABEL[r] for r in sorted(set(body.referrals)))
         steps.append(

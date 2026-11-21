@@ -31,6 +31,29 @@ async def test_dashboard_has_ten_traceable_indicators(client: httpx.AsyncClient)
     assert len(dash["barrios"]) >= 40
     assert dash["day"] >= 0
     assert (await client.get("/recovery/dashboard", headers=PUBLICO)).status_code == 403
+
+
+async def test_dashboard_never_invents_figures(client: httpx.AsyncClient) -> None:
+    dash = await _dashboard(client)
+    figures = [f for i in dash["indicators"] for f in i["figures"]]
+    figures += [f for s in dash["stages"] for f in s["figures"]]
+    for f in figures:
+        if f["state"] == "sin_fuente":
+            assert f["value"] is None and f["note"], f["key"]
+    # Las fuentes públicas conectadas traen respaldo íntegro (URL, licencia y huella).
+    for src in dash["sources"]:
+        if src["key"] in {"usgs", "secop"} and src["status"] == "conectada":
+            assert src["verified"] and src["query_url"] and src["license"] and src["sha256"]
+    # Lo que no tiene acceso público queda nombrado, no estimado.
+    assert {s["key"] for s in dash["sources"] if s["status"] == "sin_convenio"} >= {
+        "servicios",
+        "economia",
+        "finanzas",
+    }
+    # Una etapa sin dato de avance no recibe semáforo inventado.
+    for stage in dash["stages"]:
+        if stage["progress_pct"] is None and stage["start_day"] <= dash["day"]:
+            assert stage["status"] == "sin_fuente"
     assert (await client.get("/recovery/dashboard", headers=COE)).status_code == 200
 
 

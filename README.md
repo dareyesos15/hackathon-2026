@@ -24,7 +24,7 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --
 |---|---|---|
 | Inicio público: mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
 | Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
-| Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
+| Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada, zonas inseguras) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
 | Despachos por agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
 | Recuperación: semáforo de habitabilidad, censo único, ayudas y albergues | http://localhost:8080/recuperacion/ | Entidades y PMU · `coe-demo` |
 | Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | Administrador · `admin-demo` |
@@ -61,6 +61,22 @@ vulnerabilidad va en una tabla aparte, visible solo para Entidades y PMU. La mis
 hogar dentro de su plazo (30 días; 7 para mercado) se bloquea salvo justificación, y el censo se
 exporta en CSV con columnas tipo RUD sin datos personales. Los albergues son **SIMULADOS**. El
 reinicio de la demo también borra los registros de recuperación.
+
+Sensor de zonas inseguras (specs/004, patente UNAL **NC2025/0015763**): 6 sensores **SIMULADOS**
+en edificios acordonados vigilan un cono de 12 m (±30°) con ultrasonido e infrarrojo; el módulo
+RFID reconoce 21 credenciales de rescatistas (también simuladas). Una persona sin tarjeta
+registrada dentro del cono genera una **intrusión** (alarma en la pestaña *Zonas* del tablero,
+con botón *Atender*); con tarjeta, un **acceso autorizado** sin alarma. Una intrusión detectada por
+ambos sensores a ≤ 150 m de un incidente de personas atrapadas, colapso o daño estructural en las
+últimas 3 h suma los 10 pts de "sensor de campo" a su puntaje de veracidad. Las lecturas sintéticas
+llegan cada `ZONE_TICK_S` s (por defecto 6; `SIMULATE_ZONE_SENSORS=false` las apaga) por
+`POST /api/v1/sensors/zones/{id}/readings`, el mismo punto de integración que usaría el
+dispositivo real.
+
+**Capas del mapa del PMU:** por defecto el mapa muestra solo el módulo de la pestaña activa
+(Triaje: incidentes, calor por manzana y recursos; Alertas: áreas; Cascada: riesgo por manzana;
+Zonas: sensores y conos). El control *Capas del mapa* (arriba a la izquierda) permite elegir a
+mano qué módulos se ven a la vez.
 
 ### Requisitos
 
@@ -103,7 +119,8 @@ Dos servicios principales comunicados por API REST (constitución, principio X):
 
 - **`api`** — Python 3.12 + FastAPI ([services/api](services/api)): ingesta, motor de verificación
   (Habeas Data, clasificación, triaje, deduplicación, trust score), revisión humana, despacho,
-  alertas, cascada, recuperación (habitabilidad, censo único, ayudas, albergues), KPI, SSE.
+  alertas, cascada, sensor de zonas inseguras, recuperación (habitabilidad, censo único,
+  ayudas, albergues), KPI, SSE.
 - **`web`** — Next.js como exportación estática servida por Nginx ([apps/web](apps/web)): tablero
   PMU (MapLibre), panel de KPI, recuperación y PWA ciudadana con outbox en IndexedDB.
 - Soporte: **`db`** PostgreSQL 16 + PostGIS.
@@ -112,5 +129,6 @@ Diagrama técnico: [docs/arquitectura.jpeg](docs/arquitectura.jpeg); estado actu
 simulado, planeado): [docs/arquitectura_actual.png](docs/arquitectura_actual.png). Especificaciones:
 [001 núcleo P0](specs/001-p0-situational-core),
 [002 despacho, alertas y cascada](specs/002-dispatch-alerts-prediction) y
-[003 recuperación](specs/003-recovery). Contexto completo:
+[003 recuperación](specs/003-recovery) y
+[004 sensor de zonas inseguras](specs/004-zone-sensor). Contexto completo:
 [CLAUDE.md](CLAUDE.md). Guion de la demo: [docs/guion_demo.md](docs/guion_demo.md).

@@ -1,0 +1,63 @@
+{
+  "components": {
+    "schemas": {
+      "Health": {
+        "properties": {
+          "db": {
+            "title": "Db",
+            "type": "string"
+          },
+          "similarity_provider": {
+            "title": "Similarity Provider",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "db",
+          "similarity_provider",
+          "version"
+        ],
+        "title": "Health",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Ingesta multicanal, motor de verificación (Habeas Data, triaje, deduplicación, trust score) y tablero del PMU. Prototipo Hackathon UNAL Manizales 2026. Datos SIMULADOS.",
+    "title": "Dacora API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "salud"
+        ]
+      }
+    }
+  }
+}

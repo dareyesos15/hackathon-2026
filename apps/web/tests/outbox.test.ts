@@ -44,6 +44,16 @@ describe("outbox offline", () => {
     expect((await database.outbox.get(a.client_uuid))?.status).toBe("enviado");
   });
 
+  it("borra el teléfono de contacto del dispositivo al enviar", async () => {
+    const a = await enqueue({ ...report("hay heridos"), reporter_contact: "3001234567" }, database);
+    await flush(
+      async (items) =>
+        items.map((i) => ({ client_uuid: i.client_uuid, status: "created" as const })),
+      database,
+    );
+    expect((await database.outbox.get(a.client_uuid))?.body.reporter_contact).toBeNull();
+  });
+
   it("un duplicado del servidor cuenta como enviado; un rechazo queda en error", async () => {
     const a = await enqueue(report("uno"), database);
     const b = await enqueue(report("dos"), database);

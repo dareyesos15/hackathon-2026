@@ -97,7 +97,14 @@ export async function flush(send: Sender = sendBatch, database: DacoraDB = db): 
           return { ...p, status: "error", error: r.error ?? "rechazado", attempts: p.attempts + 1 };
         }
         sent += 1;
-        return { ...p, status: "enviado", sent_at: now, attempts: p.attempts + 1 };
+        // Ya enviado: el teléfono de contacto no se conserva en el dispositivo.
+        return {
+          ...p,
+          body: { ...p.body, reporter_contact: null },
+          status: "enviado",
+          sent_at: now,
+          attempts: p.attempts + 1,
+        };
       }),
     );
     return sent;

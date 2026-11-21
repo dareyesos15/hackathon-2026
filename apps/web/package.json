@@ -15,6 +15,7 @@
     "prebuild": "npm run -s copy:worker"
   },
   "dependencies": {
+    "dexie": "^4.4.7",
     "maplibre-gl": "^6.19.0",
     "next": "16.4.6",
     "openapi-fetch": "^0.17.0",

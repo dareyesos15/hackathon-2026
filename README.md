@@ -12,7 +12,7 @@ Prototipo de la Hackathon UNAL Manizales 2026 · Vertical 05 · Datos & Intelige
 docker compose up -d --build
 ```
 
-Abra **http://localhost:8080** y elija un rol. Para llenar el tablero con el sismo simulado:
+Abra **http://localhost:8080**: la página de inicio muestra a cualquiera el mapa agregado y los indicadores. Con **Iniciar sesión** se elige un rol. Para llenar el tablero con el sismo simulado:
 
 ```bash
 docker compose exec api python scripts/replay_scenario.py --reset            # 12 min (1 h = 1 min)
@@ -22,12 +22,12 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --
 
 | Pantalla | URL | Rol / token de demo |
 |---|---|---|
-| Inicio (elegir rol) | http://localhost:8080 | — |
+| Inicio público: mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
+| Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
 | Tablero del PMU (triaje, despacho, borradores de alerta, cascada) | http://localhost:8080/pmu/ | Operador PMU · `pmu-demo` |
 | Tablero + bandeja del COE (aprobar, rechazar y anular alertas) | http://localhost:8080/pmu/ | COE · `coe-demo` |
 | Despachos de una agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Agencia · `agencia-demo` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | Operador PMU o Público · `publico-demo` |
-| Mapa público (agregado por manzana, k ≥ 5, y alertas oficiales vigentes) | http://localhost:8080/mapa/ | Público · `publico-demo` |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
 | API (OpenAPI) | http://localhost:8080/docs | — |
 

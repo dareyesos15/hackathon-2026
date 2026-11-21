@@ -1,7 +1,7 @@
 """Envía un SMS simulado al gateway de Dacora (contracts/sms-format.md).
 
 Uso (dentro del contenedor api):
-    docker compose exec api python scripts/simulate_sms.py "DACORA ATR MILAN 3 edificio caido cra 23"
+    docker compose exec api python scripts/simulate_sms.py "DACORA ATR MILAN 3 edificio caido"
     docker compose exec api python scripts/simulate_sms.py --from +573110000002 "DACORA COL ..."
 El número es sintético; la API solo guarda su huella HMAC.
 """

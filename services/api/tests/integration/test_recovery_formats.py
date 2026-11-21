@@ -151,3 +151,32 @@ async def test_rent_subsidy_requires_amount_and_months(client: httpx.AsyncClient
     )
     assert ok.status_code == 201, ok.text
     assert ok.json()["amount_cop"] == 550000 and ok.json()["months"] == 3
+
+
+async def test_census_completes_a_household_that_came_from_a_review(
+    client: httpx.AsyncClient,
+) -> None:
+    document = _doc()
+    first = await client.post(
+        "/recovery/households", headers=PMU, json={"document": document, "members_count": 3}
+    )
+    assert first.status_code == 201
+    number = str(uuid.uuid4().int % 10**9)
+    second = await client.post(
+        "/recovery/households",
+        headers=PMU,
+        json={
+            "document": document,
+            "members_count": 3,
+            "census_form_number": number,
+            "tenure": "propietario",
+            "age_18_59": 2,
+            "age_60_plus": 1,
+            "losses": ["enseres"],
+        },
+    )
+    assert second.status_code == 200, second.text
+    out = second.json()["household"]
+    assert out["id"] == first.json()["household"]["id"]
+    assert out["census_form_number"] == number and out["tenure"] == "propietario"
+    assert out["age_60_plus"] == 1 and out["losses"] == ["enseres"]

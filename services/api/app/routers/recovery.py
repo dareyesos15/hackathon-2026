@@ -391,6 +391,24 @@ async def post_household(
         )
     existing = await _household_by_document(session, body.document)
     if existing is not None:
+        # Completa los campos del RUD que el hogar aún no tenía (p. ej. si llegó por una revisión
+        # a predio), sin pisar lo ya registrado.
+        if body.census_form_number and not existing.census_form_number:
+            existing.census_form_number = body.census_form_number
+        if body.tenure and not existing.tenure:
+            existing.tenure = body.tenure.value
+        if body.housing_status and not existing.housing_status:
+            existing.housing_status = body.housing_status.value
+        if ages and not (
+            existing.age_0_5 + existing.age_6_17 + existing.age_18_59 + existing.age_60_plus
+        ):
+            existing.age_0_5, existing.age_6_17 = body.age_0_5, body.age_6_17
+            existing.age_18_59, existing.age_60_plus = body.age_18_59, body.age_60_plus
+        existing.female_members = existing.female_members or body.female_members
+        existing.ethnic_members = existing.ethnic_members or body.ethnic_members
+        existing.losses = sorted(set(existing.losses) | {x.value for x in body.losses})
+        existing.version += 1
+        await session.commit()
         response.status_code = status.HTTP_200_OK
         return HouseholdCreated(
             household=(await _households_out(session, [existing]))[0], created=False

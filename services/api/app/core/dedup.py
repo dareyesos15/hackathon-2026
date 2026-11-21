@@ -200,7 +200,7 @@ async def find_candidates(
         stmt = stmt.where(
             func.ST_DWithin(
                 func.Geography(Incident.centroid),
-                func.Geography(_point(report.lat, report.lon)),
+                func.Geography(func.ST_SetSRID(func.ST_MakePoint(report.lon, report.lat), 4326)),
                 cfg.max_distance_barrio_m,
             )
         )

@@ -1,16 +1,17 @@
 "use client";
 /**
- * Inicio público de Dacora: mapa de afectación e indicadores para todos, sin iniciar sesión
- * (Ley 1712 de 2014). Solo agregados: conteos por manzana con k ≥ 5 (los aplica la API), KPI
- * con fuente y fecha de corte, y alertas oficiales emitidas por el COE. Nunca incidentes,
- * reportes individuales, recursos ni datos personales (Ley 1581 de 2012).
- * La API se consulta siempre con el rol `publico`, también con sesión de Ciudadanía o
- * Administrador: todos ven el mismo mapa agregado.
+ * Tablero público de Dacora para todos, sin iniciar sesión (Ley 1712 de 2014): mapa con
+ * pestañas de Triaje (incidentes por nivel y conteos por manzana con k ≥ 5), Cascada (riesgo por
+ * manzana) y Zonas (zonas inseguras vigiladas), KPI con fuente y fecha de corte, alertas
+ * oficiales del COE y el botón para reportar una emergencia (la ciudadanía no tiene cuenta).
+ * Nunca reportes individuales, textos, recursos ni datos personales (Ley 1581 de 2012): los
+ * incidentes llegan sin texto y con la ubicación redondeada a ~100 m.
+ * La API se consulta siempre como anónima, con o sin sesión: todos ven lo mismo.
  */
 import { DEMO_MODE } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
 import {
   CapaCascada,
@@ -20,11 +21,15 @@ import {
 } from "@/components/CapaCascada";
 import { CifraKpi } from "@/components/CifraKpi";
 import { Mapa } from "@/components/Mapa";
+import { MatrizTriaje } from "@/components/MatrizTriaje";
+import { ZonasPublicas } from "@/components/ZonasPublicas";
 import { publicApi as api } from "@/lib/api/client";
 import { useOfflineData } from "@/lib/offline";
 import { formatDateTime, formatInt } from "@/lib/format";
-import { ROLE_LABELS, clearSession, getSession, type Role } from "@/lib/session";
+import type { IncidentSummary } from "@/lib/labels";
+import { AREA_HOME, ROLE_LABELS, clearSession, getSession } from "@/lib/session";
 import { kpiMap, type Kpi } from "@/lib/useKpi";
+import { zonesToGeoJSON, type ZoneSensorOut } from "@/lib/zones";
 
 type FC = GeoJSON.FeatureCollection & { cutoff_at?: string };
 
@@ -34,14 +39,13 @@ const CASCADE_MS = 15000;
 const KPI_MS = 5000;
 // Alertas oficiales vigentes: < 5 s desde su emisión (specs/002 SC-006).
 const ALERTS_MS = 4000;
-const NO_INCIDENTS: never[] = [];
-const noop = () => {};
+const INCIDENTS_MS = 8000;
+const ZONES_MS = 8000;
+const NO_INCIDENTS: IncidentSummary[] = [];
+const NO_ZONES: ZoneSensorOut[] = [];
 
-const PANEL: Record<Role, string> = {
-  ciudadano: "/reportar/",
-  pmu: "/pmu/",
-  admin: "/admin/",
-};
+type Tab = "triaje" | "cascada" | "zonas";
+const TAB_LABEL: Record<Tab, string> = { triaje: "Triaje", cascada: "Cascada", zonas: "Zonas" };
 
 const LEYENDA = [
   { color: "#f9d5c6", texto: "Pocos reportes" },
@@ -65,7 +69,10 @@ const OPERATION = [
 
 export default function InicioPublico() {
   const [session, setSession] = useState(getSession);
-  const [cascadeOn, setCascadeOn] = useState(false);
+  const [tab, setTab] = useState<Tab>("triaje");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [zoneSel, setZoneSel] = useState<string | null>(null);
+  const [cascadeOn, setCascadeOn] = useState(true);
   const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
   // Todo se guarda en el dispositivo: sin conexión se ve la última información recibida.
   const barrios = useOfflineData<FC>("barrios", () => getData(api.GET("/api/v1/geo/barrios"))).data;
@@ -87,14 +94,28 @@ export default function InicioPublico() {
   const cascadeData = useOfflineData<CascadeLayer>(
     "cascade-publico",
     () => getData(api.GET("/api/v1/map/cascade")),
-    { enabled: cascadeOn, pollMs: CASCADE_MS },
+    { enabled: tab === "cascada" && cascadeOn, pollMs: CASCADE_MS },
   );
+  const incidentsData = useOfflineData<IncidentSummary[]>(
+    "incidentes-publico",
+    async () => (await api.GET("/api/v1/incidents")).data?.items,
+    { enabled: tab === "triaje", pollMs: INCIDENTS_MS },
+  );
+  const zonesData = useOfflineData<ZoneSensorOut[]>(
+    "zonas-publico",
+    async () => (await api.GET("/api/v1/sensors/zones")).data?.items,
+    { enabled: tab === "zonas", pollMs: ZONES_MS },
+  );
+  const incidents = incidentsData.data ?? NO_INCIDENTS;
+  const zoneSensors = zonesData.data ?? NO_ZONES;
+  const zonesFc = useMemo(() => zonesToGeoJSON(zoneSensors), [zoneSensors]);
   const manzanas = manzanasData.data;
   const alerts = alertsData.data;
   const items = kpiData.data ?? [];
   const k = kpiMap(items);
-  const panel = session ? PANEL[session.role] : "/";
-  const offline = manzanasData.offline || kpiData.offline || alertsData.offline;
+  const panel = session ? AREA_HOME[session.role] : "/";
+  const offline =
+    manzanasData.offline || kpiData.offline || alertsData.offline || incidentsData.offline;
 
   const features = manzanas?.features ?? [];
   const visibles = features.filter((f) => f.properties?.report_count != null).length;
@@ -115,25 +136,21 @@ export default function InicioPublico() {
         <span className="hidden text-sm text-white/75 sm:inline">
           Manizales · mapa, predicción e indicadores públicos
         </span>
-        <nav className="ml-auto flex items-center gap-3 text-sm">
+        <nav className="ml-auto flex flex-wrap items-center gap-3 text-sm">
+          <Link
+            href="/reportar/"
+            className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
+          >
+            Reportar una emergencia
+          </Link>
           {session ? (
             <>
-              <span className="text-white/75">{ROLE_LABELS[session.role]}</span>
-              {session.role === "ciudadano" ? (
-                <Link
-                  href={panel}
-                  className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
-                >
-                  Reportar una emergencia
-                </Link>
-              ) : (
-                <Link
-                  href={panel}
-                  className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
-                >
-                  Ir a mi panel
-                </Link>
-              )}
+              <span className="text-white/75">
+                {session.displayName} · {ROLE_LABELS[session.role]}
+              </span>
+              <Link href={panel} className="underline decoration-white/40 underline-offset-4">
+                Ir a mi panel
+              </Link>
               <button
                 type="button"
                 className="text-white/75 hover:text-white"
@@ -148,9 +165,9 @@ export default function InicioPublico() {
           ) : (
             <Link
               href="/ingresar/"
-              className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
+              className="text-white/85 underline decoration-white/40 underline-offset-4"
             >
-              Iniciar sesión
+              Entidades: iniciar sesión
             </Link>
           )}
         </nav>
@@ -195,70 +212,102 @@ export default function InicioPublico() {
         </div>
       </section>
 
-      <main className="grid gap-3 p-4 lg:grid-cols-[1fr_300px]">
+      <main className="grid gap-3 p-4 lg:grid-cols-[1fr_360px]">
         <div className="h-[60vh] min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
           <Mapa
-            incidents={NO_INCIDENTS}
+            incidents={tab === "triaje" ? incidents : NO_INCIDENTS}
             barrios={barrios}
-            manzanas={manzanas}
-            selectedId={null}
-            onSelect={noop}
+            manzanas={tab === "triaje" ? manzanas : null}
+            selectedId={selectedId}
+            onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
             alertAreas={alerts}
-            leyenda={false}
-            cascade={cascadeOn ? cascadeData.data : null}
+            leyenda={tab === "triaje"}
+            cascade={tab === "cascada" && cascadeOn ? cascadeData.data : null}
             onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascadeData.data))}
+            zones={tab === "zonas" ? zonesFc : null}
+            onZoneSelect={setZoneSel}
           />
         </div>
-        <aside className="flex flex-col gap-4 rounded-md border border-linea bg-white p-4 text-sm">
-          <CapaCascada
-            enabled={cascadeOn}
-            onToggle={(on) => {
-              setCascadeOn(on);
-              if (!on) setCascadeSel(null);
-            }}
-            layer={cascadeData.data}
-            selected={cascadeSel}
-            canControlRain={false}
-            offline={cascadeData.offline}
-            savedAt={cascadeData.savedAt}
-          />
-          <section>
-            <h2 className="mb-2 font-semibold">Reportes por manzana</h2>
-            {cascadeOn && (
-              <p className="mb-1 text-xs text-tinta-suave">
-                Con la predicción activa, el color de las manzanas muestra el riesgo de cascada.
-              </p>
+        <aside className="flex max-h-[80vh] flex-col gap-3 overflow-hidden rounded-md border border-linea bg-white p-4 text-sm">
+          <nav className="flex gap-1" aria-label="Módulos del tablero">
+            {(Object.keys(TAB_LABEL) as Tab[]).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                aria-pressed={tab === t}
+                className={`flex-1 rounded px-2 py-1 text-sm font-medium ${
+                  tab === t ? "bg-slate-900 text-white" : "bg-papel text-slate-700"
+                }`}
+              >
+                {TAB_LABEL[t]}
+              </button>
+            ))}
+          </nav>
+          <div className="flex-1 overflow-y-auto">
+            {tab === "triaje" && (
+              <div className="flex flex-col gap-4">
+                <MatrizTriaje
+                  incidents={incidents}
+                  selectedId={selectedId}
+                  onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
+                />
+                <section>
+                  <h2 className="mb-2 font-semibold">Reportes por manzana</h2>
+                  <ul className="flex flex-col gap-1.5">
+                    {LEYENDA.map((l) => (
+                      <li key={l.texto} className="flex items-center gap-2">
+                        <span
+                          className="inline-block h-3 w-5 rounded-sm border border-linea"
+                          style={{ backgroundColor: l.color }}
+                        />
+                        {l.texto}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                <section className="grid grid-cols-2 gap-2">
+                  <div className="rounded-lg bg-papel p-2">
+                    <p className="text-xs text-tinta-suave">Manzanas con reportes</p>
+                    <p className="text-xl font-bold tabular-nums">{formatInt(features.length)}</p>
+                  </div>
+                  <div className="rounded-lg bg-papel p-2">
+                    <p className="text-xs text-tinta-suave">Barrios con reportes</p>
+                    <p className="text-xl font-bold tabular-nums">{formatInt(barriosAfectados)}</p>
+                  </div>
+                  <p className="col-span-2 text-xs text-tinta-suave">
+                    {formatInt(visibles)} manzanas con conteo publicable (k ≥ 5).
+                    {DEMO_MODE &&
+                      ` Fuente: api · corte ${manzanas?.cutoff_at ? formatDateTime(manzanas.cutoff_at) : "—"}.`}
+                  </p>
+                </section>
+              </div>
             )}
-            <ul className="flex flex-col gap-1.5">
-              {LEYENDA.map((l) => (
-                <li key={l.texto} className="flex items-center gap-2">
-                  <span
-                    className="inline-block h-3 w-5 rounded-sm border border-linea"
-                    style={{ backgroundColor: l.color }}
-                  />
-                  {l.texto}
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg bg-papel p-2">
-              <p className="text-xs text-tinta-suave">Manzanas con reportes</p>
-              <p className="text-xl font-bold tabular-nums">{formatInt(features.length)}</p>
-            </div>
-            <div className="rounded-lg bg-papel p-2">
-              <p className="text-xs text-tinta-suave">Barrios con reportes</p>
-              <p className="text-xl font-bold tabular-nums">{formatInt(barriosAfectados)}</p>
-            </div>
-            <p className="col-span-2 text-xs text-tinta-suave">
-              {formatInt(visibles)} manzanas con conteo publicable (k ≥ 5).
-              {DEMO_MODE &&
-                ` Fuente: api · corte ${manzanas?.cutoff_at ? formatDateTime(manzanas.cutoff_at) : "—"}.`}
-            </p>
-          </section>
+            {tab === "cascada" && (
+              <CapaCascada
+                enabled={cascadeOn}
+                onToggle={(on) => {
+                  setCascadeOn(on);
+                  if (!on) setCascadeSel(null);
+                }}
+                layer={cascadeData.data}
+                selected={cascadeSel}
+                canControlRain={false}
+                offline={cascadeData.offline}
+                savedAt={cascadeData.savedAt}
+              />
+            )}
+            {tab === "zonas" && (
+              <ZonasPublicas sensors={zoneSensors} selectedId={zoneSel} onSelect={setZoneSel} />
+            )}
+          </div>
           <p className="text-xs text-tinta-suave">
-            Solo datos agregados: nunca nombres, teléfonos, direcciones exactas ni reportes
-            individuales. Para reportar una emergencia, llame al 123 o use Reportar.
+            Sin datos personales: nunca nombres, teléfonos, textos de reportes ni direcciones
+            exactas (ubicación aproximada a ~100 m). Para reportar una emergencia use{" "}
+            <Link href="/reportar/" className="underline underline-offset-2">
+              Reportar
+            </Link>{" "}
+            o llame al 123.
           </p>
         </aside>
       </main>

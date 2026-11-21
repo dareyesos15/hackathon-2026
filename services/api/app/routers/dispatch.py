@@ -34,6 +34,7 @@ from app.domain import (
     TrackOrigin,
 )
 from app.models import Agency, Dispatch, Incident, Report, Resource, ResourceTrack
+from app.routers.mass_alerts import publish_progress
 from app.schemas import (
     AgencyList,
     AgencyOut,
@@ -87,6 +88,7 @@ async def publish_dispatches(session: AsyncSession, dispatches: Sequence[Dispatc
     ]
     for summary in await incidents_out(session, incidents):
         bus.publish("incident.upserted", summary.model_dump(mode="json"))
+    publish_progress([i.mass_alert_id for i in incidents])
 
 
 async def publish_track(session: AsyncSession, result: TrackResult) -> None:

@@ -4,45 +4,78 @@
  * exigen acción y el ciclo económico en 5 etapas.
  *
  * Regla de oro: cada cifra lleva el nombre del diccionario de indicadores, fuente, versión y hora
- * de corte (componente `Cifra`), y se cuentan predios únicos, no visitas.
+ * de corte (componente `Cifra`), y se cuentan predios únicos, no visitas. Ninguna cifra es
+ * inventada: si no hay fuente conectada, la tarjeta lo dice y nombra la entidad que la provee.
  */
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { Cifra } from "@/components/Cifra";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
-import { formatDate, formatDateTime, formatInt, formatPercent } from "@/lib/format";
+import { DEMO_MODE } from "@/lib/env";
+import { formatCop, formatDate, formatDateTime, formatInt, formatPercent } from "@/lib/format";
 import {
   CHANNEL_LABEL,
   COLOR_HEX,
   NEED_SEVERITY,
-  SERVICE_LABEL,
+  SOURCE_STATUS,
   STAGE_STATUS,
   type BarrioRecovery,
+  type ContractRow,
   type CurvePoint,
   type DashFigure,
   type DashIndicator,
   type Need,
   type RecoveryDashboard,
-  type ServiceKey,
+  type SourceInfo,
   type Stage,
 } from "@/lib/recovery";
 import { Card } from "./ui";
 
 const REFRESH_MS = 10_000;
 
-function Figura({ f }: { f: DashFigure }) {
+/** Enlace externo a la fuente (abre en otra pestaña). */
+function Enlace({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Cifra
-      etiqueta={f.label}
-      valor={f.value ?? null}
-      unidad={f.unit}
-      fuente={f.source}
-      version={f.version}
-      corte={f.cutoff_at}
-      simulado={f.simulated}
-      meta={f.target ?? undefined}
-      estado={f.state}
-    />
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-xs text-tinta-suave underline decoration-linea underline-offset-2 hover:text-tinta"
+    >
+      {children} ↗
+    </a>
+  );
+}
+
+function SinFuente({ f }: { f: DashFigure }) {
+  return (
+    <div className="flex flex-col gap-1 rounded-md border border-dashed border-tinta-suave/50 p-3">
+      <p className="text-sm leading-tight text-tinta-suave">{f.label}</p>
+      <p className="font-display text-2xl font-semibold leading-none text-tinta-suave">
+        Sin fuente
+      </p>
+      <p className="text-xs leading-snug text-tinta-suave">{f.note}</p>
+    </div>
+  );
+}
+
+function Figura({ f }: { f: DashFigure }) {
+  if (f.state === "sin_fuente") return <SinFuente f={f} />;
+  return (
+    <div className="flex flex-col gap-1">
+      <Cifra
+        etiqueta={f.label}
+        valor={f.value ?? null}
+        unidad={f.unit}
+        fuente={f.source}
+        version={f.version}
+        corte={f.cutoff_at}
+        simulado={f.simulated}
+        meta={f.target ?? undefined}
+        estado={f.state}
+      />
+      {f.source_url && <Enlace href={f.source_url}>Ver en la fuente</Enlace>}
+    </div>
   );
 }
 
@@ -122,27 +155,31 @@ const M = { l: 40, r: 16, t: 14, b: 28 };
 
 function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
   const [hover, setHover] = useState<CurvePoint | null>(null);
-  if (points.length === 0) return null;
+  if (points.length === 0) {
+    return (
+      <p className="text-xs text-tinta-suave">
+        La curva se dibuja con las fechas de las evaluaciones, el censo y las ayudas registradas;
+        aún no hay registros para calcularla.
+      </p>
+    );
+  }
   const xMax = Math.max(90, day);
   const x = (d: number) => M.l + (d / xMax) * (W - M.l - M.r);
   const y = (v: number) => M.t + (1 - v / 100) * (H - M.t - M.b);
-  const history = points.filter((p) => p.simulated);
-  const today = points.find((p) => !p.simulated);
-  const path = history.map((p, i) => `${i ? "L" : "M"}${x(p.day)},${y(p.value)}`).join(" ");
-  const last = history.at(-1);
+  const path = points.map((p, i) => `${i ? "L" : "M"}${x(p.day)},${y(p.value)}`).join(" ");
+  const today = points[points.length - 1];
 
   function onMove(e: MouseEvent<SVGSVGElement>) {
     const box = e.currentTarget.getBoundingClientRect();
     const d = ((((e.clientX - box.left) / box.width) * W - M.l) / (W - M.l - M.r)) * xMax;
-    const nearest = points.reduce((a, b) => (Math.abs(b.day - d) < Math.abs(a.day - d) ? b : a));
-    setHover(nearest);
+    setHover(points.reduce((a, b) => (Math.abs(b.day - d) < Math.abs(a.day - d) ? b : a)));
   }
 
   return (
     <figure className="flex flex-col gap-1">
       <figcaption className="text-xs text-tinta-suave">
-        Índice de la ciudad, día 0 a {xMax}. La línea continua es el histórico SIMULADO; el punto es
-        el valor de hoy calculado en vivo.
+        Índice de la ciudad por día desde el sismo, reconstruido con las fechas del propio registro
+        (un punto por día con cambios). Sin histórico inventado.
       </figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
@@ -166,39 +203,24 @@ function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
           </text>
         ))}
         <path d={path} fill="none" stroke="#5c0f1b" strokeWidth={2} strokeLinejoin="round" />
-        {today && last && (
-          <line
-            x1={x(last.day)}
-            y1={y(last.value)}
-            x2={x(today.day)}
-            y2={y(today.value)}
-            stroke="#5c0f1b"
-            strokeWidth={2}
-            strokeDasharray="4 4"
-          />
-        )}
-        {today && (
-          <g>
-            <circle
-              cx={x(today.day)}
-              cy={y(today.value)}
-              r={6}
-              fill="#5c0f1b"
-              stroke="#fff"
-              strokeWidth={2}
-            />
-            <text
-              x={x(today.day) - 10}
-              y={y(today.value) - 10}
-              textAnchor="end"
-              fontSize={12}
-              fontWeight={600}
-              fill="#231a1c"
-            >
-              Hoy · {formatPercent(today.value)}
-            </text>
-          </g>
-        )}
+        <circle
+          cx={x(today.day)}
+          cy={y(today.value)}
+          r={6}
+          fill="#5c0f1b"
+          stroke="#fff"
+          strokeWidth={2}
+        />
+        <text
+          x={x(today.day) - 10}
+          y={y(today.value) - 10}
+          textAnchor="end"
+          fontSize={12}
+          fontWeight={600}
+          fill="#231a1c"
+        >
+          Hoy · {formatPercent(today.value)}
+        </text>
         {hover && (
           <g pointerEvents="none">
             <line
@@ -226,7 +248,6 @@ function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
               fill="#231a1c"
             >
               Día {hover.day} · {formatPercent(hover.value)}
-              {hover.simulated ? " · simulado" : " · hoy"}
             </text>
           </g>
         )}
@@ -238,69 +259,82 @@ function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
 function Componentes({ c }: { c: Record<string, number | null> }) {
   const names: [string, string][] = [
     ["habitabilidad", "Habitabilidad (3)"],
-    ["servicios", "Servicios (6)"],
     ["familias", "Familias en casa (7)"],
+    ["servicios", "Servicios (6)"],
     ["economia", "Negocios reabiertos (9)"],
   ];
   return (
-    <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
-      {names.map(([k, label]) => (
-        <div key={k} className="flex flex-col">
-          <dt className="text-xs text-tinta-suave">{label}</dt>
-          <dd className="font-semibold tabular-nums">
-            {c[k] === null || c[k] === undefined ? "sin datos" : formatPercent(c[k])}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <div className="flex flex-col gap-1">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
+        {names.map(([k, label]) => (
+          <div key={k} className="flex flex-col">
+            <dt className="text-xs text-tinta-suave">{label}</dt>
+            <dd className="font-semibold tabular-nums">
+              {c[k] === null || c[k] === undefined ? (
+                <span className="font-normal text-tinta-suave">sin fuente: no cuenta</span>
+              ) : (
+                formatPercent(c[k])
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p className="text-xs text-tinta-suave">
+        El índice promedia solo los componentes con fuente; los demás se suman cuando haya convenio
+        con su entidad.
+      </p>
+    </div>
   );
 }
 
 // --------------------------------------------------------------------------- barrios
 
-function peorServicio(b: BarrioRecovery): [ServiceKey, number] | null {
-  const entries = Object.entries(b.services) as [ServiceKey, number][];
-  if (entries.length === 0) return null;
-  return entries.reduce((a, e) => (e[1] < a[1] ? e : a));
-}
-
 function Barrios({ barrios }: { barrios: BarrioRecovery[] }) {
   const [all, setAll] = useState(false);
-  const sorted = [...barrios].sort((a, b) => (a.index ?? 101) - (b.index ?? 101));
+  const withData = barrios.filter(
+    (b) => b.index !== null || b.damage_reported > 0 || b.service_incidents > 0,
+  );
+  const sorted = [...withData].sort(
+    (a, b) => (a.index ?? 101) - (b.index ?? 101) || b.pending - a.pending,
+  );
   const rows = all ? sorted : sorted.slice(0, 10);
   return (
     <Card
       title="Recuperación por barrio"
       extra={
-        <button
-          type="button"
-          onClick={() => setAll(!all)}
-          className="rounded border border-linea px-3 py-1 text-sm"
-        >
-          {all ? "Ver los 10 más rezagados" : `Ver los ${barrios.length} barrios`}
-        </button>
+        withData.length > 10 ? (
+          <button
+            type="button"
+            onClick={() => setAll(!all)}
+            className="rounded border border-linea px-3 py-1 text-sm"
+          >
+            {all ? "Ver los 10 más rezagados" : `Ver los ${withData.length} barrios con datos`}
+          </button>
+        ) : undefined
       }
     >
       <p className="text-xs text-tinta-suave">
-        Ordenados del más rezagado al más recuperado. Semáforo NSR-10 por predio único; el servicio
-        más bajo y su fecha estimada vienen de las empresas de servicios.
+        Barrios con evaluaciones, familias censadas o reportes; del más rezagado al más recuperado.
+        Todo sale del registro de Dacora.
       </p>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[46rem] text-left text-sm">
-          <thead className="text-xs text-tinta-suave">
-            <tr className="border-b border-linea">
-              <th className="py-1 pr-3 font-normal">Barrio</th>
-              <th className="py-1 pr-3 text-right font-normal">Índice</th>
-              <th className="py-1 pr-3 font-normal">Verde · Amarillo · Rojo · Colapso</th>
-              <th className="py-1 pr-3 text-right font-normal">Pendientes</th>
-              <th className="py-1 pr-3 font-normal">Servicio más bajo</th>
-              <th className="py-1 font-normal">Fecha estimada</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-linea">
-            {rows.map((b) => {
-              const worst = peorServicio(b);
-              return (
+      {rows.length === 0 ? (
+        <p className="text-sm text-tinta-suave">Aún no hay registros por barrio.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[46rem] text-left text-sm">
+            <thead className="text-xs text-tinta-suave">
+              <tr className="border-b border-linea">
+                <th className="py-1 pr-3 font-normal">Barrio</th>
+                <th className="py-1 pr-3 text-right font-normal">Índice</th>
+                <th className="py-1 pr-3 font-normal">Verde · Amarillo · Rojo · Colapso</th>
+                <th className="py-1 pr-3 text-right font-normal">Manzanas con daño</th>
+                <th className="py-1 pr-3 text-right font-normal">Sin evaluar</th>
+                <th className="py-1 pr-3 text-right font-normal">Servicios caídos</th>
+                <th className="py-1 text-right font-normal">Familias</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-linea">
+              {rows.map((b) => (
                 <tr key={b.barrio}>
                   <td className="py-1.5 pr-3">
                     <span className="font-medium">{b.barrio}</span>{" "}
@@ -333,29 +367,26 @@ function Barrios({ barrios }: { barrios: BarrioRecovery[] }) {
                       </span>
                     </span>
                   </td>
+                  <td className="py-1.5 pr-3 text-right tabular-nums">
+                    {formatInt(b.damage_reported)}
+                  </td>
                   <td
                     className={`py-1.5 pr-3 text-right tabular-nums ${b.pending > 0 ? "font-semibold text-senal" : ""}`}
                   >
                     {formatInt(b.pending)}
                   </td>
-                  <td className="py-1.5 pr-3">
-                    {worst ? (
-                      <span className={worst[1] < 80 ? "font-semibold text-senal" : ""}>
-                        {SERVICE_LABEL[worst[0]]} {worst[1]} %
-                      </span>
-                    ) : (
-                      "—"
-                    )}
+                  <td
+                    className={`py-1.5 pr-3 text-right tabular-nums ${b.service_incidents > 0 ? "font-semibold text-senal" : ""}`}
+                  >
+                    {formatInt(b.service_incidents)}
                   </td>
-                  <td className="py-1.5 text-xs text-tinta-suave">
-                    {b.services_eta ? formatDate(b.services_eta) : "—"}
-                  </td>
+                  <td className="py-1.5 text-right tabular-nums">{formatInt(b.families)}</td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </Card>
   );
 }
@@ -382,6 +413,114 @@ function Barras({ items }: { items: { label: string; value: number; text: string
   );
 }
 
+// --------------------------------------------------------------------------- contratos
+
+function Contratos({ contracts }: { contracts: ContractRow[] }) {
+  if (contracts.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-1">
+      <p className="text-xs text-tinta-suave">
+        Contratos de mayor valor ligados al sismo (SECOP II). Cada uno enlaza a su proceso público.
+      </p>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[44rem] text-left text-sm">
+          <thead className="text-xs text-tinta-suave">
+            <tr className="border-b border-linea">
+              <th className="py-1 pr-3 font-normal">Firma</th>
+              <th className="py-1 pr-3 font-normal">Entidad y objeto</th>
+              <th className="py-1 pr-3 text-right font-normal">Contratado</th>
+              <th className="py-1 pr-3 text-right font-normal">Pagado (SECOP)</th>
+              <th className="py-1 font-normal">Estado</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-linea">
+            {contracts.map((c) => (
+              <tr key={c.id} className="align-top">
+                <td className="whitespace-nowrap py-1.5 pr-3 text-xs text-tinta-suave">
+                  {c.signed_at ? formatDate(c.signed_at) : "—"}
+                </td>
+                <td className="py-1.5 pr-3">
+                  <span className="block text-xs font-semibold">{c.entity}</span>
+                  <span className="line-clamp-2 text-xs text-tinta-suave" title={c.object}>
+                    {c.object}
+                  </span>
+                  {c.url && <Enlace href={c.url}>Proceso {c.id}</Enlace>}
+                </td>
+                <td className="whitespace-nowrap py-1.5 pr-3 text-right tabular-nums">
+                  {formatCop(c.value_cop)}
+                </td>
+                <td
+                  className={`whitespace-nowrap py-1.5 pr-3 text-right tabular-nums ${c.paid_cop === 0 ? "text-senal" : ""}`}
+                >
+                  {c.paid_cop === 0 ? "sin pagos" : formatCop(c.paid_cop)}
+                </td>
+                <td className="py-1.5 text-xs">{c.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// --------------------------------------------------------------------------- respaldo
+
+function Respaldo({ sources }: { sources: SourceInfo[] }) {
+  return (
+    <Card title="Respaldo de las cifras">
+      <p className="text-xs text-tinta-suave">
+        De dónde sale cada cifra. Las fuentes públicas se guardan como copia fechada con su huella
+        SHA-256 (funciona sin internet y cualquiera puede verificarla); lo que aún no tiene acceso
+        queda nombrado, sin números estimados.
+      </p>
+      <ul className="flex flex-col divide-y divide-linea">
+        {sources.map((s) => (
+          <li key={s.key} className="flex flex-col gap-0.5 py-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold">{s.title}</span>
+              <span
+                className={`rounded-sm border px-1.5 text-[11px] font-bold ${
+                  s.status === "conectada"
+                    ? "border-verificado text-verificado"
+                    : "border-dashed border-tinta-suave text-tinta-suave"
+                }`}
+              >
+                {SOURCE_STATUS[s.status]}
+              </span>
+              {s.verified === false && (
+                <span className="rounded-sm border border-senal px-1.5 text-[11px] font-bold text-senal">
+                  Huella no coincide
+                </span>
+              )}
+              <span className="ml-auto text-xs text-tinta-suave">Alimenta: {s.feeds}</span>
+            </div>
+            <span className="text-xs text-tinta-suave">
+              {s.source}
+              {s.fetched_at && ` · consultado ${formatDateTime(s.fetched_at)}`}
+              {s.record_count !== null &&
+                s.record_count !== undefined &&
+                ` · ${formatInt(s.record_count)} registros`}
+              {s.license && ` · licencia ${s.license}`}
+              {s.attribution && ` · ${s.attribution}`}
+            </span>
+            {(s.sha256 || s.query_url) && (
+              <span className="flex flex-wrap items-center gap-x-3 text-xs text-tinta-suave">
+                {s.sha256 && (
+                  <span className="font-mono" title={s.sha256}>
+                    SHA-256 {s.sha256.slice(0, 16)}…{s.verified ? " ✓ íntegra" : ""}
+                  </span>
+                )}
+                {s.query_url && <Enlace href={s.query_url}>Consulta original</Enlace>}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
 // --------------------------------------------------------------------------- ciclo económico
 
 function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
@@ -391,12 +530,13 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
     <div className="flex flex-col gap-4">
       <Card title="Línea de tiempo">
         <p className="text-xs text-tinta-suave">
-          Cada etapa con su ventana de días y su semáforo: a tiempo, con retraso o estancada según
-          el avance esperado para el día de hoy.
+          Cada etapa con su ventana de días y su semáforo según el avance esperado para hoy. Una
+          etapa sin fuente para medir su avance no recibe semáforo.
         </p>
         <div className="relative flex flex-col gap-3">
           {stages.map((s) => {
             const st = STAGE_STATUS[s.status];
+            const sinFuente = s.status === "sin_fuente";
             return (
               <div key={s.number} className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-x-2 text-sm">
@@ -406,10 +546,12 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
                   <span className="relative z-10 ml-auto flex items-center gap-1.5 bg-white pl-1 text-xs">
                     <span
                       aria-hidden
-                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      className={`inline-block h-2.5 w-2.5 rounded-full ${sinFuente ? "border border-dashed border-tinta-suave" : ""}`}
                       style={{ background: st.hex }}
                     />
-                    <span className="font-semibold">{st.label}</span>
+                    <span className={sinFuente ? "text-tinta-suave" : "font-semibold"}>
+                      {st.label}
+                    </span>
                     {s.progress_pct !== null && s.progress_pct !== undefined && (
                       <span className="text-tinta-suave">
                         · avance {formatPercent(s.progress_pct, 0)}
@@ -419,11 +561,11 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
                 </div>
                 <span className="relative h-3 rounded-sm bg-linea/60">
                   <span
-                    className="absolute top-0 h-full rounded-sm"
+                    className={`absolute top-0 h-full rounded-sm ${sinFuente ? "border border-dashed border-tinta-suave" : ""}`}
                     style={{
                       left: pos(s.start_day),
                       width: `calc(${pos(s.end_day)} - ${pos(s.start_day)})`,
-                      background: st.hex,
+                      background: sinFuente ? "transparent" : st.hex,
                     }}
                   />
                 </span>
@@ -457,7 +599,7 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
               <span className="flex items-center gap-1.5 text-sm">
                 <span
                   aria-hidden
-                  className="inline-block h-3 w-3 rounded-full"
+                  className={`inline-block h-3 w-3 rounded-full ${s.status === "sin_fuente" ? "border border-dashed border-tinta-suave" : ""}`}
                   style={{ background: st.hex }}
                 />
                 <span className="font-semibold">{st.label}</span>
@@ -465,6 +607,11 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
             }
           >
             <p className="font-display text-base italic text-tinta-suave">{s.question}</p>
+            {s.progress_basis && s.progress_pct !== null && s.progress_pct !== undefined && (
+              <p className="text-xs text-tinta-suave">
+                Avance {formatPercent(s.progress_pct, 1)}: {s.progress_basis}.
+              </p>
+            )}
             <Figuras figures={s.figures} cols={s.figures.length >= 4 ? 4 : 3} />
           </Card>
         );
@@ -512,10 +659,10 @@ export function TableroRecuperacion() {
     DashIndicator
   >;
   const families = ind[1].figures.find((f) => f.key === "familias_unicas")?.value ?? 0;
-  const funnel = ind[10].figures.filter((f) =>
-    ["comprometido", "contratado", "pagado", "verificado"].includes(f.key),
+  const money = ind[10].figures.filter((f) =>
+    ["contratado", "facturado", "pagado"].includes(f.key),
   );
-  const funnelBase = funnel[0]?.value ?? 0;
+  const moneyBase = money[0]?.value ?? 0;
 
   return (
     <div className="flex flex-col gap-5">
@@ -532,10 +679,26 @@ export function TableroRecuperacion() {
           </p>
         </div>
         <div>
-          <p className="text-sm text-white/75">Días desde el sismo del 10 ago 2026</p>
+          <p className="text-sm text-white/75">Días desde el sismo</p>
           <p className="mt-1 font-display text-5xl font-semibold leading-none tabular-nums">
             {formatInt(data.day)}
           </p>
+          {data.event_label && (
+            <p className="mt-1 text-xs text-white/70">
+              {data.event_url ? (
+                <a
+                  href={data.event_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-white/40 underline-offset-2"
+                >
+                  {data.event_label} · USGS ↗
+                </a>
+              ) : (
+                data.event_label
+              )}
+            </p>
+          )}
         </div>
         <div>
           <p className="text-sm text-white/75">Familias damnificadas únicas</p>
@@ -544,8 +707,9 @@ export function TableroRecuperacion() {
           </p>
         </div>
         <p className="flex flex-wrap items-center gap-2 text-xs text-white/70 sm:col-span-3">
-          <EtiquetaSimulado sobreOscuro /> Corte {formatDateTime(data.cutoff_at)} · predios únicos,
-          no visitas
+          {DEMO_MODE && <EtiquetaSimulado sobreOscuro />}
+          Corte {formatDateTime(data.cutoff_at)} · predios únicos, no visitas · sin cifras
+          inventadas: ver &ldquo;Respaldo de las cifras&rdquo;
         </p>
       </section>
 
@@ -553,13 +717,13 @@ export function TableroRecuperacion() {
 
       <h2 className="font-display text-xl font-semibold">Encabezado</h2>
       <Indicador ind={ind[1]} cols={3} />
-      <Indicador ind={ind[2]} cols={3} />
+      <Indicador ind={ind[2]} />
       <Indicador ind={ind[3]} />
       <Indicador ind={ind[4]} cols={2}>
         <Componentes c={data.index_components} />
         <CurvaIndice points={data.index_curve} day={data.day} />
       </Indicador>
-      <Indicador ind={ind[5]} />
+      <Indicador ind={ind[5]} cols={4} />
       <Barrios barrios={data.barrios} />
 
       <h2 className="font-display text-xl font-semibold">Operación</h2>
@@ -581,51 +745,29 @@ export function TableroRecuperacion() {
       </Indicador>
 
       <h2 className="font-display text-xl font-semibold">Economía</h2>
-      <Indicador ind={ind[9]}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="text-xs text-tinta-suave">
-              <tr className="border-b border-linea">
-                <th className="py-1 pr-3 font-normal">Comuna</th>
-                <th className="py-1 pr-3 text-right font-normal">Negocios reabiertos</th>
-                <th className="py-1 text-right font-normal">Empleos recuperados</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-linea">
-              {data.economy.map((e) => (
-                <tr key={e.comuna}>
-                  <td className="py-1.5 pr-3">{e.comuna}</td>
-                  <td className="py-1.5 pr-3 text-right tabular-nums">
-                    {formatInt(e.businesses_reopened)} de {formatInt(e.businesses_closed)}
-                  </td>
-                  <td className="py-1.5 text-right tabular-nums">
-                    {formatInt(e.jobs_recovered)} de {formatInt(e.jobs_lost)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Indicador>
-      <Indicador ind={ind[10]}>
-        <div className="flex flex-col gap-1">
-          <p className="text-xs text-tinta-suave">
-            Embudo: comprometido → contratado → pagado → resultado verificado
-          </p>
-          <Barras
-            items={funnel.map((f) => ({
-              label: f.label,
-              value: f.value ?? 0,
-              text: funnelBase
-                ? `${formatPercent(((f.value ?? 0) / funnelBase) * 100, 0)} del comprometido`
-                : "—",
-            }))}
-          />
-        </div>
+      <Indicador ind={ind[9]} cols={3} />
+      <Indicador ind={ind[10]} cols={3}>
+        {moneyBase > 0 && (
+          <div className="flex flex-col gap-1">
+            <p className="text-xs text-tinta-suave">
+              Embudo con datos de SECOP II: contratado → facturado → pagado registrado
+            </p>
+            <Barras
+              items={money.map((f) => ({
+                label: f.label,
+                value: f.value ?? 0,
+                text: `${formatCop(f.value ?? 0)} · ${formatPercent(((f.value ?? 0) / moneyBase) * 100, 1)}`,
+              }))}
+            />
+          </div>
+        )}
+        <Contratos contracts={data.contracts} />
       </Indicador>
 
       <h2 className="font-display text-xl font-semibold">Ciclo económico de la recuperación</h2>
       <Ciclo stages={data.stages} day={data.day} />
+
+      <Respaldo sources={data.sources} />
     </div>
   );
 }

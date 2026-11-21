@@ -3,6 +3,8 @@
  * Tablero situacional del PMU. Solo en el navegador: usa sessionStorage, SSE y MapLibre.
  * specs/002: despacho y recorridos (US1), bandeja de alertas y alertas vigentes (US2) y capa de
  * efectos en cascada (US3). El COE usa el mismo tablero y además aprueba alertas.
+ * Alerta masiva: el tablero trabaja por sesión (operación ordinaria o una alerta masiva de toda
+ * la ciudad); triaje, mapa, cascada y zonas muestran solo los puntos de la sesión elegida.
  */
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
@@ -22,6 +24,7 @@ import {
 import { EditorAlerta } from "@/components/EditorAlerta";
 import { MatrizTriaje } from "@/components/MatrizTriaje";
 import { PanelZonas } from "@/components/PanelZonas";
+import { SesionAlertaMasiva } from "@/components/SesionAlertaMasiva";
 import {
   circlePreview,
   draftFromIncident,
@@ -34,6 +37,7 @@ import { resourcesToGeoJSON, trailsToGeoJSON } from "@/lib/dispatch";
 import { useOfflineData } from "@/lib/offline";
 import type { AlertOut } from "@/lib/labels";
 import { useLiveIncidents } from "@/lib/live";
+import { inSession, ORDINARY, useMassAlerts, type SessionId } from "@/lib/massAlerts";
 import { clearSession, getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
 import { zonesToGeoJSON, type ZoneSensorOut } from "@/lib/zones";
@@ -153,6 +157,10 @@ const MODE_LABEL = {
   respaldo: { text: "Modo de respaldo (consulta cada 3 s)", cls: "bg-[#ffd27a] text-tinta" },
 } as const;
 
+function initialSession(): SessionId {
+  return new URLSearchParams(window.location.search).get("sesion") || ORDINARY;
+}
+
 function initialSelection(): string | null {
   return new URLSearchParams(window.location.search).get("incidente");
 }
@@ -170,7 +178,19 @@ export default function TableroPmu() {
   const token = session?.role === "pmu" ? session.token : null;
   const live = useLiveIncidents(token);
   const kpis = kpiMap(useKpi(live.kpiRevision + Math.floor(live.revision / 10)));
-  const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
+  // Sesión: operación ordinaria, incidentes sin asignar o una alerta masiva (?sesion= en la URL).
+  const massAlerts = useMassAlerts(Boolean(token), live.massAlertRevision);
+  const [sessionId, setSessionId] = useState<SessionId>(initialSession);
+  const allIncidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
+  const incidents = useMemo(
+    () => allIncidents.filter((i) => inSession(i, sessionId)),
+    [allIncidents, sessionId],
+  );
+  const sessionIncidentIds = useMemo(() => new Set(incidents.map((i) => i.id)), [incidents]);
+  const sessionManzanas = useMemo(
+    () => new Set(incidents.map((i) => i.manzana_id).filter((m): m is string => Boolean(m))),
+    [incidents],
+  );
   const resourcesFc = useMemo(() => resourcesToGeoJSON(live.resources.values()), [live.resources]);
   const trailsFc = useMemo(() => trailsToGeoJSON(live.trails), [live.trails]);
   // Solo el COE aprueba alertas oficiales (EMRE tarea 5.5); el operador del PMU las redacta.
@@ -186,10 +206,32 @@ export default function TableroPmu() {
     async () => (await api.GET("/api/v1/map/cascade")).data as CascadeLayer | undefined,
     { enabled: Boolean(token) && cascadeOn, refreshKey: live.cascadeRevision },
   );
-  const cascade = cascadeData.data;
+  // En una alerta masiva, la cascada se limita a las manzanas con incidentes de la alerta.
+  const cascade = useMemo<CascadeLayer | null>(() => {
+    const layer = cascadeData.data;
+    if (!layer || sessionId === ORDINARY) return layer ?? null;
+    return {
+      ...layer,
+      features: layer.features.filter((f) =>
+        sessionManzanas.has(String(f.properties?.manzana_id ?? "")),
+      ),
+    };
+  }, [cascadeData.data, sessionId, sessionManzanas]);
   const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
   // Sensor de zonas inseguras (patente NC2025/0015763, SIMULADO).
-  const [zoneSensors, setZoneSensors] = useState<ZoneSensorOut[]>([]);
+  const [allZoneSensors, setZoneSensors] = useState<ZoneSensorOut[]>([]);
+  // Zonas de la sesión: en una alerta masiva, solo los sensores instalados en sus incidentes.
+  const zoneSensors = useMemo(
+    () =>
+      allZoneSensors.filter((s) =>
+        sessionId === ORDINARY
+          ? !s.incident_id ||
+            sessionIncidentIds.has(s.incident_id) ||
+            !allIncidents.some((i) => i.id === s.incident_id)
+          : Boolean(s.incident_id && sessionIncidentIds.has(s.incident_id)),
+      ),
+    [allZoneSensors, sessionId, sessionIncidentIds, allIncidents],
+  );
   const [zoneSel, setZoneSel] = useState<string | null>(null);
   const zonesFc = useMemo(() => zonesToGeoJSON(zoneSensors), [zoneSensors]);
   const zoneAlarms = zoneSensors.reduce((n, s) => n + s.open_alarms, 0);
@@ -281,17 +323,22 @@ export default function TableroPmu() {
   // Capa por manzana: como máximo una consulta cada 5 s mientras llegan reportes.
   useEffect(() => {
     const timer = setTimeout(() => {
-      api.GET("/api/v1/map/manzanas").then(({ data }) => {
-        if (data) setManzanas(data as unknown as FC);
-      });
+      api
+        .GET("/api/v1/map/manzanas", { params: { query: { sesion: sessionId } } })
+        .then(({ data }) => {
+          if (data) setManzanas(data as unknown as FC);
+        });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [live.revision]);
+  }, [live.revision, sessionId]);
 
-  function select(id: string | null) {
+  function select(id: string | null, sesion: SessionId = sessionId) {
     setSelectedId(id);
-    const url = id ? `?incidente=${id}` : window.location.pathname;
-    window.history.replaceState(null, "", url);
+    const params = new URLSearchParams();
+    if (sesion !== ORDINARY) params.set("sesion", sesion);
+    if (id) params.set("incidente", id);
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
   }
 
   if (!token) return null;
@@ -337,6 +384,9 @@ export default function TableroPmu() {
           <Link href="/" className="underline decoration-white/40 underline-offset-4">
             Inicio público
           </Link>
+          <Link href="/pmu/gestion/" className="underline decoration-white/40 underline-offset-4">
+            Gestión de incidentes
+          </Link>
           <Link href="/agencia/" className="underline decoration-white/40 underline-offset-4">
             Despachos por agencia
           </Link>
@@ -358,6 +408,19 @@ export default function TableroPmu() {
           </button>
         </nav>
       </header>
+
+      <SesionAlertaMasiva
+        items={massAlerts.items}
+        active={massAlerts.active}
+        unassignedCount={massAlerts.unassignedCount}
+        session={sessionId}
+        onSession={(s) => {
+          setSessionId(s);
+          select(null, s);
+          setZoneSel(null);
+          setCascadeSel(null);
+        }}
+      />
 
       <div className="px-4 pt-2">
         <AvisoAlerta alerts={alertsFromGeoJSON(activeAlerts)} />

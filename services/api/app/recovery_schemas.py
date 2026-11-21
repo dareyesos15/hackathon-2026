@@ -172,11 +172,15 @@ class RecoverySummary(BaseModel):
 # ---------------------------------------------------------------- tablero unificado
 
 DashUnit = Literal["conteo", "%", "dias", "cop", "mm", "magnitud"]
-FigureState = Literal["ok", "alerta", "neutral"]
+FigureState = Literal["ok", "alerta", "neutral", "sin_fuente"]
 
 
 class DashFigure(BaseModel):
-    """Cifra del tablero con nombre del diccionario de indicadores y trazabilidad."""
+    """Cifra del tablero con nombre del diccionario de indicadores y su respaldo.
+
+    `state = "sin_fuente"`: no hay fuente conectada; `value` es `None` y `note` dice qué entidad
+    o convenio la provee. Nunca se muestra un número inventado.
+    """
 
     key: str
     label: str
@@ -185,9 +189,11 @@ class DashFigure(BaseModel):
     source: str
     version: int
     cutoff_at: datetime
-    simulated: bool = True
+    simulated: bool = False
     target: str | None = None
     state: FigureState = "neutral"
+    source_url: str | None = None
+    note: str | None = None
 
 
 class Indicator(BaseModel):
@@ -219,17 +225,16 @@ class BarrioRecovery(BaseModel):
     amarillo: int
     rojo: int
     colapso: int
-    requested: int
-    pending: int
-    services: dict[str, int]
-    services_eta: date | None
+    damage_reported: int = Field(description="Manzanas con daño reportado por la ciudadanía")
+    pending: int = Field(description="De esas manzanas, las que aún no tienen evaluación")
+    service_incidents: int = Field(description="Incidentes abiertos de servicios caídos")
     families: int
 
 
 class CurvePoint(BaseModel):
+    at: datetime
     day: int
     value: float
-    simulated: bool
 
 
 class ChannelCount(BaseModel):
@@ -237,17 +242,35 @@ class ChannelCount(BaseModel):
     count: int
 
 
-class EconomyRow(BaseModel):
-    comuna: str
-    businesses_closed: int
-    businesses_reopened: int
-    jobs_lost: int
-    jobs_recovered: int
+class ContractRow(BaseModel):
+    """Contrato de SECOP II ligado al sismo (sin datos personales del contratista)."""
+
+    id: str
+    entity: str
+    signed_at: date | None
+    status: str
+    object: str
+    value_cop: float
+    invoiced_cop: float
+    paid_cop: float
+    url: str | None
 
 
-class FundingSource(BaseModel):
-    name: str
-    amount_cop: float
+class SourceInfo(BaseModel):
+    """Respaldo de una fuente: de dónde sale, cuándo se consultó y si la copia está íntegra."""
+
+    key: str
+    title: str
+    source: str
+    status: Literal["conectada", "sin_copia", "sin_convenio"]
+    query_url: str | None = None
+    license: str | None = None
+    attribution: str | None = None
+    fetched_at: datetime | None = None
+    record_count: int | None = None
+    sha256: str | None = None
+    verified: bool | None = None
+    feeds: str = Field(description="Indicadores que alimenta")
 
 
 class Stage(BaseModel):
@@ -256,15 +279,18 @@ class Stage(BaseModel):
     question: str
     start_day: int
     end_day: int
-    status: Literal["pendiente", "verde", "amarillo", "rojo"]
+    status: Literal["pendiente", "verde", "amarillo", "rojo", "sin_fuente"]
     progress_pct: float | None
+    progress_basis: str | None = Field(default=None, description="Cómo se mide el avance")
     figures: list[DashFigure]
 
 
 class RecoveryDashboard(BaseModel):
     cutoff_at: datetime
-    event_at: datetime
-    day: int = Field(description="Días desde el sismo")
+    event_at: datetime | None
+    event_label: str | None
+    event_url: str | None
+    day: int = Field(description="Días desde el sismo principal")
     index: float | None
     index_components: dict[str, float | None]
     needs: list[Need]
@@ -272,6 +298,6 @@ class RecoveryDashboard(BaseModel):
     barrios: list[BarrioRecovery]
     index_curve: list[CurvePoint]
     channels: list[ChannelCount]
-    economy: list[EconomyRow]
-    funding: list[FundingSource]
+    contracts: list[ContractRow]
+    sources: list[SourceInfo]
     stages: list[Stage]

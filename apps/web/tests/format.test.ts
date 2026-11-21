@@ -9,6 +9,7 @@ describe("formato es-CO", () => {
   });
   it("expresa pesos en millones o mil millones", () => {
     expect(formatCop(1_840_000_000_000)).toBe("$ 1.840 mil M");
+    expect(formatCop(25_754_151_714)).toBe("$ 25,8 mil M");
     expect(formatCop(250_000_000)).toBe("$ 250 M");
     expect(formatCop(90_000)).toBe("$ 90.000");
   });

@@ -31,6 +31,7 @@ from app.domain import (
     Channel,
     GeoPrecision,
     IncidentStatus,
+    MassAlertStatus,
     PlaceKind,
     ReportAction,
     ReportStatus,
@@ -38,7 +39,16 @@ from app.domain import (
     ZoneDetector,
     ZoneEventKind,
 )
-from app.models import Incident, Manzana, Place, Report, ReportEvent, ZoneSensor, ZoneSensorEvent
+from app.models import (
+    Incident,
+    Manzana,
+    MassAlert,
+    Place,
+    Report,
+    ReportEvent,
+    ZoneSensor,
+    ZoneSensorEvent,
+)
 
 DEDUP_LOCK_KEY = 0xDAC0A  # bloqueo asesor: agrupación serializada (research R10)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
@@ -228,6 +238,11 @@ async def process_report(
         incident = await session.get(Incident, match.incident_id)
         assert incident is not None
     else:
+        # Con alertas masivas activas, el incidente nuevo espera asignación manual del PMU/COE;
+        # sin ninguna, es de la operación ordinaria.
+        alerts_active = await session.scalar(
+            select(func.count(MassAlert.id)).where(MassAlert.status == MassAlertStatus.activa)
+        )
         incident = Incident(
             id=uuid.uuid4(),
             category=cls.category,
@@ -237,6 +252,7 @@ async def process_report(
             last_seen=occurred_at,
             status=IncidentStatus.abierto,
             geo_precision=loc.precision,
+            pending_assignment=bool(alerts_active),
             source=incoming.source,
         )
         session.add(incident)

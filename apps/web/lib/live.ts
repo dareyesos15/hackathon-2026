@@ -28,6 +28,8 @@ interface LiveState {
   cascadeRevision: number;
   /** Eventos o sensores nuevos de zonas inseguras (patente NC2025/0015763). */
   zoneRevision: number;
+  /** Alerta masiva activada, con progreso o resuelta. */
+  massAlertRevision: number;
 }
 
 interface ResourceMoved {
@@ -82,6 +84,7 @@ export function useLiveIncidents(token: string | null) {
     alertRevision: 0,
     cascadeRevision: 0,
     zoneRevision: 0,
+    massAlertRevision: 0,
   });
   const lastUpdated = useRef<string | null>(null);
 
@@ -158,6 +161,7 @@ export function useLiveIncidents(token: string | null) {
       alertRevision: p.alertRevision + 1,
       cascadeRevision: p.cascadeRevision + 1,
       zoneRevision: p.zoneRevision + 1,
+      massAlertRevision: p.massAlertRevision + 1,
     }));
   }, [replaceAll, refreshDispatchLayer]);
 
@@ -184,6 +188,7 @@ export function useLiveIncidents(token: string | null) {
         ...p,
         alertRevision: p.alertRevision + 1,
         zoneRevision: p.zoneRevision + 1,
+        massAlertRevision: p.massAlertRevision + 1,
       }));
     };
 
@@ -228,6 +233,19 @@ export function useLiveIncidents(token: string | null) {
       });
       source.addEventListener("cascade.invalidated", () => {
         setState((p) => ({ ...p, cascadeRevision: p.cascadeRevision + 1 }));
+      });
+      source.addEventListener("incidents.deleted", (e) => {
+        const { incident_ids } = JSON.parse((e as MessageEvent).data) as {
+          incident_ids: string[];
+        };
+        setState((p) => {
+          const next = new Map(p.incidents);
+          for (const id of incident_ids) next.delete(id);
+          return { ...p, incidents: next, revision: p.revision + 1 };
+        });
+      });
+      source.addEventListener("mass_alert.changed", () => {
+        setState((p) => ({ ...p, massAlertRevision: p.massAlertRevision + 1 }));
       });
       source.addEventListener("kpi.updated", () => {
         setState((p) => ({ ...p, kpiRevision: p.kpiRevision + 1 }));

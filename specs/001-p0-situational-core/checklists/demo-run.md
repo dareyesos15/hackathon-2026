@@ -22,4 +22,5 @@ falsos 97,4 % / 100 %, falsos positivos 0 %.
       frontend no hace peticiones externas: estilo de mapa local, sin fuentes web).
 - [ ] Probar el **modo avión en un celular real** contra `http://<IP>:8080/reportar/` con la página
       abierta.
-- [ ] Grabar el **video de respaldo** (T071) y anotar su ubicación en `docs/guion_demo.md`.
+- [x] GIF de respaldo del tablero y KPI (T071), ubicación en `docs/guion_demo.md`.
+- [ ] Video completo con el modo avión del celular.

@@ -180,7 +180,7 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 - [X] T068 [P] Escribir el guion de demo de 3–4 min (CLAUDE.md §10) para cualquier integrante en `docs/guion_demo.md`
 - [X] T069 Dejar ruff, black, mypy (`app/core`), eslint, prettier y typecheck en verde en `services/api/` y `apps/web/`
 - [X] T070 Ejecutar [quickstart.md](quickstart.md) completo desde `docker compose down -v`, primero con red y luego con Wi-Fi apagado, y registrar resultados en `specs/001-p0-situational-core/checklists/demo-run.md`
-- [ ] T071 Grabar video/GIF de respaldo de la demo y enlazarlo en `docs/guion_demo.md`
+- [X] T071 Grabar video/GIF de respaldo de la demo y enlazarlo en `docs/guion_demo.md`
 
 ---
 

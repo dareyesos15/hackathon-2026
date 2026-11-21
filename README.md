@@ -24,11 +24,15 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --
 |---|---|---|
 | Inicio público: mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
 | Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
-| Tablero del PMU (triaje, despacho, borradores de alerta, cascada) | http://localhost:8080/pmu/ | Operador PMU · `pmu-demo` |
-| Tablero + bandeja del COE (aprobar, rechazar y anular alertas) | http://localhost:8080/pmu/ | COE · `coe-demo` |
-| Despachos de una agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Agencia · `agencia-demo` |
-| Panel de KPI | http://localhost:8080/pmu/kpi/ | Operador PMU o Público · `publico-demo` |
+| Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
+| Despachos por agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
+| Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | Administrador · `admin-demo` |
+| Panel de KPI | http://localhost:8080/pmu/kpi/ | — (cualquiera) |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
+
+Roles de la interfaz: **Ciudadanía**, **Entidades y PMU** (PMU, COE y agencias en un solo rol;
+en la API usa el token `coe`, por eso puede aprobar alertas oficiales) y **Administrador**. Sin
+sesión, el inicio público consulta como `publico` (solo agregados).
 | API (OpenAPI) | http://localhost:8080/docs | — |
 
 Los tokens de demo están en [.env.example](.env.example); sin `.env`, Compose usa esos valores.

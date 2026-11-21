@@ -20,10 +20,10 @@ const NO_INCIDENTS: never[] = [];
 const noop = () => {};
 
 const LEYENDA = [
-  { color: "#fde68a", texto: "Pocos reportes" },
-  { color: "#fb923c", texto: "Varios reportes" },
-  { color: "#b91c1c", texto: "Alta concentración" },
-  { color: "#cbd5e1", texto: "Menos de 5 reportes (dato protegido)" },
+  { color: "#f9d5c6", texto: "Pocos reportes" },
+  { color: "#ee6a2c", texto: "Varios reportes" },
+  { color: "#a3121f", texto: "Alta concentración" },
+  { color: "#cfc6c4", texto: "Menos de 5 reportes (dato protegido)" },
 ];
 
 export default function MapaPublico() {
@@ -58,20 +58,21 @@ export default function MapaPublico() {
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-2">
-        <h1 className="text-lg font-bold">Dacora · Mapa público de afectación</h1>
-        <EtiquetaSimulado />
-        <span className="text-xs text-slate-500">
+      <header className="flex flex-wrap items-center gap-3 bg-sangre px-4 py-2 text-white">
+        <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
+        <span className="text-sm text-white/75">Mapa público de afectación</span>
+        <EtiquetaSimulado sobreOscuro />
+        <span className="text-xs text-white/70">
           Se actualiza cada 10 s
           {manzanas?.cutoff_at ? ` · corte ${formatDateTime(manzanas.cutoff_at)}` : ""}
         </span>
         <nav className="ml-auto flex gap-3 text-sm">
-          <Link href="/pmu/kpi/" className="text-slate-700 underline">
+          <Link href="/pmu/kpi/" className="underline decoration-white/40 underline-offset-4">
             Panel de KPI
           </Link>
           <button
             type="button"
-            className="text-slate-500"
+            className="text-white/75 hover:text-white"
             onClick={() => {
               clearSession();
               router.replace("/");
@@ -83,23 +84,24 @@ export default function MapaPublico() {
       </header>
 
       <main className="grid flex-1 grid-cols-1 gap-3 overflow-hidden p-4 lg:grid-cols-[1fr_300px]">
-        <div className="min-h-[420px] overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
           <Mapa
             incidents={NO_INCIDENTS}
             barrios={barrios}
             manzanas={manzanas}
             selectedId={null}
             onSelect={noop}
+            leyenda={false}
           />
         </div>
-        <aside className="flex flex-col gap-4 overflow-y-auto rounded-xl bg-white p-4 text-sm shadow-sm">
+        <aside className="flex flex-col gap-4 overflow-y-auto rounded-xl bg-white p-4 text-sm">
           <section>
             <h2 className="mb-2 font-semibold">Reportes por manzana</h2>
             <ul className="flex flex-col gap-1.5">
               {LEYENDA.map((l) => (
                 <li key={l.color} className="flex items-center gap-2">
                   <span
-                    className="inline-block h-3 w-5 rounded-sm border border-slate-300"
+                    className="inline-block h-3 w-5 rounded-sm border border-linea"
                     style={{ backgroundColor: l.color }}
                   />
                   {l.texto}
@@ -108,19 +110,19 @@ export default function MapaPublico() {
             </ul>
           </section>
           <section className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg bg-slate-50 p-2">
-              <p className="text-xs text-slate-500">Manzanas con reportes</p>
+            <div className="rounded-lg bg-papel p-2">
+              <p className="text-xs text-tinta-suave">Manzanas con reportes</p>
               <p className="text-xl font-bold tabular-nums">{features.length}</p>
             </div>
-            <div className="rounded-lg bg-slate-50 p-2">
-              <p className="text-xs text-slate-500">Barrios con reportes</p>
+            <div className="rounded-lg bg-papel p-2">
+              <p className="text-xs text-tinta-suave">Barrios con reportes</p>
               <p className="text-xl font-bold tabular-nums">{barriosAfectados}</p>
             </div>
-            <p className="col-span-2 text-xs text-slate-500">
+            <p className="col-span-2 text-xs text-tinta-suave">
               {visibles} manzanas con conteo publicable (k ≥ 5). Fuente: api · Dacora.
             </p>
           </section>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-tinta-suave">
             Este mapa muestra solo datos agregados: nunca nombres, teléfonos, direcciones exactas ni
             reportes individuales (Ley 1581 de 2012). Para reportar una emergencia, use el canal
             ciudadano o llame al 123. Geografía y datos SIMULADOS.

@@ -96,7 +96,7 @@ agencia y KPI.
 - [X] T029 [US1] Integrar `PanelDespacho` y la lista de despachos del incidente en `apps/web/components/DetalleIncidente.tsx`
 - [X] T030 [P] [US1] Agregar a `Mapa` las capas de recursos (color por estado) y recorridos (línea de puntos de paso por despacho activo) en `apps/web/components/Mapa.tsx`
 - [X] T031 [P] [US1] Mostrar el estado de despacho y destacar los incidentes `unattended` en la matriz de triaje en `apps/web/components/MatrizTriaje.tsx`
-- [ ] T032 [US1] Mostrar la cifra "Críticos sin despacho" (fuente y corte) y pasar recursos y recorridos al mapa en `apps/web/app/pmu/TableroPmu.tsx`
+- [X] T032 [US1] Mostrar la cifra "Críticos sin despacho" (fuente y corte) y pasar recursos y recorridos al mapa en `apps/web/app/pmu/TableroPmu.tsx`
 - [ ] T033 [P] [US1] Crear la pantalla de agencia: elegir agencia (`GET /agencies`), ver sus despachos en vivo y marcar llegada, finalizado o fuera de servicio con motivo, en `apps/web/app/agencia/page.tsx` y `apps/web/app/agencia/PanelAgencia.tsx`
 - [ ] T034 [P] [US1] Pruebas `vitest` de las etiquetas de estado de despacho y del cálculo de "listo para cerrar" en `apps/web/tests/dispatch.test.ts`
 

@@ -9,6 +9,7 @@ import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
 import { MatrizTriaje } from "@/components/MatrizTriaje";
 import { api } from "@/lib/api/client";
+import { resourcesToGeoJSON, trailsToGeoJSON } from "@/lib/dispatch";
 import { useLiveIncidents } from "@/lib/live";
 import { clearSession, getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
@@ -35,6 +36,8 @@ export default function TableroPmu() {
   const live = useLiveIncidents(token);
   const kpis = kpiMap(useKpi(live.kpiRevision + Math.floor(live.revision / 10)));
   const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
+  const resourcesFc = useMemo(() => resourcesToGeoJSON(live.resources.values()), [live.resources]);
+  const trailsFc = useMemo(() => trailsToGeoJSON(live.trails), [live.trails]);
 
   useEffect(() => {
     if (!token) router.replace("/");
@@ -96,7 +99,7 @@ export default function TableroPmu() {
         </nav>
       </header>
 
-      <section className="grid grid-cols-2 gap-2 px-4 py-2 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2 px-4 py-2 md:grid-cols-5">
         {received && (
           <Cifra
             etiqueta="Reportes recibidos"
@@ -129,6 +132,19 @@ export default function TableroPmu() {
           estado={critical > 0 ? "alerta" : "ok"}
           simulado
         />
+        {kpis.critical_without_dispatch && (
+          <Cifra
+            etiqueta="Críticos sin despacho"
+            valor={kpis.critical_without_dispatch.value ?? null}
+            unidad="conteo"
+            fuente={kpis.critical_without_dispatch.source}
+            version={kpis.critical_without_dispatch.version}
+            corte={kpis.critical_without_dispatch.cutoff_at}
+            meta="0"
+            estado={(kpis.critical_without_dispatch.value ?? 0) > 0 ? "alerta" : "ok"}
+            simulado
+          />
+        )}
         {kpis.duplicate_detection_rate && (
           <Cifra
             etiqueta="Duplicados detectados"
@@ -152,6 +168,8 @@ export default function TableroPmu() {
             manzanas={manzanas}
             selectedId={selectedId}
             onSelect={select}
+            resources={resourcesFc}
+            trails={trailsFc}
           />
         </div>
         <aside className="overflow-hidden">

@@ -2618,6 +2618,146 @@
         "title": "RainOut",
         "type": "object"
       },
+      "RainSourceIn": {
+        "properties": {
+          "source": {
+            "enum": [
+              "simulado",
+              "cdiac"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "title": "RainSourceIn",
+        "type": "object"
+      },
+      "RainSourceStatus": {
+        "description": "Fuente de lluvia de la cascada y estado del sondeo a CDIAC/SIMAC.",
+        "properties": {
+          "attribution": {
+            "title": "Attribution",
+            "type": "string"
+          },
+          "catalog_size": {
+            "title": "Catalog Size",
+            "type": "integer"
+          },
+          "effective": {
+            "enum": [
+              "simulado",
+              "cdiac",
+              "cdiac_respaldo"
+            ],
+            "title": "Effective",
+            "type": "string"
+          },
+          "last_attempt_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Attempt At"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_ok_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ok At"
+          },
+          "max_age_min": {
+            "title": "Max Age Min",
+            "type": "number"
+          },
+          "poll_interval_s": {
+            "title": "Poll Interval S",
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "simulado",
+              "cdiac"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "stations": {
+            "items": {
+              "$ref": "#/components/schemas/RainStationOut"
+            },
+            "title": "Stations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "source",
+          "effective",
+          "poll_interval_s",
+          "max_age_min",
+          "last_attempt_at",
+          "last_ok_at",
+          "last_error",
+          "stations",
+          "catalog_size",
+          "attribution"
+        ],
+        "title": "RainSourceStatus",
+        "type": "object"
+      },
+      "RainStationOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "last_data_at": {
+            "format": "date-time",
+            "title": "Last Data At",
+            "type": "string"
+          },
+          "mm_3h": {
+            "title": "Mm 3H",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "mm_3h",
+          "last_data_at"
+        ],
+        "title": "RainStationOut",
+        "type": "object"
+      },
       "RecipientOut": {
         "description": "Actor que debe recibir la información del incidente (EMRE, anexos I–VI).",
         "properties": {

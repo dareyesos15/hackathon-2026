@@ -1909,6 +1909,60 @@ export interface components {
             /** Station Code */
             station_code: string;
         };
+        /** RainSourceIn */
+        RainSourceIn: {
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "simulado" | "cdiac";
+        };
+        /**
+         * RainSourceStatus
+         * @description Fuente de lluvia de la cascada y estado del sondeo a CDIAC/SIMAC.
+         */
+        RainSourceStatus: {
+            /** Attribution */
+            attribution: string;
+            /** Catalog Size */
+            catalog_size: number;
+            /**
+             * Effective
+             * @enum {string}
+             */
+            effective: "simulado" | "cdiac" | "cdiac_respaldo";
+            /** Last Attempt At */
+            last_attempt_at: string | null;
+            /** Last Error */
+            last_error: string | null;
+            /** Last Ok At */
+            last_ok_at: string | null;
+            /** Max Age Min */
+            max_age_min: number;
+            /** Poll Interval S */
+            poll_interval_s: number;
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "simulado" | "cdiac";
+            /** Stations */
+            stations: components["schemas"]["RainStationOut"][];
+        };
+        /** RainStationOut */
+        RainStationOut: {
+            /** Code */
+            code: string;
+            /**
+             * Last Data At
+             * Format: date-time
+             */
+            last_data_at: string;
+            /** Mm 3H */
+            mm_3h: number;
+            /** Name */
+            name: string;
+        };
         /**
          * RecipientOut
          * @description Actor que debe recibir la información del incidente (EMRE, anexos I–VI).

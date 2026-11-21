@@ -703,6 +703,92 @@
         "title": "AlertType",
         "type": "string"
       },
+      "BarrioRecovery": {
+        "properties": {
+          "amarillo": {
+            "title": "Amarillo",
+            "type": "integer"
+          },
+          "barrio": {
+            "title": "Barrio",
+            "type": "string"
+          },
+          "colapso": {
+            "title": "Colapso",
+            "type": "integer"
+          },
+          "comuna": {
+            "title": "Comuna",
+            "type": "string"
+          },
+          "families": {
+            "title": "Families",
+            "type": "integer"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "pending": {
+            "title": "Pending",
+            "type": "integer"
+          },
+          "requested": {
+            "title": "Requested",
+            "type": "integer"
+          },
+          "rojo": {
+            "title": "Rojo",
+            "type": "integer"
+          },
+          "services": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Services",
+            "type": "object"
+          },
+          "services_eta": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services Eta"
+          },
+          "verde": {
+            "title": "Verde",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "barrio",
+          "comuna",
+          "index",
+          "verde",
+          "amarillo",
+          "rojo",
+          "colapso",
+          "requested",
+          "pending",
+          "services",
+          "services_eta",
+          "families"
+        ],
+        "title": "BarrioRecovery",
+        "type": "object"
+      },
       "BatchIn": {
         "properties": {
           "items": {
@@ -859,6 +945,24 @@
         "title": "Channel",
         "type": "string"
       },
+      "ChannelCount": {
+        "properties": {
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "channel",
+          "count"
+        ],
+        "title": "ChannelCount",
+        "type": "object"
+      },
       "CircleIn": {
         "properties": {
           "lat": {
@@ -888,6 +992,29 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "CurvePoint": {
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "integer"
+          },
+          "simulated": {
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day",
+          "value",
+          "simulated"
+        ],
+        "title": "CurvePoint",
+        "type": "object"
+      },
       "DamageLevel": {
         "enum": [
           "menor",
@@ -897,6 +1024,92 @@
         ],
         "title": "DamageLevel",
         "type": "string"
+      },
+      "DashFigure": {
+        "description": "Cifra del tablero con nombre del diccionario de indicadores y trazabilidad.",
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "state": {
+            "default": "neutral",
+            "enum": [
+              "ok",
+              "alerta",
+              "neutral"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "unit": {
+            "enum": [
+              "conteo",
+              "%",
+              "dias",
+              "cop",
+              "mm",
+              "magnitud"
+            ],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value",
+          "unit",
+          "source",
+          "version",
+          "cutoff_at"
+        ],
+        "title": "DashFigure",
+        "type": "object"
       },
       "DeliveryOut": {
         "properties": {
@@ -1334,6 +1547,39 @@
         "title": "DispatchSuggestion",
         "type": "object"
       },
+      "EconomyRow": {
+        "properties": {
+          "businesses_closed": {
+            "title": "Businesses Closed",
+            "type": "integer"
+          },
+          "businesses_reopened": {
+            "title": "Businesses Reopened",
+            "type": "integer"
+          },
+          "comuna": {
+            "title": "Comuna",
+            "type": "string"
+          },
+          "jobs_lost": {
+            "title": "Jobs Lost",
+            "type": "integer"
+          },
+          "jobs_recovered": {
+            "title": "Jobs Recovered",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "comuna",
+          "businesses_closed",
+          "businesses_reopened",
+          "jobs_lost",
+          "jobs_recovered"
+        ],
+        "title": "EconomyRow",
+        "type": "object"
+      },
       "EmreFunction": {
         "description": "Seis funciones de respuesta de la EMRE Manizales 2024.",
         "enum": [
@@ -1376,6 +1622,24 @@
           "value"
         ],
         "title": "Figure",
+        "type": "object"
+      },
+      "FundingSource": {
+        "properties": {
+          "amount_cop": {
+            "title": "Amount Cop",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "amount_cop"
+        ],
+        "title": "FundingSource",
         "type": "object"
       },
       "GeoPrecision": {
@@ -2189,6 +2453,55 @@
         "title": "IncidentSummary",
         "type": "object"
       },
+      "Indicator": {
+        "description": "Uno de los 10 indispensables (bloque encabezado, operación o economía).",
+        "properties": {
+          "block": {
+            "enum": [
+              "encabezado",
+              "operacion",
+              "economia"
+            ],
+            "title": "Block",
+            "type": "string"
+          },
+          "figures": {
+            "items": {
+              "$ref": "#/components/schemas/DashFigure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "number": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Number",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "number",
+          "key",
+          "title",
+          "block",
+          "source",
+          "figures"
+        ],
+        "title": "Indicator",
+        "type": "object"
+      },
       "InspectionColor": {
         "enum": [
           "verde",
@@ -2590,6 +2903,45 @@
         "title": "MetricUnit",
         "type": "string"
       },
+      "Need": {
+        "description": "Necesidad que hoy exige acción, derivada de los indicadores.",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "critica",
+              "alta",
+              "media"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "detail",
+          "severity",
+          "value"
+        ],
+        "title": "Need",
+        "type": "object"
+      },
       "PlanLineOut": {
         "properties": {
           "agency": {
@@ -2953,6 +3305,123 @@
         ],
         "title": "RecipientRole",
         "type": "string"
+      },
+      "RecoveryDashboard": {
+        "properties": {
+          "barrios": {
+            "items": {
+              "$ref": "#/components/schemas/BarrioRecovery"
+            },
+            "title": "Barrios",
+            "type": "array"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelCount"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "day": {
+            "description": "Días desde el sismo",
+            "title": "Day",
+            "type": "integer"
+          },
+          "economy": {
+            "items": {
+              "$ref": "#/components/schemas/EconomyRow"
+            },
+            "title": "Economy",
+            "type": "array"
+          },
+          "event_at": {
+            "format": "date-time",
+            "title": "Event At",
+            "type": "string"
+          },
+          "funding": {
+            "items": {
+              "$ref": "#/components/schemas/FundingSource"
+            },
+            "title": "Funding",
+            "type": "array"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "index_components": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Index Components",
+            "type": "object"
+          },
+          "index_curve": {
+            "items": {
+              "$ref": "#/components/schemas/CurvePoint"
+            },
+            "title": "Index Curve",
+            "type": "array"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/Indicator"
+            },
+            "title": "Indicators",
+            "type": "array"
+          },
+          "needs": {
+            "items": {
+              "$ref": "#/components/schemas/Need"
+            },
+            "title": "Needs",
+            "type": "array"
+          },
+          "stages": {
+            "items": {
+              "$ref": "#/components/schemas/Stage"
+            },
+            "title": "Stages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cutoff_at",
+          "event_at",
+          "day",
+          "index",
+          "index_components",
+          "needs",
+          "indicators",
+          "barrios",
+          "index_curve",
+          "channels",
+          "economy",
+          "funding",
+          "stages"
+        ],
+        "title": "RecoveryDashboard",
+        "type": "object"
       },
       "RecoverySummary": {
         "properties": {
@@ -3983,6 +4452,70 @@
           "items"
         ],
         "title": "SnapshotsIn",
+        "type": "object"
+      },
+      "Stage": {
+        "properties": {
+          "end_day": {
+            "title": "End Day",
+            "type": "integer"
+          },
+          "figures": {
+            "items": {
+              "$ref": "#/components/schemas/DashFigure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "progress_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Pct"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "start_day": {
+            "title": "Start Day",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pendiente",
+              "verde",
+              "amarillo",
+              "rojo"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "number",
+          "title",
+          "question",
+          "start_day",
+          "end_day",
+          "status",
+          "progress_pct",
+          "figures"
+        ],
+        "title": "Stage",
         "type": "object"
       },
       "TrackIn": {
@@ -6455,6 +6988,43 @@
           }
         ],
         "summary": "Post Aid",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/dashboard": {
+      "get": {
+        "description": "Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.",
+        "operationId": "dashboard_api_v1_recovery_dashboard_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryDashboard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Dashboard",
         "tags": [
           "recuperación"
         ]

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -166,3 +167,111 @@ class RecoverySummary(BaseModel):
     cutoff_at: datetime
     suppressed: bool
     figures: list[Figure]
+
+
+# ---------------------------------------------------------------- tablero unificado
+
+DashUnit = Literal["conteo", "%", "dias", "cop", "mm", "magnitud"]
+FigureState = Literal["ok", "alerta", "neutral"]
+
+
+class DashFigure(BaseModel):
+    """Cifra del tablero con nombre del diccionario de indicadores y trazabilidad."""
+
+    key: str
+    label: str
+    value: float | None
+    unit: DashUnit
+    source: str
+    version: int
+    cutoff_at: datetime
+    simulated: bool = True
+    target: str | None = None
+    state: FigureState = "neutral"
+
+
+class Indicator(BaseModel):
+    """Uno de los 10 indispensables (bloque encabezado, operación o economía)."""
+
+    number: int = Field(ge=1, le=10)
+    key: str
+    title: str
+    block: Literal["encabezado", "operacion", "economia"]
+    source: str
+    figures: list[DashFigure]
+
+
+class Need(BaseModel):
+    """Necesidad que hoy exige acción, derivada de los indicadores."""
+
+    key: str
+    title: str
+    detail: str
+    severity: Literal["critica", "alta", "media"]
+    value: int
+
+
+class BarrioRecovery(BaseModel):
+    barrio: str
+    comuna: str
+    index: float | None
+    verde: int
+    amarillo: int
+    rojo: int
+    colapso: int
+    requested: int
+    pending: int
+    services: dict[str, int]
+    services_eta: date | None
+    families: int
+
+
+class CurvePoint(BaseModel):
+    day: int
+    value: float
+    simulated: bool
+
+
+class ChannelCount(BaseModel):
+    channel: str
+    count: int
+
+
+class EconomyRow(BaseModel):
+    comuna: str
+    businesses_closed: int
+    businesses_reopened: int
+    jobs_lost: int
+    jobs_recovered: int
+
+
+class FundingSource(BaseModel):
+    name: str
+    amount_cop: float
+
+
+class Stage(BaseModel):
+    number: int
+    title: str
+    question: str
+    start_day: int
+    end_day: int
+    status: Literal["pendiente", "verde", "amarillo", "rojo"]
+    progress_pct: float | None
+    figures: list[DashFigure]
+
+
+class RecoveryDashboard(BaseModel):
+    cutoff_at: datetime
+    event_at: datetime
+    day: int = Field(description="Días desde el sismo")
+    index: float | None
+    index_components: dict[str, float | None]
+    needs: list[Need]
+    indicators: list[Indicator]
+    barrios: list[BarrioRecovery]
+    index_curve: list[CurvePoint]
+    channels: list[ChannelCount]
+    economy: list[EconomyRow]
+    funding: list[FundingSource]
+    stages: list[Stage]

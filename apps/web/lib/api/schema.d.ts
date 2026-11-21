@@ -550,6 +550,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recovery/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dashboard
+         * @description Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.
+         */
+        get: operations["dashboard_api_v1_recovery_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recovery/households": {
         parameters: {
             query?: never;
@@ -1242,6 +1262,35 @@ export interface components {
          * @enum {string}
          */
         AlertType: "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
+        /** BarrioRecovery */
+        BarrioRecovery: {
+            /** Amarillo */
+            amarillo: number;
+            /** Barrio */
+            barrio: string;
+            /** Colapso */
+            colapso: number;
+            /** Comuna */
+            comuna: string;
+            /** Families */
+            families: number;
+            /** Index */
+            index: number | null;
+            /** Pending */
+            pending: number;
+            /** Requested */
+            requested: number;
+            /** Rojo */
+            rojo: number;
+            /** Services */
+            services: {
+                [key: string]: number;
+            };
+            /** Services Eta */
+            services_eta: string | null;
+            /** Verde */
+            verde: number;
+        };
         /** BatchIn */
         BatchIn: {
             /** Items */
@@ -1299,6 +1348,13 @@ export interface components {
          * @enum {string}
          */
         Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "entity" | "lora";
+        /** ChannelCount */
+        ChannelCount: {
+            /** Channel */
+            channel: string;
+            /** Count */
+            count: number;
+        };
         /** CircleIn */
         CircleIn: {
             /** Lat */
@@ -1308,11 +1364,59 @@ export interface components {
             /** Radius M */
             radius_m: number;
         };
+        /** CurvePoint */
+        CurvePoint: {
+            /** Day */
+            day: number;
+            /** Simulated */
+            simulated: boolean;
+            /** Value */
+            value: number;
+        };
         /**
          * DamageLevel
          * @enum {string}
          */
         DamageLevel: "menor" | "mediano_uso_restringido" | "mayor" | "colapso";
+        /**
+         * DashFigure
+         * @description Cifra del tablero con nombre del diccionario de indicadores y trazabilidad.
+         */
+        DashFigure: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /**
+             * Simulated
+             * @default true
+             */
+            simulated: boolean;
+            /** Source */
+            source: string;
+            /**
+             * State
+             * @default neutral
+             * @enum {string}
+             */
+            state: "ok" | "alerta" | "neutral";
+            /** Target */
+            target?: string | null;
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "conteo" | "%" | "dias" | "cop" | "mm" | "magnitud";
+            /** Value */
+            value: number | null;
+            /** Version */
+            version: number;
+        };
         /** DeliveryOut */
         DeliveryOut: {
             /**
@@ -1472,6 +1576,19 @@ export interface components {
             fallback_used: boolean;
             suggested_agency: components["schemas"]["AgencyRef"] | null;
         };
+        /** EconomyRow */
+        EconomyRow: {
+            /** Businesses Closed */
+            businesses_closed: number;
+            /** Businesses Reopened */
+            businesses_reopened: number;
+            /** Comuna */
+            comuna: string;
+            /** Jobs Lost */
+            jobs_lost: number;
+            /** Jobs Recovered */
+            jobs_recovered: number;
+        };
         /**
          * EmreFunction
          * @description Seis funciones de respuesta de la EMRE Manizales 2024.
@@ -1489,6 +1606,13 @@ export interface components {
             label: string;
             /** Value */
             value: number | null;
+        };
+        /** FundingSource */
+        FundingSource: {
+            /** Amount Cop */
+            amount_cop: number;
+            /** Name */
+            name: string;
         };
         /**
          * GeoPrecision
@@ -1797,6 +1921,27 @@ export interface components {
             updated_at: string;
         };
         /**
+         * Indicator
+         * @description Uno de los 10 indispensables (bloque encabezado, operación o economía).
+         */
+        Indicator: {
+            /**
+             * Block
+             * @enum {string}
+             */
+            block: "encabezado" | "operacion" | "economia";
+            /** Figures */
+            figures: components["schemas"]["DashFigure"][];
+            /** Key */
+            key: string;
+            /** Number */
+            number: number;
+            /** Source */
+            source: string;
+            /** Title */
+            title: string;
+        };
+        /**
          * InspectionColor
          * @enum {string}
          */
@@ -1940,6 +2085,25 @@ export interface components {
          * @enum {string}
          */
         MetricUnit: "%" | "conteo" | "min" | "ms";
+        /**
+         * Need
+         * @description Necesidad que hoy exige acción, derivada de los indicadores.
+         */
+        Need: {
+            /** Detail */
+            detail: string;
+            /** Key */
+            key: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "critica" | "alta" | "media";
+            /** Title */
+            title: string;
+            /** Value */
+            value: number;
+        };
         /** PlanLineOut */
         PlanLineOut: {
             agency: components["schemas"]["AgencyRef"];
@@ -2088,6 +2252,46 @@ export interface components {
          * @enum {string}
          */
         RecipientRole: "lider" | "apoyo" | "informada";
+        /** RecoveryDashboard */
+        RecoveryDashboard: {
+            /** Barrios */
+            barrios: components["schemas"]["BarrioRecovery"][];
+            /** Channels */
+            channels: components["schemas"]["ChannelCount"][];
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /**
+             * Day
+             * @description Días desde el sismo
+             */
+            day: number;
+            /** Economy */
+            economy: components["schemas"]["EconomyRow"][];
+            /**
+             * Event At
+             * Format: date-time
+             */
+            event_at: string;
+            /** Funding */
+            funding: components["schemas"]["FundingSource"][];
+            /** Index */
+            index: number | null;
+            /** Index Components */
+            index_components: {
+                [key: string]: number | null;
+            };
+            /** Index Curve */
+            index_curve: components["schemas"]["CurvePoint"][];
+            /** Indicators */
+            indicators: components["schemas"]["Indicator"][];
+            /** Needs */
+            needs: components["schemas"]["Need"][];
+            /** Stages */
+            stages: components["schemas"]["Stage"][];
+        };
         /** RecoverySummary */
         RecoverySummary: {
             /**
@@ -2458,6 +2662,28 @@ export interface components {
         SnapshotsIn: {
             /** Items */
             items: components["schemas"]["SnapshotIn"][];
+        };
+        /** Stage */
+        Stage: {
+            /** End Day */
+            end_day: number;
+            /** Figures */
+            figures: components["schemas"]["DashFigure"][];
+            /** Number */
+            number: number;
+            /** Progress Pct */
+            progress_pct: number | null;
+            /** Question */
+            question: string;
+            /** Start Day */
+            start_day: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pendiente" | "verde" | "amarillo" | "rojo";
+            /** Title */
+            title: string;
         };
         /** TrackIn */
         TrackIn: {
@@ -3862,6 +4088,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AidOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_api_v1_recovery_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoveryDashboard"];
                 };
             };
             /** @description Validation Error */

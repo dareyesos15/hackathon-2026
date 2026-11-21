@@ -440,7 +440,7 @@ async def dashboard(
                     "Lluvia en 3 h",
                     rain_mm,
                     "mm",
-                    target=f"umbral {threshold:g} mm",
+                    target=f"por debajo del umbral de {threshold:g} mm",
                     state="alerta" if rain_mm >= threshold else "ok",
                 ),
             ],

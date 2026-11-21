@@ -422,6 +422,32 @@ class RainOut(BaseModel):
     source: str
 
 
+class RainSourceIn(BaseModel):
+    source: Literal["simulado", "cdiac"]
+
+
+class RainStationOut(BaseModel):
+    code: str
+    name: str
+    mm_3h: float
+    last_data_at: datetime
+
+
+class RainSourceStatus(BaseModel):
+    """Fuente de lluvia de la cascada y estado del sondeo a CDIAC/SIMAC."""
+
+    source: Literal["simulado", "cdiac"]
+    effective: Literal["simulado", "cdiac", "cdiac_respaldo"]
+    poll_interval_s: float
+    max_age_min: float
+    last_attempt_at: datetime | None
+    last_ok_at: datetime | None
+    last_error: str | None
+    stations: list[RainStationOut]
+    catalog_size: int
+    attribution: str
+
+
 class CascadeFactor(BaseModel):
     puntos: float
     max: float

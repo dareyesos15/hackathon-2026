@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import text
 
+from app.adapters.rain import rain_feed
 from app.adapters.tracks import SimulatedRfidFeed
 from app.adapters.zone_sensor import SimulatedZoneSensorFeed
 from app.config import get_settings
@@ -70,8 +71,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         zone_task = asyncio.create_task(
             SimulatedZoneSensorFeed(SessionLocal, process, tick_s=settings.zone_tick_s).run()
         )
+    rain_task = asyncio.create_task(rain_feed.run(SessionLocal, cascade.rain_changed))
+    log.info("Fuente de lluvia de la cascada: %s", rain_feed.source.value)
     yield
-    for task in (feed_task, zone_task):
+    for task in (feed_task, zone_task, rain_task):
         if task is not None:
             task.cancel()
 

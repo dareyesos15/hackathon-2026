@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { formatInt, formatTime } from "@/lib/format";
 import {
   CATEGORY_LABEL,
+  INCIDENT_DISPATCH_LABEL,
   STATUS_LABEL,
   TRIAGE_COLOR,
   TRIAGE_LABEL,
@@ -136,7 +137,7 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
               onClick={() => onSelect(i.id)}
               className={`flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${
                 i.id === selectedId ? "bg-slate-100" : ""
-              }`}
+              } ${i.unattended ? "border-l-4 border-red-600 bg-red-50" : ""}`}
             >
               <span
                 className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full"
@@ -162,6 +163,18 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
                   {TRUST_LABEL[i.trust_label]} · {i.trust_score}
                 </span>
                 <span className="text-[10px] text-slate-500">{STATUS_LABEL[i.status]}</span>
+                {i.dispatch_status !== "sin_despacho" ? (
+                  <span className="rounded bg-violet-100 px-1.5 text-[10px] font-semibold text-violet-800">
+                    {INCIDENT_DISPATCH_LABEL[i.dispatch_status]}
+                    {i.assigned_agency ? ` · ${i.assigned_agency}` : ""}
+                  </span>
+                ) : (
+                  i.unattended && (
+                    <span className="rounded bg-red-600 px-1.5 text-[10px] font-bold text-white">
+                      Sin despacho
+                    </span>
+                  )
+                )}
               </span>
             </button>
           </li>

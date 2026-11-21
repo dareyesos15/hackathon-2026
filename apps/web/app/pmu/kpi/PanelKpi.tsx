@@ -117,8 +117,8 @@ export default function PanelKpi() {
               : "—"}
           </p>
           <p className="mt-1 text-xs text-white/70">
-En el sismo real, las cifras de viviendas afectadas cambiaron durante días (1.449 →
-            2.700 → 1.512, 13–15 ago). Fuente: {mapLatency?.source ?? "evaluate_kpis.py"}.
+            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
+            {mapLatency?.source ?? "evaluate_kpis.py"}.
           </p>
         </div>
       </section>

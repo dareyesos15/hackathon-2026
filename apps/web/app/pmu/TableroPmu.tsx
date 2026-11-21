@@ -21,6 +21,7 @@ import {
 } from "@/components/CapaCascada";
 import { EditorAlerta } from "@/components/EditorAlerta";
 import { MatrizTriaje } from "@/components/MatrizTriaje";
+import { PanelZonas } from "@/components/PanelZonas";
 import {
   circlePreview,
   draftFromIncident,
@@ -35,14 +36,16 @@ import type { AlertOut } from "@/lib/labels";
 import { useLiveIncidents } from "@/lib/live";
 import { clearSession, getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
+import { zonesToGeoJSON, type ZoneSensorOut } from "@/lib/zones";
 
 type FC = GeoJSON.FeatureCollection;
-type Tab = "triaje" | "alertas" | "cascada";
+type Tab = "triaje" | "alertas" | "cascada" | "zonas";
 
 const TAB_LABEL: Record<Tab, string> = {
   triaje: "Triaje",
   alertas: "Alertas",
   cascada: "Cascada",
+  zonas: "Zonas",
 };
 
 const MODE_LABEL = {
@@ -86,6 +89,11 @@ export default function TableroPmu() {
   );
   const cascade = cascadeData.data;
   const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
+  // Sensor de zonas inseguras (patente NC2025/0015763, SIMULADO).
+  const [zoneSensors, setZoneSensors] = useState<ZoneSensorOut[]>([]);
+  const [zoneSel, setZoneSel] = useState<string | null>(null);
+  const zonesFc = useMemo(() => zonesToGeoJSON(zoneSensors), [zoneSensors]);
+  const zoneAlarms = zoneSensors.reduce((n, s) => n + s.open_alarms, 0);
   const barrioNames = useMemo(
     () => ((barrios as (FC & { names?: string[] }) | null)?.names ?? []).slice(),
     [barrios],
@@ -143,6 +151,17 @@ export default function TableroPmu() {
     setEditing(null);
     setPicking(false);
   }
+
+  useEffect(() => {
+    if (!token) return;
+    let active = true;
+    api.GET("/api/v1/sensors/zones").then(({ data }) => {
+      if (active && data) setZoneSensors(data.items);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, live.zoneRevision]);
 
   useEffect(() => {
     if (!token) router.replace("/ingresar/");
@@ -305,6 +324,12 @@ export default function TableroPmu() {
             alertAreas={alertAreasFc}
             cascade={cascadeOn ? cascade : null}
             onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascade))}
+            zones={zonesFc}
+            onZoneSelect={(id) => {
+              setZoneSel(id);
+              setTab("zonas");
+              select(null);
+            }}
             onMapClick={
               picking && draft
                 ? (lat, lon) => {
@@ -334,6 +359,11 @@ export default function TableroPmu() {
                 }`}
               >
                 {TAB_LABEL[t]}
+                {t === "zonas" && zoneAlarms > 0 && (
+                  <span className="ml-1 rounded bg-senal px-1 text-[10px] text-white">
+                    {zoneAlarms}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -372,6 +402,19 @@ export default function TableroPmu() {
                   onNew={() => openEditor(emptyDraft())}
                 />
               ))}
+            {tab === "zonas" && (
+              <PanelZonas
+                sensors={zoneSensors}
+                revision={live.zoneRevision}
+                incidents={incidents}
+                selectedSensorId={zoneSel}
+                onSelectSensor={setZoneSel}
+                onOpenIncident={(id) => {
+                  setTab("triaje");
+                  select(id);
+                }}
+              />
+            )}
             {tab === "cascada" && (
               <CapaCascada
                 enabled={cascadeOn}

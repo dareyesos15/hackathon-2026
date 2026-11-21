@@ -6,6 +6,7 @@ Reglas puras arriba; consultas a PostGIS abajo.
 
 from __future__ import annotations
 
+import re
 import uuid
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
@@ -19,6 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import DedupSettings
 from app.core.geo import haversine_m
 from app.core.similarity import SimilarityProvider
+from app.core.text import normalize
 from app.domain import (
     TRIAGE_RANK,
     Category,
@@ -57,6 +59,26 @@ PRECISION_RANK: dict[GeoPrecision, int] = {
 }
 # Sin ubicación, solo se agrupa por texto casi idéntico (cadenas reenviadas).
 NO_GEO_THRESHOLD = 0.5
+
+_ADDRESS_RE = re.compile(
+    r"(?<![a-z0-9])(calle|carrera|avenida [a-z]+|diagonal|transversal) (\d{1,3}[a-z]?)(?![0-9])"
+)
+
+
+def address_signature(text: str) -> frozenset[str]:
+    """Cruce de vías mencionado ("calle 43 con carrera 23" → {calle 43, carrera 23})."""
+    return frozenset(f"{kind} {num}" for kind, num in _ADDRESS_RE.findall(normalize(text)))
+
+
+def address_relation(report_text: str, candidate_texts: Sequence[str]) -> str:
+    """'same' si coincide el cruce, 'different' si todos los cruces conocidos difieren."""
+    mine = address_signature(report_text)
+    if len(mine) < 2:
+        return "unknown"
+    theirs = [sig for sig in (address_signature(t) for t in candidate_texts) if len(sig) >= 2]
+    if not theirs:
+        return "unknown"
+    return "same" if any(sig == mine for sig in theirs) else "different"
 
 
 def compatible_group(category: Category) -> frozenset[Category]:
@@ -126,6 +148,9 @@ def choose_incident(
             continue
         if not (cand.first_seen - window <= report.occurred_at <= cand.last_seen + window):
             continue
+        relation = address_relation(report.text, cand.texts)
+        if relation == "different":
+            continue
         report_has_point = report.lat is not None and report.lon is not None
         cand_has_point = cand.lat is not None and cand.lon is not None
         distance: float | None = None
@@ -133,9 +158,15 @@ def choose_incident(
             assert report.lat is not None and report.lon is not None
             assert cand.lat is not None and cand.lon is not None
             distance = haversine_m(report.lat, report.lon, cand.lat, cand.lon)
-            if distance > _max_distance(report.precision, cand.precision, cfg):
+            if relation == "same":
+                # Mismo cruce de vías: la ubicación por barrio o vía es aproximada.
+                if distance > cfg.address_match_distance_m:
+                    continue
+                threshold = 0.0
+            elif distance > _max_distance(report.precision, cand.precision, cfg):
                 continue
-            threshold = _threshold(report.precision, cand.precision, cfg)
+            else:
+                threshold = _threshold(report.precision, cand.precision, cfg)
         elif not report_has_point and not cand_has_point:
             threshold = NO_GEO_THRESHOLD
         else:
@@ -201,7 +232,7 @@ async def find_candidates(
             func.ST_DWithin(
                 func.Geography(Incident.centroid),
                 func.Geography(func.ST_SetSRID(func.ST_MakePoint(report.lon, report.lat), 4326)),
-                cfg.max_distance_barrio_m,
+                max(cfg.max_distance_barrio_m, cfg.address_match_distance_m),
             )
         )
     else:

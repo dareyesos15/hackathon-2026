@@ -17,6 +17,8 @@ class DedupSettings(BaseModel):
     max_distance_m: float = 250.0
     max_distance_barrio_m: float = 600.0
     window_hours: float = 3.0
+    # Mismo cruce de vías en el texto: tolera la imprecisión de ubicar por barrio o vía.
+    address_match_distance_m: float = 1500.0
     # Umbrales de similitud para TF-IDF de caracteres (research R1).
     similarity_threshold: float = 0.15
     similarity_threshold_exact: float = 0.10

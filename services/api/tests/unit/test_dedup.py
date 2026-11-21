@@ -7,6 +7,7 @@ from app.config import DedupSettings
 from app.core.dedup import (
     Candidate,
     ReportCtx,
+    address_signature,
     choose_incident,
     compatible,
     independent_sources,
@@ -113,3 +114,30 @@ def test_weighted_centroid_prefers_gps() -> None:
         [(5.0, -75.0, GeoPrecision.gps), (5.1, -75.1, GeoPrecision.barrio)]
     )
     assert abs(lat - 5.0) < abs(lat - 5.1)
+
+
+def test_address_signature() -> None:
+    sig = address_signature("grietas en la cra 23 con calle 43, Centro")
+    assert sig == frozenset({"carrera 23", "calle 43"})
+
+
+def test_same_intersection_joins_despite_coarse_location() -> None:
+    cand = candidate(
+        category=Category.heridos,
+        lat=5.0668,
+        lon=-75.5142,
+        texts=["hay 4 heridos en la calle 30 con carrera 24, Centro, necesitamos ambulancia"],
+    )
+    r = report(
+        category=Category.heridos,
+        lat=5.0689,
+        lon=-75.5174,
+        text="4 lesionados frente al edificio de la carrera 24 con calle 30",
+    )
+    assert choose_incident(r, [cand], SIM, CFG) is not None
+
+
+def test_different_intersection_never_joins() -> None:
+    cand = candidate(texts=["se cayo el edificio de la calle 30 con carrera 23, hay atrapados"])
+    r = report(text="se cayo el edificio de la calle 45 con carrera 23, hay atrapados")
+    assert choose_incident(r, [cand], SIM, CFG) is None

@@ -103,6 +103,10 @@ docker compose exec api python scripts/simulate_sms.py --sobre-critico   # se un
 # KPI contra la verdad del escenario (código ≠ 0 si no se cumplen las metas)
 docker compose exec api python scripts/evaluate_kpis.py
 
+# Fuentes públicas del tablero de recuperación (USGS, SECOP II, CDIAC) — con internet, en el host.
+# Guarda copias fechadas con huella SHA-256 en data/sources/; la API las lee sin internet.
+uv run --project services/api python scripts/fetch_sources.py
+
 # Pruebas
 docker compose exec api pytest -q                      # API: unitarias, integración, contrato
 cd apps/web && npm ci && npm test                      # Web: redacción en el borde, outbox, formato

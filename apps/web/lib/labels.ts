@@ -195,3 +195,7 @@ export const CASCADE_FACTOR_LABEL: Record<string, string> = {
   sismo: "Intensidad sísmica",
   reportes_cercanos: "Reportes cercanos",
 };
+
+export type AlertOut = components["schemas"]["AlertOut"];
+export type AlertEventOut = components["schemas"]["AlertEventOut"];
+export type AlertAreaIn = components["schemas"]["AlertAreaIn"];

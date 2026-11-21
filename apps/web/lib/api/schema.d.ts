@@ -21,10 +21,162 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/incidents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Incidents */
+        get: operations["list_incidents_api_v1_incidents_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/{incident_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Incident */
+        get: operations["get_incident_api_v1_incidents__incident_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingest/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ingest Batch
+         * @description Sincronización del outbox de la PWA. Un ítem inválido no hace fallar el lote.
+         */
+        post: operations["ingest_batch_api_v1_ingest_batch_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingest/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ingest Report */
+        post: operations["ingest_report_api_v1_ingest_report_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingest/sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ingest Sms */
+        post: operations["ingest_sms_api_v1_ingest_sms_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Reports */
+        get: operations["list_reports_api_v1_reports_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BatchIn */
+        BatchIn: {
+            /** Items */
+            items: components["schemas"]["ReportIn"][];
+        };
+        /** BatchItemResult */
+        BatchItemResult: {
+            /**
+             * Client Uuid
+             * Format: uuid
+             */
+            client_uuid: string;
+            /** Error */
+            error?: string | null;
+            /** Report Id */
+            report_id?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "created" | "duplicate" | "error";
+        };
+        /** BatchOut */
+        BatchOut: {
+            /** Results */
+            results: components["schemas"]["BatchItemResult"][];
+        };
+        /**
+         * Category
+         * @enum {string}
+         */
+        Category: "personas_atrapadas" | "heridos" | "colapso_estructura" | "dano_estructural" | "incendio" | "fuga_gas" | "deslizamiento" | "via_bloqueada" | "servicios_caidos" | "necesidad_albergue" | "necesidad_ayuda" | "persona_desaparecida" | "sismo_sentido" | "rumor_informacion" | "sin_clasificar";
+        /**
+         * Channel
+         * @enum {string}
+         */
+        Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "scraping" | "entity" | "lora";
+        /**
+         * GeoPrecision
+         * @enum {string}
+         */
+        GeoPrecision: "gps" | "address" | "barrio" | "none";
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
         /** Health */
         Health: {
             /** Db */
@@ -35,6 +187,327 @@ export interface components {
             status: string;
             /** Version */
             version: string;
+        };
+        /** IncidentDetail */
+        IncidentDetail: {
+            /** Barrio */
+            barrio: string | null;
+            category: components["schemas"]["Category"];
+            /** Events */
+            events: components["schemas"]["ReportEventOut"][];
+            /**
+             * First Seen
+             * Format: date-time
+             */
+            first_seen: string;
+            geo_precision: components["schemas"]["GeoPrecision"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Independent Sources */
+            independent_sources: number;
+            /** Is Life Threat */
+            is_life_threat: boolean;
+            /**
+             * Last Seen
+             * Format: date-time
+             */
+            last_seen: string;
+            /** Lat */
+            lat: number | null;
+            /** Lon */
+            lon: number | null;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** People Affected */
+            people_affected: number | null;
+            /** Report Count */
+            report_count: number;
+            /** Reports */
+            reports: components["schemas"]["ReportOut"][];
+            /** Source */
+            source: string;
+            status: components["schemas"]["IncidentStatus"];
+            triage_level: components["schemas"]["TriageLevel"];
+            /** Trust Breakdown */
+            trust_breakdown: {
+                [key: string]: unknown;
+            };
+            trust_label: components["schemas"]["TrustLabel"];
+            /** Trust Score */
+            trust_score: number;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** IncidentList */
+        IncidentList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["IncidentSummary"][];
+        };
+        /**
+         * IncidentStatus
+         * @enum {string}
+         */
+        IncidentStatus: "abierto" | "en_revision" | "verificado" | "descartado" | "atendido";
+        /** IncidentSummary */
+        IncidentSummary: {
+            /** Barrio */
+            barrio: string | null;
+            category: components["schemas"]["Category"];
+            /**
+             * First Seen
+             * Format: date-time
+             */
+            first_seen: string;
+            geo_precision: components["schemas"]["GeoPrecision"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Independent Sources */
+            independent_sources: number;
+            /** Is Life Threat */
+            is_life_threat: boolean;
+            /**
+             * Last Seen
+             * Format: date-time
+             */
+            last_seen: string;
+            /** Lat */
+            lat: number | null;
+            /** Lon */
+            lon: number | null;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** People Affected */
+            people_affected: number | null;
+            /** Report Count */
+            report_count: number;
+            /** Source */
+            source: string;
+            status: components["schemas"]["IncidentStatus"];
+            triage_level: components["schemas"]["TriageLevel"];
+            trust_label: components["schemas"]["TrustLabel"];
+            /** Trust Score */
+            trust_score: number;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** LocationIn */
+        LocationIn: {
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /**
+             * Precision
+             * @default gps
+             * @enum {string}
+             */
+            precision: "gps" | "address";
+        };
+        /**
+         * ReportAction
+         * @enum {string}
+         */
+        ReportAction: "ingerido" | "agrupado" | "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
+        /** ReportEventOut */
+        ReportEventOut: {
+            action: components["schemas"]["ReportAction"];
+            actor_role: components["schemas"]["Role"];
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Incident Id */
+            incident_id: string | null;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Report Id */
+            report_id: string | null;
+        };
+        /**
+         * ReportIn
+         * @description Reporte de la app ciudadana o de una entidad (Report.client_uuid, Report.channel).
+         */
+        ReportIn: {
+            /** Barrio */
+            barrio?: string | null;
+            category_hint?: components["schemas"]["Category"] | null;
+            /** @default pwa */
+            channel: components["schemas"]["Channel"];
+            /**
+             * Client Uuid
+             * Format: uuid
+             */
+            client_uuid: string;
+            /**
+             * Consent
+             * @default false
+             */
+            consent: boolean;
+            /**
+             * Has Media
+             * @default false
+             */
+            has_media: boolean;
+            location?: components["schemas"]["LocationIn"] | null;
+            /** Occurred At */
+            occurred_at?: string | null;
+            /** People Affected */
+            people_affected?: number | null;
+            /**
+             * Reporter Contact
+             * @description Se hashea y nunca se guarda ni se devuelve
+             */
+            reporter_contact?: string | null;
+            /** Text */
+            text: string;
+        };
+        /** ReportList */
+        ReportList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["ReportOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** ReportOut */
+        ReportOut: {
+            /** Barrio */
+            barrio: string | null;
+            category: components["schemas"]["Category"];
+            channel: components["schemas"]["Channel"];
+            /**
+             * Client Uuid
+             * Format: uuid
+             */
+            client_uuid: string;
+            geo_precision: components["schemas"]["GeoPrecision"];
+            /** Has Media */
+            has_media: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Incident Id */
+            incident_id: string | null;
+            /** Is Life Threat */
+            is_life_threat: boolean;
+            /** Lat */
+            lat: number | null;
+            /** Location Text */
+            location_text: string | null;
+            /** Lon */
+            lon: number | null;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** Misinfo Signals */
+            misinfo_signals: string[];
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** People Affected */
+            people_affected: number | null;
+            /** Processing Ms */
+            processing_ms: number;
+            /**
+             * Received At
+             * Format: date-time
+             */
+            received_at: string;
+            /** Severity */
+            severity: number;
+            /** Source */
+            source: string;
+            status: components["schemas"]["ReportStatus"];
+            /** Text Redacted */
+            text_redacted: string;
+            triage_level: components["schemas"]["TriageLevel"];
+            /** Version */
+            version: number;
+        };
+        /** ReportResult */
+        ReportResult: {
+            /** Created */
+            created: boolean;
+            incident: components["schemas"]["IncidentSummary"];
+            /** Joined Existing Incident */
+            joined_existing_incident: boolean;
+            /** Processing Ms */
+            processing_ms: number;
+            report: components["schemas"]["ReportOut"];
+        };
+        /**
+         * ReportStatus
+         * @enum {string}
+         */
+        ReportStatus: "nuevo" | "en_revision" | "verificado" | "descartado" | "duplicado" | "atendido";
+        /**
+         * Role
+         * @enum {string}
+         */
+        Role: "ciudadano" | "operador_pmu" | "publico" | "coe" | "inspector" | "agencia" | "sistema";
+        /** SmsIn */
+        SmsIn: {
+            /** Body */
+            body: string;
+            /** From */
+            from: string;
+            /** Received At */
+            received_at?: string | null;
+        };
+        /**
+         * TriageLevel
+         * @enum {string}
+         */
+        TriageLevel: "critico" | "alto" | "medio" | "bajo";
+        /**
+         * TrustLabel
+         * @enum {string}
+         */
+        TrustLabel: "verificado" | "probable" | "sin_verificar" | "posible_falso";
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
         };
     };
     responses: never;
@@ -61,6 +534,228 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    list_incidents_api_v1_incidents_get: {
+        parameters: {
+            query?: {
+                triage?: components["schemas"]["TriageLevel"] | null;
+                status?: components["schemas"]["IncidentStatus"] | null;
+                category?: components["schemas"]["Category"] | null;
+                trust_label?: components["schemas"]["TrustLabel"] | null;
+                /** @description Actualizados después de */
+                since?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IncidentList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_incident_api_v1_incidents__incident_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                incident_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IncidentDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ingest_batch_api_v1_ingest_batch_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BatchOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ingest_report_api_v1_ingest_report_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportIn"];
+            };
+        };
+        responses: {
+            /** @description Ya existía (idempotente) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResult"];
+                };
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ingest_sms_api_v1_ingest_sms_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SmsIn"];
+            };
+        };
+        responses: {
+            /** @description Ya existía (idempotente) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResult"];
+                };
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_reports_api_v1_reports_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ReportStatus"] | null;
+                triage?: components["schemas"]["TriageLevel"] | null;
+                category?: components["schemas"]["Category"] | null;
+                incident_id?: string | null;
+                since?: string | null;
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

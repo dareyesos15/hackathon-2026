@@ -1,6 +1,144 @@
 {
   "components": {
     "schemas": {
+      "BatchIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReportIn"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "BatchIn",
+        "type": "object"
+      },
+      "BatchItemResult": {
+        "properties": {
+          "client_uuid": {
+            "format": "uuid",
+            "title": "Client Uuid",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "report_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Id"
+          },
+          "status": {
+            "enum": [
+              "created",
+              "duplicate",
+              "error"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_uuid",
+          "status"
+        ],
+        "title": "BatchItemResult",
+        "type": "object"
+      },
+      "BatchOut": {
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/BatchItemResult"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "BatchOut",
+        "type": "object"
+      },
+      "Category": {
+        "enum": [
+          "personas_atrapadas",
+          "heridos",
+          "colapso_estructura",
+          "dano_estructural",
+          "incendio",
+          "fuga_gas",
+          "deslizamiento",
+          "via_bloqueada",
+          "servicios_caidos",
+          "necesidad_albergue",
+          "necesidad_ayuda",
+          "persona_desaparecida",
+          "sismo_sentido",
+          "rumor_informacion",
+          "sin_clasificar"
+        ],
+        "title": "Category",
+        "type": "string"
+      },
+      "Channel": {
+        "enum": [
+          "pwa",
+          "sms",
+          "whatsapp",
+          "call_123",
+          "scraping",
+          "entity",
+          "lora"
+        ],
+        "title": "Channel",
+        "type": "string"
+      },
+      "GeoPrecision": {
+        "enum": [
+          "gps",
+          "address",
+          "barrio",
+          "none"
+        ],
+        "title": "GeoPrecision",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
       "Health": {
         "properties": {
           "db": {
@@ -28,6 +166,914 @@
         ],
         "title": "Health",
         "type": "object"
+      },
+      "IncidentDetail": {
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ReportEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "first_seen": {
+            "format": "date-time",
+            "title": "First Seen",
+            "type": "string"
+          },
+          "geo_precision": {
+            "$ref": "#/components/schemas/GeoPrecision"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "independent_sources": {
+            "title": "Independent Sources",
+            "type": "integer"
+          },
+          "is_life_threat": {
+            "title": "Is Life Threat",
+            "type": "boolean"
+          },
+          "last_seen": {
+            "format": "date-time",
+            "title": "Last Seen",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "people_affected": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Affected"
+          },
+          "report_count": {
+            "title": "Report Count",
+            "type": "integer"
+          },
+          "reports": {
+            "items": {
+              "$ref": "#/components/schemas/ReportOut"
+            },
+            "title": "Reports",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/IncidentStatus"
+          },
+          "triage_level": {
+            "$ref": "#/components/schemas/TriageLevel"
+          },
+          "trust_breakdown": {
+            "additionalProperties": true,
+            "title": "Trust Breakdown",
+            "type": "object"
+          },
+          "trust_label": {
+            "$ref": "#/components/schemas/TrustLabel"
+          },
+          "trust_score": {
+            "title": "Trust Score",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "lat",
+          "lon",
+          "category",
+          "triage_level",
+          "is_life_threat",
+          "report_count",
+          "independent_sources",
+          "people_affected",
+          "trust_score",
+          "trust_label",
+          "status",
+          "first_seen",
+          "last_seen",
+          "manzana_id",
+          "barrio",
+          "geo_precision",
+          "updated_at",
+          "source",
+          "trust_breakdown",
+          "reports",
+          "events"
+        ],
+        "title": "IncidentDetail",
+        "type": "object"
+      },
+      "IncidentList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/IncidentSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "IncidentList",
+        "type": "object"
+      },
+      "IncidentStatus": {
+        "enum": [
+          "abierto",
+          "en_revision",
+          "verificado",
+          "descartado",
+          "atendido"
+        ],
+        "title": "IncidentStatus",
+        "type": "string"
+      },
+      "IncidentSummary": {
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "first_seen": {
+            "format": "date-time",
+            "title": "First Seen",
+            "type": "string"
+          },
+          "geo_precision": {
+            "$ref": "#/components/schemas/GeoPrecision"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "independent_sources": {
+            "title": "Independent Sources",
+            "type": "integer"
+          },
+          "is_life_threat": {
+            "title": "Is Life Threat",
+            "type": "boolean"
+          },
+          "last_seen": {
+            "format": "date-time",
+            "title": "Last Seen",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "people_affected": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Affected"
+          },
+          "report_count": {
+            "title": "Report Count",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/IncidentStatus"
+          },
+          "triage_level": {
+            "$ref": "#/components/schemas/TriageLevel"
+          },
+          "trust_label": {
+            "$ref": "#/components/schemas/TrustLabel"
+          },
+          "trust_score": {
+            "title": "Trust Score",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "lat",
+          "lon",
+          "category",
+          "triage_level",
+          "is_life_threat",
+          "report_count",
+          "independent_sources",
+          "people_affected",
+          "trust_score",
+          "trust_label",
+          "status",
+          "first_seen",
+          "last_seen",
+          "manzana_id",
+          "barrio",
+          "geo_precision",
+          "updated_at",
+          "source"
+        ],
+        "title": "IncidentSummary",
+        "type": "object"
+      },
+      "LocationIn": {
+        "properties": {
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "precision": {
+            "default": "gps",
+            "enum": [
+              "gps",
+              "address"
+            ],
+            "title": "Precision",
+            "type": "string"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "LocationIn",
+        "type": "object"
+      },
+      "ReportAction": {
+        "enum": [
+          "ingerido",
+          "agrupado",
+          "confirmar",
+          "descartar",
+          "marcar_duplicado",
+          "reabrir"
+        ],
+        "title": "ReportAction",
+        "type": "string"
+      },
+      "ReportEventOut": {
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/ReportAction"
+          },
+          "actor_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incident Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "report_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Id"
+          }
+        },
+        "required": [
+          "id",
+          "report_id",
+          "incident_id",
+          "actor_role",
+          "action",
+          "payload",
+          "at"
+        ],
+        "title": "ReportEventOut",
+        "type": "object"
+      },
+      "ReportIn": {
+        "description": "Reporte de la app ciudadana o de una entidad (Report.client_uuid, Report.channel).",
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "category_hint": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Category"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel",
+            "default": "pwa"
+          },
+          "client_uuid": {
+            "format": "uuid",
+            "title": "Client Uuid",
+            "type": "string"
+          },
+          "consent": {
+            "default": false,
+            "title": "Consent",
+            "type": "boolean"
+          },
+          "has_media": {
+            "default": false,
+            "title": "Has Media",
+            "type": "boolean"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LocationIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurred_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Occurred At"
+          },
+          "people_affected": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Affected"
+          },
+          "reporter_contact": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Se hashea y nunca se guarda ni se devuelve",
+            "title": "Reporter Contact"
+          },
+          "text": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_uuid",
+          "text"
+        ],
+        "title": "ReportIn",
+        "type": "object"
+      },
+      "ReportList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReportOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor",
+          "cutoff_at"
+        ],
+        "title": "ReportList",
+        "type": "object"
+      },
+      "ReportOut": {
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "client_uuid": {
+            "format": "uuid",
+            "title": "Client Uuid",
+            "type": "string"
+          },
+          "geo_precision": {
+            "$ref": "#/components/schemas/GeoPrecision"
+          },
+          "has_media": {
+            "title": "Has Media",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incident Id"
+          },
+          "is_life_threat": {
+            "title": "Is Life Threat",
+            "type": "boolean"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "location_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Text"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "misinfo_signals": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Misinfo Signals",
+            "type": "array"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "people_affected": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Affected"
+          },
+          "processing_ms": {
+            "title": "Processing Ms",
+            "type": "integer"
+          },
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReportStatus"
+          },
+          "text_redacted": {
+            "title": "Text Redacted",
+            "type": "string"
+          },
+          "triage_level": {
+            "$ref": "#/components/schemas/TriageLevel"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "client_uuid",
+          "channel",
+          "received_at",
+          "occurred_at",
+          "text_redacted",
+          "location_text",
+          "lat",
+          "lon",
+          "geo_precision",
+          "manzana_id",
+          "barrio",
+          "category",
+          "severity",
+          "triage_level",
+          "is_life_threat",
+          "people_affected",
+          "has_media",
+          "misinfo_signals",
+          "incident_id",
+          "status",
+          "processing_ms",
+          "source",
+          "version"
+        ],
+        "title": "ReportOut",
+        "type": "object"
+      },
+      "ReportResult": {
+        "properties": {
+          "created": {
+            "title": "Created",
+            "type": "boolean"
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IncidentSummary"
+          },
+          "joined_existing_incident": {
+            "title": "Joined Existing Incident",
+            "type": "boolean"
+          },
+          "processing_ms": {
+            "title": "Processing Ms",
+            "type": "integer"
+          },
+          "report": {
+            "$ref": "#/components/schemas/ReportOut"
+          }
+        },
+        "required": [
+          "report",
+          "incident",
+          "joined_existing_incident",
+          "created",
+          "processing_ms"
+        ],
+        "title": "ReportResult",
+        "type": "object"
+      },
+      "ReportStatus": {
+        "enum": [
+          "nuevo",
+          "en_revision",
+          "verificado",
+          "descartado",
+          "duplicado",
+          "atendido"
+        ],
+        "title": "ReportStatus",
+        "type": "string"
+      },
+      "Role": {
+        "enum": [
+          "ciudadano",
+          "operador_pmu",
+          "publico",
+          "coe",
+          "inspector",
+          "agencia",
+          "sistema"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "SmsIn": {
+        "properties": {
+          "body": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Body",
+            "type": "string"
+          },
+          "from": {
+            "maxLength": 32,
+            "minLength": 3,
+            "title": "From",
+            "type": "string"
+          },
+          "received_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received At"
+          }
+        },
+        "required": [
+          "from",
+          "body"
+        ],
+        "title": "SmsIn",
+        "type": "object"
+      },
+      "TriageLevel": {
+        "enum": [
+          "critico",
+          "alto",
+          "medio",
+          "bajo"
+        ],
+        "title": "TriageLevel",
+        "type": "string"
+      },
+      "TrustLabel": {
+        "enum": [
+          "verificado",
+          "probable",
+          "sin_verificar",
+          "posible_falso"
+        ],
+        "title": "TrustLabel",
+        "type": "string"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "scheme": "bearer",
+        "type": "http"
       }
     }
   },
@@ -56,6 +1102,494 @@
         "summary": "Health",
         "tags": [
           "salud"
+        ]
+      }
+    },
+    "/api/v1/incidents": {
+      "get": {
+        "operationId": "list_incidents_api_v1_incidents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "triage",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TriageLevel"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Triage"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/IncidentStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Category"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trust_label",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TrustLabel"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Trust Label"
+            }
+          },
+          {
+            "description": "Actualizados después de",
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Actualizados después de",
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 500,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Incidents",
+        "tags": [
+          "incidentes"
+        ]
+      }
+    },
+    "/api/v1/incidents/{incident_id}": {
+      "get": {
+        "operationId": "get_incident_api_v1_incidents__incident_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Incident",
+        "tags": [
+          "incidentes"
+        ]
+      }
+    },
+    "/api/v1/ingest/batch": {
+      "post": {
+        "description": "Sincronización del outbox de la PWA. Un ítem inválido no hace fallar el lote.",
+        "operationId": "ingest_batch_api_v1_ingest_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ingest Batch",
+        "tags": [
+          "ingesta"
+        ]
+      }
+    },
+    "/api/v1/ingest/report": {
+      "post": {
+        "operationId": "ingest_report_api_v1_ingest_report_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResult"
+                }
+              }
+            },
+            "description": "Ya existía (idempotente)"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ingest Report",
+        "tags": [
+          "ingesta"
+        ]
+      }
+    },
+    "/api/v1/ingest/sms": {
+      "post": {
+        "operationId": "ingest_sms_api_v1_ingest_sms_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResult"
+                }
+              }
+            },
+            "description": "Ya existía (idempotente)"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ingest Sms",
+        "tags": [
+          "ingesta"
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "get": {
+        "operationId": "list_reports_api_v1_reports_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReportStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "triage",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TriageLevel"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Triage"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Category"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "in": "query",
+            "name": "incident_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Incident Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Reports",
+        "tags": [
+          "reportes"
         ]
       }
     }

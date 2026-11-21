@@ -1,33 +1,20 @@
 """Reglas puras del tablero de recuperación unificado (índice, etapas, situación de hogares).
 
-Sin acceso a la base de datos: el router reúne los datos y estas funciones deciden. Las
-fuentes externas (servicios, economía, finanzas, réplicas) llegan SIMULADAS desde
-data/seed/recovery_context.json; en producción las reemplaza un adaptador por fuente.
+Sin acceso a la base de datos: el router reúne los datos y estas funciones deciden. Ninguna
+cifra es inventada: viene del registro de Dacora o de una copia fechada de una fuente pública
+(app/adapters/public_sources.py). Lo que no tiene fuente conectada se informa como tal.
 """
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
-from functools import lru_cache
-from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
-from app.config import get_settings
-
-StageStatus = Literal["pendiente", "verde", "amarillo", "rojo"]
+StageStatus = Literal["pendiente", "verde", "amarillo", "rojo", "sin_fuente"]
 Situation = Literal["albergue", "arriendo", "casa", "sin_solucion"]
 
-SERVICES = ("agua", "energia", "gas", "telecom", "vias")
 #: Pesos del índice de recuperación: habitabilidad (3), servicios (6), familias (7), economía (9).
 INDEX_WEIGHTS = {"habitabilidad": 0.25, "servicios": 0.25, "familias": 0.25, "economia": 0.25}
-
-
-@lru_cache
-def load_context(path: Path | None = None) -> dict[str, Any]:
-    target = path or get_settings().data_dir / "seed" / "recovery_context.json"
-    data: dict[str, Any] = json.loads(target.read_text(encoding="utf-8"))
-    return data
 
 
 def pct(part: float, total: float) -> float | None:
@@ -37,12 +24,6 @@ def pct(part: float, total: float) -> float | None:
 def habitability_score(verde: int, amarillo: int, rojo: int) -> float | None:
     """% de predios evaluados habitables; uso restringido cuenta la mitad."""
     return pct(verde + 0.5 * amarillo, verde + amarillo + rojo)
-
-
-def services_score(row: dict[str, Any] | None) -> float | None:
-    if not row:
-        return None
-    return round(sum(float(row[s]) for s in SERVICES) / len(SERVICES), 1)
 
 
 def recovery_index(components: dict[str, float | None]) -> float | None:
@@ -87,9 +68,12 @@ def stage_status(day: int, stage: StageWindow, progress: float | None) -> StageS
     """Verde a tiempo, amarillo con retraso, rojo estancada; pendiente si aún no empieza.
 
     El avance esperado crece lineal dentro de la ventana de la etapa y es 100 % al cerrarla.
+    Sin dato de avance (`None`) la etapa queda "sin_fuente": nunca se adivina su estado.
     """
-    if day < stage.start_day or progress is None:
+    if day < stage.start_day:
         return "pendiente"
+    if progress is None:
+        return "sin_fuente"
     span = max(stage.end_day - stage.start_day, 1)
     expected = min(1.0, max((day - stage.start_day) / span, 0.05))
     ratio = progress / expected

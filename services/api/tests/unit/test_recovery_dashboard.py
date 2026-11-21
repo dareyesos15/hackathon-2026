@@ -1,13 +1,10 @@
 """Reglas del tablero de recuperación unificado (índice, etapas, situación de hogares)."""
 
 from app.core.recovery_dashboard import (
-    SERVICES,
     STAGES,
     habitability_score,
     household_situation,
-    load_context,
     recovery_index,
-    services_score,
     stage_status,
 )
 
@@ -40,10 +37,6 @@ def test_stage_status_follows_expected_progress() -> None:
     assert stage_status(37, stage, 0.5) == "verde"
 
 
-def test_context_covers_every_barrio_and_service() -> None:
-    ctx = load_context()
-    assert len(ctx["services"]) == len(ctx["visit_requests"]) >= 40
-    row = next(iter(ctx["services"].values()))
-    assert all(0 <= row[s] <= 100 for s in SERVICES)
-    assert services_score(row) is not None
-    assert "SIMULADO" in ctx["note"]
+def test_stage_without_data_is_reported_not_guessed() -> None:
+    assert stage_status(60, STAGES[1], None) == "sin_fuente"
+    assert stage_status(1, STAGES[4], None) == "pendiente"

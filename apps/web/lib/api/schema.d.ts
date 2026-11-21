@@ -442,6 +442,217 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recovery/aid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Aid */
+        get: operations["list_aid_api_v1_recovery_aid_get"];
+        put?: never;
+        /**
+         * Post Aid
+         * @description Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo justificación.
+         */
+        post: operations["post_aid_api_v1_recovery_aid_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/households": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Households */
+        get: operations["list_households_api_v1_recovery_households_get"];
+        put?: never;
+        /** Post Household */
+        post: operations["post_household_api_v1_recovery_households_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/households/export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Households
+         * @description Exportación tipo RUD (UNGRD), sin datos personales: solo el código derivado del hash.
+         */
+        get: operations["export_households_api_v1_recovery_households_export_csv_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/households/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Lookup Household
+         * @description Busca un hogar por documento (POST para que el documento no quede en URLs ni logs).
+         */
+        post: operations["lookup_household_api_v1_recovery_households_lookup_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/households/{household_id}/rud": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Set Rud */
+        patch: operations["set_rud_api_v1_recovery_households__household_id__rud_patch"];
+        trace?: never;
+    };
+    "/api/v1/recovery/inspections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Inspections
+         * @description Historial de visitas de un predio (trazabilidad solicitud → visita → clasificación).
+         */
+        get: operations["list_inspections_api_v1_recovery_inspections_get"];
+        put?: never;
+        /** Post Inspection */
+        post: operations["post_inspection_api_v1_recovery_inspections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/manzanas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Manzanas */
+        get: operations["list_manzanas_api_v1_recovery_manzanas_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/properties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Properties
+         * @description Estado vigente por predio (última evaluación) y número de visitas.
+         */
+        get: operations["list_properties_api_v1_recovery_properties_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/shelters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Shelters
+         * @description Albergues con ocupación (agregados por sitio, sin datos de personas).
+         */
+        get: operations["list_shelters_api_v1_recovery_shelters_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/shelters/{shelter_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Shelter */
+        patch: operations["patch_shelter_api_v1_recovery_shelters__shelter_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/recovery/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Summary
+         * @description Cifras de recuperación con fuente y fecha de corte. Público: supresión k ≥ 5.
+         */
+        get: operations["summary_api_v1_recovery_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/reports": {
         parameters: {
             query?: never;
@@ -603,6 +814,56 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** AidIn */
+        AidIn: {
+            aid_type: components["schemas"]["AidType"];
+            /** Document */
+            document: string;
+            /** Justification */
+            justification?: string | null;
+            /**
+             * Source Fund
+             * @default Fondo Municipal de Gestión del Riesgo
+             */
+            source_fund: string;
+        };
+        /** AidList */
+        AidList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["AidOut"][];
+        };
+        /** AidOut */
+        AidOut: {
+            aid_type: components["schemas"]["AidType"];
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Household Code */
+            household_code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Duplicate */
+            is_duplicate: boolean;
+            /** Justification */
+            justification: string | null;
+            /** Source Fund */
+            source_fund: string;
+        };
+        /**
+         * AidType
+         * @enum {string}
+         */
+        AidType: "subsidio_arriendo" | "kit" | "mercado" | "albergue";
         /**
          * AlertAction
          * @enum {string}
@@ -837,6 +1098,11 @@ export interface components {
             /** Radius M */
             radius_m: number;
         };
+        /**
+         * DamageLevel
+         * @enum {string}
+         */
+        DamageLevel: "menor" | "mediano_uso_restringido" | "mayor" | "colapso";
         /** DeliveryOut */
         DeliveryOut: {
             /**
@@ -964,6 +1230,18 @@ export interface components {
          */
         EmreFunction: "salvamento_seguridad" | "salud_saneamiento" | "asistencia_social" | "infraestructura_servicios" | "manejo_coordinacion" | "logistica";
         /**
+         * Figure
+         * @description Cifra con trazabilidad (fuente, versión, fecha de corte). `None` = suprimida (k < 5).
+         */
+        Figure: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: number | null;
+        };
+        /**
          * GeoPrecision
          * @enum {string}
          */
@@ -983,6 +1261,88 @@ export interface components {
             status: string;
             /** Version */
             version: string;
+        };
+        /** HouseholdCreated */
+        HouseholdCreated: {
+            /** Created */
+            created: boolean;
+            household: components["schemas"]["HouseholdOut"];
+        };
+        /** HouseholdIn */
+        HouseholdIn: {
+            /** Address */
+            address?: string | null;
+            /** Cadastral Code */
+            cadastral_code?: string | null;
+            /**
+             * Document
+             * @description Documento del jefe de hogar. Solo se usa para calcular el hash; no se guarda.
+             */
+            document: string;
+            /** Manzana Id */
+            manzana_id?: string | null;
+            /** Members Count */
+            members_count: number;
+            /**
+             * Pets Count
+             * @default 0
+             */
+            pets_count: number;
+            /** @default pendiente */
+            rud_status: components["schemas"]["RudStatus"];
+            /**
+             * @default {
+             *       "children": false,
+             *       "disability": false,
+             *       "elderly": false,
+             *       "pregnancy": false
+             *     }
+             */
+            vulnerability: components["schemas"]["Vulnerability"];
+        };
+        /** HouseholdList */
+        HouseholdList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["HouseholdOut"][];
+        };
+        /** HouseholdOut */
+        HouseholdOut: {
+            /** Aid Count */
+            aid_count: number;
+            /** Barrio */
+            barrio: string | null;
+            /**
+             * Code
+             * @description Prefijo corto del hash, para mostrar
+             */
+            code: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** Members Count */
+            members_count: number;
+            /** Pets Count */
+            pets_count: number;
+            /** Property Id */
+            property_id: string | null;
+            rud_status: components["schemas"]["RudStatus"];
+            vulnerability: components["schemas"]["Vulnerability"];
+            /** Vulnerability Score */
+            vulnerability_score: number;
         };
         /** IncidentDetail */
         IncidentDetail: {
@@ -1134,6 +1494,51 @@ export interface components {
              */
             updated_at: string;
         };
+        /**
+         * InspectionColor
+         * @enum {string}
+         */
+        InspectionColor: "verde" | "amarillo" | "rojo";
+        /** InspectionIn */
+        InspectionIn: {
+            /** Address */
+            address?: string | null;
+            /** Cadastral Code */
+            cadastral_code?: string | null;
+            color: components["schemas"]["InspectionColor"];
+            damage_level: components["schemas"]["DamageLevel"];
+            /** Manzana Id */
+            manzana_id?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** InspectionOut */
+        InspectionOut: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Barrio */
+            barrio: string | null;
+            color: components["schemas"]["InspectionColor"];
+            damage_level: components["schemas"]["DamageLevel"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Inspector Role */
+            inspector_role: string;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** Notes */
+            notes: string | null;
+            /** Property Id */
+            property_id: string;
+            /** Visit Number */
+            visit_number: number;
+        };
         /** Kpi */
         Kpi: {
             /**
@@ -1187,11 +1592,53 @@ export interface components {
              */
             precision: "gps" | "address";
         };
+        /** LookupIn */
+        LookupIn: {
+            /** Document */
+            document: string;
+        };
+        /** ManzanaRef */
+        ManzanaRef: {
+            /** Barrio */
+            barrio: string;
+            /** Comuna */
+            comuna: string;
+            /** Id */
+            id: string;
+        };
         /**
          * MetricUnit
          * @enum {string}
          */
         MetricUnit: "%" | "conteo" | "min" | "ms";
+        /** PropertyList */
+        PropertyList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["PropertyOut"][];
+        };
+        /** PropertyOut */
+        PropertyOut: {
+            /** Barrio */
+            barrio: string | null;
+            color: components["schemas"]["InspectionColor"];
+            damage_level: components["schemas"]["DamageLevel"];
+            /**
+             * Last At
+             * Format: date-time
+             */
+            last_at: string;
+            /** Manzana Id */
+            manzana_id: string | null;
+            /** Property Id */
+            property_id: string;
+            /** Visits */
+            visits: number;
+        };
         /** RainIn */
         RainIn: {
             /** Mm 3H */
@@ -1220,6 +1667,22 @@ export interface components {
             source: string;
             /** Station Code */
             station_code: string;
+        };
+        /** RecoverySummary */
+        RecoverySummary: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Figures */
+            figures: components["schemas"]["Figure"][];
+            /** Source */
+            source: string;
+            /** Suppressed */
+            suppressed: boolean;
+            /** Version */
+            version: number;
         };
         /**
          * ReportAction
@@ -1448,6 +1911,59 @@ export interface components {
          * @enum {string}
          */
         Role: "ciudadano" | "operador_pmu" | "publico" | "coe" | "inspector" | "agencia" | "sistema" | "admin";
+        /**
+         * RudStatus
+         * @enum {string}
+         */
+        RudStatus: "pendiente" | "inscrito";
+        /** ShelterList */
+        ShelterList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["ShelterOut"][];
+        };
+        /** ShelterOut */
+        ShelterOut: {
+            /** Barrio */
+            barrio: string;
+            /** Capacity */
+            capacity: number;
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Name */
+            name: string;
+            /** People */
+            people: number;
+            /** Pets */
+            pets: number;
+            /** Source */
+            source: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ShelterPatch */
+        ShelterPatch: {
+            /** People */
+            people: number;
+            /** Pets */
+            pets: number;
+        };
         /** SimulationIn */
         SimulationIn: {
             /**
@@ -1601,6 +2117,29 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** Vulnerability */
+        Vulnerability: {
+            /**
+             * Children
+             * @default false
+             */
+            children: boolean;
+            /**
+             * Disability
+             * @default false
+             */
+            disability: boolean;
+            /**
+             * Elderly
+             * @default false
+             */
+            elderly: boolean;
+            /**
+             * Pregnancy
+             * @default false
+             */
+            pregnancy: boolean;
         };
     };
     responses: never;
@@ -2520,6 +3059,447 @@ export interface operations {
                     "application/json": {
                         [key: string]: number;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_aid_api_v1_recovery_aid_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AidList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_aid_api_v1_recovery_aid_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AidIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AidOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_households_api_v1_recovery_households_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HouseholdList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_household_api_v1_recovery_households_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HouseholdIn"];
+            };
+        };
+        responses: {
+            /** @description Hogar ya registrado: se devuelve el existente */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HouseholdCreated"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_households_api_v1_recovery_households_export_csv_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lookup_household_api_v1_recovery_households_lookup_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LookupIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HouseholdOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_rud_api_v1_recovery_households__household_id__rud_patch: {
+        parameters: {
+            query: {
+                rud_status: components["schemas"]["RudStatus"];
+            };
+            header?: never;
+            path: {
+                household_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HouseholdOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_inspections_api_v1_recovery_inspections_get: {
+        parameters: {
+            query: {
+                property_id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InspectionOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_inspection_api_v1_recovery_inspections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InspectionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InspectionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_manzanas_api_v1_recovery_manzanas_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManzanaRef"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_properties_api_v1_recovery_properties_get: {
+        parameters: {
+            query?: {
+                color?: components["schemas"]["InspectionColor"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PropertyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_shelters_api_v1_recovery_shelters_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShelterList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_shelter_api_v1_recovery_shelters__shelter_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                shelter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShelterPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShelterOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    summary_api_v1_recovery_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecoverySummary"];
                 };
             };
             /** @description Validation Error */

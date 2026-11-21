@@ -79,6 +79,126 @@
         "title": "AgencyRef",
         "type": "object"
       },
+      "AidIn": {
+        "properties": {
+          "aid_type": {
+            "$ref": "#/components/schemas/AidType"
+          },
+          "document": {
+            "maxLength": 20,
+            "minLength": 5,
+            "title": "Document",
+            "type": "string"
+          },
+          "justification": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Justification"
+          },
+          "source_fund": {
+            "default": "Fondo Municipal de Gestión del Riesgo",
+            "maxLength": 80,
+            "title": "Source Fund",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document",
+          "aid_type"
+        ],
+        "title": "AidIn",
+        "type": "object"
+      },
+      "AidList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AidOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "AidList",
+        "type": "object"
+      },
+      "AidOut": {
+        "properties": {
+          "aid_type": {
+            "$ref": "#/components/schemas/AidType"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "household_code": {
+            "title": "Household Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_duplicate": {
+            "title": "Is Duplicate",
+            "type": "boolean"
+          },
+          "justification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Justification"
+          },
+          "source_fund": {
+            "title": "Source Fund",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "household_code",
+          "aid_type",
+          "source_fund",
+          "is_duplicate",
+          "justification",
+          "at"
+        ],
+        "title": "AidOut",
+        "type": "object"
+      },
+      "AidType": {
+        "enum": [
+          "subsidio_arriendo",
+          "kit",
+          "mercado",
+          "albergue"
+        ],
+        "title": "AidType",
+        "type": "string"
+      },
       "AlertAction": {
         "enum": [
           "crear",
@@ -768,6 +888,16 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "DamageLevel": {
+        "enum": [
+          "menor",
+          "mediano_uso_restringido",
+          "mayor",
+          "colapso"
+        ],
+        "title": "DamageLevel",
+        "type": "string"
+      },
       "DeliveryOut": {
         "properties": {
           "at": {
@@ -1119,6 +1249,37 @@
         "title": "EmreFunction",
         "type": "string"
       },
+      "Figure": {
+        "description": "Cifra con trazabilidad (fuente, versión, fecha de corte). `None` = suprimida (k < 5).",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value"
+        ],
+        "title": "Figure",
+        "type": "object"
+      },
       "GeoPrecision": {
         "enum": [
           "gps",
@@ -1168,6 +1329,214 @@
           "version"
         ],
         "title": "Health",
+        "type": "object"
+      },
+      "HouseholdCreated": {
+        "properties": {
+          "created": {
+            "title": "Created",
+            "type": "boolean"
+          },
+          "household": {
+            "$ref": "#/components/schemas/HouseholdOut"
+          }
+        },
+        "required": [
+          "household",
+          "created"
+        ],
+        "title": "HouseholdCreated",
+        "type": "object"
+      },
+      "HouseholdIn": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "cadastral_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cadastral Code"
+          },
+          "document": {
+            "description": "Documento del jefe de hogar. Solo se usa para calcular el hash; no se guarda.",
+            "maxLength": 20,
+            "minLength": 5,
+            "title": "Document",
+            "type": "string"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "members_count": {
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Members Count",
+            "type": "integer"
+          },
+          "pets_count": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Pets Count",
+            "type": "integer"
+          },
+          "rud_status": {
+            "$ref": "#/components/schemas/RudStatus",
+            "default": "pendiente"
+          },
+          "vulnerability": {
+            "$ref": "#/components/schemas/Vulnerability",
+            "default": {
+              "children": false,
+              "disability": false,
+              "elderly": false,
+              "pregnancy": false
+            }
+          }
+        },
+        "required": [
+          "document",
+          "members_count"
+        ],
+        "title": "HouseholdIn",
+        "type": "object"
+      },
+      "HouseholdList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HouseholdOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "HouseholdList",
+        "type": "object"
+      },
+      "HouseholdOut": {
+        "properties": {
+          "aid_count": {
+            "title": "Aid Count",
+            "type": "integer"
+          },
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "code": {
+            "description": "Prefijo corto del hash, para mostrar",
+            "title": "Code",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "members_count": {
+            "title": "Members Count",
+            "type": "integer"
+          },
+          "pets_count": {
+            "title": "Pets Count",
+            "type": "integer"
+          },
+          "property_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Property Id"
+          },
+          "rud_status": {
+            "$ref": "#/components/schemas/RudStatus"
+          },
+          "vulnerability": {
+            "$ref": "#/components/schemas/Vulnerability"
+          },
+          "vulnerability_score": {
+            "title": "Vulnerability Score",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "members_count",
+          "pets_count",
+          "property_id",
+          "manzana_id",
+          "barrio",
+          "rud_status",
+          "vulnerability",
+          "vulnerability_score",
+          "aid_count",
+          "created_at"
+        ],
+        "title": "HouseholdOut",
         "type": "object"
       },
       "IncidentDetail": {
@@ -1572,6 +1941,158 @@
         "title": "IncidentSummary",
         "type": "object"
       },
+      "InspectionColor": {
+        "enum": [
+          "verde",
+          "amarillo",
+          "rojo"
+        ],
+        "title": "InspectionColor",
+        "type": "string"
+      },
+      "InspectionIn": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "cadastral_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cadastral Code"
+          },
+          "color": {
+            "$ref": "#/components/schemas/InspectionColor"
+          },
+          "damage_level": {
+            "$ref": "#/components/schemas/DamageLevel"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "required": [
+          "color",
+          "damage_level"
+        ],
+        "title": "InspectionIn",
+        "type": "object"
+      },
+      "InspectionOut": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "color": {
+            "$ref": "#/components/schemas/InspectionColor"
+          },
+          "damage_level": {
+            "$ref": "#/components/schemas/DamageLevel"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "inspector_role": {
+            "title": "Inspector Role",
+            "type": "string"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "visit_number": {
+            "title": "Visit Number",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "property_id",
+          "manzana_id",
+          "barrio",
+          "color",
+          "damage_level",
+          "notes",
+          "inspector_role",
+          "at",
+          "visit_number"
+        ],
+        "title": "InspectionOut",
+        "type": "object"
+      },
       "Kpi": {
         "properties": {
           "cutoff_at": {
@@ -1696,6 +2217,44 @@
         "title": "LocationIn",
         "type": "object"
       },
+      "LookupIn": {
+        "properties": {
+          "document": {
+            "maxLength": 20,
+            "minLength": 5,
+            "title": "Document",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document"
+        ],
+        "title": "LookupIn",
+        "type": "object"
+      },
+      "ManzanaRef": {
+        "properties": {
+          "barrio": {
+            "title": "Barrio",
+            "type": "string"
+          },
+          "comuna": {
+            "title": "Comuna",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "barrio",
+          "comuna"
+        ],
+        "title": "ManzanaRef",
+        "type": "object"
+      },
       "MetricUnit": {
         "enum": [
           "%",
@@ -1705,6 +2264,84 @@
         ],
         "title": "MetricUnit",
         "type": "string"
+      },
+      "PropertyList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PropertyOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "PropertyList",
+        "type": "object"
+      },
+      "PropertyOut": {
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "color": {
+            "$ref": "#/components/schemas/InspectionColor"
+          },
+          "damage_level": {
+            "$ref": "#/components/schemas/DamageLevel"
+          },
+          "last_at": {
+            "format": "date-time",
+            "title": "Last At",
+            "type": "string"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "visits": {
+            "title": "Visits",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "manzana_id",
+          "barrio",
+          "color",
+          "damage_level",
+          "visits",
+          "last_at"
+        ],
+        "title": "PropertyOut",
+        "type": "object"
       },
       "RainIn": {
         "properties": {
@@ -1760,6 +2397,43 @@
           "source"
         ],
         "title": "RainOut",
+        "type": "object"
+      },
+      "RecoverySummary": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "figures": {
+            "items": {
+              "$ref": "#/components/schemas/Figure"
+            },
+            "title": "Figures",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "suppressed": {
+            "title": "Suppressed",
+            "type": "boolean"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "source",
+          "version",
+          "cutoff_at",
+          "suppressed",
+          "figures"
+        ],
+        "title": "RecoverySummary",
         "type": "object"
       },
       "ReportAction": {
@@ -2420,6 +3094,121 @@
         "title": "Role",
         "type": "string"
       },
+      "RudStatus": {
+        "enum": [
+          "pendiente",
+          "inscrito"
+        ],
+        "title": "RudStatus",
+        "type": "string"
+      },
+      "ShelterList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ShelterOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "ShelterList",
+        "type": "object"
+      },
+      "ShelterOut": {
+        "properties": {
+          "barrio": {
+            "title": "Barrio",
+            "type": "string"
+          },
+          "capacity": {
+            "title": "Capacity",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "people": {
+            "title": "People",
+            "type": "integer"
+          },
+          "pets": {
+            "title": "Pets",
+            "type": "integer"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "barrio",
+          "capacity",
+          "people",
+          "pets",
+          "lat",
+          "lon",
+          "source",
+          "updated_at"
+        ],
+        "title": "ShelterOut",
+        "type": "object"
+      },
+      "ShelterPatch": {
+        "properties": {
+          "people": {
+            "minimum": 0.0,
+            "title": "People",
+            "type": "integer"
+          },
+          "pets": {
+            "minimum": 0.0,
+            "title": "Pets",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "people",
+          "pets"
+        ],
+        "title": "ShelterPatch",
+        "type": "object"
+      },
       "SimulationIn": {
         "properties": {
           "mode": {
@@ -2835,6 +3624,32 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "Vulnerability": {
+        "properties": {
+          "children": {
+            "default": false,
+            "title": "Children",
+            "type": "boolean"
+          },
+          "disability": {
+            "default": false,
+            "title": "Disability",
+            "type": "boolean"
+          },
+          "elderly": {
+            "default": false,
+            "title": "Elderly",
+            "type": "boolean"
+          },
+          "pregnancy": {
+            "default": false,
+            "title": "Pregnancy",
+            "type": "boolean"
+          }
+        },
+        "title": "Vulnerability",
         "type": "object"
       }
     },
@@ -4299,6 +5114,626 @@
         "summary": "Post Snapshots",
         "tags": [
           "métricas"
+        ]
+      }
+    },
+    "/api/v1/recovery/aid": {
+      "get": {
+        "operationId": "list_aid_api_v1_recovery_aid_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Aid",
+        "tags": [
+          "recuperación"
+        ]
+      },
+      "post": {
+        "description": "Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo justificación.",
+        "operationId": "post_aid_api_v1_recovery_aid_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AidIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Aid",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/households": {
+      "get": {
+        "operationId": "list_households_api_v1_recovery_households_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Households",
+        "tags": [
+          "recuperación"
+        ]
+      },
+      "post": {
+        "operationId": "post_household_api_v1_recovery_households_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HouseholdIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Hogar ya registrado: se devuelve el existente"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Household",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/households/export.csv": {
+      "get": {
+        "description": "Exportación tipo RUD (UNGRD), sin datos personales: solo el código derivado del hash.",
+        "operationId": "export_households_api_v1_recovery_households_export_csv_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Export Households",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/households/lookup": {
+      "post": {
+        "description": "Busca un hogar por documento (POST para que el documento no quede en URLs ni logs).",
+        "operationId": "lookup_household_api_v1_recovery_households_lookup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LookupIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Lookup Household",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/households/{household_id}/rud": {
+      "patch": {
+        "operationId": "set_rud_api_v1_recovery_households__household_id__rud_patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "household_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Household Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rud_status",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RudStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Set Rud",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/inspections": {
+      "get": {
+        "description": "Historial de visitas de un predio (trazabilidad solicitud → visita → clasificación).",
+        "operationId": "list_inspections_api_v1_recovery_inspections_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "property_id",
+            "required": true,
+            "schema": {
+              "title": "Property Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/InspectionOut"
+                  },
+                  "title": "Response List Inspections Api V1 Recovery Inspections Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Inspections",
+        "tags": [
+          "recuperación"
+        ]
+      },
+      "post": {
+        "operationId": "post_inspection_api_v1_recovery_inspections_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InspectionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspectionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Inspection",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/manzanas": {
+      "get": {
+        "operationId": "list_manzanas_api_v1_recovery_manzanas_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ManzanaRef"
+                  },
+                  "title": "Response List Manzanas Api V1 Recovery Manzanas Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Manzanas",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/properties": {
+      "get": {
+        "description": "Estado vigente por predio (última evaluación) y número de visitas.",
+        "operationId": "list_properties_api_v1_recovery_properties_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "color",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/InspectionColor"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Color"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Properties",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/shelters": {
+      "get": {
+        "description": "Albergues con ocupación (agregados por sitio, sin datos de personas).",
+        "operationId": "list_shelters_api_v1_recovery_shelters_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Shelters",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/shelters/{shelter_id}": {
+      "patch": {
+        "operationId": "patch_shelter_api_v1_recovery_shelters__shelter_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "shelter_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Shelter Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelterPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShelterOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Shelter",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/summary": {
+      "get": {
+        "description": "Cifras de recuperación con fuente y fecha de corte. Público: supresión k ≥ 5.",
+        "operationId": "summary_api_v1_recovery_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoverySummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Summary",
+        "tags": [
+          "recuperación"
         ]
       }
     },

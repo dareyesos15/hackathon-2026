@@ -98,6 +98,9 @@ export type DispatchOut = components["schemas"]["DispatchOut"];
 export type DispatchSuggestion = components["schemas"]["DispatchSuggestion"];
 export type TrackOut = components["schemas"]["TrackOut"];
 export type AgencyOut = components["schemas"]["AgencyOut"];
+export type RecipientRole = components["schemas"]["RecipientRole"];
+export type IncidentRouting = components["schemas"]["IncidentRouting"];
+export type InboxItem = components["schemas"]["InboxItem"];
 // Alertas y cascada: espejo del dominio hasta que sus esquemas existan en el contrato.
 export type AlertType =
   "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
@@ -143,6 +146,18 @@ export const DISPATCH_STATUS_LABEL: Record<DispatchStatus, string> = {
   en_sitio: "En sitio",
   finalizado: "Finalizado",
   cancelado: "Cancelado",
+};
+
+export const RECIPIENT_ROLE_LABEL: Record<RecipientRole, string> = {
+  lider: "Líder",
+  apoyo: "Apoyo",
+  informada: "Informada",
+};
+
+export const RECIPIENT_ROLE_STYLE: Record<RecipientRole, string> = {
+  lider: "bg-red-700 text-white",
+  apoyo: "bg-amber-100 text-amber-900",
+  informada: "bg-slate-100 text-slate-700",
 };
 
 export const INCIDENT_DISPATCH_LABEL: Record<IncidentDispatchStatus, string> = {

@@ -721,6 +721,11 @@
             "title": "Comuna",
             "type": "string"
           },
+          "damage_reported": {
+            "description": "Manzanas con daño reportado por la ciudadanía",
+            "title": "Damage Reported",
+            "type": "integer"
+          },
           "families": {
             "title": "Families",
             "type": "integer"
@@ -737,35 +742,18 @@
             "title": "Index"
           },
           "pending": {
+            "description": "De esas manzanas, las que aún no tienen evaluación",
             "title": "Pending",
-            "type": "integer"
-          },
-          "requested": {
-            "title": "Requested",
             "type": "integer"
           },
           "rojo": {
             "title": "Rojo",
             "type": "integer"
           },
-          "services": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Services",
-            "type": "object"
-          },
-          "services_eta": {
-            "anyOf": [
-              {
-                "format": "date",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Services Eta"
+          "service_incidents": {
+            "description": "Incidentes abiertos de servicios caídos",
+            "title": "Service Incidents",
+            "type": "integer"
           },
           "verde": {
             "title": "Verde",
@@ -780,10 +768,9 @@
           "amarillo",
           "rojo",
           "colapso",
-          "requested",
+          "damage_reported",
           "pending",
-          "services",
-          "services_eta",
+          "service_incidents",
           "families"
         ],
         "title": "BarrioRecovery",
@@ -992,15 +979,85 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "ContractRow": {
+        "description": "Contrato de SECOP II ligado al sismo (sin datos personales del contratista).",
+        "properties": {
+          "entity": {
+            "title": "Entity",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "invoiced_cop": {
+            "title": "Invoiced Cop",
+            "type": "number"
+          },
+          "object": {
+            "title": "Object",
+            "type": "string"
+          },
+          "paid_cop": {
+            "title": "Paid Cop",
+            "type": "number"
+          },
+          "signed_at": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Signed At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "value_cop": {
+            "title": "Value Cop",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "signed_at",
+          "status",
+          "object",
+          "value_cop",
+          "invoiced_cop",
+          "paid_cop",
+          "url"
+        ],
+        "title": "ContractRow",
+        "type": "object"
+      },
       "CurvePoint": {
         "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
           "day": {
             "title": "Day",
             "type": "integer"
-          },
-          "simulated": {
-            "title": "Simulated",
-            "type": "boolean"
           },
           "value": {
             "title": "Value",
@@ -1008,9 +1065,9 @@
           }
         },
         "required": [
+          "at",
           "day",
-          "value",
-          "simulated"
+          "value"
         ],
         "title": "CurvePoint",
         "type": "object"
@@ -1026,7 +1083,7 @@
         "type": "string"
       },
       "DashFigure": {
-        "description": "Cifra del tablero con nombre del diccionario de indicadores y trazabilidad.",
+        "description": "Cifra del tablero con nombre del diccionario de indicadores y su respaldo.\n\n`state = \"sin_fuente\"`: no hay fuente conectada; `value` es `None` y `note` dice qué entidad\no convenio la provee. Nunca se muestra un número inventado.",
         "properties": {
           "cutoff_at": {
             "format": "date-time",
@@ -1041,8 +1098,19 @@
             "title": "Label",
             "type": "string"
           },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
           "simulated": {
-            "default": true,
+            "default": false,
             "title": "Simulated",
             "type": "boolean"
           },
@@ -1050,12 +1118,24 @@
             "title": "Source",
             "type": "string"
           },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
           "state": {
             "default": "neutral",
             "enum": [
               "ok",
               "alerta",
-              "neutral"
+              "neutral",
+              "sin_fuente"
             ],
             "title": "State",
             "type": "string"
@@ -1547,39 +1627,6 @@
         "title": "DispatchSuggestion",
         "type": "object"
       },
-      "EconomyRow": {
-        "properties": {
-          "businesses_closed": {
-            "title": "Businesses Closed",
-            "type": "integer"
-          },
-          "businesses_reopened": {
-            "title": "Businesses Reopened",
-            "type": "integer"
-          },
-          "comuna": {
-            "title": "Comuna",
-            "type": "string"
-          },
-          "jobs_lost": {
-            "title": "Jobs Lost",
-            "type": "integer"
-          },
-          "jobs_recovered": {
-            "title": "Jobs Recovered",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "comuna",
-          "businesses_closed",
-          "businesses_reopened",
-          "jobs_lost",
-          "jobs_recovered"
-        ],
-        "title": "EconomyRow",
-        "type": "object"
-      },
       "EmreFunction": {
         "description": "Seis funciones de respuesta de la EMRE Manizales 2024.",
         "enum": [
@@ -1622,24 +1669,6 @@
           "value"
         ],
         "title": "Figure",
-        "type": "object"
-      },
-      "FundingSource": {
-        "properties": {
-          "amount_cop": {
-            "title": "Amount Cop",
-            "type": "number"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "amount_cop"
-        ],
-        "title": "FundingSource",
         "type": "object"
       },
       "GeoPrecision": {
@@ -3322,34 +3351,56 @@
             "title": "Channels",
             "type": "array"
           },
+          "contracts": {
+            "items": {
+              "$ref": "#/components/schemas/ContractRow"
+            },
+            "title": "Contracts",
+            "type": "array"
+          },
           "cutoff_at": {
             "format": "date-time",
             "title": "Cutoff At",
             "type": "string"
           },
           "day": {
-            "description": "Días desde el sismo",
+            "description": "Días desde el sismo principal",
             "title": "Day",
             "type": "integer"
           },
-          "economy": {
-            "items": {
-              "$ref": "#/components/schemas/EconomyRow"
-            },
-            "title": "Economy",
-            "type": "array"
-          },
           "event_at": {
-            "format": "date-time",
-            "title": "Event At",
-            "type": "string"
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event At"
           },
-          "funding": {
-            "items": {
-              "$ref": "#/components/schemas/FundingSource"
-            },
-            "title": "Funding",
-            "type": "array"
+          "event_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Label"
+          },
+          "event_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Url"
           },
           "index": {
             "anyOf": [
@@ -3397,6 +3448,13 @@
             "title": "Needs",
             "type": "array"
           },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceInfo"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
           "stages": {
             "items": {
               "$ref": "#/components/schemas/Stage"
@@ -3408,6 +3466,8 @@
         "required": [
           "cutoff_at",
           "event_at",
+          "event_label",
+          "event_url",
           "day",
           "index",
           "index_components",
@@ -3416,8 +3476,8 @@
           "barrios",
           "index_curve",
           "channels",
-          "economy",
-          "funding",
+          "contracts",
+          "sources",
           "stages"
         ],
         "title": "RecoveryDashboard",
@@ -4454,6 +4514,124 @@
         "title": "SnapshotsIn",
         "type": "object"
       },
+      "SourceInfo": {
+        "description": "Respaldo de una fuente: de dónde sale, cuándo se consultó y si la copia está íntegra.",
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution"
+          },
+          "feeds": {
+            "description": "Indicadores que alimenta",
+            "title": "Feeds",
+            "type": "string"
+          },
+          "fetched_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fetched At"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License"
+          },
+          "query_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Url"
+          },
+          "record_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Count"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "conectada",
+              "sin_copia",
+              "sin_convenio"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "verified": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "source",
+          "status",
+          "feeds"
+        ],
+        "title": "SourceInfo",
+        "type": "object"
+      },
       "Stage": {
         "properties": {
           "end_day": {
@@ -4470,6 +4648,18 @@
           "number": {
             "title": "Number",
             "type": "integer"
+          },
+          "progress_basis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cómo se mide el avance",
+            "title": "Progress Basis"
           },
           "progress_pct": {
             "anyOf": [
@@ -4495,7 +4685,8 @@
               "pendiente",
               "verde",
               "amarillo",
-              "rojo"
+              "rojo",
+              "sin_fuente"
             ],
             "title": "Status",
             "type": "string"

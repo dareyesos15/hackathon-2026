@@ -1272,22 +1272,27 @@ export interface components {
             colapso: number;
             /** Comuna */
             comuna: string;
+            /**
+             * Damage Reported
+             * @description Manzanas con daño reportado por la ciudadanía
+             */
+            damage_reported: number;
             /** Families */
             families: number;
             /** Index */
             index: number | null;
-            /** Pending */
+            /**
+             * Pending
+             * @description De esas manzanas, las que aún no tienen evaluación
+             */
             pending: number;
-            /** Requested */
-            requested: number;
             /** Rojo */
             rojo: number;
-            /** Services */
-            services: {
-                [key: string]: number;
-            };
-            /** Services Eta */
-            services_eta: string | null;
+            /**
+             * Service Incidents
+             * @description Incidentes abiertos de servicios caídos
+             */
+            service_incidents: number;
             /** Verde */
             verde: number;
         };
@@ -1364,12 +1369,39 @@ export interface components {
             /** Radius M */
             radius_m: number;
         };
+        /**
+         * ContractRow
+         * @description Contrato de SECOP II ligado al sismo (sin datos personales del contratista).
+         */
+        ContractRow: {
+            /** Entity */
+            entity: string;
+            /** Id */
+            id: string;
+            /** Invoiced Cop */
+            invoiced_cop: number;
+            /** Object */
+            object: string;
+            /** Paid Cop */
+            paid_cop: number;
+            /** Signed At */
+            signed_at: string | null;
+            /** Status */
+            status: string;
+            /** Url */
+            url: string | null;
+            /** Value Cop */
+            value_cop: number;
+        };
         /** CurvePoint */
         CurvePoint: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
             /** Day */
             day: number;
-            /** Simulated */
-            simulated: boolean;
             /** Value */
             value: number;
         };
@@ -1380,7 +1412,10 @@ export interface components {
         DamageLevel: "menor" | "mediano_uso_restringido" | "mayor" | "colapso";
         /**
          * DashFigure
-         * @description Cifra del tablero con nombre del diccionario de indicadores y trazabilidad.
+         * @description Cifra del tablero con nombre del diccionario de indicadores y su respaldo.
+         *
+         *     `state = "sin_fuente"`: no hay fuente conectada; `value` es `None` y `note` dice qué entidad
+         *     o convenio la provee. Nunca se muestra un número inventado.
          */
         DashFigure: {
             /**
@@ -1392,19 +1427,23 @@ export interface components {
             key: string;
             /** Label */
             label: string;
+            /** Note */
+            note?: string | null;
             /**
              * Simulated
-             * @default true
+             * @default false
              */
             simulated: boolean;
             /** Source */
             source: string;
+            /** Source Url */
+            source_url?: string | null;
             /**
              * State
              * @default neutral
              * @enum {string}
              */
-            state: "ok" | "alerta" | "neutral";
+            state: "ok" | "alerta" | "neutral" | "sin_fuente";
             /** Target */
             target?: string | null;
             /**
@@ -1576,19 +1615,6 @@ export interface components {
             fallback_used: boolean;
             suggested_agency: components["schemas"]["AgencyRef"] | null;
         };
-        /** EconomyRow */
-        EconomyRow: {
-            /** Businesses Closed */
-            businesses_closed: number;
-            /** Businesses Reopened */
-            businesses_reopened: number;
-            /** Comuna */
-            comuna: string;
-            /** Jobs Lost */
-            jobs_lost: number;
-            /** Jobs Recovered */
-            jobs_recovered: number;
-        };
         /**
          * EmreFunction
          * @description Seis funciones de respuesta de la EMRE Manizales 2024.
@@ -1606,13 +1632,6 @@ export interface components {
             label: string;
             /** Value */
             value: number | null;
-        };
-        /** FundingSource */
-        FundingSource: {
-            /** Amount Cop */
-            amount_cop: number;
-            /** Name */
-            name: string;
         };
         /**
          * GeoPrecision
@@ -2258,6 +2277,8 @@ export interface components {
             barrios: components["schemas"]["BarrioRecovery"][];
             /** Channels */
             channels: components["schemas"]["ChannelCount"][];
+            /** Contracts */
+            contracts: components["schemas"]["ContractRow"][];
             /**
              * Cutoff At
              * Format: date-time
@@ -2265,18 +2286,15 @@ export interface components {
             cutoff_at: string;
             /**
              * Day
-             * @description Días desde el sismo
+             * @description Días desde el sismo principal
              */
             day: number;
-            /** Economy */
-            economy: components["schemas"]["EconomyRow"][];
-            /**
-             * Event At
-             * Format: date-time
-             */
-            event_at: string;
-            /** Funding */
-            funding: components["schemas"]["FundingSource"][];
+            /** Event At */
+            event_at: string | null;
+            /** Event Label */
+            event_label: string | null;
+            /** Event Url */
+            event_url: string | null;
             /** Index */
             index: number | null;
             /** Index Components */
@@ -2289,6 +2307,8 @@ export interface components {
             indicators: components["schemas"]["Indicator"][];
             /** Needs */
             needs: components["schemas"]["Need"][];
+            /** Sources */
+            sources: components["schemas"]["SourceInfo"][];
             /** Stages */
             stages: components["schemas"]["Stage"][];
         };
@@ -2663,6 +2683,42 @@ export interface components {
             /** Items */
             items: components["schemas"]["SnapshotIn"][];
         };
+        /**
+         * SourceInfo
+         * @description Respaldo de una fuente: de dónde sale, cuándo se consultó y si la copia está íntegra.
+         */
+        SourceInfo: {
+            /** Attribution */
+            attribution?: string | null;
+            /**
+             * Feeds
+             * @description Indicadores que alimenta
+             */
+            feeds: string;
+            /** Fetched At */
+            fetched_at?: string | null;
+            /** Key */
+            key: string;
+            /** License */
+            license?: string | null;
+            /** Query Url */
+            query_url?: string | null;
+            /** Record Count */
+            record_count?: number | null;
+            /** Sha256 */
+            sha256?: string | null;
+            /** Source */
+            source: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "conectada" | "sin_copia" | "sin_convenio";
+            /** Title */
+            title: string;
+            /** Verified */
+            verified?: boolean | null;
+        };
         /** Stage */
         Stage: {
             /** End Day */
@@ -2671,6 +2727,11 @@ export interface components {
             figures: components["schemas"]["DashFigure"][];
             /** Number */
             number: number;
+            /**
+             * Progress Basis
+             * @description Cómo se mide el avance
+             */
+            progress_basis?: string | null;
             /** Progress Pct */
             progress_pct: number | null;
             /** Question */
@@ -2681,7 +2742,7 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "pendiente" | "verde" | "amarillo" | "rojo";
+            status: "pendiente" | "verde" | "amarillo" | "rojo" | "sin_fuente";
             /** Title */
             title: string;
         };

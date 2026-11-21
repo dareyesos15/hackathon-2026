@@ -15,8 +15,8 @@ const DESTINO: Record<Role, { href: string; descripcion: string }> = {
     descripcion: "Reportar una emergencia, incluso sin señal: se envía al volver la red.",
   },
   publico: {
-    href: "/pmu/kpi/",
-    descripcion: "Indicadores agregados con fuente y fecha de corte.",
+    href: "/mapa/",
+    descripcion: "Mapa de afectación por manzana e indicadores agregados con fecha de corte.",
   },
 };
 

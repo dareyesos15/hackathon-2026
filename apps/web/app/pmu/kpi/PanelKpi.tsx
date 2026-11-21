@@ -98,6 +98,11 @@ export default function PanelKpi() {
             Volver al tablero
           </Link>
         )}
+        {session?.role === "publico" && (
+          <Link href="/mapa/" className="ml-auto text-sm underline">
+            Ver mapa público
+          </Link>
+        )}
       </header>
 
       <section className="grid gap-4 rounded-xl bg-slate-900 p-5 text-white md:grid-cols-2">

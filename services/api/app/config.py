@@ -104,6 +104,13 @@ class Settings(BaseSettings):
     cdiac_max_age_min: float = 60.0
     cdiac_timeout_s: float = 10.0
 
+    # Tablero de recuperación. Umbral operativo de lluvia (mm en 3 h) para avisar riesgo de
+    # deslizamiento: valor configurable, no oficial; calibrarlo con el SAT de Manizales.
+    landslide_rain_threshold_mm_3h: float = 25.0
+    # True mientras el registro de Dacora tenga datos sintéticos de demostración (Ley 1581): sus
+    # cifras se marcan "SIMULADO". En producción, con registros reales, va en false.
+    demo_data: bool = True
+
     def role_tokens(self) -> dict[str, str]:
         """Mapa token → rol."""
         return {

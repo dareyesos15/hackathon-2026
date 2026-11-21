@@ -22,7 +22,6 @@ function estado(k: Kpi): Estado {
   if (v === null || v === undefined) return "neutral";
   switch (k.indicator) {
     case "duplicate_detection_rate":
-    case "fake_detection_rate":
       return v > 90 ? "ok" : "alerta";
     case "critical_recall":
       return v >= 98 ? "ok" : "alerta";
@@ -70,13 +69,7 @@ export default function PanelKpi() {
 
   if (!allowed) return null;
 
-  const detection = [
-    "duplicate_detection_rate",
-    "fake_detection_rate",
-    "false_positive_rate",
-    "critical_recall",
-    "critical_auto_discarded",
-  ];
+  const detection = ["duplicate_detection_rate", "critical_recall", "critical_auto_discarded"];
   const received = k.reports_received;
   const consolidated = k.incidents_consolidated;
   const mapLatency = k.time_to_consolidated_map_min;
@@ -124,7 +117,7 @@ export default function PanelKpi() {
               : "—"}
           </p>
           <p className="mt-1 text-xs text-white/70">
-            En el sismo real, las cifras de viviendas afectadas cambiaron durante días (1.449 →
+En el sismo real, las cifras de viviendas afectadas cambiaron durante días (1.449 →
             2.700 → 1.512, 13–15 ago). Fuente: {mapLatency?.source ?? "evaluate_kpis.py"}.
           </p>
         </div>
@@ -132,9 +125,9 @@ export default function PanelKpi() {
 
       <section>
         <h2 className="mb-2 font-display text-xl font-semibold">
-          Detección de duplicados y falsos (KPI oficial &gt; 90 %) y seguridad de los críticos
+          Detección de duplicados y seguridad de los críticos
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {detection.map((key) => (k[key] ? <CifraKpi key={key} k={k[key]} /> : null))}
         </div>
         {!k.duplicate_detection_rate && (

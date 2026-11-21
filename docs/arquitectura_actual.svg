@@ -38,12 +38,12 @@
 <text x="44.0" y="588" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Cruz Roja, Defensa Civil</text>
 <rect x="44.0" y="600" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
 <text x="72.8" y="612" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
-<rect x="34.0" y="644" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="44.0" y="664" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Hardware de campo</text>
-<text x="44.0" y="680" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Nodos LoRa/Meshtastic + sensor de</text>
-<text x="44.0" y="694" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">zonas inseguras UNAL</text>
-<rect x="44.0" y="706" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
-<text x="72.8" y="718" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="34.0" y="644" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="44.0" y="664" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Sensor de zonas inseguras</text>
+<text x="44.0" y="680" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Patente NC2025/0015763: ultrasonido,</text>
+<text x="44.0" y="694" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">infrarrojo y RFID; LoRa planeado</text>
+<rect x="44.0" y="706" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="72.8" y="718" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
 <line x1="268.0" y1="458.0" x2="284.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
 <rect x="286.0" y="146" width="242.0" height="624" rx="12" fill="#10b981" fill-opacity="0.07" stroke="#10b981" stroke-width="2"/>
 <rect x="286.0" y="146" width="242.0" height="62" rx="12" fill="#10b981" fill-opacity="0.22"/>
@@ -94,7 +94,7 @@
 <rect x="558.0" y="446" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.9" stroke-width="1.3"/>
 <text x="568.0" y="466" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Trust Score 0–100</text>
 <text x="568.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Desglose explicable por señal y</text>
-<text x="568.0" y="496" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">etiqueta de veracidad</text>
+<text x="568.0" y="496" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">etiqueta; incluye sensor de campo</text>
 <rect x="568.0" y="508" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
 <text x="609.2" y="520" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
 <rect x="558.0" y="552" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>

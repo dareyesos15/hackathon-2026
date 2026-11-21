@@ -20,6 +20,7 @@ import {
   type IncidentSummary,
 } from "@/lib/labels";
 import { EtiquetaSimulado } from "./EtiquetaSimulado";
+import { IconoCategoria } from "./IconoCategoria";
 
 type Action = "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
 
@@ -99,7 +100,7 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
   }, [detail, incidents]);
 
   if (!detail) {
-    return <div className="p-4 text-sm text-slate-500">{error ?? "Cargando incidente…"}</div>;
+    return <div className="p-4 text-sm text-tinta-suave">{error ?? "Cargando incidente…"}</div>;
   }
 
   const breakdown = detail.trust_breakdown as Record<string, Signal | number | string>;
@@ -138,30 +139,36 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
       <div className="flex items-start justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <span
-              className="inline-block h-3 w-3 rounded-full"
-              style={{ background: TRIAGE_COLOR[detail.triage_level] }}
-            />
-            <h2 className="text-lg font-semibold">{CATEGORY_LABEL[detail.category]}</h2>
+            <IconoCategoria category={detail.category} triage={detail.triage_level} size={36} />
+            <h2 className="font-display text-2xl font-semibold leading-tight">
+              {CATEGORY_LABEL[detail.category]}
+            </h2>
             <EtiquetaSimulado />
           </div>
-          <p className="text-xs text-slate-500">
-            {TRIAGE_LABEL[detail.triage_level]}
-            {detail.is_life_threat && " · RIESGO VITAL"} · {detail.barrio ?? "Sin ubicación"} ·{" "}
-            {STATUS_LABEL[detail.status]} · desde {formatDateTime(detail.first_seen)}
+          <p className="text-xs text-tinta-suave">
+            <span className="font-bold" style={{ color: TRIAGE_COLOR[detail.triage_level] }}>
+              {TRIAGE_LABEL[detail.triage_level]}
+            </span>
+            {detail.is_life_threat && (
+              <span className="ml-1 rounded-sm bg-senal px-1 font-bold text-white">
+                Riesgo vital
+              </span>
+            )}{" "}
+            · {detail.barrio ?? "Sin ubicación"} · {STATUS_LABEL[detail.status]} · desde{" "}
+            {formatDateTime(detail.first_seen)}
           </p>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="rounded px-2 text-sm text-slate-500 hover:bg-slate-100"
+          className="rounded px-2 text-sm text-tinta-suave hover:bg-papel"
           aria-label="Cerrar detalle"
         >
           ✕
         </button>
       </div>
 
-      <section className="rounded-lg bg-white p-3 shadow-sm">
+      <section className="rounded-lg bg-white p-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">Puntaje de veracidad</h3>
           <span
@@ -182,32 +189,32 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
               <li key={key} className="text-xs">
                 <div className="flex justify-between">
                   <span className="font-medium">{SIGNAL_LABEL[key] ?? key}</span>
-                  <span className={`tabular-nums ${negative ? "text-rose-700" : ""}`}>
+                  <span className={`tabular-nums ${negative ? "text-senal" : ""}`}>
                     {s.puntos > 0 ? "+" : ""}
                     {s.puntos.toLocaleString("es-CO", { maximumFractionDigits: 1 })}
                     {negative ? ` (mín. ${s.min})` : ` / ${s.max}`}
                   </span>
                 </div>
-                <div className="h-1.5 rounded bg-slate-100">
+                <div className="h-1.5 rounded bg-papel">
                   <div
-                    className={`h-1.5 rounded ${negative ? "bg-rose-500" : "bg-slate-700"}`}
+                    className={`h-1.5 rounded ${negative ? "bg-senal" : "bg-tinta"}`}
                     style={{ width: `${Math.min(100, Math.max(0, width))}%` }}
                   />
                 </div>
-                <p className="text-[11px] text-slate-500">{s.detalle}</p>
+                <p className="text-[11px] text-tinta-suave">{s.detalle}</p>
               </li>
             );
           })}
         </ul>
-        <p className="mt-2 text-[10px] text-slate-400">
+        <p className="mt-2 text-[10px] text-tinta-suave">
           Modelo {String(breakdown.version_modelo ?? "")} · la IA sugiere, decide un humano.
         </p>
       </section>
 
-      <section className="rounded-lg bg-white p-3 shadow-sm">
+      <section className="rounded-lg bg-white p-3">
         <h3 className="text-sm font-semibold">Decisión del PMU</h3>
         <textarea
-          className="mt-2 w-full rounded border border-slate-300 p-2 text-sm"
+          className="mt-2 w-full rounded border border-linea p-2 text-sm"
           rows={2}
           placeholder={
             detail.is_life_threat
@@ -222,7 +229,7 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
             type="button"
             disabled={busy || !pending}
             onClick={() => act("confirmar")}
-            className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+            className="rounded bg-verificado px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
           >
             {ACTION_LABEL.confirmar}
           </button>
@@ -231,7 +238,7 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
             disabled={busy || !pending || needsNote}
             onClick={() => act("descartar")}
             title={needsNote ? "Escriba una nota: el incidente tiene riesgo vital" : undefined}
-            className="rounded bg-rose-700 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+            className="rounded bg-senal px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
           >
             {ACTION_LABEL.descartar}
           </button>
@@ -240,14 +247,14 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
               type="button"
               disabled={busy}
               onClick={() => act("reabrir")}
-              className="rounded border border-slate-400 px-3 py-1.5 text-sm disabled:opacity-40"
+              className="rounded border border-tinta-suave px-3 py-1.5 text-sm disabled:opacity-40"
             >
               {ACTION_LABEL.reabrir}
             </button>
           )}
         </div>
         {needsNote && pending && (
-          <p className="mt-1 text-[11px] text-rose-700">
+          <p className="mt-1 text-[11px] text-senal">
             Riesgo vital: para descartar debe dejar una nota que quede en la bitácora.
           </p>
         )}
@@ -255,7 +262,7 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
           <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
             <select
               aria-label="Incidente original"
-              className="flex-1 rounded border border-slate-300 bg-white px-2 py-1 text-xs"
+              className="flex-1 rounded border border-linea bg-white px-2 py-1 text-xs"
               value={target}
               onChange={(e) => setTarget(e.target.value)}
             >
@@ -272,33 +279,33 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
               type="button"
               disabled={busy || !target}
               onClick={() => act("marcar_duplicado")}
-              className="rounded bg-slate-800 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
+              className="rounded bg-tinta px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
             >
               {ACTION_LABEL.marcar_duplicado}
             </button>
           </div>
         )}
-        {error && <p className="mt-2 text-xs text-rose-700">{error}</p>}
+        {error && <p className="mt-2 text-xs text-senal">{error}</p>}
       </section>
 
-      <section className="rounded-lg bg-white p-3 shadow-sm">
+      <section className="rounded-lg bg-white p-3">
         <h3 className="text-sm font-semibold">
           Reportes ({formatInt(detail.reports.length)}) · {formatInt(detail.independent_sources)}{" "}
           fuentes independientes
         </h3>
         <ul className="mt-2 space-y-2">
           {detail.reports.map((r) => (
-            <li key={r.id} className="rounded border border-slate-100 p-2 text-xs">
-              <div className="flex justify-between text-slate-500">
+            <li key={r.id} className="rounded border border-linea p-2 text-xs">
+              <div className="flex justify-between text-tinta-suave">
                 <span>
                   {CHANNEL_LABEL[r.channel]} · {formatTime(r.occurred_at)} · precisión{" "}
                   {r.geo_precision}
                 </span>
                 <span>{r.status.replace("_", " ")}</span>
               </div>
-              <p className="mt-1 text-slate-800">{r.text_redacted}</p>
+              <p className="mt-1 text-tinta">{r.text_redacted}</p>
               {r.misinfo_signals.length > 0 && (
-                <p className="mt-1 text-rose-700">
+                <p className="mt-1 text-senal">
                   Señales de desinformación: {r.misinfo_signals.join(", ")}
                 </p>
               )}
@@ -307,7 +314,7 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
         </ul>
       </section>
 
-      <section className="rounded-lg bg-white p-3 shadow-sm">
+      <section className="rounded-lg bg-white p-3">
         <h3 className="text-sm font-semibold">Bitácora</h3>
         <ol className="mt-2 space-y-1 text-xs">
           {detail.events.map((e) => (
@@ -315,10 +322,10 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
               <span>
                 {EVENT_LABEL[e.action] ?? e.action}
                 {typeof e.payload.nota === "string" && (
-                  <span className="text-slate-500"> — “{e.payload.nota}”</span>
+                  <span className="text-tinta-suave"> — “{e.payload.nota}”</span>
                 )}
               </span>
-              <span className="shrink-0 text-slate-500">
+              <span className="shrink-0 text-tinta-suave">
                 {e.actor_role === "sistema" ? "sistema" : e.actor_role} · {formatTime(e.at)}
               </span>
             </li>

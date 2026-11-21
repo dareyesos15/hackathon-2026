@@ -2,6 +2,7 @@
 /** Matriz de triaje filtrable (FR-023): conteo por nivel + lista ordenada por nivel y antigüedad. */
 import { useMemo, useState } from "react";
 import { formatInt, formatTime } from "@/lib/format";
+import { IconoCategoria } from "./IconoCategoria";
 import {
   CATEGORY_LABEL,
   STATUS_LABEL,
@@ -70,37 +71,44 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
 
   return (
     <div className="flex h-full flex-col gap-3">
-      <div className="grid grid-cols-4 gap-2">
-        {TRIAGE_ORDER.map((level) => (
-          <button
-            key={level}
-            type="button"
-            onClick={() => setTriage(triage === level ? "todos" : level)}
-            className={`rounded-lg border-2 bg-white p-2 text-left shadow-sm transition ${
-              triage === level ? "border-slate-900" : "border-transparent"
-            }`}
-          >
-            <span className="flex items-center gap-1 text-xs font-semibold">
+      <div className="grid grid-cols-4 overflow-hidden rounded-md border border-linea bg-white">
+        {TRIAGE_ORDER.map((level) => {
+          const active = triage === level;
+          const urgent = level === "critico" && counts.critico.pendientes > 0;
+          return (
+            <button
+              key={level}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setTriage(active ? "todos" : level)}
+              className={`relative border-r border-linea p-2 pt-3 text-left last:border-r-0 ${
+                urgent ? "bg-senal-fondo" : active ? "bg-papel" : "hover:bg-papel"
+              } ${active ? "ring-2 ring-tinta ring-inset" : ""}`}
+            >
               <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
+                className={`absolute inset-x-0 top-0 ${active ? "h-2" : "h-1"}`}
                 style={{ background: TRIAGE_COLOR[level] }}
               />
-              {TRIAGE_LABEL[level]}
-            </span>
-            <span className="block text-xl font-bold tabular-nums">
-              {formatInt(counts[level].pendientes)}
-            </span>
-            <span className="block text-[10px] text-slate-500">
-              pendientes de {formatInt(counts[level].total)}
-            </span>
-          </button>
-        ))}
+              <span className="block text-sm font-bold">{TRIAGE_LABEL[level]}</span>
+              <span
+                className={`block font-display text-3xl font-semibold leading-none tabular-nums ${
+                  urgent ? "text-senal" : ""
+                }`}
+              >
+                {formatInt(counts[level].pendientes)}
+              </span>
+              <span className="block text-[11px] text-tinta-suave">
+                pendientes de {formatInt(counts[level].total)}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex flex-wrap gap-2 text-xs">
         <select
           aria-label="Estado"
-          className="rounded border border-slate-300 bg-white px-2 py-1"
+          className="rounded border border-linea bg-white px-2 py-1"
           value={status}
           onChange={(e) => setStatus(e.target.value as typeof status)}
         >
@@ -114,7 +122,7 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
         </select>
         <select
           aria-label="Categoría"
-          className="rounded border border-slate-300 bg-white px-2 py-1"
+          className="rounded border border-linea bg-white px-2 py-1"
           value={category}
           onChange={(e) => setCategory(e.target.value as typeof category)}
         >
@@ -125,32 +133,30 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
             </option>
           ))}
         </select>
-        <span className="self-center text-slate-500">{formatInt(rows.length)} incidentes</span>
+        <span className="self-center text-tinta-suave">{formatInt(rows.length)} incidentes</span>
       </div>
 
-      <ul className="flex-1 divide-y divide-slate-100 overflow-y-auto rounded-lg bg-white shadow-sm">
+      <ul className="flex-1 divide-y divide-linea overflow-y-auto rounded-md border border-linea bg-white">
         {rows.map((i) => (
           <li key={i.id}>
             <button
               type="button"
               onClick={() => onSelect(i.id)}
-              className={`flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50 ${
-                i.id === selectedId ? "bg-slate-100" : ""
+              className={`flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-papel ${
+                i.id === selectedId ? "bg-senal-fondo" : ""
               }`}
             >
-              <span
-                className="mt-1 inline-block h-3 w-3 shrink-0 rounded-full"
-                style={{ background: TRIAGE_COLOR[i.triage_level] }}
-                title={TRIAGE_LABEL[i.triage_level]}
-              />
+              <IconoCategoria category={i.category} triage={i.triage_level} size={30} />
               <span className="flex-1">
                 <span className="font-medium">
                   {CATEGORY_LABEL[i.category]}
                   {i.is_life_threat && (
-                    <span className="ml-1 text-[10px] font-bold text-red-700">RIESGO VITAL</span>
+                    <span className="ml-2 rounded-sm bg-senal px-1 py-px text-[11px] font-bold text-white">
+                      Riesgo vital
+                    </span>
                   )}
                 </span>
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-tinta-suave">
                   {i.barrio ?? "Sin ubicación"} · {formatInt(i.report_count)} reportes ·{" "}
                   {formatInt(i.independent_sources)} fuentes · {formatTime(i.first_seen)}
                 </span>
@@ -161,13 +167,13 @@ export function MatrizTriaje({ incidents, selectedId, onSelect }: Props) {
                 >
                   {TRUST_LABEL[i.trust_label]} · {i.trust_score}
                 </span>
-                <span className="text-[10px] text-slate-500">{STATUS_LABEL[i.status]}</span>
+                <span className="text-[10px] text-tinta-suave">{STATUS_LABEL[i.status]}</span>
               </span>
             </button>
           </li>
         ))}
         {rows.length === 0 && (
-          <li className="p-4 text-center text-sm text-slate-500">
+          <li className="p-4 text-center text-sm text-tinta-suave">
             No hay incidentes con estos filtros.
           </li>
         )}

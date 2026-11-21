@@ -15,6 +15,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.pipeline import Engine, refresh_trust
+from app.core.privacy import redact
 from app.domain import IncidentStatus, ReportAction, ReportStatus, Role
 from app.models import Incident, Report, ReportEvent
 
@@ -149,6 +150,8 @@ async def review_incident(
     note: str | None = None,
     duplicate_of_incident: uuid.UUID | None = None,
 ) -> ReviewResult:
+    if action == ReportAction.cerrar_atendido:
+        return await close_attended(session, incident, actor, note)
     allowed, new_status = TRANSITIONS[action]
     _check(action, actor, incident.is_life_threat, note)
     if action == ReportAction.marcar_duplicado and duplicate_of_incident is None:
@@ -192,3 +195,41 @@ async def review_incident(
         incident.status = INCIDENT_STATUS.get(action, incident.status)
     await session.commit()
     return ReviewResult(target or incident, reports, events, touched)
+
+
+async def close_attended(
+    session: AsyncSession, incident: Incident, actor: Role, note: str | None
+) -> ReviewResult:
+    """`verificado → atendido` (specs/002 FR-011): lo decide el PMU o el COE, nunca el despacho."""
+    if actor not in (Role.operador_pmu, Role.coe):
+        raise ReviewError("forbidden", "Solo el PMU o el COE cierran un incidente", 403)
+    if incident.status != IncidentStatus.verificado:
+        raise ReviewError(
+            "invalid_transition",
+            f"Solo se cierra como atendido un incidente verificado (está {incident.status.value})",
+            409,
+        )
+    reports = list(
+        (
+            await session.execute(
+                select(Report).where(
+                    Report.incident_id == incident.id, Report.status == ReportStatus.verificado
+                )
+            )
+        ).scalars()
+    )
+    for report in reports:
+        report.status = ReportStatus.atendido
+    payload: dict[str, str] = {"nota": redact(note.strip()).text} if note and note.strip() else {}
+    event = ReportEvent(
+        incident_id=incident.id,
+        actor_role=actor,
+        action=ReportAction.cerrar_atendido,
+        payload=payload,
+        source="tablero PMU",
+    )
+    session.add(event)
+    incident.status = IncidentStatus.atendido
+    await session.commit()
+    await session.refresh(incident)  # updated_at lo genera la base
+    return ReviewResult(incident, reports, [event], [incident])

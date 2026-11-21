@@ -37,6 +37,23 @@ class TrustWeights(BaseModel):
     sources_saturation: int = 4
 
 
+class CascadeSettings(BaseModel):
+    """Modelo de efectos en cascada por manzana (research R11). Valores SIMULADOS calibrables."""
+
+    weight_slope: float = 35.0
+    weight_rain: float = 30.0
+    weight_seismic: float = 15.0
+    weight_reports: float = 20.0
+    slope_saturation_deg: float = 45.0
+    rain_saturation_mm: float = 40.0
+    reports_saturation: int = 3
+    reports_radius_m: float = 300.0
+    reports_window_hours: float = 6.0
+    cut_medio: float = 25.0
+    cut_alto: float = 50.0
+    cut_muy_alto: float = 75.0
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -62,6 +79,16 @@ class Settings(BaseSettings):
 
     # Agregación pública por manzana (principio I).
     k_anonymity: int = 5
+
+    # Despacho (specs/002, research R4, R5, R13).
+    simulate_tracks: bool = True
+    track_tick_s: float = 5.0
+    track_speedup: float = 20.0
+    routing_speed_kmh: float = 25.0
+    routing_tortuosity: float = 1.4
+    unattended_alert_min: float = 15.0
+
+    cascade: CascadeSettings = CascadeSettings()
 
     def role_tokens(self) -> dict[str, str]:
         """Mapa token → rol."""

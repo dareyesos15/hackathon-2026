@@ -285,7 +285,46 @@ class Stage(BaseModel):
     figures: list[DashFigure]
 
 
+ScenarioKey = Literal["real", "mejor", "peor"]
+
+
+class ConfidenceStat(BaseModel):
+    """Estadístico de una métrica sobre las corridas Monte Carlo (media e IC del 90 %)."""
+
+    key: str
+    label: str
+    unit: Literal["%", "pts"]
+    mean: float
+    p5: float
+    p50: float
+    p95: float
+    n: int
+
+
+class ScenarioSummary(BaseModel):
+    key: Literal["mejor", "peor"]
+    title: str
+    description: str
+    assumptions: list[str]
+    runs: int
+    seed: int
+    p_high_confidence: float = Field(description="% de corridas con confianza ≥ 75")
+    stats: list[ConfidenceStat]
+
+
+class ScenarioComparison(BaseModel):
+    """Confianza que tendría Dacora en el mejor y el peor caso de acceso a datos (SIMULADO)."""
+
+    day: int
+    method: str
+    weights: dict[str, float]
+    scenarios: list[ScenarioSummary]
+
+
 class RecoveryDashboard(BaseModel):
+    scenario: ScenarioKey = "real"
+    scenario_title: str | None = None
+    scenario_note: str | None = None
     cutoff_at: datetime
     event_at: datetime | None
     event_label: str | None

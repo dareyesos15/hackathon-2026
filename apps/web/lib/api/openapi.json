@@ -979,6 +979,59 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "ConfidenceStat": {
+        "description": "Estadístico de una métrica sobre las corridas Monte Carlo (media e IC del 90 %).",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "mean": {
+            "title": "Mean",
+            "type": "number"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "p5": {
+            "title": "P5",
+            "type": "number"
+          },
+          "p50": {
+            "title": "P50",
+            "type": "number"
+          },
+          "p95": {
+            "title": "P95",
+            "type": "number"
+          },
+          "unit": {
+            "enum": [
+              "%",
+              "pts"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "unit",
+          "mean",
+          "p5",
+          "p50",
+          "p95",
+          "n"
+        ],
+        "title": "ConfidenceStat",
+        "type": "object"
+      },
       "ContractRow": {
         "description": "Contrato de SECOP II ligado al sismo (sin datos personales del contratista).",
         "properties": {
@@ -3861,6 +3914,38 @@
             "title": "Needs",
             "type": "array"
           },
+          "scenario": {
+            "default": "real",
+            "enum": [
+              "real",
+              "mejor",
+              "peor"
+            ],
+            "title": "Scenario",
+            "type": "string"
+          },
+          "scenario_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Note"
+          },
+          "scenario_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Title"
+          },
           "sources": {
             "items": {
               "$ref": "#/components/schemas/SourceInfo"
@@ -4601,6 +4686,100 @@
         ],
         "title": "RudStatus",
         "type": "string"
+      },
+      "ScenarioComparison": {
+        "description": "Confianza que tendría Dacora en el mejor y el peor caso de acceso a datos (SIMULADO).",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "integer"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioSummary"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Weights",
+            "type": "object"
+          }
+        },
+        "required": [
+          "day",
+          "method",
+          "weights",
+          "scenarios"
+        ],
+        "title": "ScenarioComparison",
+        "type": "object"
+      },
+      "ScenarioSummary": {
+        "properties": {
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "key": {
+            "enum": [
+              "mejor",
+              "peor"
+            ],
+            "title": "Key",
+            "type": "string"
+          },
+          "p_high_confidence": {
+            "description": "% de corridas con confianza ≥ 75",
+            "title": "P High Confidence",
+            "type": "number"
+          },
+          "runs": {
+            "title": "Runs",
+            "type": "integer"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "stats": {
+            "items": {
+              "$ref": "#/components/schemas/ConfidenceStat"
+            },
+            "title": "Stats",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "description",
+          "assumptions",
+          "runs",
+          "seed",
+          "p_high_confidence",
+          "stats"
+        ],
+        "title": "ScenarioSummary",
+        "type": "object"
       },
       "ShelterList": {
         "properties": {
@@ -7953,6 +8132,25 @@
       "get": {
         "description": "Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.",
         "operationId": "dashboard_api_v1_recovery_dashboard_get",
+        "parameters": [
+          {
+            "description": "real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+            "in": "query",
+            "name": "scenario",
+            "required": false,
+            "schema": {
+              "default": "real",
+              "description": "real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+              "enum": [
+                "real",
+                "mejor",
+                "peor"
+              ],
+              "title": "Scenario",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -8388,6 +8586,43 @@
           }
         ],
         "summary": "List Properties",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/scenarios": {
+      "get": {
+        "description": "Confianza del sistema en el mejor y el peor caso de acceso a datos (SIMULADO).",
+        "operationId": "scenarios_api_v1_recovery_scenarios_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioComparison"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Scenarios",
         "tags": [
           "recuperación"
         ]

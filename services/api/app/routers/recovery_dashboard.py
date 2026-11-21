@@ -16,7 +16,7 @@ from datetime import UTC, date, datetime, timedelta
 from functools import lru_cache
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -57,6 +57,7 @@ from app.recovery_schemas import (
     Indicator,
     Need,
     RecoveryDashboard,
+    ScenarioKey,
     SourceInfo,
     Stage,
 )
@@ -220,10 +221,18 @@ def _families(
 async def dashboard(
     _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
+    scenario: ScenarioKey = Query(
+        "real",
+        description="real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+    ),
 ) -> RecoveryDashboard:
     """Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico."""
     settings = get_settings()
     now = datetime.now(UTC)
+    if scenario != "real":
+        from app.routers.recovery_scenarios import scenario_dashboard
+
+        return scenario_dashboard(scenario, now)
     usgs = load_snapshot("usgs_sismos")
     secop = load_snapshot("secop_sismo_manizales")
     cdiac = load_snapshot("cdiac_lluvia")

@@ -808,6 +808,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recovery/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Scenarios
+         * @description Confianza del sistema en el mejor y el peor caso de acceso a datos (SIMULADO).
+         */
+        get: operations["scenarios_api_v1_recovery_scenarios_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recovery/shelters": {
         parameters: {
             query?: never;
@@ -1473,6 +1493,31 @@ export interface components {
             lon: number;
             /** Radius M */
             radius_m: number;
+        };
+        /**
+         * ConfidenceStat
+         * @description Estadístico de una métrica sobre las corridas Monte Carlo (media e IC del 90 %).
+         */
+        ConfidenceStat: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Mean */
+            mean: number;
+            /** N */
+            n: number;
+            /** P5 */
+            p5: number;
+            /** P50 */
+            p50: number;
+            /** P95 */
+            p95: number;
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "%" | "pts";
         };
         /**
          * ContractRow
@@ -2568,6 +2613,16 @@ export interface components {
             indicators: components["schemas"]["Indicator"][];
             /** Needs */
             needs: components["schemas"]["Need"][];
+            /**
+             * Scenario
+             * @default real
+             * @enum {string}
+             */
+            scenario: "real" | "mejor" | "peor";
+            /** Scenario Note */
+            scenario_note?: string | null;
+            /** Scenario Title */
+            scenario_title?: string | null;
             /** Sources */
             sources: components["schemas"]["SourceInfo"][];
             /** Stages */
@@ -2821,6 +2876,47 @@ export interface components {
          * @enum {string}
          */
         RudStatus: "pendiente" | "inscrito";
+        /**
+         * ScenarioComparison
+         * @description Confianza que tendría Dacora en el mejor y el peor caso de acceso a datos (SIMULADO).
+         */
+        ScenarioComparison: {
+            /** Day */
+            day: number;
+            /** Method */
+            method: string;
+            /** Scenarios */
+            scenarios: components["schemas"]["ScenarioSummary"][];
+            /** Weights */
+            weights: {
+                [key: string]: number;
+            };
+        };
+        /** ScenarioSummary */
+        ScenarioSummary: {
+            /** Assumptions */
+            assumptions: string[];
+            /** Description */
+            description: string;
+            /**
+             * Key
+             * @enum {string}
+             */
+            key: "mejor" | "peor";
+            /**
+             * P High Confidence
+             * @description % de corridas con confianza ≥ 75
+             */
+            p_high_confidence: number;
+            /** Runs */
+            runs: number;
+            /** Seed */
+            seed: number;
+            /** Stats */
+            stats: components["schemas"]["ConfidenceStat"][];
+            /** Title */
+            title: string;
+        };
         /** ShelterList */
         ShelterList: {
             /**
@@ -4653,7 +4749,10 @@ export interface operations {
     };
     dashboard_api_v1_recovery_dashboard_get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos */
+                scenario?: "real" | "mejor" | "peor";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4953,6 +5052,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PropertyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    scenarios_api_v1_recovery_scenarios_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioComparison"];
                 };
             };
             /** @description Validation Error */

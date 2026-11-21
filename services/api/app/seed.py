@@ -12,10 +12,11 @@ Catálogo de agencias y recursos del despacho (specs/002): se carga una vez.
 import csv
 import json
 import logging
+from typing import Any, cast
 
 from geoalchemy2 import WKTElement
 from shapely.geometry import shape
-from sqlalchemy import delete, func, select, text, update
+from sqlalchemy import CursorResult, TextClause, delete, func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -29,7 +30,7 @@ def _coord(value: float | str) -> str:
     return f"{float(value):.5f}"
 
 
-async def _sync_manzanas(session: AsyncSession, features: list[dict]) -> None:
+async def _sync_manzanas(session: AsyncSession, features: list[dict[str, Any]]) -> None:
     expected = {
         f["properties"]["id"]: (f["properties"]["barrio"], f["properties"]["comuna"])
         for f in features
@@ -155,11 +156,17 @@ _BACKFILL_INCIDENT_FROM_REPORTS = text(
 )
 
 
+async def _updated(session: AsyncSession, stmt: TextClause) -> int:
+    """Filas afectadas por un UPDATE (CursorResult.rowcount)."""
+    result = cast(CursorResult[Any], await session.execute(stmt))
+    return result.rowcount or 0
+
+
 async def _backfill_locations(session: AsyncSession) -> None:
-    reports = (await session.execute(_BACKFILL_REPORTS)).rowcount
-    reports += (await session.execute(_BACKFILL_NEAREST)).rowcount
-    incidents = (await session.execute(_BACKFILL_INCIDENTS)).rowcount
-    incidents += (await session.execute(_BACKFILL_INCIDENT_FROM_REPORTS)).rowcount
+    reports = await _updated(session, _BACKFILL_REPORTS)
+    reports += await _updated(session, _BACKFILL_NEAREST)
+    incidents = await _updated(session, _BACKFILL_INCIDENTS)
+    incidents += await _updated(session, _BACKFILL_INCIDENT_FROM_REPORTS)
     if reports or incidents:
         log.info("Barrio/manzana completados: %s reportes, %s incidentes", reports, incidents)
 

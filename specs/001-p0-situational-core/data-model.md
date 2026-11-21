@@ -10,7 +10,7 @@ timestamptz`, `source text`, `version int`. Geometrías en EPSG:4326. Horas en U
 
 | Enum | Valores |
 |---|---|
-| `channel` | `pwa`, `sms`, `whatsapp`, `call_123`, `scraping`, `entity`, `lora` |
+| `channel` | `pwa`, `sms`, `whatsapp`, `call_123`, `entity`, `lora` |
 | `category` | `personas_atrapadas`, `heridos`, `colapso_estructura`, `dano_estructural`, `incendio`, `fuga_gas`, `deslizamiento`, `via_bloqueada`, `servicios_caidos`, `necesidad_albergue`, `necesidad_ayuda`, `persona_desaparecida`, `sismo_sentido`, `rumor_informacion`, `sin_clasificar` |
 | `triage_level` | `critico`, `alto`, `medio`, `bajo` |
 | `geo_precision` | `gps`, `address`, `barrio`, `none` |

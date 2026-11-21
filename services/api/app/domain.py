@@ -247,3 +247,24 @@ class AidType(StrEnum):
     kit = "kit"
     mercado = "mercado"
     albergue = "albergue"
+
+
+# ------------------------------------------- sensor de zonas inseguras (specs/004, NC2025/0015763)
+
+
+class ZoneEventKind(StrEnum):
+    intrusion = "intrusion"
+    acceso_autorizado = "acceso_autorizado"
+    bateria_baja = "bateria_baja"
+    manipulacion = "manipulacion"
+
+
+class ZoneDetector(StrEnum):
+    ultrasonido = "ultrasonido"
+    infrarrojo = "infrarrojo"
+    ambos = "ambos"
+
+
+class ZoneSensorStatus(StrEnum):
+    armado = "armado"
+    desarmado = "desarmado"

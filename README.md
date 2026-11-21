@@ -20,20 +20,23 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720  #
 docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --rain  # + lluvia SIMULADA
 ```
 
-| Pantalla | URL | Rol / token de demo |
+| Pantalla | URL | Usuario de prueba |
 |---|---|---|
-| Inicio público: mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
-| Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
-| Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada, zonas inseguras) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
-| Avisos y despachos por agencia (incidentes que le llegan según la EMRE, llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
-| Recuperación: semáforo de habitabilidad, censo único, ayudas y albergues | http://localhost:8080/recuperacion/ | Entidades y PMU · `coe-demo` |
-| Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | Administrador · `admin-demo` |
+| Tablero público: triaje (incidentes sin texto, ubicación aproximada), cascada, zonas inseguras, mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
+| Reporte de emergencias (PWA offline) | http://localhost:8080/reportar/ | — (sin sesión) |
+| Iniciar sesión de entidades | http://localhost:8080/ingresar/ | — |
+| Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada, zonas inseguras) | http://localhost:8080/pmu/ | `coe` (aprueba alertas) o `pmu` |
+| Avisos y despachos por agencia (incidentes que le llegan según la EMRE, llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | `bomberos`, `cruzroja`, `defensacivil`, `infraestructura` (o `coe`/`pmu`) |
+| Recuperación: semáforo de habitabilidad, censo único, ayudas y albergues | http://localhost:8080/recuperacion/ | `coe` o `pmu` |
+| Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | `admin` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | — (cualquiera) |
-| Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
 
-Roles de la interfaz: **Ciudadanía**, **Entidades y PMU** (PMU, COE y agencias en un solo rol;
-en la API usa el token `coe`, por eso puede aprobar alertas oficiales) y **Administrador**. Sin
-sesión, el inicio público consulta como `publico` (solo agregados).
+**La ciudadanía no inicia sesión:** cualquier visitante ve el tablero público y reporta
+emergencias como anónimo (rol `publico` en la API). Las entidades y el administrador entran con
+usuario y contraseña de prueba (contraseña de todos: `dacora2026`, variable `DEMO_PASSWORD`);
+cada usuario recibe el token de su rol de API: `coe` → `coe` (único que aprueba alertas
+oficiales, EMRE tarea 5.5), `pmu` → `operador_pmu`, agencias → `agencia` (con su agencia ya
+elegida) y `admin` → `admin`. Todos los usuarios son ficticios.
 | API (OpenAPI) | http://localhost:8080/docs | — |
 
 Los tokens de demo están en [.env.example](.env.example); sin `.env`, Compose usa esos valores.
@@ -46,7 +49,7 @@ construir la imagen web: `docker compose up -d --build web`.
 **Reportar con GPS desde un celular:** los navegadores solo comparten el GPS en conexiones
 seguras. Desde el celular (misma red Wi-Fi que el portátil) abra
 **https://&lt;IP-del-portátil&gt;:8443/reportar/**, acepte una vez la advertencia del certificado
-autofirmado y entre como Ciudadanía. El reporte queda en el punto exacto del GPS en el mapa del
+autofirmado y reporte (sin iniciar sesión). El reporte queda en el punto exacto del GPS en el mapa del
 PMU. Por `http://…:8080` el GPS no está disponible y la PWA ofrece el enlace seguro.
 
 Despacho, alertas y cascada (specs/002): los recursos, sus recorridos tipo RFID, la hora estimada

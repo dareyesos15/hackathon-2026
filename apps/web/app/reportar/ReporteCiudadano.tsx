@@ -3,6 +3,7 @@
  * PWA ciudadana (US4): aviso de privacidad + consentimiento, formulario corto, redacción en el
  * borde, guardado en el teléfono (outbox) y envío automático al volver la señal.
  */
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
@@ -204,6 +205,9 @@ export default function ReporteCiudadano() {
       <header className="flex flex-wrap items-center gap-2">
         <h1 className="font-display text-2xl font-semibold">Reportar una emergencia</h1>
         <EtiquetaSimulado />
+        <Link href="/" className="text-sm underline underline-offset-4">
+          Ver mapa e indicadores
+        </Link>
         <span
           className={`ml-auto rounded-sm px-2 py-0.5 text-xs font-bold whitespace-nowrap ${
             online ? "bg-[#e3f1e9] text-verificado" : "bg-[#ffe9b8] text-tinta"

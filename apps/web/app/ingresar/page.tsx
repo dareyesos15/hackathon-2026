@@ -9,7 +9,8 @@ import { DEMO_TOKENS, ROLE_LABELS, setSession, type Role } from "@/lib/session";
 const DESTINO: Record<Role, { href: string; descripcion: string }> = {
   ciudadano: {
     href: "/reportar/",
-    descripcion: "Reportar una emergencia, incluso sin señal: se envía al volver la red.",
+    descripcion:
+      "Reportar una emergencia, incluso sin señal, y ver el mapa de afectación, las alertas y la predicción de cascada.",
   },
   pmu: {
     href: "/pmu/",

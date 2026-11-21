@@ -15,6 +15,40 @@ Ciudadano ──SMS──▶ Celular con SIM (app de pasarela) ──USB/adb─�
 - **Sin duplicados:** si la app reintenta, Dacora reconoce el mismo SMS por su identificador.
 - **Habeas Data:** el número del remitente solo se guarda como huella cifrada.
 
+## Para quien lo vaya a ejecutar (resumen)
+
+**En el celular** (una vez, ≈ 10 min):
+
+1. Instalar **SMS Gateway for Android** (sms-gate.app o Google Play), aceptar los permisos de
+   SMS y quitarle la optimización de batería.
+2. En **Home**, activar **Local Server** y anotar el **usuario** y la **clave**.
+3. En **Ajustes → Webhooks**: apagar **"Require Internet connection"**. La **Signing Key** se
+   llena en el paso de abajo (empieza vacía: es normal).
+4. Activar **Opciones de desarrollador → Depuración USB** (tocar 7 veces "Número de
+   compilación" en *Acerca del teléfono*).
+
+**En el portátil** (Windows, con Docker Desktop abierto y el repositorio actualizado):
+
+```powershell
+git pull
+powershell -ExecutionPolicy Bypass -File scripts\preparar_pasarela_sms.ps1
+```
+
+El script hace todo lo demás y se puede repetir sin problema:
+
+| Paso del script | Qué hace | Qué tiene que hacer usted |
+|---|---|---|
+| 1 | Verifica Docker y encuentra la demo en uso | — |
+| 2 | Crea la clave de firma en `.env` si no existe y **la muestra** | **Escribirla en el celular** en *Ajustes → Webhooks → Signing Key*, sin espacios |
+| 3 | Reconstruye la API y comprueba que la pasarela responde | — |
+| 4 | Instala `adb` si falta | — |
+| 5 | Espera el celular por USB | Conectar el cable de datos y tocar **Permitir** en "¿Permitir depuración USB?" |
+| 6 | Conecta la app con Dacora | Escribir el **usuario** y la **clave** del Local Server |
+
+Al final: enviar un SMS al número de la SIM desde otro celular y mirarlo en
+`http://localhost:8080/pmu/`. **Cada vez que se desconecte el cable o se reinicie el portátil**,
+volver a correr el script (solo vuelve a crear los túneles).
+
 ## Qué se necesita
 
 | En el celular | En el portátil |

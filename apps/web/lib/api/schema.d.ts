@@ -297,7 +297,7 @@ export interface components {
          * Channel
          * @enum {string}
          */
-        Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "scraping" | "entity" | "lora";
+        Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "entity" | "lora";
         /**
          * GeoPrecision
          * @enum {string}

@@ -72,7 +72,6 @@ export const CHANNEL_LABEL: Record<Channel, string> = {
   sms: "SMS",
   whatsapp: "WhatsApp",
   call_123: "Línea 123",
-  scraping: "Redes/medios",
   entity: "Entidad oficial",
   lora: "Nodo LoRa",
 };

@@ -30,7 +30,6 @@ OPERATOR_CHANNELS = {
     Channel.entity,
     Channel.whatsapp,
     Channel.call_123,
-    Channel.scraping,
     Channel.lora,
     Channel.sms,
 }

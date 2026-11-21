@@ -8,7 +8,6 @@ class Channel(StrEnum):
     sms = "sms"
     whatsapp = "whatsapp"
     call_123 = "call_123"
-    scraping = "scraping"
     entity = "entity"
     lora = "lora"
 

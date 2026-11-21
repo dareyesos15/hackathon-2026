@@ -22,7 +22,6 @@ CHANNEL_RELIABILITY: dict[Channel, float] = {
     Channel.sms: 0.5,
     Channel.call_123: 0.4,
     Channel.whatsapp: 0.3,
-    Channel.scraping: 0.3,
 }
 CHANNEL_LABEL: dict[Channel, str] = {
     Channel.entity: "entidad oficial",
@@ -31,7 +30,6 @@ CHANNEL_LABEL: dict[Channel, str] = {
     Channel.sms: "SMS",
     Channel.call_123: "llamada 123",
     Channel.whatsapp: "WhatsApp reenviado",
-    Channel.scraping: "redes/medios",
 }
 GEO_POINTS_FRACTION: dict[GeoPrecision, float] = {
     GeoPrecision.gps: 1.0,

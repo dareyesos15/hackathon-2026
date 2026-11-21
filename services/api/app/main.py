@@ -13,7 +13,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.db import SessionLocal
-from app.routers import incidents, ingest, reports
+from app.routers import demo, incidents, ingest, metrics, reports
 from app.seed import seed_geography
 from app.state import load_state
 
@@ -93,5 +93,5 @@ async def health() -> Health:
 
 
 app.include_router(health_router, prefix=API_PREFIX)
-for module in (ingest, reports, incidents):
+for module in (ingest, reports, incidents, metrics, demo):
     app.include_router(module.router, prefix=API_PREFIX)

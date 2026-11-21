@@ -16,7 +16,6 @@ import { DEMO_MODE } from "@/lib/env";
 import { formatDateTime, formatInt, formatTime } from "@/lib/format";
 import {
   AID_LABEL,
-  COLOR_DAMAGE,
   COLOR_LABEL,
   DAMAGE_LABEL,
   RUD_LABEL,
@@ -24,7 +23,6 @@ import {
   errorText,
   type AidOut,
   type AidType,
-  type DamageLevel,
   type HouseholdOut,
   type InspectionColor,
   type InspectionOut,
@@ -33,6 +31,7 @@ import {
   type ShelterOut,
 } from "@/lib/recovery";
 import { clearSession, getSession } from "@/lib/session";
+import { DetalleRevisiones, Derivaciones, FormatoRevision } from "./FormatoRevision";
 import { TableroRecuperacion } from "./TableroRecuperacion";
 import {
   Card,
@@ -58,14 +57,10 @@ const TABS: { id: Tab; label: string }[] = [
 // --------------------------------------------------------------------------- habitabilidad
 
 function Habitabilidad({ manzanas, tick }: { manzanas: ManzanaRef[]; tick: number }) {
-  const [property, setProperty] = useState(EMPTY_PROPERTY);
-  const [color, setColor] = useState<InspectionColor>("amarillo");
-  const [damage, setDamage] = useState<DamageLevel>("mediano_uso_restringido");
-  const [notes, setNotes] = useState("");
-  const [msg, setMsg] = useState<{ tone: "ok" | "warn" | "error"; text: string } | null>(null);
   const [items, setItems] = useState<PropertyOut[]>([]);
   const [history, setHistory] = useState<{ id: string; visits: InspectionOut[] } | null>(null);
   const [filter, setFilter] = useState<InspectionColor | "">("");
+  const [saved, setSaved] = useState(0);
 
   const load = useCallback(
     () =>
@@ -79,34 +74,7 @@ function Habitabilidad({ manzanas, tick }: { manzanas: ManzanaRef[]; tick: numbe
 
   useEffect(() => {
     void load();
-  }, [load, tick]);
-
-  function pickColor(c: InspectionColor) {
-    setColor(c);
-    if (!COLOR_DAMAGE[c].includes(damage)) setDamage(COLOR_DAMAGE[c][0]);
-  }
-
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    setMsg(null);
-    const { data, error } = await api.POST("/api/v1/recovery/inspections", {
-      body: { ...propertyBody(property), color, damage_level: damage, notes: notes.trim() || null },
-    });
-    if (error || !data) {
-      setMsg({ tone: "error", text: errorText(error, "No se pudo guardar la evaluación") });
-      return;
-    }
-    setMsg(
-      data.visit_number > 1
-        ? {
-            tone: "warn",
-            text: `Predio ya evaluado: esta es la visita n.º ${data.visit_number}. Se unió al mismo predio (${data.property_id}).`,
-          }
-        : { tone: "ok", text: `Evaluación registrada para ${data.property_id}.` },
-    );
-    setNotes("");
-    await load();
-  }
+  }, [load, tick, saved]);
 
   async function openHistory(id: string) {
     if (history?.id === id) {
@@ -121,53 +89,8 @@ function Habitabilidad({ manzanas, tick }: { manzanas: ManzanaRef[]; tick: numbe
 
   return (
     <div className="flex flex-col gap-4">
-      <Card title="Nueva evaluación de habitabilidad">
-        <form onSubmit={submit} className="flex flex-col gap-3">
-          <PropertyFields manzanas={manzanas} value={property} onChange={setProperty} />
-          <fieldset className="flex flex-wrap gap-2">
-            <legend className="mb-1 text-xs text-tinta-suave">Semáforo</legend>
-            {(Object.keys(COLOR_LABEL) as InspectionColor[]).map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => pickColor(c)}
-                aria-pressed={color === c}
-                className={`flex items-center gap-2 rounded border px-3 py-1.5 text-sm ${
-                  color === c ? "border-tinta font-semibold" : "border-linea"
-                }`}
-              >
-                <Dot color={c} /> {COLOR_LABEL[c]}
-              </button>
-            ))}
-          </fieldset>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-xs text-tinta-suave">
-              Nivel de daño (NSR-10)
-              <select
-                className={input}
-                value={damage}
-                onChange={(e) => setDamage(e.target.value as DamageLevel)}
-              >
-                {COLOR_DAMAGE[color].map((d) => (
-                  <option key={d} value={d}>
-                    {DAMAGE_LABEL[d]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-tinta-suave">
-              Observaciones (sin nombres ni teléfonos)
-              <input className={input} value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </label>
-          </div>
-          <div>
-            <button type="submit" className={button}>
-              Registrar evaluación
-            </button>
-          </div>
-          {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
-        </form>
-      </Card>
+      <FormatoRevision manzanas={manzanas} onSaved={() => setSaved((n) => n + 1)} />
+      <Derivaciones tick={tick + saved} />
 
       <Card
         title={`Predios evaluados (${formatInt(items.length)})`}
@@ -206,15 +129,18 @@ function Habitabilidad({ manzanas, tick }: { manzanas: ManzanaRef[]; tick: numbe
                 </span>
               </button>
               {history?.id === p.property_id && (
-                <ol className="mt-2 ml-5 flex flex-col gap-1 text-xs text-tinta-suave">
-                  {history.visits.map((v) => (
-                    <li key={v.id} className="flex items-center gap-2">
-                      <Dot color={v.color} /> Visita {v.visit_number} · {formatDateTime(v.at)} ·{" "}
-                      {DAMAGE_LABEL[v.damage_level]} · {v.inspector_role}
-                      {v.notes ? ` · ${v.notes}` : ""}
-                    </li>
-                  ))}
-                </ol>
+                <>
+                  <ol className="mt-2 ml-5 flex flex-col gap-1 text-xs text-tinta-suave">
+                    {history.visits.map((v) => (
+                      <li key={v.id} className="flex items-center gap-2">
+                        <Dot color={v.color} /> Visita {v.visit_number} · {formatDateTime(v.at)} ·{" "}
+                        {DAMAGE_LABEL[v.damage_level]} · {v.inspector_role}
+                        {v.notes ? ` · ${v.notes}` : ""}
+                      </li>
+                    ))}
+                  </ol>
+                  <DetalleRevisiones propertyId={p.property_id} />
+                </>
               )}
             </li>
           ))}

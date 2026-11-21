@@ -165,10 +165,10 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 
 ### Implementation for User Story 4
 
-- [ ] T063 [P] [US4] Implementar `redact` espejo de `privacy.py` en `apps/web/lib/redact.ts` y su prueba con `data/fixtures/pii_cases.json` en `apps/web/tests/redact.test.ts`
-- [ ] T064 [P] [US4] Implementar el outbox con Dexie (`client_uuid` con `crypto.randomUUID`, estados pendiente/enviado/error, envío por `/ingest/batch`, disparo en `online`, al cargar y cada 15 s) en `apps/web/lib/db.ts` y su prueba en `apps/web/tests/outbox.test.ts` — data-model.md `Report.client_uuid`
-- [ ] T065 [US4] Implementar `/reportar`: aviso de privacidad con consentimiento explícito, formulario (categoría, descripción, GPS o selector de barrio, personas, foto opcional), redacción antes de guardar, lista de reportes con estado, mensaje "guardado, se enviará cuando haya señal" en `apps/web/app/reportar/page.tsx` — data-model.md `Report.people_affected`, `Report.geo_precision`
-- [ ] T066 [P] [US4] Crear `apps/web/public/manifest.json`, íconos y `apps/web/public/sw.js` (cache del app shell; registro solo en contextos seguros) (research R4)
+- [X] T063 [P] [US4] Implementar `redact` espejo de `privacy.py` en `apps/web/lib/redact.ts` y su prueba con `data/fixtures/pii_cases.json` en `apps/web/tests/redact.test.ts`
+- [X] T064 [P] [US4] Implementar el outbox con Dexie (`client_uuid` con `crypto.randomUUID`, estados pendiente/enviado/error, envío por `/ingest/batch`, disparo en `online`, al cargar y cada 15 s) en `apps/web/lib/db.ts` y su prueba en `apps/web/tests/outbox.test.ts` — data-model.md `Report.client_uuid`
+- [X] T065 [US4] Implementar `/reportar`: aviso de privacidad con consentimiento explícito, formulario (categoría, descripción, GPS o selector de barrio, personas, foto opcional), redacción antes de guardar, lista de reportes con estado, mensaje "guardado, se enviará cuando haya señal" en `apps/web/app/reportar/page.tsx` — data-model.md `Report.people_affected`, `Report.geo_precision`
+- [X] T066 [P] [US4] Crear `apps/web/public/manifest.json`, íconos y `apps/web/public/sw.js` (cache del app shell; registro solo en contextos seguros) (research R4)
 
 **Checkpoint**: quickstart §7 en portátil (offline DevTools) y celular (modo avión con página abierta).
 

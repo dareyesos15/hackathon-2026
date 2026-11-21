@@ -1,8 +1,8 @@
 /* Service worker de Dacora (research R4): mejora progresiva para recargar sin red.
  * Solo se registra en contextos seguros (https o localhost). Nunca cachea la API:
  * los reportes sin conexión viven en IndexedDB (outbox), no aquí. */
-const CACHE = "dacora-shell-v1";
-const SHELL = ["/", "/reportar/", "/manifest.json", "/icon.svg"];
+const CACHE = "dacora-shell-v2";
+const SHELL = ["/", "/ingresar/", "/reportar/", "/manifest.json", "/icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

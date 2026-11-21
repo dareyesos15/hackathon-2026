@@ -1,13 +1,13 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-// Solo en el navegador: sesión en sessionStorage y MapLibre.
-const MapaPublico = dynamic(() => import("./MapaPublico"), {
-  ssr: false,
-  loading: () => <p className="p-6 text-sm text-slate-500">Cargando mapa…</p>,
-});
-
+// El mapa público ahora es la página de inicio (`/`).
 export default function MapaPage() {
-  return <MapaPublico />;
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/");
+  }, [router]);
+  return null;
 }

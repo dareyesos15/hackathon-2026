@@ -154,9 +154,9 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
                 Riesgo vital
               </span>
             )}{" "}
-            · {detail.barrio ?? "Sin ubicación"} · {STATUS_LABEL[detail.status]} · desde{" "}
-            {formatDateTime(detail.first_seen)}
+            · {STATUS_LABEL[detail.status]} · desde {formatDateTime(detail.first_seen)}
           </p>
+          <Ubicacion detail={detail} />
         </div>
         <button
           type="button"
@@ -333,5 +333,33 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
         </ol>
       </section>
     </div>
+  );
+}
+
+/** Dónde está el incidente y cómo se ubicó: con GPS el barrio sale del punto en el mapa. */
+function Ubicacion({ detail }: { detail: IncidentDetail }) {
+  const hasPoint = detail.lat !== null && detail.lon !== null;
+  const coords = hasPoint ? `${detail.lat?.toFixed(5)}, ${detail.lon?.toFixed(5)}` : null;
+  let how: string;
+  switch (detail.geo_precision) {
+    case "gps":
+      how = `Ubicado por GPS en ${coords}`;
+      break;
+    case "address":
+      how = `Ubicado por dirección en ${coords}`;
+      break;
+    case "barrio":
+      how = "Ubicado en el centro del barrio (sin GPS)";
+      break;
+    default:
+      how = "El reporte no trae ubicación";
+  }
+  return (
+    <p className="mt-1 text-sm">
+      <span className="font-bold">
+        {detail.barrio ?? (hasPoint ? "Barrio sin identificar" : "Sin ubicación")}
+      </span>
+      <span className="block text-xs tabular-nums text-tinta-suave">{how}</span>
+    </p>
   );
 }

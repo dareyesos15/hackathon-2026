@@ -2,6 +2,8 @@
 
 --speed 60 (defecto): 1 hora del evento = 1 minuto real (12 min en total).
 --speed 720: todo el escenario en ~1 minuto (ensayo).  --speed 0: sin esperas.
+--rain: publica una curva de lluvia SIMULADA (mm en 3 h) cada hora del escenario para la capa de
+efectos en cascada (specs/002 US3).
 Cada 25 reportes y al final ejecuta evaluate_kpis.py, que publica los KPI en el tablero.
 
 Uso (dentro del contenedor api):
@@ -19,6 +21,9 @@ from pathlib import Path
 
 import evaluate_kpis
 from _client import api_client
+
+# Lluvia acumulada en 3 h por hora del escenario (07:34 → 19:34). SIMULADA.
+RAIN_CURVE_MM = [0, 0, 5, 10, 20, 30, 40, 45, 40, 30, 20, 10, 5]
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parents[1] / "data"))
 MAP_PATH = evaluate_kpis.MAP_PATH
@@ -41,6 +46,7 @@ def main() -> int:
     parser.add_argument("--no-eval", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--rain", action="store_true", help="Publica la curva de lluvia SIMULADA")
     args = parser.parse_args()
 
     lines = load_scenario(args.limit)
@@ -58,12 +64,20 @@ def main() -> int:
             f"Reproduciendo {len(lines)} reportes del sismo del 10 ago 2026 "
             f"(velocidad ×{args.speed:g}; datos SIMULADOS)…"
         )
+        last_hour = -1
         for n, line in enumerate(lines, 1):
             if args.speed > 0:
                 due = line["minute"] * 60 / args.speed
                 wait = due - (time.monotonic() - start)
                 if wait > 0:
                     time.sleep(wait)
+            hour = int(line["minute"]) // 60
+            if args.rain and hour != last_hour and hour < len(RAIN_CURVE_MM):
+                last_hour = hour
+                client.post(
+                    "/sensors/rain",
+                    json={"mm_3h": RAIN_CURVE_MM[hour], "station_code": "LLUVIA-URB-01"},
+                )
             resp = client.post(line["endpoint"], json=line["body"])
             if resp.status_code >= 400:
                 print(

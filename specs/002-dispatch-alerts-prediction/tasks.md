@@ -163,7 +163,7 @@ precargada.
 - [X] T058 [US3] Manejar `cascade.invalidated` en el flujo en vivo (refrescar la capa como máximo una vez cada 3 s) en `apps/web/lib/live.ts`
 - [X] T059 [P] [US3] Crear `CapaCascada` (interruptor, leyenda de 4 niveles con etiqueta SIMULADO, control de lluvia 0–60 mm que publica `POST /sensors/rain`, desglose de la manzana elegida, botón "Crear alerta preventiva" que abre `EditorAlerta` con tipo `deslizamiento` y círculo centrado en la manzana) en `apps/web/components/CapaCascada.tsx`
 - [X] T060 [US3] Agregar a `Mapa` la capa de cascada (color por nivel, clic para elegir manzana) e integrar `CapaCascada` en el tablero, en `apps/web/components/Mapa.tsx` y `apps/web/app/pmu/TableroPmu.tsx`
-- [ ] T061 [P] [US3] Agregar la opción `--rain` (curva de lluvia SIMULADA publicada en `POST /sensors/rain` durante la reproducción) en `scripts/replay_scenario.py`
+- [X] T061 [P] [US3] Agregar la opción `--rain` (curva de lluvia SIMULADA publicada en `POST /sensors/rain` durante la reproducción) en `scripts/replay_scenario.py`
 
 **Checkpoint**: US3 funciona sola: [quickstart.md](quickstart.md) §Escenario 3 pasa completo.
 

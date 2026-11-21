@@ -239,9 +239,7 @@ async def dashboard(
     }
     index = recovery_index(components)
 
-    barrio_comuna = dict(
-        (await session.execute(select(Manzana.barrio, Manzana.comuna).distinct())).all()
-    )
+    barrio_comuna: dict[str, str] = ctx["barrio_comuna"]
     barrios: list[BarrioRecovery] = []
     for name in sorted(requested):
         c = by_barrio.get(name, Counter())

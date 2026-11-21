@@ -105,6 +105,7 @@ def main() -> None:
             ),
             "indice": _source("Dacora · histórico del índice (SIMULADO)", 1, 24),
         },
+        "barrio_comuna": dict(sorted(barrios)),
         "visit_requests": visit_requests,
         "services": services,
         "economy": economy,

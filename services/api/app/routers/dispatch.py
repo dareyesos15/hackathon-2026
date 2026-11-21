@@ -18,19 +18,33 @@ from app.core.dispatch import (
     DispatchError,
     TrackResult,
     create_dispatches,
+    execute_plan,
     record_track,
+    routing_of,
     update_dispatch,
 )
+from app.core.recipients import Recipient
 from app.db import get_session
-from app.domain import DispatchStatus, ResourceStatus, Role, TrackOrigin
-from app.models import Agency, Dispatch, Incident, Resource, ResourceTrack
+from app.domain import (
+    ACTIVE_DISPATCH,
+    DispatchStatus,
+    IncidentStatus,
+    ResourceStatus,
+    Role,
+    TrackOrigin,
+)
+from app.models import Agency, Dispatch, Incident, Report, Resource, ResourceTrack
 from app.schemas import (
     AgencyList,
     AgencyOut,
+    AgencyRef,
     DispatchIn,
     DispatchList,
     DispatchOut,
     DispatchPatchIn,
+    DispatchPlanIn,
+    InboxItem,
+    InboxList,
     ResourceList,
     TrackIn,
     TrackList,
@@ -293,3 +307,133 @@ async def patch_dispatch(
     await session.refresh(dispatch)
     await publish_dispatches(session, [dispatch])
     return (await dispatches_out(session, [dispatch]))[0]
+
+
+# ------------------------------------------------------- avisos a agencias y plan multiagencia
+
+OPEN_INCIDENT = (IncidentStatus.abierto, IncidentStatus.en_revision, IncidentStatus.verificado)
+ROLE_ORDER = {"lider": 0, "apoyo": 1, "informada": 2}
+TRIAGE_ORDER = {"critico": 0, "alto": 1, "medio": 2, "bajo": 3}
+
+
+@router.get("/agencies/{agency_id}/inbox", response_model=InboxList)
+async def agency_inbox(
+    agency_id: uuid.UUID,
+    include_held: bool = Query(default=False, description="Incluir avisos retenidos"),
+    limit: int = Query(default=100, ge=1, le=500),
+    _: Role = Depends(require_role(*READERS)),
+    session: AsyncSession = Depends(get_session),
+) -> InboxList:
+    """Incidentes abiertos que le llegan a la agencia según las reglas EMRE, con su papel.
+
+    Los avisos de posibles falsos sin riesgo vital quedan retenidos hasta que el PMU los
+    verifique; los de riesgo vital llegan siempre (CLAUDE.md §0.6).
+    """
+    agency = await session.get(Agency, agency_id)
+    if agency is None:
+        raise HTTPException(404, detail={"detail": "Agencia no existe", "code": "not_found"})
+    incidents = list(
+        (
+            await session.execute(
+                select(Incident)
+                .where(Incident.report_count > 0, Incident.status.in_(OPEN_INCIDENT))
+                .order_by(Incident.last_seen.desc())
+                .limit(2000)
+            )
+        ).scalars()
+    )
+    texts: dict[uuid.UUID, list[str]] = {}
+    for incident_id, text in await session.execute(
+        select(Report.incident_id, Report.text_redacted).where(
+            Report.incident_id.in_([i.id for i in incidents])
+        )
+    ):
+        if incident_id is not None:
+            texts.setdefault(incident_id, []).append(text)
+    dispatched = {
+        iid
+        for (iid,) in await session.execute(
+            select(Dispatch.incident_id).where(
+                Dispatch.agency_id == agency.id, Dispatch.status.in_(list(ACTIVE_DISPATCH))
+            )
+        )
+    }
+    picked: list[tuple[Incident, Recipient, bool, bool]] = []
+    for incident in incidents:
+        routing = routing_of(incident, texts.get(incident.id, []))
+        recipient = routing.for_agency(agency.code)
+        if recipient is None or (routing.held and not include_held):
+            continue
+        picked.append((incident, recipient, incident.id in dispatched, routing.notify_coe))
+    picked.sort(
+        key=lambda p: (
+            p[2],
+            TRIAGE_ORDER[p[0].triage_level.value],
+            ROLE_ORDER[p[1].role.value],
+            -p[0].last_seen.timestamp(),
+        )
+    )
+    picked = picked[:limit]
+    summaries = await incidents_out(session, [p[0] for p in picked])
+    items = [
+        InboxItem(
+            incident=summary,
+            role=recipient.role,
+            emre_task=recipient.task,
+            reason=recipient.reason,
+            dispatched=is_dispatched,
+            notify_coe=notify_coe,
+        )
+        for summary, (_, recipient, is_dispatched, notify_coe) in zip(
+            summaries, picked, strict=True
+        )
+    ]
+    return InboxList(
+        agency=AgencyRef(id=agency.id, code=agency.code, name=agency.name),
+        items=items,
+        cutoff_at=datetime.now(UTC),
+    )
+
+
+@router.post(
+    "/incidents/{incident_id}/dispatch-plan",
+    response_model=DispatchList,
+    status_code=status.HTTP_201_CREATED,
+    responses={200: {"description": "Confirmación repetida: despachos existentes"}},
+)
+async def post_dispatch_plan(
+    incident_id: uuid.UUID,
+    body: DispatchPlanIn,
+    response: Response,
+    role: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
+    session: AsyncSession = Depends(get_session),
+    routing: RoutingProvider = Depends(get_routing),
+) -> DispatchList:
+    """Genera el despacho multiagencia propuesto: un recurso por agencia líder y de apoyo.
+
+    Es la confirmación humana del plan (la IA solo sugiere). Idempotente por `client_uuid`.
+    """
+    incident = await session.get(Incident, incident_id)
+    if incident is None:
+        raise HTTPException(404, detail={"detail": "Incidente no existe", "code": "not_found"})
+    try:
+        result = await execute_plan(
+            session,
+            client_uuid=body.client_uuid,
+            incident=incident,
+            resource_ids=body.resource_ids,
+            actor=role,
+            routing=routing,
+            now=datetime.now(UTC),
+        )
+    except DispatchError as err:
+        error = await _http(session, err)
+        await session.rollback()
+        raise error from err
+    if result.created:
+        await publish_dispatches(session, result.dispatches)
+    else:
+        response.status_code = status.HTTP_200_OK
+    return DispatchList(
+        items=await dispatches_out(session, result.dispatches), cutoff_at=datetime.now(UTC)
+    )

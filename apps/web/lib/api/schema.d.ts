@@ -21,6 +21,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/agencies/{agency_id}/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Agency Inbox
+         * @description Incidentes abiertos que le llegan a la agencia según las reglas EMRE, con su papel.
+         *
+         *     Los avisos de posibles falsos sin riesgo vital quedan retenidos hasta que el PMU los
+         *     verifique; los de riesgo vital llegan siempre (CLAUDE.md §0.6).
+         */
+        get: operations["agency_inbox_api_v1_agencies__agency_id__inbox_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/alerts": {
         parameters: {
             query?: never;
@@ -309,6 +332,28 @@ export interface paths {
         head?: never;
         /** Patch Incident */
         patch: operations["patch_incident_api_v1_incidents__incident_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/incidents/{incident_id}/dispatch-plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Dispatch Plan
+         * @description Genera el despacho multiagencia propuesto: un recurso por agencia líder y de apoyo.
+         *
+         *     Es la confirmación humana del plan (la IA solo sugiere). Idempotente por `client_uuid`.
+         */
+        post: operations["post_dispatch_plan_api_v1_incidents__incident_id__dispatch_plan_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/ingest/batch": {
@@ -1206,6 +1251,19 @@ export interface components {
             note?: string | null;
         };
         /**
+         * DispatchPlanIn
+         * @description Confirma el plan multiagencia; `resource_ids` permite despachar solo parte de él.
+         */
+        DispatchPlanIn: {
+            /**
+             * Client Uuid
+             * Format: uuid
+             */
+            client_uuid: string;
+            /** Resource Ids */
+            resource_ids?: string[] | null;
+        };
+        /**
          * DispatchStatus
          * @enum {string}
          */
@@ -1344,6 +1402,33 @@ export interface components {
             /** Vulnerability Score */
             vulnerability_score: number;
         };
+        /** InboxItem */
+        InboxItem: {
+            /**
+             * Dispatched
+             * @description La agencia ya tiene un recurso en camino o en sitio
+             */
+            dispatched: boolean;
+            /** Emre Task */
+            emre_task: string;
+            incident: components["schemas"]["IncidentSummary"];
+            /** Notify Coe */
+            notify_coe: boolean;
+            /** Reason */
+            reason: string;
+            role: components["schemas"]["RecipientRole"];
+        };
+        /** InboxList */
+        InboxList: {
+            agency: components["schemas"]["AgencyRef"];
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["InboxItem"][];
+        };
         /** IncidentDetail */
         IncidentDetail: {
             /** Assigned Agency */
@@ -1393,6 +1478,7 @@ export interface components {
             report_count: number;
             /** Reports */
             reports: components["schemas"]["ReportOut"][];
+            routing?: components["schemas"]["IncidentRouting"] | null;
             /** Source */
             source: string;
             status: components["schemas"]["IncidentStatus"];
@@ -1426,6 +1512,31 @@ export interface components {
             cutoff_at: string;
             /** Items */
             items: components["schemas"]["IncidentSummary"][];
+        };
+        /**
+         * IncidentRouting
+         * @description A quién le llega el incidente y plan de despacho multiagencia propuesto (SIMULADO).
+         */
+        IncidentRouting: {
+            /** Coe Reason */
+            coe_reason: string | null;
+            /**
+             * Held
+             * @description Aviso retenido: posible falso sin riesgo vital
+             */
+            held: boolean;
+            /** Hold Reason */
+            hold_reason: string | null;
+            /** Notes */
+            notes: string[];
+            /** Notify Coe */
+            notify_coe: boolean;
+            /** Plan */
+            plan: components["schemas"]["PlanLineOut"][];
+            /** Plan Resource Ids */
+            plan_resource_ids: string[];
+            /** Recipients */
+            recipients: components["schemas"]["RecipientOut"][];
         };
         /**
          * IncidentStatus
@@ -1611,6 +1722,17 @@ export interface components {
          * @enum {string}
          */
         MetricUnit: "%" | "conteo" | "min" | "ms";
+        /** PlanLineOut */
+        PlanLineOut: {
+            agency: components["schemas"]["AgencyRef"];
+            /** Already Dispatched */
+            already_dispatched: boolean;
+            /** @description Recurso más cercano propuesto; null si no hay o si la agencia ya fue */
+            candidate: components["schemas"]["CandidateOut"] | null;
+            /** Emre Task */
+            emre_task: string;
+            role: components["schemas"]["RecipientRole"];
+        };
         /** PropertyList */
         PropertyList: {
             /**
@@ -1668,6 +1790,32 @@ export interface components {
             /** Station Code */
             station_code: string;
         };
+        /**
+         * RecipientOut
+         * @description Actor que debe recibir la información del incidente (EMRE, anexos I–VI).
+         */
+        RecipientOut: {
+            agency: components["schemas"]["AgencyRef"];
+            /**
+             * Dispatched
+             * @description La agencia ya tiene un despacho activo en el incidente
+             */
+            dispatched: boolean;
+            emre_function: components["schemas"]["EmreFunction"];
+            /** Emre Function Label */
+            emre_function_label: string;
+            /** Emre Task */
+            emre_task: string;
+            /** Reason */
+            reason: string;
+            role: components["schemas"]["RecipientRole"];
+        };
+        /**
+         * RecipientRole
+         * @description Papel de una agencia frente a un incidente (app/core/recipients.py).
+         * @enum {string}
+         */
+        RecipientRole: "lider" | "apoyo" | "informada";
         /** RecoverySummary */
         RecoverySummary: {
             /**
@@ -2166,6 +2314,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgencyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    agency_inbox_api_v1_agencies__agency_id__inbox_get: {
+        parameters: {
+            query?: {
+                /** @description Incluir avisos retenidos */
+                include_held?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                agency_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxList"];
                 };
             };
             /** @description Validation Error */
@@ -2814,6 +2997,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_dispatch_plan_api_v1_incidents__incident_id__dispatch_plan_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                incident_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DispatchPlanIn"];
+            };
+        };
+        responses: {
+            /** @description Confirmación repetida: despachos existentes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DispatchList"];
                 };
             };
             /** @description Validation Error */

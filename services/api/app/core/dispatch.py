@@ -22,6 +22,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.adapters.routing import RoutingProvider
 from app.core.geo import in_manizales
 from app.core.privacy import redact
+from app.core.recipients import PlanLine, Routing, Unit, build_plan, route_incident
 from app.domain import (
     ACTIVE_DISPATCH,
     Category,
@@ -34,7 +35,15 @@ from app.domain import (
     TrackKind,
     TrackOrigin,
 )
-from app.models import Agency, Dispatch, Incident, ReportEvent, Resource, ResourceTrack
+from app.models import (
+    Agency,
+    Dispatch,
+    Incident,
+    Report,
+    ReportEvent,
+    Resource,
+    ResourceTrack,
+)
 
 _SALVAMENTO = ("BOMBEROS", "DEFENSA_CIVIL", "POLICIA")
 _SALUD = ("CRUZ_ROJA", "SEC_SALUD")
@@ -241,9 +250,17 @@ class Suggestion:
 
 
 async def suggest(
-    session: AsyncSession, incident: Incident, routing: RoutingProvider
+    session: AsyncSession,
+    incident: Incident,
+    routing: RoutingProvider,
+    recipients: Routing | None = None,
 ) -> Suggestion:
     function, codes = routing_for(incident.category)
+    lead = recipients.lead if recipients else None
+    if lead is not None and (not codes or lead.agency != codes[0]):
+        # El líder del plan (p. ej. la empresa de servicio identificada) va primero.
+        function = lead.emre_function
+        codes = (lead.agency, *(c for c in codes if c != lead.agency))
     agencies = {a.code: a for a in (await session.execute(select(Agency))).scalars()}
     point = await incident_point(session, incident)
     candidates: list[RankedCandidate] = []
@@ -258,6 +275,104 @@ async def suggest(
         alternatives=[agencies[c] for c in codes[1:] if c in agencies],
         candidates=candidates,
         fallback_used=fallback,
+    )
+
+
+async def incident_texts(session: AsyncSession, incident_id: uuid.UUID) -> list[str]:
+    """Texto ya redactado de los reportes del incidente (para identificar el servicio)."""
+    rows = await session.execute(
+        select(Report.text_redacted).where(Report.incident_id == incident_id).limit(50)
+    )
+    return [t for (t,) in rows if t]
+
+
+def routing_of(incident: Incident, texts: Sequence[str]) -> Routing:
+    return route_incident(
+        category=incident.category,
+        triage=incident.triage_level,
+        is_life_threat=incident.is_life_threat,
+        trust_label=incident.trust_label,
+        people_affected=incident.people_affected,
+        report_count=incident.report_count,
+        texts=texts,
+    )
+
+
+async def incident_routing(session: AsyncSession, incident: Incident) -> Routing:
+    return routing_of(incident, await incident_texts(session, incident.id))
+
+
+async def active_agency_codes(session: AsyncSession, incident_id: uuid.UUID) -> set[str]:
+    rows = await session.execute(
+        select(Agency.code)
+        .join(Dispatch, Dispatch.agency_id == Agency.id)
+        .where(Dispatch.incident_id == incident_id, Dispatch.status.in_(list(ACTIVE_DISPATCH)))
+    )
+    return {code for (code,) in rows}
+
+
+async def dispatch_plan(
+    session: AsyncSession, incident: Incident, routing: RoutingProvider, recipients: Routing
+) -> list[PlanLine]:
+    """Recurso más cercano por agencia líder y de apoyo sin despacho activo (propuesta)."""
+    point = await incident_point(session, incident)
+    if point is None:
+        return []
+    units = []
+    for view in await resource_views(session):
+        if view.status != ResourceStatus.disponible:
+            continue
+        route = routing.estimate(view.lat, view.lon, point[0], point[1])
+        units.append(Unit(view.id, view.agency_code, route.distance_m, route.duration_s / 60))
+    units.sort(key=lambda u: u.distance_m)
+    return build_plan(recipients, units, await active_agency_codes(session, incident.id))
+
+
+async def execute_plan(
+    session: AsyncSession,
+    *,
+    client_uuid: uuid.UUID,
+    incident: Incident,
+    resource_ids: Sequence[uuid.UUID] | None,
+    actor: Role,
+    routing: RoutingProvider,
+    now: datetime,
+) -> CreateResult:
+    """Despacha el plan multiagencia (o los recursos elegidos de él) en una sola confirmación.
+
+    Si el incidente ya tiene un despacho activo, los nuevos recursos entran como refuerzo con
+    una justificación automática que nombra las agencias que completan el plan.
+    """
+    all_ids = list((await session.execute(select(Resource.id))).scalars())
+    derived = [_uuid_for(client_uuid, rid) for rid in all_ids]
+    repeated = list(
+        (await session.execute(select(Dispatch).where(Dispatch.client_uuid.in_(derived)))).scalars()
+    )
+    if repeated:  # misma confirmación del plan (idempotencia, FR-007)
+        return CreateResult(repeated, False, incident)
+    recipients = await incident_routing(session, incident)
+    lines = await dispatch_plan(session, incident, routing, recipients)
+    planned = [line.unit.resource_id for line in lines if line.unit is not None]
+    ids = list(resource_ids) if resource_ids else planned
+    if not ids:
+        raise DispatchError(
+            "empty_plan", "El plan no tiene recursos disponibles para despachar", 422
+        )
+    has_active = bool(await active_agency_codes(session, incident.id))
+    agencies = sorted({line.recipient.agency for line in lines if line.unit is not None})
+    justification = (
+        "Completa el plan multiagencia EMRE: " + ", ".join(agencies) if has_active else None
+    )
+    return await create_dispatches(
+        session,
+        client_uuid=client_uuid,
+        incident_id=incident.id,
+        resource_ids=ids,
+        is_reinforcement=has_active,
+        justification=justification,
+        actor=actor,
+        routing=routing,
+        now=now,
     )
 
 

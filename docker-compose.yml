@@ -50,7 +50,11 @@ services:
     restart: unless-stopped
 
   web:
-    build: ./apps/web
+    build:
+      context: ./apps/web
+      args:
+        # Marcas "SIMULADO" en la interfaz; se fija al construir (exportación estática).
+        NEXT_PUBLIC_DEMO_MODE: ${NEXT_PUBLIC_DEMO_MODE:-true}
     depends_on:
       api:
         condition: service_healthy

@@ -5,6 +5,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
+# Marcas "SIMULADO" en la interfaz (principio IV): true en la demo, false con datos reales.
+ARG NEXT_PUBLIC_DEMO_MODE=true
+ENV NEXT_PUBLIC_DEMO_MODE=$NEXT_PUBLIC_DEMO_MODE
 RUN npm run build
 
 FROM nginx:1.27-alpine

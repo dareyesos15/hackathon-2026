@@ -144,7 +144,11 @@ def compute_trust(
         "desinformacion": _part(misinfo_pts, 0, misinfo_detail, minimo=w.misinformation_min),
         "evidencia": _part(evidence_pts, w.evidence, "con foto" if with_media else "sin foto"),
         "sensor_campo": _part(
-            sensor_pts, w.field_sensor, "confirmado" if sensor_confirmed else "sin sensor (P1)"
+            sensor_pts,
+            w.field_sensor,
+            "intrusión detectada por sensor de zona insegura"
+            if sensor_confirmed
+            else "sin confirmación de sensor",
         ),
     }
     total = sum(p["puntos"] for p in breakdown.values())

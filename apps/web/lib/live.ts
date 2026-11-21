@@ -26,6 +26,8 @@ interface LiveState {
   alertRevision: number;
   /** La capa de cascada debe recalcularse (lluvia o reportes relevantes). */
   cascadeRevision: number;
+  /** Eventos o sensores nuevos de zonas inseguras (patente NC2025/0015763). */
+  zoneRevision: number;
 }
 
 interface ResourceMoved {
@@ -79,6 +81,7 @@ export function useLiveIncidents(token: string | null) {
     kpiRevision: 0,
     alertRevision: 0,
     cascadeRevision: 0,
+    zoneRevision: 0,
   });
   const lastUpdated = useRef<string | null>(null);
 
@@ -154,6 +157,7 @@ export function useLiveIncidents(token: string | null) {
       ...p,
       alertRevision: p.alertRevision + 1,
       cascadeRevision: p.cascadeRevision + 1,
+      zoneRevision: p.zoneRevision + 1,
     }));
   }, [replaceAll, refreshDispatchLayer]);
 
@@ -176,7 +180,11 @@ export function useLiveIncidents(token: string | null) {
     const pollAll = async () => {
       await poll();
       await refreshDispatchLayer();
-      setState((p) => ({ ...p, alertRevision: p.alertRevision + 1 }));
+      setState((p) => ({
+        ...p,
+        alertRevision: p.alertRevision + 1,
+        zoneRevision: p.zoneRevision + 1,
+      }));
     };
 
     const startPolling = () => {
@@ -224,6 +232,11 @@ export function useLiveIncidents(token: string | null) {
       source.addEventListener("kpi.updated", () => {
         setState((p) => ({ ...p, kpiRevision: p.kpiRevision + 1 }));
       });
+      for (const type of ["zone.event", "zone.sensor"]) {
+        source.addEventListener(type, () => {
+          setState((p) => ({ ...p, zoneRevision: p.zoneRevision + 1 }));
+        });
+      }
       source.addEventListener("demo.reset", () => void reload());
     }
 

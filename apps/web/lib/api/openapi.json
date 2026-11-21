@@ -3651,6 +3651,514 @@
         },
         "title": "Vulnerability",
         "type": "object"
+      },
+      "ZoneDetector": {
+        "enum": [
+          "ultrasonido",
+          "infrarrojo",
+          "ambos"
+        ],
+        "title": "ZoneDetector",
+        "type": "string"
+      },
+      "ZoneEventKind": {
+        "enum": [
+          "intrusion",
+          "acceso_autorizado",
+          "bateria_baja",
+          "manipulacion"
+        ],
+        "title": "ZoneEventKind",
+        "type": "string"
+      },
+      "ZoneEventList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ZoneEventOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "ZoneEventList",
+        "type": "object"
+      },
+      "ZoneEventOut": {
+        "properties": {
+          "acknowledged_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acknowledged At"
+          },
+          "acknowledged_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acknowledged By"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "authorized": {
+            "title": "Authorized",
+            "type": "boolean"
+          },
+          "badge_agency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Badge Agency"
+          },
+          "battery_pct": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Battery Pct"
+          },
+          "bearing_deg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bearing Deg"
+          },
+          "detector": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ZoneDetector"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "distance_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance M"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ZoneEventKind"
+          },
+          "rfid_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rfid Tag"
+          },
+          "sensor_code": {
+            "title": "Sensor Code",
+            "type": "string"
+          },
+          "sensor_id": {
+            "format": "uuid",
+            "title": "Sensor Id",
+            "type": "string"
+          },
+          "sensor_label": {
+            "title": "Sensor Label",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sensor_id",
+          "sensor_code",
+          "sensor_label",
+          "kind",
+          "detector",
+          "distance_m",
+          "bearing_deg",
+          "rfid_tag",
+          "badge_agency",
+          "authorized",
+          "battery_pct",
+          "at",
+          "acknowledged_at",
+          "acknowledged_by",
+          "source"
+        ],
+        "title": "ZoneEventOut",
+        "type": "object"
+      },
+      "ZoneLastEvent": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ZoneEventKind"
+          }
+        },
+        "required": [
+          "kind",
+          "at"
+        ],
+        "title": "ZoneLastEvent",
+        "type": "object"
+      },
+      "ZoneReadingIn": {
+        "description": "Lectura cruda del dispositivo (punto de integración con el hardware real).",
+        "properties": {
+          "battery_pct": {
+            "default": 100,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Battery Pct",
+            "type": "integer"
+          },
+          "bearing_deg": {
+            "default": 0,
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Bearing Deg",
+            "type": "number"
+          },
+          "infrared": {
+            "default": false,
+            "title": "Infrared",
+            "type": "boolean"
+          },
+          "rfid_tag": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rfid Tag"
+          },
+          "tamper": {
+            "default": false,
+            "title": "Tamper",
+            "type": "boolean"
+          },
+          "ultrasonic_m": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultrasonic M"
+          }
+        },
+        "title": "ZoneReadingIn",
+        "type": "object"
+      },
+      "ZoneReadingResult": {
+        "properties": {
+          "confirmed_incidents": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Confirmed Incidents",
+            "type": "array"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ZoneEventOut"
+            },
+            "title": "Events",
+            "type": "array"
+          }
+        },
+        "required": [
+          "events",
+          "confirmed_incidents"
+        ],
+        "title": "ZoneReadingResult",
+        "type": "object"
+      },
+      "ZoneSensorIn": {
+        "description": "Instalación de un sensor: en un incidente (usa su ubicación) o en un punto.",
+        "properties": {
+          "half_angle_deg": {
+            "default": 30,
+            "exclusiveMinimum": 0.0,
+            "maximum": 90.0,
+            "title": "Half Angle Deg",
+            "type": "number"
+          },
+          "heading_deg": {
+            "default": 0,
+            "exclusiveMaximum": 360.0,
+            "minimum": 0.0,
+            "title": "Heading Deg",
+            "type": "number"
+          },
+          "incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incident Id"
+          },
+          "label": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Label",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "maximum": 90.0,
+                "minimum": -90.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "maximum": 180.0,
+                "minimum": -180.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "range_m": {
+            "default": 12,
+            "exclusiveMinimum": 0.0,
+            "maximum": 40.0,
+            "title": "Range M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "ZoneSensorIn",
+        "type": "object"
+      },
+      "ZoneSensorList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ZoneSensorOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "ZoneSensorList",
+        "type": "object"
+      },
+      "ZoneSensorOut": {
+        "properties": {
+          "battery_pct": {
+            "title": "Battery Pct",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "cone": {
+            "description": "Anillo [lon, lat] del cono de vigilancia",
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "title": "Cone",
+            "type": "array"
+          },
+          "half_angle_deg": {
+            "title": "Half Angle Deg",
+            "type": "number"
+          },
+          "heading_deg": {
+            "title": "Heading Deg",
+            "type": "number"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Incident Id"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "last_event": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ZoneLastEvent"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_seen_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen At"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "open_alarms": {
+            "title": "Open Alarms",
+            "type": "integer"
+          },
+          "range_m": {
+            "title": "Range M",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ZoneSensorStatus"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "label",
+          "lat",
+          "lon",
+          "heading_deg",
+          "range_m",
+          "half_angle_deg",
+          "incident_id",
+          "status",
+          "battery_pct",
+          "last_seen_at",
+          "open_alarms",
+          "last_event",
+          "cone",
+          "source"
+        ],
+        "title": "ZoneSensorOut",
+        "type": "object"
+      },
+      "ZoneSensorStatus": {
+        "enum": [
+          "armado",
+          "desarmado"
+        ],
+        "title": "ZoneSensorStatus",
+        "type": "string"
       }
     },
     "securitySchemes": {
@@ -6206,6 +6714,272 @@
         "summary": "Get Latest Rain",
         "tags": [
           "cascada"
+        ]
+      }
+    },
+    "/api/v1/sensors/zones": {
+      "get": {
+        "operationId": "list_sensors_api_v1_sensors_zones_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneSensorList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Sensors",
+        "tags": [
+          "sensor de zonas inseguras"
+        ]
+      },
+      "post": {
+        "description": "Instala un sensor (SIMULADO) en un incidente o en un punto.",
+        "operationId": "install_sensor_api_v1_sensors_zones_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ZoneSensorIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneSensorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Install Sensor",
+        "tags": [
+          "sensor de zonas inseguras"
+        ]
+      }
+    },
+    "/api/v1/sensors/zones/events": {
+      "get": {
+        "operationId": "list_events_api_v1_sensors_zones_events_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "only_alarms",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Only Alarms",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneEventList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Events",
+        "tags": [
+          "sensor de zonas inseguras"
+        ]
+      }
+    },
+    "/api/v1/sensors/zones/events/{event_id}/ack": {
+      "post": {
+        "description": "Marca una alarma como atendida (queda el rol y la hora).",
+        "operationId": "acknowledge_api_v1_sensors_zones_events__event_id__ack_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneEventOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Acknowledge",
+        "tags": [
+          "sensor de zonas inseguras"
+        ]
+      }
+    },
+    "/api/v1/sensors/zones/{sensor_id}/readings": {
+      "post": {
+        "description": "Lectura del dispositivo (ultrasonido, infrarrojo, RFID, batería).",
+        "operationId": "post_reading_api_v1_sensors_zones__sensor_id__readings_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sensor_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Sensor Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ZoneReadingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneReadingResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Reading",
+        "tags": [
+          "sensor de zonas inseguras"
         ]
       }
     },

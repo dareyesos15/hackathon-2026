@@ -18,7 +18,16 @@
 5. **Nunca uses datos personales reales.** Todo el escenario de demo es sintético (Ley 1581 de 2012). No descargues ni publiques nombres, cédulas o teléfonos reales.
 6. **La IA solo sugiere; decide un humano.** Ningún reporte con señales de vida en riesgo (personas atrapadas, heridos, incendio, fuga de gas) puede descartarse automáticamente, aunque su puntaje de veracidad sea bajo: va a la cola de revisión humana.
 7. **Sin dependencias de nube obligatorias.** Todo debe correr en un portátil sin internet (modo Plan B). Servicios externos (SGC, WhatsApp, SMS reales) quedan detrás de adaptadores con implementación simulada por defecto.
-8. Haz commits pequeños y frecuentes. Mantén un `README.md` con "cómo correr la demo en 1 comando".
+8. **Commits atómicos y continuos** (estándar obligatorio, ver sección 0.1). Mantén un `README.md` con "cómo correr la demo en 1 comando".
+
+### 0.1 Estándar de commits
+
+- **Un commit por unidad lógica:** cada componente, especificación, artefacto de Spec Kit (`spec.md`, `plan.md`, `tasks.md`), tarea implementada, corrección o cambio de configuración va en su propio commit. **Nunca** un commit masivo que mezcle componentes.
+- **Commits concurrentes al trabajo:** se hace el commit en cuanto el componente o la especificación queda terminado y verificado, no al final de la sesión. Lo mismo para los cambios de documentación que lo acompañan.
+- **Atomicidad:** un commit debe poder revertirse solo sin romper otro componente. Si un mensaje necesita "y" para describir dos cambios distintos, son dos commits. Separar backend (`services/api`), frontend (`apps/web`), datos/scripts y docs salvo que el cambio sea inseparable (p. ej. modelo Pydantic + tipos TS regenerados, que van juntos).
+- **Formato:** [Conventional Commits](https://www.conventionalcommits.org/) en inglés: `<tipo>(<alcance>): <resumen en imperativo>`. Tipos: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `build`, `ci`, `perf`. Alcances sugeridos: `api`, `web`, `engine`, `privacy`, `data`, `scripts`, `spec`, `constitution`, `speckit`, `infra`.
+- **Cada commit pasa las pruebas y linters** de lo que toca; no se suben secretos, sales ni datos personales reales.
+- **Push** al remoto después de cada grupo de commits terminado, para que el equipo trabaje sobre lo último.
 
 ---
 

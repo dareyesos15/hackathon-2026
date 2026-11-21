@@ -46,16 +46,27 @@ async def client(database: str) -> AsyncIterator[httpx.AsyncClient]:
 
     from app.db import SessionLocal
     from app.main import app
-    from app.seed import seed_geography
+    from app.seed import seed_catalog, seed_geography
     from app.state import load_state
 
     async with SessionLocal() as session:
         # Cada sesión de pruebas empieza sin reportes (solo en la base `_test`).
         await session.execute(
-            text("TRUNCATE report_events, reports, incidents, metrics_snapshots CASCADE")
+            text(
+                "TRUNCATE report_events, resource_tracks, dispatches, alert_events,"
+                " alert_deliveries, alerts, rain_readings, reports, incidents,"
+                " metrics_snapshots CASCADE"
+            )
+        )
+        await session.execute(
+            text(
+                "UPDATE resources SET status = 'disponible', last_geom = base_geom,"
+                " last_seen_at = NULL"
+            )
         )
         await session.commit()
         await seed_geography(session)
+        await seed_catalog(session)
         await load_state(session)
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test/api/v1") as c:
@@ -64,3 +75,6 @@ async def client(database: str) -> AsyncIterator[httpx.AsyncClient]:
 
 PMU = {"Authorization": "Bearer pmu-demo"}
 CIUDADANO = {"Authorization": "Bearer ciudadano-demo"}
+COE = {"Authorization": "Bearer coe-demo"}
+AGENCIA = {"Authorization": "Bearer agencia-demo"}
+PUBLICO = {"Authorization": "Bearer publico-demo"}

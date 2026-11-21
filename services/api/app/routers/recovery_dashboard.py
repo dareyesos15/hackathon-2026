@@ -676,7 +676,7 @@ async def dashboard(
                 registry.fig("formatos_revision", "Formatos de revisión a predio", len(reviews)),
                 registry.fig(
                     "evacuaciones_recomendadas",
-                    "Con evacuación recomendada",
+                    "Formatos con evacuación recomendada",
                     evacuations,
                     state="alerta" if evacuations else "neutral",
                 ),
@@ -957,7 +957,7 @@ async def dashboard(
         needs.append(
             Need(
                 key="derivaciones_pendientes",
-                title="Predios revisados que esperan la visita de una entidad",
+                title="Visitas de entidades pendientes en predios revisados",
                 detail=f"Más pendientes: {top}.",
                 severity="alta",
                 value=sum(referral_pending.values()),

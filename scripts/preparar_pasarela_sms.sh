@@ -25,8 +25,9 @@ falla() { printf '    \033[31m!!\033[0m  %s\n' "$1"; exit 1; }
 paso 1 "Docker"
 docker info >/dev/null 2>&1 || falla "Docker no responde: abra Docker Desktop y espere a que inicie."
 # Proyecto de Compose de ESTE repositorio con más contenedores corriendo (la demo en uso).
-PROYECTO="$(docker compose ls 2>/dev/null | awk -v repo="$REPO/docker-compose.yml" '
-  NR > 1 && index($0, repo) && $2 ~ /^running/ {
+# Se compara por el nombre de la carpeta (las rutas de Docker cambian de formato según el sistema).
+PROYECTO="$(docker compose ls 2>/dev/null | awk -v carpeta="$(basename "$REPO")" '
+  NR > 1 && index($0, carpeta) && index($0, "docker-compose.yml") && $2 ~ /^running/ {
     n = $2; gsub(/[^0-9]/, "", n); if (n + 0 > best) { best = n + 0; name = $1 }
   } END { print name }')"
 PROYECTO="${PROYECTO:-dacora}"

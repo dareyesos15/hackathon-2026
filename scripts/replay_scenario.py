@@ -26,6 +26,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import evaluate_kpis
+import seed_recovery
 from _client import api_client
 
 # Lluvia acumulada en 3 h por hora del escenario (07:34 → 19:34). SIMULADA.
@@ -86,6 +87,11 @@ def main() -> int:
         action="store_true",
         help="Conserva las fechas del escenario en vez de anclarlas al presente",
     )
+    parser.add_argument(
+        "--sin-recuperacion",
+        action="store_true",
+        help="No siembra los datos SIMULADOS del módulo de recuperación tras --reset",
+    )
     args = parser.parse_args()
 
     lines = load_scenario(args.limit)
@@ -98,6 +104,13 @@ def main() -> int:
             client.post("/demo/reset").raise_for_status()
             MAP_PATH.unlink(missing_ok=True)
             print("Datos de demo reiniciados.")
+            if not args.sin_recuperacion:
+                counts = seed_recovery.seed(client)
+                print(
+                    "Recuperación SIMULADA sembrada: "
+                    + ", ".join(f"{v} {k}" for k, v in counts.items())
+                    + "."
+                )
         shift = compute_shift(args.fecha_original, reuse=not args.reset)
         event_start = datetime.fromisoformat(evaluate_kpis.load_truth()["event_start"]) + shift
         local_start = event_start + COLOMBIA

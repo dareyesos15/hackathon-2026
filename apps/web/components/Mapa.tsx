@@ -87,9 +87,18 @@ interface Props {
   manzanas: FeatureCollection | null;
   selectedId: string | null;
   onSelect: (id: string) => void;
+  /** Leyenda de incidentes sobre el mapa (la vista pública no muestra incidentes). */
+  leyenda?: boolean;
 }
 
-export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Props) {
+export function Mapa({
+  incidents,
+  barrios,
+  manzanas,
+  selectedId,
+  onSelect,
+  leyenda = true,
+}: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const ready = useRef(false);
@@ -125,14 +134,26 @@ export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Pro
       mapRef.current = map;
 
       // Marcadores generados a demanda: una imagen por categoría × triaje × falso.
+      const ratio = Math.max(2, Math.ceil(window.devicePixelRatio || 1));
+      const addMarker = (id: string) => {
+        if (map.hasImage(id)) return;
+        const img = drawMarker(id, ratio);
+        if (img) map.addImage(id, img, { pixelRatio: ratio });
+      };
+      // Respaldo por si aparece una combinación nueva (p. ej. una categoría agregada a la API).
       map.on("styleimagemissing", (e) => {
-        if (!e.id.startsWith("inc:") || map.hasImage(e.id)) return;
-        const ratio = Math.max(2, Math.ceil(window.devicePixelRatio || 1));
-        const img = drawMarker(e.id, ratio);
-        if (img) map.addImage(e.id, img, { pixelRatio: ratio });
+        if (e.id.startsWith("inc:")) addMarker(e.id);
       });
 
       map.on("load", () => {
+        // Todos los marcadores antes de la primera tesela: generarlos a demanda dejaba
+        // teselas sin pintar cuando el escenario ya estaba cargado.
+        for (const cat of Object.keys(CATEGORY_LABEL) as Category[]) {
+          for (const level of TRIAGE_ORDER) {
+            addMarker(markerImageId(cat, level, false));
+            addMarker(markerImageId(cat, level, true));
+          }
+        }
         map.addSource("barrios", { type: "geojson", data: latest.current.barrios ?? EMPTY });
         map.addSource("manzanas", { type: "geojson", data: latest.current.manzanas ?? EMPTY });
         map.addSource("incidentes", {
@@ -144,7 +165,10 @@ export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Pro
           type: "fill",
           source: "barrios",
           // Sobre el mapa real los barrios simulados solo se insinúan; offline hacen de fondo.
-          paint: { "fill-color": online ? "#5c0f1b" : "#faf8f7", "fill-opacity": online ? 0.03 : 1 },
+          paint: {
+            "fill-color": online ? "#5c0f1b" : "#faf8f7",
+            "fill-opacity": online ? 0.03 : 1,
+          },
         });
         map.addLayer({
           id: "barrios-borde",
@@ -216,6 +240,11 @@ export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Pro
         map.on("mouseenter", "incidentes", () => (map.getCanvas().style.cursor = "pointer"));
         map.on("mouseleave", "incidentes", () => (map.getCanvas().style.cursor = ""));
         ready.current = true;
+        // Incidente abierto desde la URL (?incidente=): centrarlo al terminar de cargar.
+        const sel = latest.current.incidents.find((i) => i.id === latest.current.selectedId);
+        if (sel && sel.lat !== null && sel.lon !== null) {
+          map.jumpTo({ center: [sel.lon, sel.lat], zoom: 14.5 });
+        }
       });
     })();
     return () => {
@@ -233,6 +262,20 @@ export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Pro
       ?.setData(incidentsToGeoJSON(incidents, selectedId));
   }, [incidents, selectedId]);
 
+  // Al seleccionar un incidente (lista, alarma o mapa), llevarlo al centro de la vista.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready.current || !map || !selectedId) return;
+    const inc = latest.current.incidents.find((i) => i.id === selectedId);
+    if (!inc || inc.lat === null || inc.lon === null) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    map.easeTo({
+      center: [inc.lon, inc.lat],
+      zoom: Math.max(map.getZoom(), 14.5),
+      duration: reduce ? 0 : 600,
+    });
+  }, [selectedId]);
+
   useEffect(() => {
     if (!ready.current || !mapRef.current) return;
     if (barrios) mapRef.current.getSource<GeoJSONSource>("barrios")?.setData(barrios);
@@ -242,7 +285,7 @@ export function Mapa({ incidents, barrios, manzanas, selectedId, onSelect }: Pro
   return (
     <div className="relative h-full min-h-[420px] w-full">
       <div ref={container} className="h-full w-full" />
-      <Leyenda incidents={incidents} basemap={basemap} />
+      {leyenda && <Leyenda incidents={incidents} basemap={basemap} />}
     </div>
   );
 }
@@ -258,13 +301,13 @@ function Leyenda({ incidents, basemap }: { incidents: IncidentSummary[]; basemap
   return (
     <details
       open
-      className="absolute bottom-8 left-2 max-h-[70%] w-56 overflow-y-auto rounded-md border border-linea bg-white/95 text-xs shadow-[0_1px_0_#e4dcdb] backdrop-blur"
+      className="absolute bottom-8 left-2 max-h-[55%] w-[22rem] max-w-[calc(100%-1rem)] overflow-y-auto rounded-md border border-linea bg-white/95 text-xs shadow-[0_1px_0_#e4dcdb] backdrop-blur"
     >
       <summary className="cursor-pointer px-3 py-2 font-display text-sm font-semibold">
         Leyenda del mapa
       </summary>
       <div className="flex flex-col gap-3 px-3 pb-3">
-        <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
+        <ul className="grid grid-cols-4 gap-x-2 gap-y-1">
           {TRIAGE_ORDER.map((level) => (
             <li key={level} className="flex items-center gap-1.5">
               <span
@@ -276,11 +319,11 @@ function Leyenda({ incidents, basemap }: { incidents: IncidentSummary[]; basemap
           ))}
         </ul>
         {present.length > 0 && (
-          <ul className="flex flex-col gap-1 border-t border-linea pt-2">
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-1 border-t border-linea pt-2">
             {present.map(([cat, n]) => (
               <li key={cat} className="flex items-center gap-2">
                 <IconoCategoria category={cat} size={18} className="text-tinta" />
-                <span className="flex-1">{CATEGORY_LABEL[cat]}</span>
+                <span className="flex-1 leading-tight">{CATEGORY_LABEL[cat]}</span>
                 <span className="tabular-nums text-tinta-suave">{n}</span>
               </li>
             ))}

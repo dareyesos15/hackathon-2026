@@ -128,7 +128,7 @@ público y SMS a cuadrillas, con advertencia de desinformación y bitácora.
 - [ ] T042 [US2] Manejar `alert.changed` en el flujo en vivo, con respaldo por polling a `GET /alerts?status=borrador`, en `apps/web/lib/live.ts`
 - [X] T043 [P] [US2] Crear `EditorAlerta` (tipo, área por barrios o círculo con centro elegido en el mapa y radio, mensaje con contador de 160 caracteres al elegir SMS, canales, confirmación de señales de desinformación, precarga desde incidente o manzana) en `apps/web/components/EditorAlerta.tsx`
 - [X] T044 [P] [US2] Crear `BandejaAlertas` (borradores con versión; solo el COE ve "Aprobar", "Rechazar" con motivo y "Anular"; manejo de `409 version_conflict` recargando la versión nueva) en `apps/web/components/BandejaAlertas.tsx`
-- [ ] T045 [P] [US2] Crear `AvisoAlerta` (alerta vigente destacada con tipo, mensaje, hora de emisión y etiqueta SIMULADO en los envíos) en `apps/web/components/AvisoAlerta.tsx`
+- [X] T045 [P] [US2] Crear `AvisoAlerta` (alerta vigente destacada con tipo, mensaje, hora de emisión y etiqueta SIMULADO en los envíos) en `apps/web/components/AvisoAlerta.tsx`
 - [ ] T046 [US2] Agregar a `Mapa` la capa de áreas de alerta vigentes y un modo "elegir centro" por clic para el círculo del editor, en `apps/web/components/Mapa.tsx`
 - [ ] T047 [US2] Integrar `EditorAlerta`, `BandejaAlertas` (visible para el COE) y `AvisoAlerta` en el tablero, y el botón "Crear alerta desde este incidente" en el detalle, en `apps/web/app/pmu/TableroPmu.tsx` y `apps/web/components/DetalleIncidente.tsx`
 - [ ] T048 [US2] Mostrar las alertas vigentes (área sombreada y `AvisoAlerta`) consultando `GET /alerts/active` cada 4 s en `apps/web/app/mapa/MapaPublico.tsx`

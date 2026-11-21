@@ -125,3 +125,18 @@ async def test_gps_report_is_placed_exactly_at_its_point(client: httpx.AsyncClie
     body = incident.json()
     assert body["lat"] == pytest.approx(lat, abs=1e-6)
     assert body["lon"] == pytest.approx(lon, abs=1e-6)
+
+
+async def test_gps_report_on_city_edge_gets_nearest_barrio(client: httpx.AsyncClient) -> None:
+    """Un GPS en el borde de la ciudad (sector La Nubia) no queda sin barrio."""
+    resp = await client.post(
+        "/ingest/report",
+        json=pwa_report(
+            text="se cayó una pared",
+            barrio=None,
+            location={"lat": 5.028805, "lon": -75.472579, "precision": "gps"},
+        ),
+        headers=CIUDADANO,
+    )
+    assert resp.status_code == 201
+    assert resp.json()["report"]["barrio"] is not None

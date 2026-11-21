@@ -30,11 +30,12 @@ from app.domain import (
     Channel,
     GeoPrecision,
     IncidentStatus,
+    PlaceKind,
     ReportAction,
     ReportStatus,
     Role,
 )
-from app.models import Incident, Manzana, Report, ReportEvent
+from app.models import Incident, Manzana, Place, Report, ReportEvent
 
 DEDUP_LOCK_KEY = 0xDAC0A  # bloqueo asesor: agrupación serializada (research R10)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
@@ -80,17 +81,36 @@ class Engine:
     bus: EventBus
 
 
+NEAREST_BARRIO_M = 1500
+
+
 async def _manzana_for(
     session: AsyncSession, lat: float, lon: float
-) -> tuple[str, str] | tuple[None, None]:
-    """(id, barrio) de la manzana que contiene el punto."""
+) -> tuple[str | None, str | None]:
+    """(id, barrio) de la manzana que contiene el punto.
+
+    Fuera de la grilla de manzanas (bordes de la ciudad), el barrio es el más cercano a menos de
+    1,5 km según el gazetteer, sin manzana.
+    """
     point = WKTElement(f"POINT({lon} {lat})", srid=4326)
     row = (
         await session.execute(
             select(Manzana.id, Manzana.barrio).where(func.ST_Contains(Manzana.geom, point)).limit(1)
         )
     ).first()
-    return (row[0], row[1]) if row else (None, None)
+    if row:
+        return row[0], row[1]
+    here = func.Geography(func.ST_SetSRID(func.ST_MakePoint(lon, lat), 4326))
+    nearest = await session.scalar(
+        select(Place.barrio)
+        .where(
+            Place.kind == PlaceKind.barrio,
+            func.ST_DWithin(func.Geography(Place.geom), here, NEAREST_BARRIO_M),
+        )
+        .order_by(func.ST_Distance(func.Geography(Place.geom), here))
+        .limit(1)
+    )
+    return None, nearest
 
 
 async def refresh_trust(session: AsyncSession, engine: Engine, incident: Incident) -> None:

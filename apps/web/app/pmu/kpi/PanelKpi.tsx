@@ -7,49 +7,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Cifra, type CifraProps } from "@/components/Cifra";
+import { CifraKpi } from "@/components/CifraKpi";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { formatDateTime, formatInt } from "@/lib/format";
 import { getSession } from "@/lib/session";
-import { kpiMap, useKpi, type Kpi } from "@/lib/useKpi";
+import { kpiMap, useKpi } from "@/lib/useKpi";
 
 const REFRESH_MS = 5000;
-
-type Estado = CifraProps["estado"];
-
-function estado(k: Kpi): Estado {
-  const v = k.value;
-  if (v === null || v === undefined) return "neutral";
-  switch (k.indicator) {
-    case "duplicate_detection_rate":
-    case "fake_detection_rate":
-      return v > 90 ? "ok" : "alerta";
-    case "critical_recall":
-      return v >= 98 ? "ok" : "alerta";
-    case "critical_auto_discarded":
-      return v === 0 ? "ok" : "alerta";
-    case "p95_processing_ms":
-      return v < 1000 ? "ok" : "alerta";
-    default:
-      return "neutral";
-  }
-}
-
-function CifraKpi({ k }: { k: Kpi }) {
-  return (
-    <Cifra
-      etiqueta={k.label}
-      valor={k.value ?? null}
-      unidad={k.unit}
-      fuente={k.source}
-      version={k.version}
-      corte={k.cutoff_at}
-      meta={k.target ?? undefined}
-      estado={estado(k)}
-      simulado={k.simulated}
-    />
-  );
-}
 
 export default function PanelKpi() {
   const router = useRouter();
@@ -62,7 +26,7 @@ export default function PanelKpi() {
 
   useEffect(() => {
     if (!allowed) {
-      router.replace("/");
+      router.replace("/ingresar/");
       return;
     }
     const timer = setInterval(() => setTick((t) => t + 1), REFRESH_MS);

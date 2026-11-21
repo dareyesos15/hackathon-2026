@@ -120,6 +120,11 @@ class Match:
     incident_id: uuid.UUID
     similarity: float
     distance_m: float | None
+    same_address: bool = False
+
+    def rank(self) -> tuple[bool, float, float]:
+        """Mismo cruce de vías primero; luego mayor similitud; luego menor distancia."""
+        return (self.same_address, self.similarity, -(self.distance_m or 0.0))
 
 
 def _max_distance(a: GeoPrecision, b: GeoPrecision, cfg: DedupSettings) -> float:
@@ -175,11 +180,9 @@ def choose_incident(
         similarity = min(1.0, max(sims, default=0.0))
         if similarity < threshold:
             continue
-        if best is None or (similarity, -(distance or 0.0)) > (
-            best.similarity,
-            -(best.distance_m or 0.0),
-        ):
-            best = Match(cand.incident_id, similarity, distance)
+        match = Match(cand.incident_id, similarity, distance, relation == "same")
+        if best is None or match.rank() > best.rank():
+            best = match
     return best
 
 

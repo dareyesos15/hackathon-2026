@@ -147,3 +147,11 @@ def test_different_intersection_never_joins() -> None:
     cand = candidate(texts=["se cayo el edificio de la calle 30 con carrera 23, hay atrapados"])
     r = report(text="se cayo el edificio de la calle 45 con carrera 23, hay atrapados")
     assert choose_incident(r, [cand], SIM, CFG) is None
+
+
+def test_same_intersection_wins_over_more_similar_neighbor() -> None:
+    same = candidate(texts=["se cayo el colegio de la calle 30 con carrera 23, gente atrapada"])
+    other = candidate(texts=["se cayo el edificio en milan hay gente atrapada adentro"])
+    r = report(text="hay gente atrapada en el edificio de la carrera 23 con calle 30 en milan")
+    match = choose_incident(r, [other, same], SIM, CFG)
+    assert match is not None and match.incident_id == same.incident_id

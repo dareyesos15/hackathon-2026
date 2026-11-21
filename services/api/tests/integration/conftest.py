@@ -42,12 +42,19 @@ def database() -> str:
 
 @pytest_asyncio.fixture(scope="session")
 async def client(database: str) -> AsyncIterator[httpx.AsyncClient]:
+    from sqlalchemy import text
+
     from app.db import SessionLocal
     from app.main import app
     from app.seed import seed_geography
     from app.state import load_state
 
     async with SessionLocal() as session:
+        # Cada sesión de pruebas empieza sin reportes (solo en la base `_test`).
+        await session.execute(
+            text("TRUNCATE report_events, reports, incidents, metrics_snapshots CASCADE")
+        )
+        await session.commit()
         await seed_geography(session)
         await load_state(session)
     transport = httpx.ASGITransport(app=app)

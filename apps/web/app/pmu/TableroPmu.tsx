@@ -31,7 +31,7 @@ export default function TableroPmu() {
   const [selectedId, setSelectedId] = useState<string | null>(initialSelection);
   const [barrios, setBarrios] = useState<FC | null>(null);
   const [manzanas, setManzanas] = useState<FC | null>(null);
-  const token = session?.role === "operador_pmu" ? session.token : null;
+  const token = session?.role === "operador_pmu" || session?.role === "coe" ? session.token : null;
   const live = useLiveIncidents(token);
   const kpis = kpiMap(useKpi(live.kpiRevision + Math.floor(live.revision / 10)));
   const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
@@ -74,7 +74,9 @@ export default function TableroPmu() {
   return (
     <div className="flex h-screen flex-col">
       <header className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-2">
-        <h1 className="text-lg font-bold">Dacora · Tablero PMU</h1>
+        <h1 className="text-lg font-bold">
+          Dacora · Tablero PMU{session?.role === "coe" ? " · COE" : ""}
+        </h1>
         <EtiquetaSimulado />
         <span className={`rounded px-2 py-0.5 text-xs font-medium ${mode.cls}`}>{mode.text}</span>
         <nav className="ml-auto flex gap-3 text-sm">

@@ -57,7 +57,8 @@ export default function PanelKpi() {
   const [tick, setTick] = useState(0);
   const items = useKpi(tick);
   const k = kpiMap(items);
-  const allowed = session?.role === "operador_pmu" || session?.role === "publico";
+  const allowed =
+    session?.role === "operador_pmu" || session?.role === "coe" || session?.role === "publico";
 
   useEffect(() => {
     if (!allowed) {
@@ -93,7 +94,7 @@ export default function PanelKpi() {
         <span className="text-xs text-slate-500">
           Se actualiza cada 5 s{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
         </span>
-        {session?.role === "operador_pmu" && (
+        {(session?.role === "operador_pmu" || session?.role === "coe") && (
           <Link href="/pmu/" className="ml-auto text-sm underline">
             Volver al tablero
           </Link>

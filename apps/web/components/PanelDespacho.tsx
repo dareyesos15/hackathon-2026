@@ -4,6 +4,8 @@
  * disponibles por cercanía con ETA SIMULADA, refuerzo justificado si ya hay un despacho activo,
  * cancelación con motivo y cierre "atendido" (decisión humana, FR-011).
  */
+import { EtiquetaSimulado } from "./EtiquetaSimulado";
+import { simulado } from "@/lib/env";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
 import { isActive, newClientUuid, readyToClose } from "@/lib/dispatch";
@@ -111,6 +113,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
     <section className="rounded-lg bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold">Despacho</h3>
+        <EtiquetaSimulado />
       </div>
 
       {dispatches.length > 0 && (
@@ -135,6 +138,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
               <p className="text-tinta-suave">
                 Salió {formatTime(d.created_at)} · {formatNumber(d.distance_m / 1000, 1)} km ·
                 llegada estimada {formatTime(d.eta_at)}
+                {simulado(" (SIMULADA)")}
                 {d.arrived_at && ` · llegó ${formatTime(d.arrived_at)}`}
               </p>
               {d.justification && <p className="text-tinta-suave">“{d.justification}”</p>}

@@ -9,6 +9,7 @@
  * - specs/002: recursos y recorridos (US1), áreas de alertas vigentes y selección de un punto
  *   (US2), capa de efectos en cascada por manzana (US3). Todas las capas nuevas son opcionales.
  */
+import { DEMO_MODE, simulado } from "@/lib/env";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoJSONSource, Map as MLMap, MapMouseEvent, StyleSpecification } from "maplibre-gl";
@@ -165,7 +166,7 @@ export function Mapa({
         zoom: 13.4,
         attributionControl: {
           compact: true,
-          customAttribution: "Dacora",
+          customAttribution: DEMO_MODE ? "Barrios e incidentes SIMULADOS · Dacora" : "Dacora",
         },
         style: base.style,
       });
@@ -351,7 +352,7 @@ export function Mapa({
             new maplibre.Popup({ closeButton: false })
               .setLngLat(e.lngLat)
               .setText(
-                `${props.label} · ${RESOURCE_STATUS_LABEL[props.status as keyof typeof RESOURCE_STATUS_LABEL] ?? props.status}`,
+                `${props.label} · ${RESOURCE_STATUS_LABEL[props.status as keyof typeof RESOURCE_STATUS_LABEL] ?? props.status}${simulado(" (SIMULADO)")}`,
               )
               .addTo(map);
           } else if (hit.layer.id === "cascada-relleno") {
@@ -477,7 +478,8 @@ function Leyenda({ incidents, basemap }: { incidents: IncidentSummary[]; basemap
         </p>
         <p className="leading-snug text-tinta-suave">
           {basemap === "osm" && "Mapa base: OpenStreetMap vía OpenFreeMap (en línea)."}
-          {basemap === "offline" && "Sin internet: mapa base sin conexión."}
+          {basemap === "offline" &&
+            `Sin internet: mapa base sin conexión${simulado(" con barrios SIMULADOS")}.`}
           {basemap === "cargando" && "Cargando mapa base…"}
         </p>
       </div>

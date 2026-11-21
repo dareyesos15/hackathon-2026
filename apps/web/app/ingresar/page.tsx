@@ -1,5 +1,6 @@
 "use client";
 /** Iniciar sesión: elegir el rol. */
+import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -64,6 +65,7 @@ export default function Ingresar() {
           </Link>
           <div className="flex items-center gap-3">
             <h1 className="font-display text-6xl font-semibold leading-none">Dacora</h1>
+            <EtiquetaSimulado sobreOscuro />
           </div>
           <p className="max-w-[60ch] text-lg leading-snug text-white/85">
             Datos, alerta y coordinación para responder a emergencias y recuperarse de crisis en

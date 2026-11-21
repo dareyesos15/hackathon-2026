@@ -5,6 +5,8 @@
  * vivo). La reproducción corre en el servidor; esta página solo la lanza, la detiene y muestra
  * su avance. Todos los datos son SIMULADOS.
  */
+import { simulado } from "@/lib/env";
+import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -89,6 +91,7 @@ export default function PanelAdmin() {
       <header className="flex flex-wrap items-center gap-3 bg-sangre px-4 py-2 text-white">
         <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
         <span className="text-sm text-white/75">Administración de simulaciones</span>
+        <EtiquetaSimulado sobreOscuro />
         <nav className="ml-auto flex items-center gap-4 text-sm">
           <Link href="/" className="underline decoration-white/40 underline-offset-4">
             Inicio público
@@ -131,7 +134,7 @@ export default function PanelAdmin() {
             </fieldset>
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={rain} onChange={(e) => setRain(e.target.checked)} />
-              Incluir lluvia (para la predicción de cascada)
+              Incluir lluvia{simulado(" SIMULADA")} (para la predicción de cascada)
             </label>
             <button
               type="button"

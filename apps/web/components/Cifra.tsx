@@ -1,3 +1,4 @@
+import { EtiquetaSimulado } from "./EtiquetaSimulado";
 import { formatDateTime, formatInt, formatNumber, formatPercent } from "@/lib/format";
 
 /**
@@ -37,12 +38,13 @@ const ESTADO: Record<NonNullable<CifraProps["estado"]>, { caja: string; valor: s
 };
 
 export function Cifra(props: CifraProps) {
-  const { etiqueta, valor, unidad, fuente, version, corte, meta, estado } = props;
+  const { etiqueta, valor, unidad, fuente, version, corte, simulado, meta, estado } = props;
   const tono = ESTADO[estado ?? "neutral"];
   return (
     <div className={`rounded-md border p-3 ${tono.caja}`}>
       <div className="flex items-start justify-between gap-2">
         <p className="text-sm leading-tight text-tinta-suave">{etiqueta}</p>
+        {simulado && <EtiquetaSimulado />}
       </div>
       <p
         className={`mt-1 font-display text-4xl font-semibold leading-none tabular-nums ${tono.valor}`}

@@ -4,6 +4,7 @@
  * Los KPI de detección los publica scripts/evaluate_kpis.py contra la verdad del escenario
  * SIMULADO; la API no la conoce (principio IV).
  */
+import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -46,6 +47,7 @@ export default function PanelKpi() {
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6">
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="font-display text-3xl font-semibold">Panel de KPI de Dacora</h1>
+        <EtiquetaSimulado />
         <span className="text-xs text-tinta-suave">
           Se actualiza cada 5 s{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
         </span>

@@ -4,6 +4,7 @@
  * con contador para SMS y canales. Guarda como borrador: solo el COE emite (EMRE tarea 5.5).
  * Si la API detecta señales de desinformación, pide confirmación explícita (FR-022).
  */
+import { simulado } from "@/lib/env";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
 import { SMS_MAX, buildArea, smsOverflow, type AlertDraft } from "@/lib/alerts";
@@ -212,6 +213,7 @@ export function EditorAlerta({
               onChange={() => toggleChannel(c)}
             />
             {ALERT_CHANNEL_LABEL[c]}
+            {c === "sms_cuadrillas" && simulado(" (SIMULADO)")}
           </label>
         ))}
       </fieldset>

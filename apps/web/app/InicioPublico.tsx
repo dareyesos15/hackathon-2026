@@ -7,6 +7,7 @@
  * La API se consulta siempre con el rol `publico`, también con sesión de Ciudadanía o
  * Administrador: todos ven el mismo mapa agregado.
  */
+import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useState } from "react";
 import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
@@ -109,6 +110,7 @@ export default function InicioPublico() {
     <div className="flex min-h-screen flex-col">
       <header className="flex flex-wrap items-center gap-3 bg-sangre px-4 py-2 text-white">
         <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
+        <EtiquetaSimulado sobreOscuro />
         <span className="hidden text-sm text-white/75 sm:inline">
           Manizales · mapa, predicción e indicadores públicos
         </span>

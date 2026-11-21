@@ -3,6 +3,7 @@
  * Bandeja de alertas (specs/002 US2): borradores pendientes y alertas emitidas. Solo el COE
  * ve "Aprobar", "Rechazar" y "Anular"; aprueba la versión que tiene en pantalla (FR-018).
  */
+import { simulado } from "@/lib/env";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
 import { formatInt, formatTime } from "@/lib/format";
@@ -191,6 +192,7 @@ function AlertCard({ alert, children }: { alert: AlertOut; children?: React.Reac
       {sms && (
         <p className="text-[11px] text-tinta-suave">
           SMS a cuadrillas: {formatInt(sms.recipients_count ?? 0)} destinatarios
+          {simulado(" (SIMULADO)")}
         </p>
       )}
       {alert.misinfo_signals.length > 0 && (

@@ -4,6 +4,7 @@
  * de veracidad y decisión humana (Confirmar / Descartar / Marcar duplicado / Reabrir).
  * La IA solo sugiere; descartar algo con riesgo vital exige una nota (principio III).
  */
+import { EtiquetaSimulado } from "./EtiquetaSimulado";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { formatDateTime, formatInt, formatTime } from "@/lib/format";
@@ -158,6 +159,7 @@ export function DetalleIncidente({
             <h2 className="font-display text-2xl font-semibold leading-tight">
               {CATEGORY_LABEL[detail.category]}
             </h2>
+            <EtiquetaSimulado />
           </div>
           <p className="text-xs text-tinta-suave">
             <span className="font-bold" style={{ color: TRIAGE_COLOR[detail.triage_level] }}>

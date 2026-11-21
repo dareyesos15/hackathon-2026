@@ -4,6 +4,7 @@
  * specs/002: despacho y recorridos (US1), bandeja de alertas y alertas vigentes (US2) y capa de
  * efectos en cascada (US3). El COE usa el mismo tablero y además aprueba alertas.
  */
+import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -179,6 +180,7 @@ export default function TableroPmu() {
         <div className="flex items-center gap-3 px-4 py-2">
           <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
           <span className="text-sm text-white/75">Tablero de entidades y PMU</span>
+          <EtiquetaSimulado sobreOscuro />
           <span className={`rounded-sm px-2 py-0.5 text-xs font-bold ${mode.cls}`}>
             {live.mode === "en_vivo" && (
               <span className="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-senal motion-reduce:animate-none" />

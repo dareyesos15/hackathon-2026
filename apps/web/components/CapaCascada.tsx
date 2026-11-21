@@ -4,6 +4,8 @@
  * desglose de la manzana elegida y salida a una alerta preventiva (que igual aprueba el COE).
  * Es solo una sugerencia: no despacha ni alerta por sí sola (FR-031).
  */
+import { EtiquetaSimulado } from "./EtiquetaSimulado";
+import { simulado } from "@/lib/env";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
 import { formatDateTime, formatInt, formatNumber } from "@/lib/format";
@@ -113,6 +115,7 @@ export function CapaCascada({
           <input type="checkbox" checked={enabled} onChange={(e) => onToggle(e.target.checked)} />
           Efectos en cascada
         </label>
+        <EtiquetaSimulado />
       </div>
       <p className="text-[11px] text-tinta-suave">
         Riesgo de deslizamiento o colapso secundario por manzana: pendiente, lluvia, intensidad
@@ -146,13 +149,13 @@ export function CapaCascada({
 
       {!canControlRain && layer && (
         <p className="text-xs text-tinta-suave">
-          Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm
+          Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm{simulado(" (SIMULADA)")}
         </p>
       )}
 
       {canControlRain && (
         <label className="flex flex-col gap-1 text-xs">
-          Lluvia acumulada en 3 h
+          Lluvia acumulada en 3 h{simulado(" (SIMULADA)")}
           <div className="flex items-center gap-2">
             <input
               type="range"

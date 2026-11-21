@@ -81,12 +81,15 @@ def score_manzana(
         "pendiente": part(slope, cfg.weight_slope, f"{slope_deg:.0f}° ({zone_label}, SIMULADO)"),
         "lluvia": part(rain, cfg.weight_rain, rain_detail),
         "sismo": part(seismic, cfg.weight_seismic, seismic_detail),
-        "reportes_cercanos": part(
-            reports,
-            cfg.weight_reports,
-            f"{nearby_reports} reportes a ≤ {cfg.reports_radius_m:.0f} m en "
-            f"{cfg.reports_window_hours:.0f} h",
-        ),
+        "reportes_cercanos": {
+            **part(
+                reports,
+                cfg.weight_reports,
+                f"{nearby_reports} reportes a ≤ {cfg.reports_radius_m:.0f} m en "
+                f"{cfg.reports_window_hours:.0f} h",
+            ),
+            "n": nearby_reports,
+        },
     }
     return round(slope + rain + seismic + reports, 1), breakdown
 

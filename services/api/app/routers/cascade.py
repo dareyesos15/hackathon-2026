@@ -81,24 +81,36 @@ async def get_latest_rain(
     return _rain_out(reading) if reading else None
 
 
+def _public(feature: dict[str, Any], k: int) -> dict[str, Any]:
+    """Para el público, menos de k reportes cercanos no se cuentan (k-anonimato, principio I)."""
+    props = dict(feature["properties"])
+    breakdown = {name: dict(part) for name, part in props["breakdown"].items()}
+    reports = breakdown["reportes_cercanos"]
+    if reports.pop("n", 0) < k:
+        reports["detalle"] = f"menos de {k} reportes cercanos (dato protegido)"
+    props["breakdown"] = breakdown
+    return {**feature, "properties": props}
+
+
 @router.get("/map/cascade")
 async def cascade_layer(
     min_level: CascadeLevel | None = Query(default=None),
-    _: Role = Depends(require_role(*READERS)),
+    role: Role = Depends(require_role()),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, Any]:
-    """GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO)."""
-    layer = await cascade.compute(
-        session, get_settings().cascade, terrain_provider, hazard_provider
-    )
-    if min_level is None:
-        return layer
-    floor = LEVEL_RANK[min_level]
-    return {
-        **layer,
-        "features": [
-            f
-            for f in layer["features"]
-            if LEVEL_RANK[CascadeLevel(f["properties"]["level"])] >= floor
-        ],
-    }
+    """GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).
+
+    Visible para todos los roles, también el público: es una predicción agregada por manzana
+    para que la ciudadanía sepa qué puede pasar. Solo es una sugerencia (FR-031).
+    """
+    settings = get_settings()
+    layer = await cascade.compute(session, settings.cascade, terrain_provider, hazard_provider)
+    features = layer["features"]
+    if min_level is not None:
+        floor = LEVEL_RANK[min_level]
+        features = [
+            f for f in features if LEVEL_RANK[CascadeLevel(f["properties"]["level"])] >= floor
+        ]
+    if role == Role.publico:
+        features = [_public(f, settings.k_anonymity) for f in features]
+    return {**layer, "features": features}

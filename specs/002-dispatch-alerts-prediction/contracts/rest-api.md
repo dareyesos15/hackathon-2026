@@ -184,7 +184,12 @@ source }`. Publica `cascade.invalidated`.
 
 Última lectura o `null`.
 
-### `GET /map/cascade?min_level=` — roles: `operador_pmu`, `coe`
+### `GET /map/cascade?min_level=` — todos los roles (también `publico`)
+
+Predicción agregada por manzana visible para todos. Para `publico`, si una manzana tiene menos de
+k (5) reportes cercanos, el detalle del factor `reportes_cercanos` no muestra el número. El
+frontend guarda la última respuesta y la muestra sin conexión, con su fecha; al volver la conexión
+la pide de nuevo.
 
 GeoJSON `FeatureCollection` de manzanas con propiedades: `manzana_id`, `barrio`, `level`,
 `score`, `slope_deg`, `breakdown`, `model_version`, `source = "SIMULADO"`; y a nivel de colección

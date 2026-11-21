@@ -3876,7 +3876,7 @@
     },
     "/api/v1/map/cascade": {
       "get": {
-        "description": "GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).",
+        "description": "GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).\n\nVisible para todos los roles, también el público: es una predicción agregada por manzana\npara que la ciudadanía sepa qué puede pasar. Solo es una sugerencia (FR-031).",
         "operationId": "cascade_layer_api_v1_map_cascade_get",
         "parameters": [
           {

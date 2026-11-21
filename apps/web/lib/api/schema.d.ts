@@ -337,6 +337,9 @@ export interface paths {
         /**
          * Cascade Layer
          * @description GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).
+         *
+         *     Visible para todos los roles, también el público: es una predicción agregada por manzana
+         *     para que la ciudadanía sepa qué puede pasar. Solo es una sugerencia (FR-031).
          */
         get: operations["cascade_layer_api_v1_map_cascade_get"];
         put?: never;

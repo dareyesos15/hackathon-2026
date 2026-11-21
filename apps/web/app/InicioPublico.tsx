@@ -4,7 +4,8 @@
  * (Ley 1712 de 2014). Solo agregados: conteos por manzana con k ≥ 5 (los aplica la API), KPI
  * con fuente y fecha de corte, y alertas oficiales emitidas por el COE. Nunca incidentes,
  * reportes individuales, recursos ni datos personales (Ley 1581 de 2012).
- * Sin sesión, la API se consulta con el rol `publico`.
+ * La API se consulta siempre con el rol `publico`, también con sesión de Ciudadanía o
+ * Administrador: todos ven el mismo mapa agregado.
  */
 import Link from "next/link";
 import { useState } from "react";
@@ -18,7 +19,7 @@ import {
 import { CifraKpi } from "@/components/CifraKpi";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
-import { api } from "@/lib/api/client";
+import { publicApi as api } from "@/lib/api/client";
 import { useOfflineData } from "@/lib/offline";
 import { formatDateTime, formatInt } from "@/lib/format";
 import { ROLE_LABELS, clearSession, getSession, type Role } from "@/lib/session";
@@ -91,7 +92,7 @@ export default function InicioPublico() {
   const alerts = alertsData.data;
   const items = kpiData.data ?? [];
   const k = kpiMap(items);
-  const panel = session ? PANEL[session.role] : undefined;
+  const panel = session ? PANEL[session.role] : "/";
   const offline = manzanasData.offline || kpiData.offline || alertsData.offline;
 
   const features = manzanas?.features ?? [];
@@ -117,7 +118,14 @@ export default function InicioPublico() {
           {session ? (
             <>
               <span className="text-white/75">{ROLE_LABELS[session.role]}</span>
-              {panel && (
+              {session.role === "ciudadano" ? (
+                <Link
+                  href={panel}
+                  className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
+                >
+                  Reportar una emergencia
+                </Link>
+              ) : (
                 <Link
                   href={panel}
                   className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"

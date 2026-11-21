@@ -167,6 +167,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/demo-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Demo Users
+         * @description Usuarios de prueba para la pantalla de inicio de sesión (vacío fuera de modo demo).
+         */
+        get: operations["demo_users_api_v1_auth_demo_users_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login */
+        post: operations["login_api_v1_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/demo/reset": {
         parameters: {
             query?: never;
@@ -306,7 +343,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Incidents */
+        /**
+         * List Incidents
+         * @description Incidentes con triaje. El público (sin sesión) ve la misma matriz, sin los descartados y
+         *     con la ubicación redondeada a ~100 m (sin direcciones exactas; Ley 1581). Los incidentes no
+         *     llevan texto de reportes ni datos personales.
+         */
         get: operations["list_incidents_api_v1_incidents_get"];
         put?: never;
         post?: never;
@@ -852,7 +894,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Sensors */
+        /**
+         * List Sensors
+         * @description Sensores y su estado. Visible también para el público (tablero para todos): no lleva
+         *     credenciales RFID ni personas, solo el edificio vigilado, el cono y las alarmas abiertas.
+         */
         get: operations["list_sensors_api_v1_sensors_zones_get"];
         put?: never;
         /**
@@ -1279,6 +1325,32 @@ export interface components {
             recipients_count: number | null;
             /** Source */
             source: string;
+        };
+        /** DemoUserList */
+        DemoUserList: {
+            /** Items */
+            items: components["schemas"]["DemoUserOut"][];
+            /**
+             * Password Hint
+             * @description Contraseña de prueba; solo se publica en modo demo
+             */
+            password_hint: string | null;
+        };
+        /** DemoUserOut */
+        DemoUserOut: {
+            /** Api Role */
+            api_role: string;
+            /**
+             * Area
+             * @enum {string}
+             */
+            area: "pmu" | "agencia" | "admin";
+            /** Display Name */
+            display_name: string;
+            /** Organization */
+            organization: string;
+            /** Username */
+            username: string;
         };
         /**
          * DispatchIn
@@ -1821,6 +1893,33 @@ export interface components {
              * @enum {string}
              */
             precision: "gps" | "address";
+        };
+        /** LoginIn */
+        LoginIn: {
+            /** Password */
+            password: string;
+            /** Username */
+            username: string;
+        };
+        /** LoginOut */
+        LoginOut: {
+            /** Agency Code */
+            agency_code: string | null;
+            /** Api Role */
+            api_role: string;
+            /**
+             * Area
+             * @enum {string}
+             */
+            area: "pmu" | "agencia" | "admin";
+            /** Display Name */
+            display_name: string;
+            /** Organization */
+            organization: string;
+            /** Token */
+            token: string;
+            /** Username */
+            username: string;
         };
         /** LookupIn */
         LookupIn: {
@@ -2979,6 +3078,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    demo_users_api_v1_auth_demo_users_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DemoUserList"];
+                };
+            };
+        };
+    };
+    login_api_v1_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginOut"];
                 };
             };
             /** @description Validation Error */

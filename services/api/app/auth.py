@@ -1,4 +1,10 @@
-"""Autenticación por token fijo por rol (research R9). Sin Keycloak en el prototipo."""
+"""Autenticación por token fijo por rol (research R9). Sin Keycloak en el prototipo.
+
+Sin token, la solicitud es anónima y vale como rol `publico`: la ciudadanía no inicia sesión
+(ve el tablero público y reporta emergencias). Un token inválido sigue siendo 401.
+Las entidades (PMU, COE, agencias) y el administrador entran con usuario y contraseña
+(`POST /auth/login`, usuarios de prueba en `app.core.users`) y reciben el token de su rol.
+"""
 
 from collections.abc import Callable, Coroutine
 from typing import Any
@@ -33,6 +39,8 @@ def require_role(
     ) -> Role:
         raw = creds.credentials if creds else (token if allow_query_token else None)
         role = _role_for(raw)
+        if raw is None and (not allowed or Role.publico in allowed):
+            role = Role.publico  # anónimo: solo lo que ve el público
         if role is None:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,

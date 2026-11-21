@@ -74,7 +74,7 @@ async def client(database: str) -> AsyncIterator[httpx.AsyncClient]:
 
 
 PMU = {"Authorization": "Bearer pmu-demo"}
-CIUDADANO = {"Authorization": "Bearer ciudadano-demo"}
+CIUDADANO: dict[str, str] = {}  # la ciudadanía reporta sin sesión (anónima)
 COE = {"Authorization": "Bearer coe-demo"}
 AGENCIA = {"Authorization": "Bearer agencia-demo"}
 PUBLICO = {"Authorization": "Bearer publico-demo"}

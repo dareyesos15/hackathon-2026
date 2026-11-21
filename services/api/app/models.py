@@ -22,21 +22,31 @@ from sqlalchemy import (
     String,
     Text,
     func,
+    text,
 )
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.domain import (
+    AlertAction,
+    AlertStatus,
+    AlertType,
     Category,
     Channel,
+    DispatchStatus,
+    EmreFunction,
     GeoPrecision,
     IncidentStatus,
     MetricUnit,
     PlaceKind,
     ReportAction,
     ReportStatus,
+    ResourceStatus,
+    ResourceType,
     Role,
+    TrackKind,
+    TrackOrigin,
     TriageLevel,
     TrustLabel,
 )
@@ -205,3 +215,202 @@ class MetricSnapshot(CommonMixin, Base):
     unit: Mapped[MetricUnit] = mapped_column(_enum(MetricUnit, "metric_unit"), nullable=False)
     cutoff_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     details: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+
+
+# --- Despacho, alertas y cascada (specs/002-dispatch-alerts-prediction/data-model.md) ---
+
+
+class Agency(CommonMixin, Base):
+    """Organismo de respuesta del catálogo SIMULADO (data/seed/resources.json)."""
+
+    __tablename__ = "agencies"
+
+    code: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    emre_function: Mapped[EmreFunction] = mapped_column(
+        _enum(EmreFunction, "emre_function"), nullable=False
+    )
+
+
+class Resource(CommonMixin, Base):
+    """Cuadrilla o vehículo; `code` es la etiqueta RFID (SIMULADA) estable."""
+
+    __tablename__ = "resources"
+
+    code: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    agency_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("agencies.id"), nullable=False)
+    type: Mapped[ResourceType] = mapped_column(_enum(ResourceType, "resource_type"), nullable=False)
+    label: Mapped[str] = mapped_column(String(120), nullable=False)
+    base_geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    status: Mapped[ResourceStatus] = mapped_column(
+        _enum(ResourceStatus, "resource_status"), nullable=False, default=ResourceStatus.disponible
+    )
+    last_geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Dispatch(CommonMixin, Base):
+    """Asignación de un recurso a un incidente. Nunca se borra (principio III)."""
+
+    __tablename__ = "dispatches"
+    __table_args__ = (
+        CheckConstraint(
+            "NOT is_reinforcement OR char_length(btrim(coalesce(justification, ''))) > 0",
+            name="ck_dispatch_reinforcement_justified",
+        ),
+        CheckConstraint(
+            "char_length(coalesce(justification, '')) <= 500", name="ck_dispatch_justification_len"
+        ),
+        CheckConstraint(
+            "char_length(coalesce(close_note, '')) <= 500", name="ck_dispatch_close_note_len"
+        ),
+        CheckConstraint(
+            "created_by_role IN ('operador_pmu', 'coe')", name="ck_dispatch_created_by_role"
+        ),
+        # Un recurso solo puede tener un despacho activo (FR-005).
+        Index(
+            "uq_dispatch_active_resource",
+            "resource_id",
+            unique=True,
+            postgresql_where=text("status IN ('en_camino', 'en_sitio')"),
+        ),
+        Index("ix_dispatches_incident", "incident_id"),
+    )
+
+    client_uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, unique=True)
+    incident_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("incidents.id"), nullable=False)
+    resource_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("resources.id"), nullable=False)
+    agency_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("agencies.id"), nullable=False)
+    emre_function: Mapped[EmreFunction | None] = mapped_column(
+        _enum(EmreFunction, "dispatch_emre_function"), nullable=True
+    )
+    suggested: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    is_reinforcement: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    justification: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[DispatchStatus] = mapped_column(
+        _enum(DispatchStatus, "dispatch_status"), nullable=False, default=DispatchStatus.en_camino
+    )
+    eta_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    distance_m: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_by_role: Mapped[Role] = mapped_column(
+        _enum(Role, "dispatch_created_by"), nullable=False
+    )
+    arrived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    close_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ResourceTrack(CommonMixin, Base):
+    """Punto de paso (lector RFID SIMULADO o registro manual). Solo-agregar."""
+
+    __tablename__ = "resource_tracks"
+    __table_args__ = (Index("ix_resource_tracks_resource_at", "resource_id", "at"),)
+
+    resource_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("resources.id"), nullable=False)
+    dispatch_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("dispatches.id"), nullable=True
+    )
+    kind: Mapped[TrackKind] = mapped_column(_enum(TrackKind, "track_kind"), nullable=False)
+    origin: Mapped[TrackOrigin] = mapped_column(_enum(TrackOrigin, "track_origin"), nullable=False)
+    geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+ALERT_CHANNELS_SQL = "ARRAY['tablero', 'mapa_publico', 'sms_cuadrillas']::text[]"
+
+
+class Alert(CommonMixin, Base):
+    """Alerta oficial: solo el COE la aprueba (EMRE tarea 5.5, principio III)."""
+
+    __tablename__ = "alerts"
+    __table_args__ = (
+        CheckConstraint(
+            "approved_by_role IS NULL OR approved_by_role = 'coe'", name="ck_alert_approved_by_coe"
+        ),
+        CheckConstraint("char_length(message) BETWEEN 1 AND 500", name="ck_alert_message_len"),
+        CheckConstraint(
+            f"cardinality(channels) >= 1 AND channels <@ {ALERT_CHANNELS_SQL}",
+            name="ck_alert_channels",
+        ),
+        CheckConstraint(
+            "char_length(coalesce(close_reason, '')) <= 500", name="ck_alert_close_reason_len"
+        ),
+        CheckConstraint(
+            "created_by_role IN ('operador_pmu', 'coe')", name="ck_alert_created_by_role"
+        ),
+        Index("ix_alerts_status", "status"),
+    )
+
+    type: Mapped[AlertType] = mapped_column(_enum(AlertType, "alert_type"), nullable=False)
+    status: Mapped[AlertStatus] = mapped_column(
+        _enum(AlertStatus, "alert_status"), nullable=False, default=AlertStatus.borrador
+    )
+    area: Mapped[Any] = mapped_column(Geometry("MULTIPOLYGON", srid=4326), nullable=False)
+    area_barrios: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    area_circle: Mapped[dict[str, float] | None] = mapped_column(JSONB, nullable=True)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    channels: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False)
+    misinfo_signals: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    origin_incident_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("incidents.id"), nullable=True
+    )
+    origin_manzana_id: Mapped[str | None] = mapped_column(ForeignKey("manzanas.id"), nullable=True)
+    created_by_role: Mapped[Role] = mapped_column(_enum(Role, "alert_created_by"), nullable=False)
+    approved_by_role: Mapped[Role | None] = mapped_column(
+        _enum(Role, "alert_approved_by"), nullable=True
+    )
+    emitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    close_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+
+class AlertEvent(CommonMixin, Base):
+    """Bitácora de alertas (solo-agregar)."""
+
+    __tablename__ = "alert_events"
+    __table_args__ = (Index("ix_alert_events_alert", "alert_id", "at"),)
+
+    alert_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("alerts.id"), nullable=False)
+    actor_role: Mapped[Role] = mapped_column(_enum(Role, "alert_actor_role"), nullable=False)
+    action: Mapped[AlertAction] = mapped_column(_enum(AlertAction, "alert_action"), nullable=False)
+    alert_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, default=dict)
+    at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class AlertDelivery(CommonMixin, Base):
+    """Envío SIMULADO por canal. Solo conteos: nunca números ni identidades (principio I)."""
+
+    __tablename__ = "alert_deliveries"
+    __table_args__ = (
+        CheckConstraint(
+            "recipients_count IS NULL OR recipients_count >= 0", name="ck_delivery_recipients"
+        ),
+        CheckConstraint(
+            "channel IN ('tablero', 'mapa_publico', 'sms_cuadrillas')", name="ck_delivery_channel"
+        ),
+    )
+
+    alert_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("alerts.id"), nullable=False)
+    channel: Mapped[str] = mapped_column(String(32), nullable=False)
+    recipients_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class RainReading(CommonMixin, Base):
+    """Lluvia acumulada en 3 h de una estación SIMULADA (patente NC2022/0005821)."""
+
+    __tablename__ = "rain_readings"
+    __table_args__ = (
+        CheckConstraint("mm_3h >= 0 AND mm_3h <= 300", name="ck_rain_range"),
+        Index("ix_rain_readings_at", "at"),
+    )
+
+    station_code: Mapped[str] = mapped_column(String(32), nullable=False)
+    mm_3h: Mapped[float] = mapped_column(Numeric(5, 1), nullable=False)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

@@ -1,8 +1,8 @@
-"""Alerta masiva de toda la ciudad: activar, consultar y reporte final.
+"""Alertas masivas de toda la ciudad: activar, consultar, cerrar a mano y reporte final.
 
-Activarla abre una sesión de operación propia: los incidentes nuevos quedan en ella y el tablero
-del PMU muestra triaje, cascada y zonas solo de esa sesión. Se resuelve sola cuando todos sus
-incidentes se cierran y entonces queda el reporte final (core/mass_alert.py).
+Pueden existir varias activas a la vez, junto con la operación ordinaria. Mientras haya al menos
+una, los incidentes nuevos quedan sin asignar y el PMU/COE los asigna desde la gestión de
+incidentes (routers/incident_admin.py). El cierre es manual (core/mass_alert.py).
 """
 
 from __future__ import annotations
@@ -12,18 +12,29 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.event_bus import bus
 from app.auth import require_role
 from app.core.alerts import AlertError, AreaSpec, barrio_shapes, create_alert
-from app.core.mass_alert import active_mass_alert, build_report, check_resolution, progress
+from app.core.mass_alert import (
+    MassAlertError,
+    build_report,
+    close_mass_alert,
+    progress,
+)
 from app.db import get_session
 from app.domain import AlertType, MassAlertEvent, MassAlertStatus, Role
-from app.mass_alert_schemas import MassAlertIn, MassAlertList, MassAlertOut, MassAlertReport
-from app.models import MassAlert
+from app.mass_alert_schemas import (
+    MassAlertCloseIn,
+    MassAlertCloseOut,
+    MassAlertIn,
+    MassAlertList,
+    MassAlertOut,
+    MassAlertReport,
+)
+from app.models import Incident, MassAlert
 
 router = APIRouter(prefix="/mass-alerts", tags=["alerta masiva"])
 
@@ -90,18 +101,14 @@ def _publish(alert: MassAlert) -> None:
     )
 
 
-async def resolve_and_publish(
-    session: AsyncSession, mass_alert_ids: Sequence[uuid.UUID | None]
-) -> None:
-    """Tras cerrar incidentes o despachos: resuelve la alerta si ya no queda nada abierto."""
-    ids = [m for m in mass_alert_ids if m is not None]
-    if not ids:
-        return
-    for alert in await check_resolution(session, ids):
-        _publish(alert)
-    # Progreso (cerrados / total) para la barra de la sesión.
-    for mid in set(ids):
+def publish_progress(mass_alert_ids: Sequence[uuid.UUID | None]) -> None:
+    """Tras cambiar incidentes o despachos: avisa el progreso (cerrados / total) de sus alertas."""
+    for mid in {m for m in mass_alert_ids if m is not None}:
         bus.publish("mass_alert.changed", {"mass_alert_id": str(mid), "status": "progreso"})
+
+
+def http_error(err: MassAlertError) -> HTTPException:
+    return HTTPException(err.status, detail={"detail": err.message, "code": err.code})
 
 
 async def _get(session: AsyncSession, mass_alert_id: uuid.UUID) -> MassAlert:
@@ -122,8 +129,16 @@ async def list_mass_alerts(
         ).scalars()
     )
     items = [await mass_alert_out(session, a) for a in alerts]
-    active = next((i for i in items if i.status == MassAlertStatus.activa), None)
-    return MassAlertList(items=items, active=active)
+    unassigned = await session.scalar(
+        select(func.count(Incident.id)).where(
+            Incident.pending_assignment.is_(True), Incident.report_count > 0
+        )
+    )
+    return MassAlertList(
+        items=items,
+        active=[i for i in items if i.status == MassAlertStatus.activa],
+        unassigned_count=int(unassigned or 0),
+    )
 
 
 @router.post("", response_model=MassAlertOut, status_code=status.HTTP_201_CREATED)
@@ -132,16 +147,7 @@ async def post_mass_alert(
     role: Role = Depends(require_role(*EDITORS)),
     session: AsyncSession = Depends(get_session),
 ) -> MassAlertOut:
-    """Activa la alerta masiva. Solo puede haber una activa a la vez (409)."""
-    if await active_mass_alert(session) is not None:
-        raise HTTPException(
-            409,
-            detail={
-                "detail": "Ya hay una alerta masiva activa; se resuelve cuando se cierren sus "
-                "incidentes",
-                "code": "mass_alert_active",
-            },
-        )
+    """Activa una alerta masiva. Puede haber varias activas a la vez."""
     official_id: uuid.UUID | None = None
     if body.official_alert:
         try:
@@ -185,13 +191,7 @@ async def post_mass_alert(
         version=1,
     )
     session.add(alert)
-    try:
-        await session.commit()
-    except IntegrityError as err:  # carrera: otra alerta masiva se activó al tiempo
-        await session.rollback()
-        raise HTTPException(
-            409, detail={"detail": "Ya hay una alerta masiva activa", "code": "mass_alert_active"}
-        ) from err
+    await session.commit()
     _publish(alert)
     return await mass_alert_out(session, alert)
 
@@ -215,3 +215,31 @@ async def get_mass_alert_report(
     alert = await _get(session, mass_alert_id)
     report = alert.final_report or await build_report(session, alert)
     return MassAlertReport(mass_alert=await mass_alert_out(session, alert), report=report)
+
+
+@router.post("/{mass_alert_id}/close", response_model=MassAlertCloseOut)
+async def close(
+    mass_alert_id: uuid.UUID,
+    body: MassAlertCloseIn,
+    role: Role = Depends(require_role(*EDITORS)),
+    session: AsyncSession = Depends(get_session),
+) -> MassAlertCloseOut:
+    """Cierre manual. Bloqueado (409 `open_incidents`) si quedan incidentes abiertos o despachos
+    activos, salvo `delete_incidents=true`: entonces se cierra y se eliminan todos sus incidentes
+    (con reportes, bitácora y despachos). El reporte final se guarda antes de eliminar."""
+    alert = await session.get(MassAlert, mass_alert_id, with_for_update=True)
+    if alert is None:
+        raise HTTPException(404, detail={"detail": "Alerta masiva no existe", "code": "not_found"})
+    try:
+        deleted = await close_mass_alert(
+            session, alert, role, delete_incidents_too=body.delete_incidents
+        )
+    except MassAlertError as err:
+        await session.rollback()
+        raise http_error(err) from err
+    _publish(alert)
+    if deleted:
+        bus.publish("incidents.deleted", {"incident_ids": [str(i) for i in deleted]})
+    return MassAlertCloseOut(
+        mass_alert=await mass_alert_out(session, alert), deleted_incidents=len(deleted)
+    )

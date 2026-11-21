@@ -8,7 +8,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.domain import AlertChannel, MassAlertEvent, MassAlertStatus, Role
+from app.domain import AlertChannel, Category, MassAlertEvent, MassAlertStatus, Role, TriageLevel
 
 
 class MassAlertIn(BaseModel):
@@ -47,7 +47,42 @@ class MassAlertOut(BaseModel):
 
 class MassAlertList(BaseModel):
     items: list[MassAlertOut]
-    active: MassAlertOut | None
+    active: list[MassAlertOut]
+    unassigned_count: int = Field(description="Incidentes que esperan asignación manual")
+
+
+class MassAlertCloseIn(BaseModel):
+    delete_incidents: bool = Field(
+        default=False,
+        description="Cerrar aunque queden abiertos, eliminando todos los incidentes asociados",
+    )
+
+
+class MassAlertCloseOut(BaseModel):
+    mass_alert: MassAlertOut
+    deleted_incidents: int
+
+
+class IncidentAssignIn(BaseModel):
+    incident_ids: list[uuid.UUID] = Field(min_length=1, max_length=500)
+    mass_alert_id: uuid.UUID | None = Field(
+        default=None, description="Alerta masiva activa destino; null = operación ordinaria"
+    )
+
+
+class ManualIncidentIn(BaseModel):
+    category: Category
+    description: str = Field(min_length=3, max_length=1000)
+    triage_level: TriageLevel | None = Field(
+        default=None, description="Si falta, el de la categoría (matriz de triaje)"
+    )
+    barrio: str | None = Field(default=None, max_length=80)
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
+    people_affected: int | None = Field(default=None, ge=0, le=10000)
+    mass_alert_id: uuid.UUID | None = Field(
+        default=None, description="Alerta masiva activa; null = operación ordinaria"
+    )
 
 
 class MassAlertReport(BaseModel):

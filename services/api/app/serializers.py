@@ -137,6 +137,7 @@ async def incidents_out(
                 updated_at=i.updated_at,
                 source=i.source,
                 mass_alert_id=i.mass_alert_id,
+                pending_assignment=i.pending_assignment,
                 dispatch_status=status,  # type: ignore[arg-type]
                 assigned_agency=agency,
                 unattended=bool(unattended),

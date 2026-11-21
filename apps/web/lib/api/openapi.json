@@ -1700,6 +1700,38 @@
         "title": "InboxList",
         "type": "object"
       },
+      "IncidentAssignIn": {
+        "properties": {
+          "incident_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "title": "Incident Ids",
+            "type": "array"
+          },
+          "mass_alert_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Alerta masiva activa destino; null = operación ordinaria",
+            "title": "Mass Alert Id"
+          }
+        },
+        "required": [
+          "incident_ids"
+        ],
+        "title": "IncidentAssignIn",
+        "type": "object"
+      },
       "IncidentDetail": {
         "properties": {
           "assigned_agency": {
@@ -1823,6 +1855,12 @@
             ],
             "description": "Sesión de alerta masiva (None: operación ordinaria)",
             "title": "Mass Alert Id"
+          },
+          "pending_assignment": {
+            "default": false,
+            "description": "Sin asignar: espera que el PMU/COE elija su sesión",
+            "title": "Pending Assignment",
+            "type": "boolean"
           },
           "people_affected": {
             "anyOf": [
@@ -2146,6 +2184,12 @@
             ],
             "description": "Sesión de alerta masiva (None: operación ordinaria)",
             "title": "Mass Alert Id"
+          },
+          "pending_assignment": {
+            "default": false,
+            "description": "Sin asignar: espera que el PMU/COE elija su sesión",
+            "title": "Pending Assignment",
+            "type": "boolean"
           },
           "people_affected": {
             "anyOf": [
@@ -2583,6 +2627,100 @@
         "title": "LookupIn",
         "type": "object"
       },
+      "ManualIncidentIn": {
+        "properties": {
+          "barrio": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "description": {
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Description",
+            "type": "string"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "maximum": 90.0,
+                "minimum": -90.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lon": {
+            "anyOf": [
+              {
+                "maximum": 180.0,
+                "minimum": -180.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lon"
+          },
+          "mass_alert_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Alerta masiva activa; null = operación ordinaria",
+            "title": "Mass Alert Id"
+          },
+          "people_affected": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People Affected"
+          },
+          "triage_level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TriageLevel"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si falta, el de la categoría (matriz de triaje)"
+          }
+        },
+        "required": [
+          "category",
+          "description"
+        ],
+        "title": "ManualIncidentIn",
+        "type": "object"
+      },
       "ManzanaRef": {
         "properties": {
           "barrio": {
@@ -2604,6 +2742,35 @@
           "comuna"
         ],
         "title": "ManzanaRef",
+        "type": "object"
+      },
+      "MassAlertCloseIn": {
+        "properties": {
+          "delete_incidents": {
+            "default": false,
+            "description": "Cerrar aunque queden abiertos, eliminando todos los incidentes asociados",
+            "title": "Delete Incidents",
+            "type": "boolean"
+          }
+        },
+        "title": "MassAlertCloseIn",
+        "type": "object"
+      },
+      "MassAlertCloseOut": {
+        "properties": {
+          "deleted_incidents": {
+            "title": "Deleted Incidents",
+            "type": "integer"
+          },
+          "mass_alert": {
+            "$ref": "#/components/schemas/MassAlertOut"
+          }
+        },
+        "required": [
+          "mass_alert",
+          "deleted_incidents"
+        ],
+        "title": "MassAlertCloseOut",
         "type": "object"
       },
       "MassAlertEvent": {
@@ -2682,14 +2849,11 @@
       "MassAlertList": {
         "properties": {
           "active": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/MassAlertOut"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "items": {
+              "$ref": "#/components/schemas/MassAlertOut"
+            },
+            "title": "Active",
+            "type": "array"
           },
           "items": {
             "items": {
@@ -2697,11 +2861,17 @@
             },
             "title": "Items",
             "type": "array"
+          },
+          "unassigned_count": {
+            "description": "Incidentes que esperan asignación manual",
+            "title": "Unassigned Count",
+            "type": "integer"
           }
         },
         "required": [
           "items",
-          "active"
+          "active",
+          "unassigned_count"
         ],
         "title": "MassAlertList",
         "type": "object"
@@ -3247,7 +3417,10 @@
           "despacho_estado",
           "cancelar_despacho",
           "despacho_doble_bloqueado",
-          "cerrar_atendido"
+          "cerrar_atendido",
+          "crear_manual",
+          "asignar_alerta",
+          "desacoplar_alerta"
         ],
         "title": "ReportAction",
         "type": "string"
@@ -6113,6 +6286,98 @@
         "tags": [
           "incidentes"
         ]
+      },
+      "post": {
+        "description": "Crea un incidente sin reportes ciudadanos (p. ej. informado por radio). Nace verificado\nporque lo registra una persona; queda en la bitácora como `crear_manual`.",
+        "operationId": "post_incident_api_v1_incidents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManualIncidentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Incident",
+        "tags": [
+          "gestión de incidentes"
+        ]
+      }
+    },
+    "/api/v1/incidents/assign": {
+      "post": {
+        "description": "Asigna incidentes a una alerta masiva activa o los desacopla a la operación ordinaria.",
+        "operationId": "post_assign_api_v1_incidents_assign_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentAssignIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Assign",
+        "tags": [
+          "gestión de incidentes"
+        ]
       }
     },
     "/api/v1/incidents/{incident_id}": {
@@ -6503,7 +6768,7 @@
         "operationId": "manzanas_layer_api_v1_map_manzanas_get",
         "parameters": [
           {
-            "description": "`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+            "description": "`ordinaria`, `sin_asignar` o el id de una alerta masiva; sin valor, todas",
             "in": "query",
             "name": "sesion",
             "required": false,
@@ -6516,7 +6781,7 @@
                   "type": "null"
                 }
               ],
-              "description": "`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+              "description": "`ordinaria`, `sin_asignar` o el id de una alerta masiva; sin valor, todas",
               "title": "Sesion"
             }
           }
@@ -6592,7 +6857,7 @@
         ]
       },
       "post": {
-        "description": "Activa la alerta masiva. Solo puede haber una activa a la vez (409).",
+        "description": "Activa una alerta masiva. Puede haber varias activas a la vez.",
         "operationId": "post_mass_alert_api_v1_mass_alerts_post",
         "requestBody": {
           "content": {
@@ -6680,6 +6945,65 @@
           }
         ],
         "summary": "Get Mass Alert",
+        "tags": [
+          "alerta masiva"
+        ]
+      }
+    },
+    "/api/v1/mass-alerts/{mass_alert_id}/close": {
+      "post": {
+        "description": "Cierre manual. Bloqueado (409 `open_incidents`) si quedan incidentes abiertos o despachos\nactivos, salvo `delete_incidents=true`: entonces se cierra y se eliminan todos sus incidentes\n(con reportes, bitácora y despachos). El reporte final se guarda antes de eliminar.",
+        "operationId": "close_api_v1_mass_alerts__mass_alert_id__close_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mass_alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mass Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MassAlertCloseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MassAlertCloseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Close",
         "tags": [
           "alerta masiva"
         ]

@@ -351,7 +351,32 @@ export interface paths {
          */
         get: operations["list_incidents_api_v1_incidents_get"];
         put?: never;
-        post?: never;
+        /**
+         * Post Incident
+         * @description Crea un incidente sin reportes ciudadanos (p. ej. informado por radio). Nace verificado
+         *     porque lo registra una persona; queda en la bitácora como `crear_manual`.
+         */
+        post: operations["post_incident_api_v1_incidents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/incidents/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Assign
+         * @description Asigna incidentes a una alerta masiva activa o los desacopla a la operación ordinaria.
+         */
+        post: operations["post_assign_api_v1_incidents_assign_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -507,7 +532,7 @@ export interface paths {
         put?: never;
         /**
          * Post Mass Alert
-         * @description Activa la alerta masiva. Solo puede haber una activa a la vez (409).
+         * @description Activa una alerta masiva. Puede haber varias activas a la vez.
          */
         post: operations["post_mass_alert_api_v1_mass_alerts_post"];
         delete?: never;
@@ -527,6 +552,28 @@ export interface paths {
         get: operations["get_mass_alert_api_v1_mass_alerts__mass_alert_id__get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mass-alerts/{mass_alert_id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close
+         * @description Cierre manual. Bloqueado (409 `open_incidents`) si quedan incidentes abiertos o despachos
+         *     activos, salvo `delete_incidents=true`: entonces se cierra y se eliminan todos sus incidentes
+         *     (con reportes, bitácora y despachos). El reporte final se guarda antes de eliminar.
+         */
+        post: operations["close_api_v1_mass_alerts__mass_alert_id__close_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1678,6 +1725,16 @@ export interface components {
             /** Items */
             items: components["schemas"]["InboxItem"][];
         };
+        /** IncidentAssignIn */
+        IncidentAssignIn: {
+            /** Incident Ids */
+            incident_ids: string[];
+            /**
+             * Mass Alert Id
+             * @description Alerta masiva activa destino; null = operación ordinaria
+             */
+            mass_alert_id?: string | null;
+        };
         /** IncidentDetail */
         IncidentDetail: {
             /** Assigned Agency */
@@ -1726,6 +1783,12 @@ export interface components {
              * @description Sesión de alerta masiva (None: operación ordinaria)
              */
             mass_alert_id?: string | null;
+            /**
+             * Pending Assignment
+             * @description Sin asignar: espera que el PMU/COE elija su sesión
+             * @default false
+             */
+            pending_assignment: boolean;
             /** People Affected */
             people_affected: number | null;
             /** Report Count */
@@ -1841,6 +1904,12 @@ export interface components {
              * @description Sesión de alerta masiva (None: operación ordinaria)
              */
             mass_alert_id?: string | null;
+            /**
+             * Pending Assignment
+             * @description Sin asignar: espera que el PMU/COE elija su sesión
+             * @default false
+             */
+            pending_assignment: boolean;
             /** People Affected */
             people_affected: number | null;
             /** Report Count */
@@ -1994,6 +2063,27 @@ export interface components {
             /** Document */
             document: string;
         };
+        /** ManualIncidentIn */
+        ManualIncidentIn: {
+            /** Barrio */
+            barrio?: string | null;
+            category: components["schemas"]["Category"];
+            /** Description */
+            description: string;
+            /** Lat */
+            lat?: number | null;
+            /** Lon */
+            lon?: number | null;
+            /**
+             * Mass Alert Id
+             * @description Alerta masiva activa; null = operación ordinaria
+             */
+            mass_alert_id?: string | null;
+            /** People Affected */
+            people_affected?: number | null;
+            /** @description Si falta, el de la categoría (matriz de triaje) */
+            triage_level?: components["schemas"]["TriageLevel"] | null;
+        };
         /** ManzanaRef */
         ManzanaRef: {
             /** Barrio */
@@ -2002,6 +2092,21 @@ export interface components {
             comuna: string;
             /** Id */
             id: string;
+        };
+        /** MassAlertCloseIn */
+        MassAlertCloseIn: {
+            /**
+             * Delete Incidents
+             * @description Cerrar aunque queden abiertos, eliminando todos los incidentes asociados
+             * @default false
+             */
+            delete_incidents: boolean;
+        };
+        /** MassAlertCloseOut */
+        MassAlertCloseOut: {
+            /** Deleted Incidents */
+            deleted_incidents: number;
+            mass_alert: components["schemas"]["MassAlertOut"];
         };
         /**
          * MassAlertEvent
@@ -2035,9 +2140,15 @@ export interface components {
         };
         /** MassAlertList */
         MassAlertList: {
-            active: components["schemas"]["MassAlertOut"] | null;
+            /** Active */
+            active: components["schemas"]["MassAlertOut"][];
             /** Items */
             items: components["schemas"]["MassAlertOut"][];
+            /**
+             * Unassigned Count
+             * @description Incidentes que esperan asignación manual
+             */
+            unassigned_count: number;
         };
         /** MassAlertOut */
         MassAlertOut: {
@@ -2258,7 +2369,7 @@ export interface components {
          * ReportAction
          * @enum {string}
          */
-        ReportAction: "ingerido" | "agrupado" | "confirmar" | "descartar" | "marcar_duplicado" | "reabrir" | "despachar" | "reforzar" | "despacho_estado" | "cancelar_despacho" | "despacho_doble_bloqueado" | "cerrar_atendido";
+        ReportAction: "ingerido" | "agrupado" | "confirmar" | "descartar" | "marcar_duplicado" | "reabrir" | "despachar" | "reforzar" | "despacho_estado" | "cancelar_despacho" | "despacho_doble_bloqueado" | "cerrar_atendido" | "crear_manual" | "asignar_alerta" | "desacoplar_alerta";
         /** ReportEventOut */
         ReportEventOut: {
             action: components["schemas"]["ReportAction"];
@@ -3610,6 +3721,72 @@ export interface operations {
             };
         };
     };
+    post_incident_api_v1_incidents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualIncidentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IncidentSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_assign_api_v1_incidents_assign_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IncidentAssignIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IncidentList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_incident_api_v1_incidents__incident_id__get: {
         parameters: {
             query?: never;
@@ -3871,7 +4048,7 @@ export interface operations {
     manzanas_layer_api_v1_map_manzanas_get: {
         parameters: {
             query?: {
-                /** @description `ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones */
+                /** @description `ordinaria`, `sin_asignar` o el id de una alerta masiva; sin valor, todas */
                 sesion?: string | null;
             };
             header?: never;
@@ -3982,6 +4159,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MassAlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    close_api_v1_mass_alerts__mass_alert_id__close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mass_alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MassAlertCloseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MassAlertCloseOut"];
                 };
             };
             /** @description Validation Error */

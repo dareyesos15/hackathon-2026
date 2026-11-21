@@ -1,10 +1,11 @@
-"""Alerta masiva de toda la ciudad: sesión propia, resolución y reporte final.
+"""Alertas masivas de toda la ciudad: sesiones propias, gestión manual y reporte final.
 
-- Mientras una alerta masiva está activa, todo incidente nuevo pertenece a su sesión
-  (`incidents.mass_alert_id`) y solo se agrupa con incidentes de la misma sesión.
-- Se resuelve sola cuando todos sus incidentes están cerrados (atendidos o descartados) y no
-  quedan despachos activos. Entonces se guarda el reporte final: problemas, trazabilidad
-  (bitácora y despachos) y tiempos de solución.
+- Puede haber varias alertas masivas activas a la vez. Mientras exista al menos una, los
+  incidentes nuevos quedan *sin asignar* (`pending_assignment`) y el PMU/COE los asigna a mano a
+  una alerta o los deja en la operación ordinaria; sin ninguna activa, nacen ordinarios.
+- El cierre es manual (PMU/COE). Se bloquea si quedan incidentes abiertos o despachos activos,
+  salvo que se pida cerrar eliminando todos los incidentes asociados. En ambos casos se guarda
+  antes el reporte final: problemas, trazabilidad (bitácora y despachos) y tiempos de solución.
 - El reloj de cada incidente arranca cuando el sistema lo registra (`created_at`), no en la hora
   declarada del hecho: así los tiempos miden la operación del PMU, también en la reproducción.
 - Sin datos personales (Ley 1581): solo categorías, barrios, roles, agencias y notas redactadas.
@@ -19,7 +20,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.privacy import redact
@@ -29,9 +30,22 @@ from app.domain import (
     IncidentStatus,
     MassAlertStatus,
     ReportAction,
+    ResourceStatus,
+    Role,
     TriageLevel,
 )
-from app.models import Agency, Dispatch, Incident, MassAlert, Report, ReportEvent, Resource
+from app.models import (
+    Agency,
+    Alert,
+    Dispatch,
+    Incident,
+    MassAlert,
+    Report,
+    ReportEvent,
+    Resource,
+    ResourceTrack,
+    ZoneSensor,
+)
 
 CLOSED = frozenset({IncidentStatus.atendido, IncidentStatus.descartado})
 CLOSING_ACTIONS = frozenset({ReportAction.cerrar_atendido, ReportAction.descartar})
@@ -47,9 +61,12 @@ class MassAlertError(Exception):
         self.status = status
 
 
-async def active_mass_alert(session: AsyncSession) -> MassAlert | None:
-    return await session.scalar(
-        select(MassAlert).where(MassAlert.status == MassAlertStatus.activa).limit(1)
+async def active_count(session: AsyncSession) -> int:
+    return int(
+        await session.scalar(
+            select(func.count(MassAlert.id)).where(MassAlert.status == MassAlertStatus.activa)
+        )
+        or 0
     )
 
 
@@ -284,27 +301,159 @@ async def build_report(
     }
 
 
-async def check_resolution(
-    session: AsyncSession, mass_alert_ids: Sequence[uuid.UUID | None]
-) -> list[MassAlert]:
-    """Resuelve las alertas masivas activas cuyos incidentes ya están todos cerrados.
+async def _open_incidents(session: AsyncSession, mass_alert_id: uuid.UUID) -> int:
+    return int(
+        await session.scalar(
+            select(func.count(Incident.id)).where(
+                Incident.mass_alert_id == mass_alert_id,
+                Incident.report_count > 0,
+                Incident.status.not_in(list(CLOSED)),
+            )
+        )
+        or 0
+    )
 
-    Devuelve las alertas resueltas en esta llamada (para publicar el evento).
-    """
-    resolved: list[MassAlert] = []
-    for mid in {m for m in mass_alert_ids if m is not None}:
-        alert = await session.get(MassAlert, mid, with_for_update=True)
-        if alert is None or alert.status != MassAlertStatus.activa:
-            continue
-        total, closed = await progress(session, mid)
-        if total == 0 or closed < total or await _active_dispatches(session, mid) > 0:
-            continue
-        now = datetime.now(UTC)
-        alert.status = MassAlertStatus.resuelta
-        alert.resolved_at = now
-        alert.version += 1
-        alert.final_report = await build_report(session, alert, now)
-        resolved.append(alert)
-    # Commit también sin cambios: libera el bloqueo sin expirar los objetos del llamador.
+
+async def delete_incidents(session: AsyncSession, ids: Sequence[uuid.UUID]) -> None:
+    """Borra incidentes con sus reportes, bitácora y despachos (solo al cerrar una alerta masiva
+    eliminando lo asociado; el reporte final ya guardó su trazabilidad). Libera los recursos."""
+    if not ids:
+        return
+    dispatch_ids = select(Dispatch.id).where(Dispatch.incident_id.in_(ids))
+    active_resources = select(Dispatch.resource_id).where(
+        Dispatch.incident_id.in_(ids), Dispatch.status.in_(list(ACTIVE_DISPATCH))
+    )
+    await session.execute(
+        update(Resource)
+        .where(Resource.id.in_(active_resources))
+        .values(status=ResourceStatus.disponible)
+    )
+    await session.execute(delete(ResourceTrack).where(ResourceTrack.dispatch_id.in_(dispatch_ids)))
+    await session.execute(delete(Dispatch).where(Dispatch.incident_id.in_(ids)))
+    report_ids = select(Report.id).where(Report.incident_id.in_(ids))
+    await session.execute(
+        delete(ReportEvent).where(
+            (ReportEvent.incident_id.in_(ids)) | (ReportEvent.report_id.in_(report_ids))
+        )
+    )
+    await session.execute(delete(Report).where(Report.incident_id.in_(ids)))
+    await session.execute(
+        update(Alert).where(Alert.origin_incident_id.in_(ids)).values(origin_incident_id=None)
+    )
+    await session.execute(
+        update(ZoneSensor).where(ZoneSensor.incident_id.in_(ids)).values(incident_id=None)
+    )
+    await session.execute(delete(Incident).where(Incident.id.in_(ids)))
+
+
+async def close_mass_alert(
+    session: AsyncSession, alert: MassAlert, actor: Role, *, delete_incidents_too: bool
+) -> list[uuid.UUID]:
+    """Cierre manual. Devuelve los ids de incidentes eliminados (vacío si no se eliminó nada)."""
+    if alert.status != MassAlertStatus.activa:
+        raise MassAlertError("already_closed", "La alerta masiva ya está cerrada", 409)
+    open_n = await _open_incidents(session, alert.id)
+    active_n = await _active_dispatches(session, alert.id)
+    if not delete_incidents_too and (open_n or active_n):
+        raise MassAlertError(
+            "open_incidents",
+            f"No se puede cerrar: quedan {open_n} incidentes abiertos y {active_n} despachos "
+            "activos. Atiéndalos, descártelos o desacóplelos, o cierre eliminando los incidentes "
+            "asociados.",
+            409,
+        )
+    now = datetime.now(UTC)
+    alert.status = MassAlertStatus.resuelta
+    alert.resolved_at = now
+    alert.version += 1
+    report = await build_report(session, alert, now)
+    ids = [uuid.UUID(p["incident_id"]) for p in report["problemas"]]
+    # Incidentes sin reportes vigentes (vacíos) también se van si se elimina lo asociado.
+    if delete_incidents_too:
+        ids = list(
+            (
+                await session.execute(select(Incident.id).where(Incident.mass_alert_id == alert.id))
+            ).scalars()
+        )
+    report["cierre"] = {
+        "por": actor.value,
+        "at": now.isoformat(),
+        "abiertos_al_cierre": open_n,
+        "despachos_activos_al_cierre": active_n,
+        "incidentes_eliminados": delete_incidents_too,
+        "eliminados": len(ids) if delete_incidents_too else 0,
+    }
+    alert.final_report = report
+    if delete_incidents_too:
+        await delete_incidents(session, ids)
+    # Sin alertas activas, la bandeja "sin asignar" vuelve a la operación ordinaria.
+    await session.flush()
+    if await active_count(session) == 0:
+        await session.execute(
+            update(Incident)
+            .where(Incident.pending_assignment.is_(True))
+            .values(pending_assignment=False)
+        )
     await session.commit()
-    return resolved
+    return ids if delete_incidents_too else []
+
+
+async def assign_incidents(
+    session: AsyncSession,
+    incident_ids: Sequence[uuid.UUID],
+    target: uuid.UUID | None,
+    actor: Role,
+) -> list[Incident]:
+    """Asigna incidentes a una alerta masiva activa (`target`) o los desacopla a la operación
+    ordinaria (`target=None`). Queda en la bitácora con rol y hora."""
+    if target is not None:
+        alert = await session.get(MassAlert, target)
+        if alert is None:
+            raise MassAlertError("not_found", "La alerta masiva no existe", 404)
+        if alert.status != MassAlertStatus.activa:
+            raise MassAlertError(
+                "alert_closed", "Solo se asignan incidentes a alertas masivas activas", 409
+            )
+    incidents = list(
+        (
+            await session.execute(
+                select(Incident).where(Incident.id.in_(list(incident_ids))).with_for_update()
+            )
+        ).scalars()
+    )
+    if len(incidents) != len(set(incident_ids)):
+        raise MassAlertError("not_found", "Algún incidente no existe", 404)
+    closed_alerts = set(
+        (
+            await session.execute(
+                select(MassAlert.id).where(MassAlert.status == MassAlertStatus.resuelta)
+            )
+        ).scalars()
+    )
+    if any(i.mass_alert_id in closed_alerts for i in incidents):
+        raise MassAlertError(
+            "alert_closed", "Los incidentes de una alerta masiva cerrada no se mueven", 409
+        )
+    now = datetime.now(UTC)
+    for inc in incidents:
+        if inc.mass_alert_id == target and not inc.pending_assignment:
+            continue
+        session.add(
+            ReportEvent(
+                incident_id=inc.id,
+                actor_role=actor,
+                action=ReportAction.asignar_alerta if target else ReportAction.desacoplar_alerta,
+                payload={
+                    "de": str(inc.mass_alert_id)
+                    if inc.mass_alert_id
+                    else ("sin_asignar" if inc.pending_assignment else "ordinaria"),
+                    "a": str(target) if target else "ordinaria",
+                },
+                source="gestión de incidentes",
+            )
+        )
+        inc.mass_alert_id = target
+        inc.pending_assignment = False
+        inc.updated_at = now
+    await session.commit()
+    return incidents

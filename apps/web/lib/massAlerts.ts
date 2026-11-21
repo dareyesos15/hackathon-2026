@@ -1,7 +1,8 @@
 "use client";
 /**
- * Alerta masiva de toda la ciudad: sesión de operación propia del PMU (triaje, cascada y zonas
- * solo de esa alerta) y reporte final de problemas, trazabilidad y tiempos de solución.
+ * Alertas masivas de toda la ciudad: sesiones de operación propias del PMU (triaje, cascada y
+ * zonas solo de esa alerta), bandeja de incidentes sin asignar y reporte final de problemas,
+ * trazabilidad y tiempos de solución. Pueden existir varias activas junto a la operación ordinaria.
  */
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
@@ -12,9 +13,10 @@ export type MassAlertOut = components["schemas"]["MassAlertOut"];
 export type MassAlertEvent = components["schemas"]["MassAlertEvent"];
 export type MassAlertIn = components["schemas"]["MassAlertIn"];
 
-/** Sesión del tablero: la operación ordinaria o el id de una alerta masiva. */
-export type SessionId = "ordinaria" | string;
+/** Sesión del tablero: la operación ordinaria, la bandeja sin asignar o una alerta masiva. */
+export type SessionId = "ordinaria" | "sin_asignar" | string;
 export const ORDINARY: SessionId = "ordinaria";
+export const UNASSIGNED: SessionId = "sin_asignar";
 
 export const MASS_EVENT_LABEL: Record<MassAlertEvent, string> = {
   sismo: "Sismo",
@@ -25,14 +27,20 @@ export const MASS_EVENT_LABEL: Record<MassAlertEvent, string> = {
   otro: "Otro evento",
 };
 
-export function inSession(incident: IncidentSummary, session: SessionId): boolean {
-  return session === ORDINARY ? !incident.mass_alert_id : incident.mass_alert_id === session;
+export function sessionOf(incident: IncidentSummary): SessionId {
+  if (incident.mass_alert_id) return incident.mass_alert_id;
+  return incident.pending_assignment ? UNASSIGNED : ORDINARY;
 }
 
-/** Alertas masivas (activa y anteriores); se recarga con cada evento `mass_alert.changed`. */
+export function inSession(incident: IncidentSummary, session: SessionId): boolean {
+  return sessionOf(incident) === session;
+}
+
+/** Alertas masivas (activas y cerradas); se recarga con cada evento `mass_alert.changed`. */
 export function useMassAlerts(enabled: boolean, revision: number) {
   const [items, setItems] = useState<MassAlertOut[]>([]);
-  const [active, setActive] = useState<MassAlertOut | null>(null);
+  const [active, setActive] = useState<MassAlertOut[]>([]);
+  const [unassignedCount, setUnassignedCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     if (!enabled) return;
@@ -40,14 +48,15 @@ export function useMassAlerts(enabled: boolean, revision: number) {
     api.GET("/api/v1/mass-alerts").then(({ data }) => {
       if (!alive || !data) return;
       setItems(data.items);
-      setActive(data.active ?? null);
+      setActive(data.active);
+      setUnassignedCount(data.unassigned_count);
       setLoaded(true);
     });
     return () => {
       alive = false;
     };
   }, [enabled, revision]);
-  return { items, active, loaded };
+  return { items, active, unassignedCount, loaded };
 }
 
 // ------------------------------------------------------------------ reporte (JSON del backend)
@@ -104,7 +113,17 @@ export interface Problem {
   bitacora: TraceEntry[];
 }
 
+export interface CloseInfo {
+  por: string;
+  at: string;
+  abiertos_al_cierre: number;
+  despachos_activos_al_cierre: number;
+  incidentes_eliminados: boolean;
+  eliminados: number;
+}
+
 export interface MassAlertReportBody {
+  cierre?: CloseInfo;
   version: number;
   preliminar: boolean;
   generado_at: string;
@@ -157,6 +176,9 @@ export const TRACE_ACTION_LABEL: Record<string, string> = {
   cancelar_despacho: "Despacho cancelado",
   despacho_doble_bloqueado: "Despacho doble bloqueado",
   cerrar_atendido: "Cerrado como atendido",
+  crear_manual: "Creado a mano por el PMU/COE",
+  asignar_alerta: "Asignado a la alerta masiva",
+  desacoplar_alerta: "Desacoplado a operación ordinaria",
 };
 
 export const ROLE_LABEL: Record<string, string> = {

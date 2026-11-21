@@ -157,6 +157,10 @@ const MODE_LABEL = {
   respaldo: { text: "Modo de respaldo (consulta cada 3 s)", cls: "bg-[#ffd27a] text-tinta" },
 } as const;
 
+function initialSession(): SessionId {
+  return new URLSearchParams(window.location.search).get("sesion") || ORDINARY;
+}
+
 function initialSelection(): string | null {
   return new URLSearchParams(window.location.search).get("incidente");
 }
@@ -174,15 +178,9 @@ export default function TableroPmu() {
   const token = session?.role === "pmu" ? session.token : null;
   const live = useLiveIncidents(token);
   const kpis = kpiMap(useKpi(live.kpiRevision + Math.floor(live.revision / 10)));
-  // Sesión: operación ordinaria o una alerta masiva. Al activarse una, el tablero entra en ella.
+  // Sesión: operación ordinaria, incidentes sin asignar o una alerta masiva (?sesion= en la URL).
   const massAlerts = useMassAlerts(Boolean(token), live.massAlertRevision);
-  const [sessionId, setSessionId] = useState<SessionId>(ORDINARY);
-  const activeMassId = massAlerts.active?.id ?? null;
-  const [followedMassId, setFollowedMassId] = useState<string | null>(null);
-  if (activeMassId !== followedMassId) {
-    setFollowedMassId(activeMassId);
-    if (activeMassId) setSessionId(activeMassId);
-  }
+  const [sessionId, setSessionId] = useState<SessionId>(initialSession);
   const allIncidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
   const incidents = useMemo(
     () => allIncidents.filter((i) => inSession(i, sessionId)),
@@ -334,10 +332,13 @@ export default function TableroPmu() {
     return () => clearTimeout(timer);
   }, [live.revision, sessionId]);
 
-  function select(id: string | null) {
+  function select(id: string | null, sesion: SessionId = sessionId) {
     setSelectedId(id);
-    const url = id ? `?incidente=${id}` : window.location.pathname;
-    window.history.replaceState(null, "", url);
+    const params = new URLSearchParams();
+    if (sesion !== ORDINARY) params.set("sesion", sesion);
+    if (id) params.set("incidente", id);
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
   }
 
   if (!token) return null;
@@ -383,6 +384,9 @@ export default function TableroPmu() {
           <Link href="/" className="underline decoration-white/40 underline-offset-4">
             Inicio público
           </Link>
+          <Link href="/pmu/gestion/" className="underline decoration-white/40 underline-offset-4">
+            Gestión de incidentes
+          </Link>
           <Link href="/agencia/" className="underline decoration-white/40 underline-offset-4">
             Despachos por agencia
           </Link>
@@ -408,10 +412,11 @@ export default function TableroPmu() {
       <SesionAlertaMasiva
         items={massAlerts.items}
         active={massAlerts.active}
+        unassignedCount={massAlerts.unassignedCount}
         session={sessionId}
         onSession={(s) => {
           setSessionId(s);
-          select(null);
+          select(null, s);
           setZoneSel(null);
           setCascadeSel(null);
         }}

@@ -30,7 +30,7 @@ RANK_NAME = {4: "critico", 3: "alto", 2: "medio", 1: "bajo"}
 async def manzanas_layer(
     sesion: str | None = Query(
         default=None,
-        description="`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+        description="`ordinaria`, `sin_asignar` o el id de una alerta masiva; sin valor, todas",
     ),
     role: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.publico)),
     session: AsyncSession = Depends(get_session),
@@ -54,7 +54,11 @@ async def manzanas_layer(
     if sesion:
         stmt = stmt.join(Incident, Incident.id == Report.incident_id)
         if sesion == "ordinaria":
-            stmt = stmt.where(Incident.mass_alert_id.is_(None))
+            stmt = stmt.where(
+                Incident.mass_alert_id.is_(None), Incident.pending_assignment.is_(False)
+            )
+        elif sesion == "sin_asignar":
+            stmt = stmt.where(Incident.pending_assignment.is_(True))
         else:
             try:
                 stmt = stmt.where(Incident.mass_alert_id == uuid.UUID(sesion))

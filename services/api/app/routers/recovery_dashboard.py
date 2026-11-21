@@ -42,6 +42,7 @@ from app.models import (
     Incident,
     Manzana,
     MetricSnapshot,
+    PropertyReview,
     RainReading,
     Report,
     Shelter,
@@ -297,6 +298,22 @@ async def dashboard(
     for barrio, incident_id in service_rows:
         service_by_barrio[barrio or "Sin barrio"].add(incident_id)
     service_incidents = len({i for _, i in service_rows})
+
+    # Revisiones a predio (formato GUE-RPD-FR-02): evacuaciones y derivaciones a entidades.
+    reviews = (
+        await session.execute(
+            select(
+                PropertyReview.referrals,
+                PropertyReview.referrals_done,
+                PropertyReview.evacuation_recommended,
+            )
+        )
+    ).all()
+    evacuations = sum(1 for _, _, ev in reviews if ev)
+    referral_pending: Counter[str] = Counter(
+        e for refs, done, _ in reviews for e in refs if e not in done
+    )
+    from app.routers.recovery_reviews import ENTITY_LABEL
 
     hh_rows = (
         await session.execute(
@@ -656,6 +673,13 @@ async def dashboard(
                     "Visitas repetidas unidas a su predio",
                     max(visits - evaluated, 0),
                 ),
+                registry.fig("formatos_revision", "Formatos de revisión a predio", len(reviews)),
+                registry.fig(
+                    "evacuaciones_recomendadas",
+                    "Con evacuación recomendada",
+                    evacuations,
+                    state="alerta" if evacuations else "neutral",
+                ),
             ],
         ),
         Indicator(
@@ -711,6 +735,12 @@ async def dashboard(
                     "barrios_servicios",
                     "Barrios con servicios caídos reportados",
                     sum(1 for b in barrios if b.service_incidents),
+                ),
+                registry.fig(
+                    "derivaciones_pendientes",
+                    "Visitas de entidades pendientes (formato, sección 6)",
+                    sum(referral_pending.values()),
+                    state="alerta" if referral_pending else "ok",
                 ),
                 _missing("servicios", "Cobertura de servicios por barrio", "%", now),
             ],
@@ -917,6 +947,20 @@ async def dashboard(
                 detail="Más pendientes: " + ", ".join(f"{b.barrio} ({b.pending})" for b in worst),
                 severity="alta",
                 value=len(pending_manzanas),
+            )
+        )
+    if referral_pending:
+        top = ", ".join(
+            f"{ENTITY_LABEL.get(e, e)} ({n})"  # type: ignore[call-overload]
+            for e, n in referral_pending.most_common(3)
+        )
+        needs.append(
+            Need(
+                key="derivaciones_pendientes",
+                title="Predios revisados que esperan la visita de una entidad",
+                detail=f"Más pendientes: {top}.",
+                severity="alta",
+                value=sum(referral_pending.values()),
             )
         )
     if full_shelters:

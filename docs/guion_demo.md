@@ -49,5 +49,8 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 
 ## Video de respaldo
 
-Grabar la demo completa una vez que todo funcione (QuickTime → *Nueva grabación de pantalla*) y
-guardarlo fuera del repositorio. Anotar aquí la ubicación: **PENDIENTE**.
+- **GIF (listo):** `dacora_demo_respaldo.gif` en la carpeta *Descargas* del portátil de desarrollo
+  (≈ 2,4 MB, 10 cuadros): el tablero llenándose con los 254 reportes y el panel de KPI. Se mantiene
+  fuera del repositorio; súbalo a la carpeta de Drive del equipo.
+- **Video completo (recomendado):** grabar la demo de punta a punta con el modo avión del celular
+  (QuickTime → *Nueva grabación de pantalla*) y anotar aquí su ubicación.

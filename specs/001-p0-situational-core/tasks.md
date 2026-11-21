@@ -151,7 +151,7 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 - [X] T059 [US3] Prueba de integración: reproducir todo el escenario en modo rápido y verificar 0 coincidencias de PII en `reports.text_redacted`/`location_text` en `services/api/tests/integration/test_pii_scenario.py`
 - [X] T060 [US3] Calibrar umbrales de similitud y léxico con `evaluate_kpis.py` hasta duplicados > 90 %, falsos > 90 %, recall de críticos ≥ 98 % y 0 críticos descartados; fijar valores en `services/api/app/config.py`
 - [X] T061 [US3] Regenerar OpenAPI y tipos del frontend tras T056 en `apps/web/lib/api/schema.d.ts`
-- [ ] T062 [US3] Implementar el panel de KPI `/pmu/kpi` (todas las cifras con `Cifra`, actualización por `kpi.updated`, "N reportes → M incidentes", "mapa consolidado en X min") en `apps/web/app/pmu/kpi/page.tsx`
+- [X] T062 [US3] Implementar el panel de KPI `/pmu/kpi` (todas las cifras con `Cifra`, actualización por `kpi.updated`, "N reportes → M incidentes", "mapa consolidado en X min") en `apps/web/app/pmu/kpi/page.tsx`
 
 **Checkpoint**: quickstart §6 con metas cumplidas y visibles en el panel.
 

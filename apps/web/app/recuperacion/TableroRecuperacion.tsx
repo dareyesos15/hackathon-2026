@@ -116,8 +116,8 @@ function Necesidades({ needs }: { needs: Need[] }) {
 
 // --------------------------------------------------------------------------- curva del índice
 
-const W = 640;
-const H = 200;
+const W = 960;
+const H = 260;
 const M = { l: 40, r: 16, t: 14, b: 28 };
 
 function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
@@ -286,7 +286,7 @@ function Barrios({ barrios }: { barrios: BarrioRecovery[] }) {
         más bajo y su fecha estimada vienen de las empresas de servicios.
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="w-full min-w-[46rem] text-left text-sm">
           <thead className="text-xs text-tinta-suave">
             <tr className="border-b border-linea">
               <th className="py-1 pr-3 font-normal">Barrio</th>
@@ -306,7 +306,7 @@ function Barrios({ barrios }: { barrios: BarrioRecovery[] }) {
                     <span className="font-medium">{b.barrio}</span>{" "}
                     <span className="text-xs text-tinta-suave">{b.comuna}</span>
                   </td>
-                  <td className="py-1.5 pr-3 text-right font-semibold tabular-nums">
+                  <td className="whitespace-nowrap py-1.5 pr-3 text-right font-semibold tabular-nums">
                     {b.index === null || b.index === undefined ? "—" : formatPercent(b.index)}
                   </td>
                   <td className="py-1.5 pr-3 tabular-nums">
@@ -403,7 +403,7 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
                   <span>
                     <span className="text-tinta-suave">{s.number}.</span> {s.title}
                   </span>
-                  <span className="ml-auto flex items-center gap-1.5 text-xs">
+                  <span className="relative z-10 ml-auto flex items-center gap-1.5 bg-white pl-1 text-xs">
                     <span
                       aria-hidden
                       className="inline-block h-2.5 w-2.5 rounded-full"

@@ -57,6 +57,7 @@ class Params:
     duplicate_rate: float  # reportes/registros repetidos del mismo hecho
     duplicate_detection: float  # fracción de duplicados que el sistema logra unir
     latency_mean_h: float  # edad media del dato al momento del corte
+    early_penalty: float  # pérdida de disponibilidad los primeros días (red caída, caos)
     assumptions: tuple[str, ...]
 
 
@@ -83,12 +84,15 @@ SCENARIOS: dict[ScenarioKey, Params] = {
         duplicate_rate=0.12,
         duplicate_detection=0.97,
         latency_mean_h=4.0,
+        early_penalty=0.15,
         assumptions=(
             "Cada fuente entrega dato en 90–99 % de los cortes.",
             "Se registra ~97 % de la realidad (subregistro ~3 %).",
             "Error de medición ~3 % en conteos y montos; ±2 puntos en porcentajes.",
             "12 % de registros repetidos; 97 % se unen por identificador único.",
             "Edad media del dato: 4 h (cadencia EMRE: 6–24 h).",
+            "Primeros días: hasta 15 % menos de disponibilidad y el doble de ruido (red y "
+            "energía inestables); el efecto decae con los días.",
         ),
     ),
     "peor": Params(
@@ -113,6 +117,7 @@ SCENARIOS: dict[ScenarioKey, Params] = {
         duplicate_rate=0.35,
         duplicate_detection=0.55,
         latency_mean_h=60.0,
+        early_penalty=0.50,
         assumptions=(
             "Solo el registro propio entrega dato con regularidad (70 %); servicios, economía y "
             "estabilización casi nunca (5–10 %).",
@@ -120,6 +125,8 @@ SCENARIOS: dict[ScenarioKey, Params] = {
             "Error de medición ~25 %; ±15 puntos en porcentajes.",
             "35 % de registros repetidos; solo 55 % se unen (sin identificador común).",
             "Edad media del dato: 60 h, muy por encima de la cadencia EMRE.",
+            "Primeros días: hasta 50 % menos de disponibilidad y el doble de ruido (cortes de "
+            "energía y red celular); el efecto decae con los días.",
         ),
     ),
 }
@@ -257,10 +264,17 @@ class Observation:
     truth: dict[str, float] = field(default_factory=dict)
 
 
+def stress(day: int) -> float:
+    """Caos de los primeros días (1 el día 0, ~0,5 el día 7, ~0 después del día 30)."""
+    return math.exp(-day / 10)
+
+
 def observe(p: Params, day: int, rng: random.Random) -> Observation:
     rows = truth(day)
     cadence = emre_cadence_h(day)
-    up = {s: rng.random() < p.availability[s] for s in SOURCES}
+    early = stress(day)
+    noise = 1 + early  # el ruido se duplica el día 0 y vuelve a la normalidad
+    up = {s: rng.random() < p.availability[s] * (1 - p.early_penalty * early) for s in SOURCES}
     age = {s: rng.expovariate(1 / p.latency_mean_h) for s in SOURCES}
     coverage = min(1.05, max(0.05, rng.gauss(p.coverage_mean, p.coverage_sd)))
     detection = min(1.0, max(0.0, rng.gauss(p.duplicate_detection, 0.03)))
@@ -273,10 +287,10 @@ def observe(p: Params, day: int, rng: random.Random) -> Observation:
             fresh[t.key] = False
             continue
         if t.kind == "pct":
-            v = t.value + rng.gauss(0, p.pct_noise_pts)
+            v = t.value + rng.gauss(0, p.pct_noise_pts * noise)
             values[t.key] = min(100.0, max(0.0, v))
         else:
-            factor = coverage * max(0.0, rng.gauss(1, p.noise_sd))
+            factor = coverage * max(0.0, rng.gauss(1, p.noise_sd * noise))
             if t.source == "dacora" and t.kind == "count":
                 factor *= 1 + dup_left  # los repetidos sin unir inflan los conteos
             values[t.key] = max(0.0, t.value * factor)

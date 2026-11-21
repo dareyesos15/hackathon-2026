@@ -26,6 +26,7 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --
 | Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
 | Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
 | Despachos por agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
+| Recuperación: semáforo de habitabilidad, censo único, ayudas y albergues | http://localhost:8080/recuperacion/ | Entidades y PMU · `coe-demo` |
 | Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | Administrador · `admin-demo` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | — (cualquiera) |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
@@ -52,6 +53,14 @@ Despacho, alertas y cascada (specs/002): los recursos, sus recorridos tipo RFID,
 de llegada, el envío de SMS, la lluvia y la pendiente son **SIMULADOS**. El avance de los recursos
 despachados va 20 veces acelerado (`TRACK_SPEEDUP`); para que un crítico sin despacho se marque
 antes en la demo, baje `UNATTENDED_ALERT_MIN` (por defecto 15 min).
+
+Recuperación (specs/003): cada predio se identifica por código catastral o por manzana +
+dirección normalizada, de modo que las visitas repetidas al mismo inmueble se cuentan una sola vez.
+Del documento del jefe de hogar solo se guarda un HMAC con sal (nunca el número); la
+vulnerabilidad va en una tabla aparte, visible solo para Entidades y PMU. La misma ayuda al mismo
+hogar dentro de su plazo (30 días; 7 para mercado) se bloquea salvo justificación, y el censo se
+exporta en CSV con columnas tipo RUD sin datos personales. Los albergues son **SIMULADOS**. El
+reinicio de la demo también borra los registros de recuperación.
 
 ### Requisitos
 
@@ -93,11 +102,15 @@ con `scripts/evaluate_kpis.py` y se muestran en el panel con fuente y fecha de c
 Dos servicios principales comunicados por API REST (constitución, principio X):
 
 - **`api`** — Python 3.12 + FastAPI ([services/api](services/api)): ingesta, motor de verificación
-  (Habeas Data, clasificación, triaje, deduplicación, trust score), revisión humana, KPI, SSE.
+  (Habeas Data, clasificación, triaje, deduplicación, trust score), revisión humana, despacho,
+  alertas, cascada, recuperación (habitabilidad, censo único, ayudas, albergues), KPI, SSE.
 - **`web`** — Next.js como exportación estática servida por Nginx ([apps/web](apps/web)): tablero
-  PMU (MapLibre), panel de KPI y PWA ciudadana con outbox en IndexedDB.
+  PMU (MapLibre), panel de KPI, recuperación y PWA ciudadana con outbox en IndexedDB.
 - Soporte: **`db`** PostgreSQL 16 + PostGIS.
 
-Diagrama técnico: [docs/arquitectura.jpeg](docs/arquitectura.jpeg). Especificación, plan, contratos
-y tareas: [specs/001-p0-situational-core](specs/001-p0-situational-core). Contexto completo:
+Diagrama técnico: [docs/arquitectura.jpeg](docs/arquitectura.jpeg); estado actual (implementado,
+simulado, planeado): [docs/arquitectura_actual.png](docs/arquitectura_actual.png). Especificaciones:
+[001 núcleo P0](specs/001-p0-situational-core),
+[002 despacho, alertas y cascada](specs/002-dispatch-alerts-prediction) y
+[003 recuperación](specs/003-recovery). Contexto completo:
 [CLAUDE.md](CLAUDE.md). Guion de la demo: [docs/guion_demo.md](docs/guion_demo.md).

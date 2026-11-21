@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "lib/api/schema.d.ts",
+    // Worker de MapLibre copiado en el build (no es código del proyecto).
+    "public/vendor/**",
   ]),
 ]);
 

@@ -183,16 +183,26 @@ def choose_incident(
     return best
 
 
-def independent_sources(rows: Iterable[tuple[str | None, Channel]]) -> int:
-    """Remitentes distintos; cada reporte sin remitente identificable cuenta por separado."""
+def independent_sources(rows: Iterable[tuple[str | None, Channel, bool]]) -> int:
+    """Remitentes distintos que corroboran el hecho.
+
+    - Un remitente que repite no suma (misma huella HMAC).
+    - Cada reporte sin remitente identificable cuenta por separado.
+    - Los reenvíos de cadena (con señales de desinformación) no son corroboración
+      independiente: todos juntos cuentan como una sola fuente.
+    """
     hashes: set[str] = set()
     anonymous = 0
-    for reporter_hash, _channel in rows:
-        if reporter_hash:
+    chains = 0
+    for reporter_hash, _channel, is_chain in rows:
+        if is_chain:
+            chains += 1
+        elif reporter_hash:
             hashes.add(reporter_hash)
         else:
             anonymous += 1
-    return len(hashes) + anonymous
+    independent = len(hashes) + anonymous
+    return independent if independent else min(chains, 1)
 
 
 def weighted_centroid(
@@ -301,7 +311,7 @@ async def recompute_incident(session: AsyncSession, incident: Incident) -> list[
 
     incident.report_count = len(reports)
     incident.independent_sources = independent_sources(
-        (r.reporter_hash, r.channel) for r in reports
+        (r.reporter_hash, r.channel, bool(r.misinfo_signals)) for r in reports
     )
     incident.category = top.category
     incident.triage_level = top.triage_level

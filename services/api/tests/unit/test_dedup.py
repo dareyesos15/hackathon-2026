@@ -102,11 +102,17 @@ def test_no_location_rumors_join_by_text() -> None:
 
 def test_independent_sources_ignores_repeated_sender() -> None:
     h = "a" * 64
-    rows = [(h, Channel.sms), (h, Channel.sms), (h, Channel.sms)]
+    rows = [(h, Channel.sms, False), (h, Channel.sms, False), (h, Channel.sms, False)]
     assert independent_sources(rows) == 1
-    rows.append(("c" * 64, Channel.whatsapp))
-    rows.append((None, Channel.entity))
+    rows.append(("c" * 64, Channel.whatsapp, False))
+    rows.append((None, Channel.entity, False))
     assert independent_sources(rows) == 3
+
+
+def test_forwarded_chains_do_not_corroborate() -> None:
+    chains = [("x" * 64, Channel.whatsapp, True), ("y" * 64, Channel.whatsapp, True)]
+    assert independent_sources(chains) == 1
+    assert independent_sources([*chains, ("z" * 64, Channel.sms, False)]) == 1
 
 
 def test_weighted_centroid_prefers_gps() -> None:

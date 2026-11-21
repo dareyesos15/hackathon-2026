@@ -1,10 +1,57 @@
 @import "tailwindcss";
 
+/*
+ * Paleta de Dacora: el rojo comunica urgencia y marca, nunca decora.
+ * Cuanto más rojo, más urgente (escala de triaje rojo → bermellón → ámbar → pizarra).
+ */
 @theme inline {
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-papel: #f6f3f2;
+  --color-tinta: #231a1c;
+  --color-tinta-suave: #6b5c5f;
+  --color-linea: #e4dcdb;
+  --color-sangre: #5c0f1b;
+  --color-sangre-claro: #7d1a29;
+  --color-senal: #d21f2b;
+  --color-senal-fondo: #fbe7e8;
+  --color-bermellon: #ee6a2c;
+  --color-ambar: #e8a92a;
+  --color-pizarra: #6e7c8c;
+  --color-verificado: #2f7d55;
 }
 
 body {
   font-family: var(--font-sans);
+  background: var(--color-papel);
+  color: var(--color-tinta);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-senal);
+  outline-offset: 2px;
+}
+
+/* Controles de MapLibre en la misma familia visual. */
+.maplibregl-ctrl-group {
+  border-radius: 6px !important;
+  box-shadow: 0 0 0 1px var(--color-linea) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -16,6 +16,7 @@ from app.db import get_session
 from app.domain import ReportAction, Role
 from app.models import Incident, Report
 from app.routers.ingest import get_engine
+from app.routers.mass_alerts import publish_progress
 from app.schemas import ReviewIn, ReviewOut
 from app.serializers import events_out, incidents_out, reports_out
 
@@ -40,6 +41,7 @@ async def _respond(session: AsyncSession, result: ReviewResult, role: Role) -> R
             },
         )
         bus.publish("incident.upserted", summary.model_dump(mode="json"))
+    publish_progress([s.mass_alert_id for s in summaries])
     main = next(s for s in summaries if s.id == result.incident.id)
     reports = await reports_out(session, result.reports[:1])
     return ReviewOut(

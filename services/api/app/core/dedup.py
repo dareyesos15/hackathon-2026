@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from geoalchemy2 import WKTElement
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import DedupSettings
@@ -27,9 +27,10 @@ from app.domain import (
     Channel,
     GeoPrecision,
     IncidentStatus,
+    MassAlertStatus,
     ReportStatus,
 )
-from app.models import Incident, Report
+from app.models import Incident, MassAlert, Report
 
 COMPATIBLE_GROUPS: tuple[frozenset[Category], ...] = (
     frozenset(
@@ -248,13 +249,21 @@ def _point(lat: float, lon: float) -> WKTElement:
 async def find_candidates(
     session: AsyncSession, report: ReportCtx, cfg: DedupSettings, limit: int = 20
 ) -> list[Candidate]:
+    """Incidentes candidatos de cualquier sesión vigente (ordinaria, sin asignar o alerta masiva
+    activa): un duplicado es duplicado aunque el incidente ya esté asignado. Los incidentes de
+    alertas masivas cerradas no reciben reportes nuevos (su reporte final ya quedó guardado)."""
     window = timedelta(hours=cfg.window_hours)
     group = list(compatible_group(report.category))
+    closed_alerts = select(MassAlert.id).where(MassAlert.status == MassAlertStatus.resuelta)
+    session_filter = or_(
+        Incident.mass_alert_id.is_(None), Incident.mass_alert_id.not_in(closed_alerts)
+    )
     stmt = select(Incident, func.ST_Y(Incident.centroid), func.ST_X(Incident.centroid)).where(
         Incident.category.in_(group),
         Incident.status != IncidentStatus.descartado,
         Incident.last_seen >= report.occurred_at - window,
         Incident.first_seen <= report.occurred_at + window,
+        session_filter,
     )
     if report.lat is not None and report.lon is not None:
         stmt = stmt.where(

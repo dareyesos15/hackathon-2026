@@ -127,7 +127,7 @@ async def post_snapshots(
 
 @router.get("/kpi", response_model=KpiList)
 async def get_kpi(
-    _: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.publico)),
+    _: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.admin, Role.publico)),
     session: AsyncSession = Depends(get_session),
 ) -> KpiList:
     cutoff = datetime.now(UTC)

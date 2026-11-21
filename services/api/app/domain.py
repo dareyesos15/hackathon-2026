@@ -84,6 +84,8 @@ class Role(StrEnum):
     inspector = "inspector"
     agencia = "agencia"
     sistema = "sistema"
+    # Simulaciones de la demo (reiniciar, reproducir el escenario). Nunca queda en la bitácora.
+    admin = "admin"
 
 
 class ReportAction(StrEnum):

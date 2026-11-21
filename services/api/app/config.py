@@ -70,6 +70,7 @@ class Settings(BaseSettings):
     token_coe: str = "coe-demo"
     token_inspector: str = "inspector-demo"
     token_agencia: str = "agencia-demo"
+    token_admin: str = "admin-demo"
 
     dedup: DedupSettings = DedupSettings()
     trust: TrustWeights = TrustWeights()
@@ -99,6 +100,7 @@ class Settings(BaseSettings):
             self.token_coe: "coe",
             self.token_inspector: "inspector",
             self.token_agencia: "agencia",
+            self.token_admin: "admin",
         }
 
 

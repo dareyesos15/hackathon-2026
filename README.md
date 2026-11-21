@@ -37,6 +37,10 @@ sesión, el inicio público consulta como `publico` (solo agregados).
 
 Los tokens de demo están en [.env.example](.env.example); sin `.env`, Compose usa esos valores.
 
+**Marcas "SIMULADO":** con `NEXT_PUBLIC_DEMO_MODE=true` (por defecto) la interfaz marca los datos
+sintéticos; con `false`, para un despliegue con datos reales, no se muestran. Se aplica al
+construir la imagen web: `docker compose up -d --build web`.
+
 **Reportar con GPS desde un celular:** los navegadores solo comparten el GPS en conexiones
 seguras. Desde el celular (misma red Wi-Fi que el portátil) abra
 **https://&lt;IP-del-portátil&gt;:8443/reportar/**, acepte una vez la advertencia del certificado

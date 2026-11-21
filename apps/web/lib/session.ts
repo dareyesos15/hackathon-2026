@@ -1,38 +1,39 @@
 /**
- * Sesión de demo: rol + token fijo (research R9), guardados en sessionStorage del navegador.
+ * Sesión de demo de entidades y administrador (research R9), guardada en sessionStorage.
  *
- * Tres roles en la interfaz:
- * - `ciudadano`: reporta emergencias (PWA) y ve el inicio público.
- * - `pmu` (Entidades y PMU): PMU, COE y agencias de respuesta en un solo rol. Usa el token `coe`
- *   de la API, que además tiene los permisos del operador y de la agencia; por eso puede
- *   aprobar alertas oficiales (EMRE tarea 5.5) y lo hecho queda en la bitácora como `coe`.
- * - `admin`: lanza simulaciones con datos (escenario) o sin datos (tablero vacío).
- * Sin sesión, la página de inicio consulta como `publico` (solo agregados).
+ * La ciudadanía NO inicia sesión: ve el tablero público y reporta emergencias como anónima.
+ * Entran con usuario y contraseña de prueba (`POST /api/v1/auth/login`):
+ * - área `pmu`: PMU y COE (triaje, despacho, alertas, cascada, zonas, KPI y recuperación).
+ *   Solo el usuario `coe` aprueba alertas oficiales (EMRE tarea 5.5).
+ * - área `agencia`: agencias de respuesta (avisos y despachos de su agencia).
+ * - área `admin`: simulaciones de la demo.
  */
 
-export type Role = "ciudadano" | "pmu" | "admin";
+export type Area = "pmu" | "agencia" | "admin";
 
 export interface Session {
-  role: Role;
+  role: Area;
   token: string;
+  apiRole: string;
+  username: string;
+  displayName: string;
+  organization: string;
+  agencyCode: string | null;
 }
 
-const KEY = "dacora.session";
+const KEY = "dacora.session.v2";
 
-/** Tokens de demo (coinciden con .env.example). Solo para el prototipo. */
-export const DEMO_TOKENS: Record<Role, string> = {
-  ciudadano: "ciudadano-demo",
-  pmu: "coe-demo",
-  admin: "admin-demo",
+export const ROLE_LABELS: Record<Area, string> = {
+  pmu: "Entidades y PMU",
+  agencia: "Agencia de respuesta",
+  admin: "Administrador",
 };
 
-/** Token del rol `publico` de la API, usado sin sesión (solo datos agregados). */
-export const PUBLIC_TOKEN = "publico-demo";
-
-export const ROLE_LABELS: Record<Role, string> = {
-  ciudadano: "Ciudadanía",
-  pmu: "Entidades y PMU",
-  admin: "Administrador",
+/** Página de entrada de cada área. */
+export const AREA_HOME: Record<Area, string> = {
+  pmu: "/pmu/",
+  agencia: "/agencia/",
+  admin: "/admin/",
 };
 
 export function getSession(): Session | null {
@@ -40,8 +41,7 @@ export function getSession(): Session | null {
   try {
     const raw = window.sessionStorage.getItem(KEY);
     const session = raw ? (JSON.parse(raw) as Session) : null;
-    // Sesiones de roles que ya no existen (versiones anteriores de la demo) se ignoran.
-    return session && session.role in DEMO_TOKENS ? session : null;
+    return session && session.role in AREA_HOME && session.token ? session : null;
   } catch {
     return null;
   }

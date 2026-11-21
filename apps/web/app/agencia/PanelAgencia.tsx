@@ -3,12 +3,15 @@
  * Pantalla de la agencia de respuesta (specs/002 US1, FR-010): avisos de los incidentes que le
  * llegan según las reglas EMRE (líder, apoyo o informada), despachos de su agencia y
  * actualización de estado (llegada, atención finalizada, fuera de servicio con motivo).
- * En la demo, una sola credencial `agencia` puede actuar por cualquier agencia (spec, Supuestos).
+ * En la demo, una sola credencial `agencia` puede actuar por cualquier agencia (spec, Supuestos);
+ * al entrar con un usuario de agencia (p. ej. `bomberos`) su agencia queda elegida de entrada.
+ * El PMU y el COE también pueden abrir esta pantalla.
  * Consulta cada 3 s; el cierre del incidente lo decide el PMU, no la agencia.
  */
 import { DEMO_MODE } from "@/lib/env";
 import { simulado } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
@@ -52,15 +55,21 @@ export default function PanelAgencia() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [showClosed, setShowClosed] = useState(false);
-  const allowed = session?.role === "pmu";
+  const allowed = session?.role === "pmu" || session?.role === "agencia";
 
   useEffect(() => {
     if (!allowed) {
       router.replace("/ingresar/");
       return;
     }
-    api.GET("/api/v1/agencies").then(({ data }) => setAgencies(data?.items ?? []));
-  }, [allowed, router]);
+    api.GET("/api/v1/agencies").then(({ data }) => {
+      const items = data?.items ?? [];
+      setAgencies(items);
+      // Usuario de una agencia: su agencia queda elegida si aún no eligió otra.
+      const own = items.find((a) => a.code === session?.agencyCode);
+      if (own) setAgencyId((current) => current || own.id);
+    });
+  }, [allowed, router, session?.agencyCode]);
 
   const fetchDispatches = useCallback(
     () =>
@@ -132,9 +141,18 @@ export default function PanelAgencia() {
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-bold">Dacora · Agencia</h1>
         <EtiquetaSimulado />
+        {session && <span className="text-sm text-tinta-suave">{session.organization}</span>}
+        <Link href="/" className="ml-auto text-sm underline underline-offset-4">
+          Tablero público
+        </Link>
+        {session?.role === "pmu" && (
+          <Link href="/pmu/" className="text-sm underline underline-offset-4">
+            Tablero PMU
+          </Link>
+        )}
         <button
           type="button"
-          className="ml-auto text-sm text-tinta-suave"
+          className="text-sm text-tinta-suave"
           onClick={() => {
             clearSession();
             router.replace("/");

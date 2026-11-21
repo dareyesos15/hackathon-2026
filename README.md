@@ -87,19 +87,33 @@ dispositivo real.
 Zonas: sensores y conos). El control *Capas del mapa* (arriba a la izquierda) permite elegir a
 mano qué módulos se ven a la vez.
 
-**Alerta masiva (toda la ciudad):** en el tablero del PMU, *Activar alerta masiva* (usuarios
-`pmu` o `coe`) abre una sesión de operación propia para un evento de ciudad, como un sismo. Desde
-ese momento todo reporte nuevo queda en esa sesión y solo se agrupa con incidentes de la misma
-alerta; el selector *Sesión del tablero* cambia entre la operación ordinaria y cada alerta, y
-Triaje, mapa, Cascada y Zonas muestran solo los puntos de la sesión elegida. Opcionalmente crea el
-borrador de alerta oficial para todos los barrios, que como siempre solo aprueba el COE. La alerta
-se **resuelve sola** cuando todos sus incidentes están atendidos o descartados y no queda ningún
-despacho activo; entonces se guarda el **reporte final** (`/pmu/alerta-masiva/?id=`): problemas,
-bitácora de cada uno, despachos y tiempos desde el registro hasta la verificación, el despacho, la
-llegada y el cierre, con promedio, mediana y máximo por nivel de triaje. Mientras sigue activa, el
-mismo enlace muestra un reporte preliminar. Se imprime a PDF o se descarga en CSV y JSON, sin
-datos personales. Solo puede haber una alerta masiva activa a la vez
-(`GET/POST /api/v1/mass-alerts`, `GET /api/v1/mass-alerts/{id}/report`).
+**Alertas masivas y gestión de incidentes:** el PMU o el COE pueden *Activar alerta masiva*
+para un evento de ciudad, como un sismo. Pueden existir **varias activas a la vez**, junto con la
+operación ordinaria. Mientras haya al menos una, los incidentes nuevos que crea el motor quedan
+**sin asignar**; sin ninguna activa, nacen como ordinarios. Los duplicados se siguen uniendo al
+incidente que ya existía, esté en la sesión que esté.
+
+El panel **Gestión de incidentes** (`/pmu/gestion/`) permite:
+- ver los incidentes por sesión: *Sin asignar*, *Operación ordinaria* y cada alerta activa;
+- **asignar** los seleccionados a una alerta o **desacoplarlos** a la operación ordinaria;
+- **crear incidentes a mano**, sin reportes ciudadanos (p. ej. avisados por radio). Nacen
+  verificados y la descripción se redacta antes de guardarse (Ley 1581);
+- **cerrar a mano** una alerta. El cierre se **bloquea** si quedan incidentes abiertos o despachos
+  activos. La otra opción es cerrar **eliminando todos sus incidentes** (con reportes, bitácora y
+  despachos), previa confirmación. Al cerrar la última alerta activa, los sin asignar pasan a la
+  operación ordinaria.
+
+Cada acción queda en la bitácora con el rol y la hora. En el tablero, el selector *Sesión del
+tablero* hace que Triaje, mapa, Cascada y Zonas muestren solo los puntos de la sesión elegida.
+
+Al cerrar una alerta se guarda su **reporte final** (`/pmu/alerta-masiva/?id=`): problemas,
+bitácora y despachos de cada uno, y tiempos desde el registro hasta la verificación, el despacho,
+la llegada y el cierre, con promedio, mediana y máximo por nivel de triaje. También dice quién la
+cerró y si se eliminaron incidentes. Mientras la alerta está activa, el mismo enlace muestra un
+reporte preliminar. Se imprime a PDF o se descarga en CSV y JSON, sin datos personales.
+
+Endpoints: `GET/POST /api/v1/mass-alerts`, `POST /api/v1/mass-alerts/{id}/close`,
+`GET /api/v1/mass-alerts/{id}/report`, `POST /api/v1/incidents` y `POST /api/v1/incidents/assign`.
 
 ### Requisitos
 

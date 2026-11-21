@@ -4,6 +4,28 @@
  */
 
 export interface paths {
+    "/api/v1/demo/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset Demo Data
+         * @description Borra reportes, incidentes, bitácora y métricas para volver a reproducir el escenario.
+         *
+         *     Conserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.
+         */
+        post: operations["reset_demo_data_api_v1_demo_reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -103,6 +125,40 @@ export interface paths {
         put?: never;
         /** Ingest Sms */
         post: operations["ingest_sms_api_v1_ingest_sms_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/metrics/kpi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Kpi */
+        get: operations["get_kpi_api_v1_metrics_kpi_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/metrics/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post Snapshots */
+        post: operations["post_snapshots_api_v1_metrics_snapshots_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -307,6 +363,46 @@ export interface components {
              */
             updated_at: string;
         };
+        /** Kpi */
+        Kpi: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Details */
+            details?: {
+                [key: string]: unknown;
+            };
+            /** Indicator */
+            indicator: string;
+            /** Label */
+            label: string;
+            /**
+             * Simulated
+             * @default true
+             */
+            simulated: boolean;
+            /** Source */
+            source: string;
+            /** Target */
+            target?: string | null;
+            unit: components["schemas"]["MetricUnit"];
+            /** Value */
+            value: number | null;
+            /** Version */
+            version: number;
+        };
+        /** KpiList */
+        KpiList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["Kpi"][];
+        };
         /** LocationIn */
         LocationIn: {
             /** Lat */
@@ -320,6 +416,11 @@ export interface components {
              */
             precision: "gps" | "address";
         };
+        /**
+         * MetricUnit
+         * @enum {string}
+         */
+        MetricUnit: "%" | "conteo" | "min" | "ms";
         /**
          * ReportAction
          * @enum {string}
@@ -486,6 +587,33 @@ export interface components {
             /** Received At */
             received_at?: string | null;
         };
+        /** SnapshotIn */
+        SnapshotIn: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Details */
+            details?: {
+                [key: string]: unknown;
+            };
+            /** Indicator */
+            indicator: string;
+            /**
+             * Source
+             * @default evaluate_kpis.py
+             */
+            source: string;
+            unit: components["schemas"]["MetricUnit"];
+            /** Value */
+            value: number;
+        };
+        /** SnapshotsIn */
+        SnapshotsIn: {
+            /** Items */
+            items: components["schemas"]["SnapshotIn"][];
+        };
         /**
          * TriageLevel
          * @enum {string}
@@ -518,6 +646,33 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    reset_demo_data_api_v1_demo_reset_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health_api_v1_health_get: {
         parameters: {
             query?: never;
@@ -710,6 +865,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReportResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_kpi_api_v1_metrics_kpi_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KpiList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_snapshots_api_v1_metrics_snapshots_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SnapshotsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Validation Error */

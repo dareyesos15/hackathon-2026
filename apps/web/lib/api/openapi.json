@@ -496,6 +496,99 @@
         "title": "IncidentSummary",
         "type": "object"
       },
+      "Kpi": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "title": "Details",
+            "type": "object"
+          },
+          "indicator": {
+            "title": "Indicator",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "simulated": {
+            "default": true,
+            "title": "Simulated",
+            "type": "boolean"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/MetricUnit"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "indicator",
+          "label",
+          "value",
+          "unit",
+          "source",
+          "version",
+          "cutoff_at"
+        ],
+        "title": "Kpi",
+        "type": "object"
+      },
+      "KpiList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Kpi"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "KpiList",
+        "type": "object"
+      },
       "LocationIn": {
         "properties": {
           "lat": {
@@ -526,6 +619,16 @@
         ],
         "title": "LocationIn",
         "type": "object"
+      },
+      "MetricUnit": {
+        "enum": [
+          "%",
+          "conteo",
+          "min",
+          "ms"
+        ],
+        "title": "MetricUnit",
+        "type": "string"
       },
       "ReportAction": {
         "enum": [
@@ -1009,6 +1112,65 @@
         "title": "SmsIn",
         "type": "object"
       },
+      "SnapshotIn": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": true,
+            "title": "Details",
+            "type": "object"
+          },
+          "indicator": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Indicator",
+            "type": "string"
+          },
+          "source": {
+            "default": "evaluate_kpis.py",
+            "maxLength": 64,
+            "title": "Source",
+            "type": "string"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/MetricUnit"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "indicator",
+          "value",
+          "unit",
+          "cutoff_at"
+        ],
+        "title": "SnapshotIn",
+        "type": "object"
+      },
+      "SnapshotsIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SnapshotIn"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "SnapshotsIn",
+        "type": "object"
+      },
       "TriageLevel": {
         "enum": [
           "critico",
@@ -1084,6 +1246,36 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/demo/reset": {
+      "post": {
+        "description": "Borra reportes, incidentes, bitácora y métricas para volver a reproducir el escenario.\n\nConserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.",
+        "operationId": "reset_demo_data_api_v1_demo_reset_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reset Demo Data",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "health_api_v1_health_get",
@@ -1442,6 +1634,92 @@
         "summary": "Ingest Sms",
         "tags": [
           "ingesta"
+        ]
+      }
+    },
+    "/api/v1/metrics/kpi": {
+      "get": {
+        "operationId": "get_kpi_api_v1_metrics_kpi_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KpiList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Kpi",
+        "tags": [
+          "métricas"
+        ]
+      }
+    },
+    "/api/v1/metrics/snapshots": {
+      "post": {
+        "operationId": "post_snapshots_api_v1_metrics_snapshots_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapshotsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Post Snapshots Api V1 Metrics Snapshots Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Snapshots",
+        "tags": [
+          "métricas"
         ]
       }
     },

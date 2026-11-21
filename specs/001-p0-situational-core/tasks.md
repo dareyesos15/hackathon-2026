@@ -54,20 +54,20 @@ Commits en inglés) en cuanto queda verificada; push al cerrar cada fase.
 
 **⚠️ CRITICAL**: ninguna historia empieza antes de terminar esta fase.
 
-- [ ] T008 Implementar configuración tipada (umbrales de agrupación de research R1, pesos del trust score CLAUDE.md §7.4, tokens por rol, `PII_SALT`) en `services/api/app/config.py`
-- [ ] T009 Implementar engine y sesión async de SQLAlchemy en `services/api/app/db.py`
-- [ ] T010 Definir enums y modelos ORM de `reports`, `report_events`, `incidents`, `manzanas`, `places`, `metrics_snapshots` con columnas comunes `id/created_at/source/version` en `services/api/app/models.py` — restricciones según data-model.md: `Report.client_uuid` (UNIQUE), `Report.channel`, `Report.category`, `Report.triage_level`, `Report.geo_precision`, `Report.status`, `Report.severity`, `Report.people_affected`, `Report.text_redacted`, `Report.reporter_hash`, `Report.geom`; `ReportEvent.report_id`/`ReportEvent.incident_id` (al menos uno), `ReportEvent.action`, `ReportEvent.actor_role`; `Incident.trust_score`, `Incident.trust_label`, `Incident.status`, `Incident.trust_breakdown`; `Manzana.id`; `Place.kind`, `Place.aliases`; `MetricSnapshot.unit`; índices de data-model.md (Report)
-- [ ] T011 Configurar Alembic y generar la migración inicial (extensión postgis, tablas, índices GIST) en `services/api/alembic/` y `services/api/alembic/versions/0001_initial.py`
-- [ ] T012 [P] Implementar autenticación por token fijo y dependencia `require_role(...)` (cabecera Bearer y `?token=` para SSE) en `services/api/app/auth.py`
-- [ ] T013 [P] Implementar `EventBus` en memoria (colas asyncio por suscriptor, ids incrementales, búfer de 500 eventos) en `services/api/app/adapters/event_bus.py`
-- [ ] T014 [P] Implementar `HazardProvider` neutro (consistencia física = 0,5, detalle "sin dato de sensor") en `services/api/app/adapters/hazard.py`
-- [ ] T015 [P] Escribir `scripts/generate_geo.py` y generar `data/geo/gazetteer.csv` (~40 barrios, vías y referencias de CLAUDE.md §7.2 con alias normalizados), `data/geo/barrios.geojson` y `data/geo/manzanas.geojson` (grilla ~150 m) etiquetados SIMULADO (research R7) — campos según data-model.md `Place.kind`, `Place.aliases`, `Manzana.id`
-- [ ] T016 Implementar la carga idempotente de manzanas y gazetteer al arrancar en `services/api/app/seed.py`
-- [ ] T017 Crear la app FastAPI con prefijo `/api/v1`, manejador de errores `{detail, code}` en español, `GET /api/v1/health` y startup (migraciones + seed) en `services/api/app/main.py`
-- [ ] T018 [P] Crear `scripts/export_openapi.py` (escribe `apps/web/lib/api/openapi.json`) y el script `gen:api` con `openapi-typescript` → `apps/web/lib/api/schema.d.ts` + cliente `openapi-fetch` en `apps/web/lib/api/client.ts` (research R11)
-- [ ] T019 [P] Implementar formateadores es-CO (números `1.449`, decimales con coma, hora `America/Bogota`) en `apps/web/lib/format.ts`
-- [ ] T020 [P] Crear componentes base `Cifra` (exige valor, fuente, versión y corte — principio V) y `EtiquetaSimulado` en `apps/web/components/Cifra.tsx` y `apps/web/components/EtiquetaSimulado.tsx`
-- [ ] T021 Crear layout raíz en español, página de inicio con selección de rol y token (guardado en `sessionStorage`) en `apps/web/app/layout.tsx`, `apps/web/app/page.tsx` y `apps/web/lib/session.ts`
+- [X] T008 Implementar configuración tipada (umbrales de agrupación de research R1, pesos del trust score CLAUDE.md §7.4, tokens por rol, `PII_SALT`) en `services/api/app/config.py`
+- [X] T009 Implementar engine y sesión async de SQLAlchemy en `services/api/app/db.py`
+- [X] T010 Definir enums y modelos ORM de `reports`, `report_events`, `incidents`, `manzanas`, `places`, `metrics_snapshots` con columnas comunes `id/created_at/source/version` en `services/api/app/models.py` — restricciones según data-model.md: `Report.client_uuid` (UNIQUE), `Report.channel`, `Report.category`, `Report.triage_level`, `Report.geo_precision`, `Report.status`, `Report.severity`, `Report.people_affected`, `Report.text_redacted`, `Report.reporter_hash`, `Report.geom`; `ReportEvent.report_id`/`ReportEvent.incident_id` (al menos uno), `ReportEvent.action`, `ReportEvent.actor_role`; `Incident.trust_score`, `Incident.trust_label`, `Incident.status`, `Incident.trust_breakdown`; `Manzana.id`; `Place.kind`, `Place.aliases`; `MetricSnapshot.unit`; índices de data-model.md (Report)
+- [X] T011 Configurar Alembic y generar la migración inicial (extensión postgis, tablas, índices GIST) en `services/api/alembic/` y `services/api/alembic/versions/0001_initial.py`
+- [X] T012 [P] Implementar autenticación por token fijo y dependencia `require_role(...)` (cabecera Bearer y `?token=` para SSE) en `services/api/app/auth.py`
+- [X] T013 [P] Implementar `EventBus` en memoria (colas asyncio por suscriptor, ids incrementales, búfer de 500 eventos) en `services/api/app/adapters/event_bus.py`
+- [X] T014 [P] Implementar `HazardProvider` neutro (consistencia física = 0,5, detalle "sin dato de sensor") en `services/api/app/adapters/hazard.py`
+- [X] T015 [P] Escribir `scripts/generate_geo.py` y generar `data/geo/gazetteer.csv` (~40 barrios, vías y referencias de CLAUDE.md §7.2 con alias normalizados), `data/geo/barrios.geojson` y `data/geo/manzanas.geojson` (grilla ~150 m) etiquetados SIMULADO (research R7) — campos según data-model.md `Place.kind`, `Place.aliases`, `Manzana.id`
+- [X] T016 Implementar la carga idempotente de manzanas y gazetteer al arrancar en `services/api/app/seed.py`
+- [X] T017 Crear la app FastAPI con prefijo `/api/v1`, manejador de errores `{detail, code}` en español, `GET /api/v1/health` y startup (migraciones + seed) en `services/api/app/main.py`
+- [X] T018 [P] Crear `scripts/export_openapi.py` (escribe `apps/web/lib/api/openapi.json`) y el script `gen:api` con `openapi-typescript` → `apps/web/lib/api/schema.d.ts` + cliente `openapi-fetch` en `apps/web/lib/api/client.ts` (research R11)
+- [X] T019 [P] Implementar formateadores es-CO (números `1.449`, decimales con coma, hora `America/Bogota`) en `apps/web/lib/format.ts`
+- [X] T020 [P] Crear componentes base `Cifra` (exige valor, fuente, versión y corte — principio V) y `EtiquetaSimulado` en `apps/web/components/Cifra.tsx` y `apps/web/components/EtiquetaSimulado.tsx`
+- [X] T021 Crear layout raíz en español, página de inicio con selección de rol y token (guardado en `sessionStorage`) en `apps/web/app/layout.tsx`, `apps/web/app/page.tsx` y `apps/web/lib/session.ts`
 
 **Checkpoint**: `docker compose up` desde cero crea el esquema, carga la geografía, `/api/v1/health` responde y `http://localhost:8080` muestra la pantalla de inicio.
 

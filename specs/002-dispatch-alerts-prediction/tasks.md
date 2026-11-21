@@ -161,7 +161,7 @@ precargada.
 - [X] T056 [US3] Publicar `cascade.invalidated` (como máximo uno cada 3 s) al procesar reportes de `dano_estructural`, `colapso_estructura` o `deslizamiento`, en `services/api/app/routers/ingest.py`
 - [X] T057 [US3] Exportar el OpenAPI, regenerar los tipos TS y actualizar el snapshot del contrato con `scripts/export_openapi.py` → `apps/web/lib/api/openapi.json`, `apps/web/lib/api/schema.d.ts` y `services/api/tests/contract/test_openapi_snapshot.py`
 - [ ] T058 [US3] Manejar `cascade.invalidated` en el flujo en vivo (refrescar la capa como máximo una vez cada 3 s) en `apps/web/lib/live.ts`
-- [ ] T059 [P] [US3] Crear `CapaCascada` (interruptor, leyenda de 4 niveles con etiqueta SIMULADO, control de lluvia 0–60 mm que publica `POST /sensors/rain`, desglose de la manzana elegida, botón "Crear alerta preventiva" que abre `EditorAlerta` con tipo `deslizamiento` y círculo centrado en la manzana) en `apps/web/components/CapaCascada.tsx`
+- [X] T059 [P] [US3] Crear `CapaCascada` (interruptor, leyenda de 4 niveles con etiqueta SIMULADO, control de lluvia 0–60 mm que publica `POST /sensors/rain`, desglose de la manzana elegida, botón "Crear alerta preventiva" que abre `EditorAlerta` con tipo `deslizamiento` y círculo centrado en la manzana) en `apps/web/components/CapaCascada.tsx`
 - [ ] T060 [US3] Agregar a `Mapa` la capa de cascada (color por nivel, clic para elegir manzana) e integrar `CapaCascada` en el tablero, en `apps/web/components/Mapa.tsx` y `apps/web/app/pmu/TableroPmu.tsx`
 - [ ] T061 [P] [US3] Agregar la opción `--rain` (curva de lluvia SIMULADA publicada en `POST /sensors/rain` durante la reproducción) en `scripts/replay_scenario.py`
 

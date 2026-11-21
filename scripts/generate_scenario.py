@@ -229,7 +229,7 @@ FAKES: list[tuple[str, list[str], int]] = [
             "se cayó la torre del Cable Aéreo",
             "colapsó la torre del cable aéreo en el Cable",
         ],
-        3,
+        1,
     ),
 ]
 
@@ -332,7 +332,8 @@ class Generator:
         if r < 0.13:
             return f"{text}. Llamar al {self.phone()}"
         if r < 0.16:
-            cc = f"{self.rng.randint(10, 99)}.{self.rng.randint(100, 999)}.{self.rng.randint(100, 999)}"
+            rng = self.rng
+            cc = f"{rng.randint(10, 99)}.{rng.randint(100, 999)}.{rng.randint(100, 999)}"
             return f"{text}. Mi cédula es {cc}"
         return text
 

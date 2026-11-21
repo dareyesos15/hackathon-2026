@@ -1772,95 +1772,95 @@
    "is_critical": false,
    "category": null
   },
-  "sms:221": {
+  "d1670fbd-1fd4-5412-af92-84fdd8e30dfc": {
    "seq": 221,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-cable_sin_senales",
-   "is_critical": false,
-   "category": null
-  },
-  "39c4fb72-e89f-5349-8133-97c736cbc7c3": {
-   "seq": 222,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
-   "is_critical": false,
-   "category": null
-  },
-  "d8dba376-9b74-5d54-8cef-5794a93b23c8": {
-   "seq": 223,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-muertos",
    "is_critical": false,
    "category": null
   },
-  "1455f3ab-b7cc-5d90-9503-d9bd05d3663f": {
-   "seq": 224,
+  "9b3cbfff-e57f-50cb-ac12-a2d0452d6f1a": {
+   "seq": 222,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-nasa",
    "is_critical": false,
    "category": null
   },
-  "2c55bcba-b91b-55ed-b0a8-88b40e43a816": {
-   "seq": 225,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-va_a_temblar",
-   "is_critical": false,
-   "category": null
-  },
-  "9b820fab-eb64-50a6-b222-0f4ed5936bea": {
-   "seq": 226,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-hospital_atrapados",
-   "is_critical": false,
-   "category": null
-  },
-  "30c2be1a-fb9e-5323-a3a1-beb77b3cf212": {
-   "seq": 227,
+  "b78ee7dc-344c-5f3d-a17e-1e0c405d4032": {
+   "seq": 223,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "59416574-b04e-5513-afe7-f681b0316da4": {
-   "seq": 228,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-nasa",
-   "is_critical": false,
-   "category": null
-  },
-  "sms:229": {
-   "seq": 229,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-hospital",
-   "is_critical": false,
-   "category": null
-  },
-  "b3fb4fab-b649-5f0b-b476-6503941087b2": {
-   "seq": 230,
+  "12eac697-fc89-5bc6-9a20-7c3f1ac91385": {
+   "seq": 224,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "31c4ddcd-3b10-5a26-bb3b-87f8320ee920": {
-   "seq": 231,
+  "6e6d1403-2439-5f8d-91c7-777c67d33733": {
+   "seq": 225,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "bab3955c-9de1-5c17-90bc-85dc3bec5be3": {
+   "seq": 226,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "ed78ad1b-f068-5149-82fc-a37eea012ca3": {
+   "seq": 227,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-nasa",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:228": {
+   "seq": 228,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-hospital",
    "is_critical": false,
    "category": null
   },
-  "sms:232": {
+  "d7c904b8-04a6-5f0d-a4a0-3ec8e89be75a": {
+   "seq": 229,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "5d3fb625-0afa-5d55-a90f-6acdd99d99b5": {
+   "seq": 230,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-hospital",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:231": {
+   "seq": 231,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "1823eb64-474b-5eef-ae21-480b36c6dc80": {
    "seq": 232,
    "label": "fake",
    "duplicate_of": null,
@@ -1868,7 +1868,7 @@
    "is_critical": false,
    "category": null
   },
-  "48bd337e-3d5c-59d1-aaeb-aaf64f313c26": {
+  "efda302b-5885-5164-bd74-f38c08b219d1": {
    "seq": 233,
    "label": "fake",
    "duplicate_of": null,
@@ -1876,7 +1876,7 @@
    "is_critical": false,
    "category": null
   },
-  "d1ded680-fb4d-548b-bc7a-13a1f9ac6c61": {
+  "sms:234": {
    "seq": 234,
    "label": "fake",
    "duplicate_of": null,
@@ -1884,23 +1884,23 @@
    "is_critical": false,
    "category": null
   },
-  "sms:235": {
+  "7e98accb-3d2a-561c-992a-f4f12fd22215": {
    "seq": 235,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
-   "is_critical": false,
-   "category": null
-  },
-  "4dca5db5-90dd-5cc5-8ba2-072094e4cead": {
-   "seq": 236,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "ac4a9d7c-f1bb-55d3-9e26-95205cde4297": {
+  "41ea89a4-5f1d-59c4-8c4e-8378f102d846": {
+   "seq": 236,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:237": {
    "seq": 237,
    "label": "fake",
    "duplicate_of": null,
@@ -1908,91 +1908,91 @@
    "is_critical": false,
    "category": null
   },
-  "30eb9b91-a281-5d30-b9fa-f824616fa5d7": {
+  "6cf28f19-d714-5dcf-930f-a0b35c73c948": {
    "seq": 238,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-cable_sin_senales",
-   "is_critical": false,
-   "category": null
-  },
-  "660ab3a3-f284-514c-843c-26e06a185bae": {
-   "seq": 239,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-hospital_atrapados",
    "is_critical": false,
    "category": null
   },
-  "a59e64dd-0921-5fcc-b0f0-092cdc72c84b": {
-   "seq": 240,
+  "ca4efd14-375e-57b8-95d2-34eafb96a645": {
+   "seq": 239,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "37bc1ab6-f65c-5cc5-b2d2-789f2a2dcb6e": {
-   "seq": 241,
+  "8e812971-c97a-5214-962c-9741dfaedc7f": {
+   "seq": 240,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-nasa",
    "is_critical": false,
    "category": null
   },
-  "b8c5c37e-8cdb-5aec-b62a-21e8d6509977": {
-   "seq": 242,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-cable_sin_senales",
-   "is_critical": false,
-   "category": null
-  },
-  "8091e30a-5a8c-5e84-a5ce-cca8b5ab1a7d": {
-   "seq": 243,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
-   "is_critical": false,
-   "category": null
-  },
-  "ea821025-d7d5-5e21-87f8-8182c889fb0a": {
-   "seq": 244,
+  "cf3b346b-f993-59dd-95c5-ccb299f20c8a": {
+   "seq": 241,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-hospital_atrapados",
    "is_critical": false,
    "category": null
   },
-  "sms:245": {
-   "seq": 245,
+  "3f946e1d-c9a7-5005-a5be-168c61a33ddf": {
+   "seq": 242,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "ca7c2d93-815e-59c5-af43-5487d0510d55": {
-   "seq": 246,
+  "sms:243": {
+   "seq": 243,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-muertos",
+   "is_critical": false,
+   "category": null
+  },
+  "5576e570-6ab2-52b3-9c22-d69a24b1c101": {
+   "seq": 244,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-va_a_temblar",
+   "is_critical": false,
+   "category": null
+  },
+  "642ed73d-1c3b-5211-a5ba-c11e90470fe1": {
+   "seq": 245,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "a8efda45-fc49-54c5-b2de-5f6824fe0209": {
-   "seq": 247,
+  "936ae359-5782-5920-97da-6278b43f84a8": {
+   "seq": 246,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-nasa",
+   "event_id": "FAKE-hospital",
    "is_critical": false,
    "category": null
   },
-  "1a49a921-acfe-5b1e-85d5-e64735f60b1f": {
+  "f2e1bc5e-5b4d-541f-b96a-27fdf0621f48": {
+   "seq": 247,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:248": {
    "seq": 248,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-cable_sin_senales",
+   "event_id": "FAKE-va_a_temblar",
    "is_critical": false,
    "category": null
   },
@@ -2000,7 +2000,7 @@
    "seq": 249,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-va_a_temblar",
+   "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
@@ -2008,11 +2008,11 @@
    "seq": 250,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
+   "event_id": "FAKE-muertos",
    "is_critical": false,
    "category": null
   },
-  "sms:251": {
+  "39a17351-0f00-5928-b300-87b4bf7418ff": {
    "seq": 251,
    "label": "fake",
    "duplicate_of": null,
@@ -2020,19 +2020,19 @@
    "is_critical": false,
    "category": null
   },
-  "29f6ae86-a3de-5e94-a3ef-847d268f6833": {
+  "sms:252": {
    "seq": 252,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-muertos",
+   "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "sms:253": {
+  "704b4312-2573-56c5-9ffe-9816f9246ac3": {
    "seq": 253,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
+   "event_id": "FAKE-nasa",
    "is_critical": false,
    "category": null
   }

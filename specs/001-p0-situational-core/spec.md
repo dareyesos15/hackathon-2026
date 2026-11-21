@@ -357,5 +357,6 @@ sistema, sin datos personales.
   mensajes con su canal; no hay integración real con esos servicios en P0.
 - **Velocidad de reproducción**: por defecto 1 h del evento = 1 min real (12 min para todo el
   escenario); configurable para demos más cortas.
-- **Código previo del equipo**: si existe el triaje 0–100 del estudio SIRA, se evalúa en el plan
-  para integrarlo en lugar de reescribirlo.
+- **Código previo del equipo**: no existe (confirmado el 20 nov 2026); todo se construye desde
+  cero. El trabajo es serial e iterativo con un solo responsable técnico, y la demo corre con
+  Docker Compose.

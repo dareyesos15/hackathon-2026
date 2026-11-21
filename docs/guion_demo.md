@@ -14,6 +14,7 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
    - **A:** http://localhost:8080 → Operador del PMU → *Entrar* (queda en `/pmu/`).
    - **B:** http://localhost:8080/pmu/kpi/ (abrirla desde la A con "Panel de KPI").
    - **C:** http://localhost:8080/reportar/ → aceptar el aviso de privacidad.
+   - **D:** http://localhost:8080/recuperacion/ (desde la A con "Recuperación").
 3. Celular (opcional), misma red Wi-Fi: `http://<IP-del-portátil>:8080/reportar/`, aceptar el aviso
    y **dejar la página abierta**. (Sin https no hay service worker; el outbox sí funciona.)
 4. Una terminal lista en la carpeta del repositorio.
@@ -36,7 +37,8 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | 6b | +0:30 | "Despachamos Bomberos: el sistema sugiere la agencia según la EMRE, el recurso más cercano y bloquea el doble despacho; se ve el recorrido del vehículo." | Abrir el incidente **Crítico** de Milán → sección *Despacho* → marcar la máquina más cercana → *Despachar*. Ver el recorrido morado en el mapa (llega en ~20 s). Intentar despachar otro recurso: pide justificar un refuerzo. |
 | 6c | +0:30 | "Llueve sobre laderas ya golpeadas: Dacora anticipa el siguiente deslizamiento, pero solo el COE emite la alerta." | Pestaña *Cascada* → activar la capa → subir la lluvia a 40 mm → tocar una manzana **Muy alto** → *Crear alerta preventiva* → mensaje corto → *Guardar borrador*. Pestaña *Alertas* → *Aprobar y emitir* (Entidades y PMU incluye la autoridad del COE). Mostrar el aviso rojo en el tablero y en la página de inicio pública (`/`, en una pestaña sin sesión). |
 | 7 | 3:10–3:40 | "Resultados medidos contra la verdad del escenario: más de 90 % de duplicados y falsos detectados, cero críticos descartados por la IA, cada hecho en el mapa en minutos y no en días. Cada cifra con fuente y fecha de corte." | Pestaña B (Panel de KPI). |
-| 8 | 3:40–4:00 | "Todo corre en un portátil sin internet, con Habeas Data desde el diseño y software abierto. Siguiente paso: sensores RAMAN y recuperación." | Volver al tablero. |
+| 7b | +0:40 | "Después de la emergencia viene la recuperación. En el sismo hubo hasta 3 visitas al mismo inmueble y ayudas que se entregaban dos veces. Aquí cada predio es uno solo y cada hogar también." | Pestaña D → *Habitabilidad*: registrar un predio **Rojo / Mayor** en una manzana de Milán con `Cra 23 # 45-10`; repetir con `carrera 23 45 10` → aviso "visita n.º 2" unida al mismo predio. *Censo único*: registrar el documento `1053123456`, 4 personas, niñez; repetirlo como `1.053.123.456` → "ya estaba registrado". *Ayudas*: entregar *Mercado* a ese documento y repetir → bloqueada; pide justificación. *Resumen*: predios vs. visitas, hogares, ayudas, con fuente y fecha de corte. |
+| 8 | 3:40–4:00 | "Todo corre en un portátil sin internet, con Habeas Data desde el diseño y software abierto: del documento del hogar solo guardamos un código cifrado. Siguiente paso: sensores RAMAN e infraestructura y servicios." | Volver al tablero. |
 
 ## Si algo falla
 
@@ -50,6 +52,7 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | La capa de cascada no cambia | Mover de nuevo el control de lluvia y soltarlo; se recalcula en < 10 s. |
 | Hay que repetir la demo desde cero | Entrar como **Administrador** (`/admin/`) → *Iniciar simulación con datos* (o *Empezar sin datos* para reportes en vivo). |
 | Nada responde | `docker compose down && docker compose up -d` (los datos se conservan) y repetir la reproducción con `--speed 720`. |
+| La recuperación se ve vacía tras reiniciar | Normal: el reinicio también borra inspecciones, censo y ayudas. Registrar de nuevo en la pestaña D. |
 | Último recurso | Video/GIF de respaldo (ver abajo). |
 
 ## Video de respaldo

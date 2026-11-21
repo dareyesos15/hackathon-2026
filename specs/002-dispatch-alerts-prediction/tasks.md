@@ -56,7 +56,7 @@ cascada) para implementarlas y probarlas por separado.
 - [X] T008 [P] Ampliar el reinicio de la demo para vaciar `dispatches`, `resource_tracks`, `alerts`, `alert_events`, `alert_deliveries`, `rain_readings` y devolver los recursos a su base (research R16), en `services/api/app/routers/demo.py`
 - [X] T009 Abrir al rol `coe` las rutas `GET /incidents`, `GET /incidents/{id}`, `PATCH /incidents/{id}` y `GET /map/manzanas`, y `GET /stream` a `coe` y `agencia` (la agencia solo recibe `dispatch.upserted` y `resource.moved`), según contracts/rest-api.md §Cambios a rutas existentes, en `services/api/app/routers/incidents.py`, `services/api/app/routers/review.py`, `services/api/app/routers/map.py` y `services/api/app/routers/stream.py`
 - [X] T010 [P] Prueba de integración de la migración 0003 (upgrade y downgrade sobre la base de pruebas) y de los nuevos permisos por rol del T009, en `services/api/tests/integration/test_roles_0003.py`
-- [ ] T011 [P] Agregar los roles `coe` y `agencia` (tokens de demo, etiquetas y tarjetas de inicio: COE → `/pmu/`, Agencia → `/agencia/`) en `apps/web/lib/session.ts` y `apps/web/app/page.tsx`
+- [X] T011 [P] Agregar los roles `coe` y `agencia` (tokens de demo, etiquetas y tarjetas de inicio: COE → `/pmu/`, Agencia → `/agencia/`) en `apps/web/lib/session.ts` y `apps/web/app/page.tsx`
 - [ ] T012 [P] Agregar etiquetas en español de funciones EMRE, estados de recurso y despacho, tipos y estados de alerta, canales y niveles de cascada en `apps/web/lib/labels.ts`
 - [ ] T013 Hacer que el tablero acepte la sesión `coe` además de `operador_pmu` (token para `useLiveIncidents`) en `apps/web/app/pmu/TableroPmu.tsx`
 

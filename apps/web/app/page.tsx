@@ -8,7 +8,16 @@ import { DEMO_TOKENS, ROLE_LABELS, setSession, type Role } from "@/lib/session";
 const DESTINO: Record<Role, { href: string; descripcion: string }> = {
   operador_pmu: {
     href: "/pmu/",
-    descripcion: "Mapa de daños, matriz de triaje, verificación y decisión humana.",
+    descripcion: "Mapa de daños, matriz de triaje, verificación, despacho y borradores de alerta.",
+  },
+  coe: {
+    href: "/pmu/",
+    descripcion: "Tablero del PMU y aprobación de alertas oficiales (solo el COE las emite).",
+  },
+  agencia: {
+    href: "/agencia/",
+    descripcion:
+      "Despachos asignados a su agencia: llegada, atención finalizada o fuera de servicio.",
   },
   ciudadano: {
     href: "/reportar/",
@@ -42,7 +51,7 @@ export default function Inicio() {
         </p>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {(Object.keys(DESTINO) as Role[]).map((role) => (
           <div key={role} className="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm">
             <h2 className="font-semibold">{ROLE_LABELS[role]}</h2>

@@ -1,6 +1,6 @@
 /** Sesión de demo: rol + token fijo (research R9), guardados en sessionStorage del navegador. */
 
-export type Role = "operador_pmu" | "ciudadano" | "publico";
+export type Role = "operador_pmu" | "coe" | "agencia" | "ciudadano" | "publico";
 
 export interface Session {
   role: Role;
@@ -12,12 +12,16 @@ const KEY = "dacora.session";
 /** Tokens de demo (coinciden con .env.example). Solo para el prototipo. */
 export const DEMO_TOKENS: Record<Role, string> = {
   operador_pmu: "pmu-demo",
+  coe: "coe-demo",
+  agencia: "agencia-demo",
   ciudadano: "ciudadano-demo",
   publico: "publico-demo",
 };
 
 export const ROLE_LABELS: Record<Role, string> = {
   operador_pmu: "Operador del PMU",
+  coe: "COE",
+  agencia: "Agencia de respuesta",
   ciudadano: "Ciudadanía",
   publico: "Público",
 };

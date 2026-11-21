@@ -1,0 +1,783 @@
+{
+  "name": "usgs_sismos",
+  "title": "Sismos M ≥ 2,5 a 300 km de Manizales desde el 10 ago 2026",
+  "source": "USGS · servicio FDSN",
+  "query_url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2026-08-10&latitude=5.0689&longitude=-75.5174&maxradiuskm=300&minmagnitude=2.5&orderby=time",
+  "license": "Dominio público (U.S. Geological Survey)",
+  "attribution": "U.S. Geological Survey, Earthquake Hazards Program",
+  "fetched_at": "2026-11-21T11:12:47+00:00",
+  "record_count": 77,
+  "sha256": "2a8cc73e443a4851115c5f77a00c49c208173da1dd1bdcb515f7bc39fe2f2d2e",
+  "records": [
+    {
+      "id": "us7000ty44",
+      "time": "2026-11-13T20:01:41.936000+00:00",
+      "magnitude": 4.4,
+      "place": "14 km SW of Roncesvalles, Colombia",
+      "depth_km": 9.7,
+      "lat": 3.9065,
+      "lon": -75.6814,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty44"
+    },
+    {
+      "id": "us7000ty3x",
+      "time": "2026-11-13T19:43:17.748000+00:00",
+      "magnitude": 4.5,
+      "place": "9 km WSW of Chaparral, Colombia",
+      "depth_km": 10,
+      "lat": 3.6793,
+      "lon": -75.5584,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty3x"
+    },
+    {
+      "id": "us7000tv4i",
+      "time": "2026-11-03T09:13:14.972000+00:00",
+      "magnitude": 5.4,
+      "place": "24 km NNW of Rioblanco, Colombia",
+      "depth_km": 10,
+      "lat": 3.7386,
+      "lon": -75.7198,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tv4i"
+    },
+    {
+      "id": "us7000tu6y",
+      "time": "2026-10-30T07:27:59.362000+00:00",
+      "magnitude": 4.3,
+      "place": "20 km NNW of Rioblanco, Colombia",
+      "depth_km": 10,
+      "lat": 3.6895,
+      "lon": -75.7328,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tu6y"
+    },
+    {
+      "id": "us6000u4xx",
+      "time": "2026-10-26T04:25:32.352000+00:00",
+      "magnitude": 4.4,
+      "place": "41 km SSW of Sipí, Colombia",
+      "depth_km": 81.6,
+      "lat": 4.3347,
+      "lon": -76.842,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u4xx"
+    },
+    {
+      "id": "us6000u4j7",
+      "time": "2026-10-24T02:47:12.121000+00:00",
+      "magnitude": 4.7,
+      "place": "5 km E of Bolívar, Colombia",
+      "depth_km": 166.2,
+      "lat": 4.3372,
+      "lon": -76.1341,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u4j7"
+    },
+    {
+      "id": "us6000u49w",
+      "time": "2026-10-23T04:29:28.531000+00:00",
+      "magnitude": 4.2,
+      "place": "17 km WNW of Ituango, Colombia",
+      "depth_km": 57.5,
+      "lat": 7.236,
+      "lon": -75.9067,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u49w"
+    },
+    {
+      "id": "us7000ttpv",
+      "time": "2026-10-18T07:16:10.156000+00:00",
+      "magnitude": 4,
+      "place": "30 km W of Nuquí, Colombia",
+      "depth_km": 20.1,
+      "lat": 5.6591,
+      "lon": -77.5453,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ttpv"
+    },
+    {
+      "id": "us6000u2yx",
+      "time": "2026-10-17T07:25:13.786000+00:00",
+      "magnitude": 4.4,
+      "place": "8 km NNW of Palmira, Colombia",
+      "depth_km": 155.2,
+      "lat": 3.6101,
+      "lon": -76.3256,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u2yx"
+    },
+    {
+      "id": "us6000u4ei",
+      "time": "2026-10-16T14:14:07.818000+00:00",
+      "magnitude": 4.1,
+      "place": "44 km ESE of Juradó, Colombia",
+      "depth_km": 37.7,
+      "lat": 6.9802,
+      "lon": -77.3804,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u4ei"
+    },
+    {
+      "id": "us6000u2pw",
+      "time": "2026-10-16T13:02:41.477000+00:00",
+      "magnitude": 4.5,
+      "place": "43 km ESE of Juradó, Colombia",
+      "depth_km": 30.1,
+      "lat": 6.8956,
+      "lon": -77.4272,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u2pw"
+    },
+    {
+      "id": "us6000u1cx",
+      "time": "2026-10-10T05:45:59.592000+00:00",
+      "magnitude": 4.5,
+      "place": "7 km WSW of Filadelfia, Colombia",
+      "depth_km": 117.8,
+      "lat": 5.2697,
+      "lon": -75.624,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u1cx"
+    },
+    {
+      "id": "us6000u0n5",
+      "time": "2026-10-07T01:29:45.852000+00:00",
+      "magnitude": 4.4,
+      "place": "20 km SW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.868,
+      "lon": -75.727,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u0n5"
+    },
+    {
+      "id": "us6000u0k5",
+      "time": "2026-10-06T19:13:35.917000+00:00",
+      "magnitude": 4.1,
+      "place": "12 km S of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.9021,
+      "lon": -75.6003,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u0k5"
+    },
+    {
+      "id": "us6000u229",
+      "time": "2026-10-04T02:29:43.747000+00:00",
+      "magnitude": 4.4,
+      "place": "26 km SW of Sipí, Colombia",
+      "depth_km": 66.1,
+      "lat": 4.4903,
+      "lon": -76.8238,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u229"
+    },
+    {
+      "id": "us6000tygt",
+      "time": "2026-09-30T01:38:45.776000+00:00",
+      "magnitude": 4.2,
+      "place": "35 km W of Sipí, Colombia",
+      "depth_km": 66.7,
+      "lat": 4.6264,
+      "lon": -76.9659,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tygt"
+    },
+    {
+      "id": "us6000tyfk",
+      "time": "2026-09-29T21:50:29.954000+00:00",
+      "magnitude": 4.4,
+      "place": "13 km SSW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8889,
+      "lon": -75.6348,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tyfk"
+    },
+    {
+      "id": "us6000ty3z",
+      "time": "2026-09-28T08:39:55.324000+00:00",
+      "magnitude": 4.3,
+      "place": "28 km W of Chaparral, Colombia",
+      "depth_km": 10,
+      "lat": 3.7713,
+      "lon": -75.7307,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000ty3z"
+    },
+    {
+      "id": "us6000ty0u",
+      "time": "2026-09-27T21:57:52.848000+00:00",
+      "magnitude": 4.6,
+      "place": "22 km SW of Sipí, Colombia",
+      "depth_km": 71.3,
+      "lat": 4.516,
+      "lon": -76.7957,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000ty0u"
+    },
+    {
+      "id": "us6000txrj",
+      "time": "2026-09-26T06:38:17.991000+00:00",
+      "magnitude": 4.2,
+      "place": "23 km SW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8646,
+      "lon": -75.7607,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txrj"
+    },
+    {
+      "id": "us6000txjb",
+      "time": "2026-09-25T07:19:39.980000+00:00",
+      "magnitude": 4.4,
+      "place": "28 km SW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8068,
+      "lon": -75.7577,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txjb"
+    },
+    {
+      "id": "us6000txif",
+      "time": "2026-09-25T03:57:06.181000+00:00",
+      "magnitude": 4.2,
+      "place": "23 km WNW of Chaparral, Colombia",
+      "depth_km": 10,
+      "lat": 3.7756,
+      "lon": -75.6859,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txif"
+    },
+    {
+      "id": "us6000txhs",
+      "time": "2026-09-25T00:57:07.701000+00:00",
+      "magnitude": 4.6,
+      "place": "34 km WSW of Sipí, Colombia",
+      "depth_km": 55.9,
+      "lat": 4.4951,
+      "lon": -76.907,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txhs"
+    },
+    {
+      "id": "us6000txdx",
+      "time": "2026-09-24T17:14:34.608000+00:00",
+      "magnitude": 4.1,
+      "place": "25 km NE of La Cumbre, Colombia",
+      "depth_km": 10,
+      "lat": 3.896,
+      "lon": -75.8681,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txdx"
+    },
+    {
+      "id": "us6000txdb",
+      "time": "2026-09-24T16:46:31.643000+00:00",
+      "magnitude": 4.6,
+      "place": "23 km NNW of Rioblanco, Colombia",
+      "depth_km": 10,
+      "lat": 3.7112,
+      "lon": -75.7489,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txdb"
+    },
+    {
+      "id": "us6000tx9s",
+      "time": "2026-09-24T07:39:08.396000+00:00",
+      "magnitude": 4.1,
+      "place": "22 km SSW of Sipí, Colombia",
+      "depth_km": 73.1,
+      "lat": 4.474,
+      "lon": -76.7393,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx9s"
+    },
+    {
+      "id": "us6000tx60",
+      "time": "2026-09-23T20:09:44.004000+00:00",
+      "magnitude": 4.6,
+      "place": "10 km SSW of San Antonio, Colombia",
+      "depth_km": 62.8,
+      "lat": 3.8357,
+      "lon": -75.5254,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx60"
+    },
+    {
+      "id": "us6000tx28",
+      "time": "2026-09-23T09:04:13.053000+00:00",
+      "magnitude": 4.3,
+      "place": "15 km SW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.9316,
+      "lon": -75.7193,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx28"
+    },
+    {
+      "id": "us6000tx1m",
+      "time": "2026-09-23T07:59:33.985000+00:00",
+      "magnitude": 4,
+      "place": "26 km WNW of Chaparral, Colombia",
+      "depth_km": 10,
+      "lat": 3.793,
+      "lon": -75.7094,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx1m"
+    },
+    {
+      "id": "us6000tx0t",
+      "time": "2026-09-23T04:46:40.514000+00:00",
+      "magnitude": 4.2,
+      "place": "25 km SSW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8154,
+      "lon": -75.7193,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx0t"
+    },
+    {
+      "id": "us6000tx0s",
+      "time": "2026-09-23T04:36:36.621000+00:00",
+      "magnitude": 4.2,
+      "place": "26 km NNW of Rioblanco, Colombia",
+      "depth_km": 10,
+      "lat": 3.7317,
+      "lon": -75.7776,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tx0s"
+    },
+    {
+      "id": "us6000twzi",
+      "time": "2026-09-22T22:12:26.626000+00:00",
+      "magnitude": 4.6,
+      "place": "25 km WSW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.9539,
+      "lon": -75.8291,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000twzi"
+    },
+    {
+      "id": "us7000tj4x",
+      "time": "2026-09-22T10:38:41.844000+00:00",
+      "magnitude": 4.1,
+      "place": "26 km SW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8284,
+      "lon": -75.7584,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tj4x"
+    },
+    {
+      "id": "us7000tj1k",
+      "time": "2026-09-21T23:15:33.276000+00:00",
+      "magnitude": 4.3,
+      "place": "20 km SSW of Roncesvalles, Colombia",
+      "depth_km": 10.0,
+      "lat": 3.8317,
+      "lon": -75.6631,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tj1k"
+    },
+    {
+      "id": "us7000tj1f",
+      "time": "2026-09-21T22:58:21.971000+00:00",
+      "magnitude": 4.2,
+      "place": "2 km E of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 4.0089,
+      "lon": -75.5843,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tj1f"
+    },
+    {
+      "id": "us7000tizt",
+      "time": "2026-09-21T18:48:44.872000+00:00",
+      "magnitude": 4.5,
+      "place": "1 km SE of San Antonio, Colombia",
+      "depth_km": 10,
+      "lat": 3.9032,
+      "lon": -75.4687,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tizt"
+    },
+    {
+      "id": "us7000tiz7",
+      "time": "2026-09-21T16:23:20.229000+00:00",
+      "magnitude": 4.3,
+      "place": "20 km SSW of Roncesvalles, Colombia",
+      "depth_km": 10,
+      "lat": 3.8443,
+      "lon": -75.6871,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tiz7"
+    },
+    {
+      "id": "us7000timg",
+      "time": "2026-09-19T23:20:15.326000+00:00",
+      "magnitude": 4.3,
+      "place": "23 km S of Sipí, Colombia",
+      "depth_km": 79.0,
+      "lat": 4.4429,
+      "lon": -76.6617,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000timg"
+    },
+    {
+      "id": "us7000tim0",
+      "time": "2026-09-19T22:28:51.599000+00:00",
+      "magnitude": 4.4,
+      "place": "34 km SW of Sipí, Colombia",
+      "depth_km": 73.7,
+      "lat": 4.442,
+      "lon": -76.8788,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tim0"
+    },
+    {
+      "id": "us7000tijs",
+      "time": "2026-09-19T13:44:35.883000+00:00",
+      "magnitude": 4.7,
+      "place": "29 km WSW of Sipí, Colombia",
+      "depth_km": 59.5,
+      "lat": 4.5125,
+      "lon": -76.8689,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tijs"
+    },
+    {
+      "id": "us7000tihg",
+      "time": "2026-09-19T05:01:49.345000+00:00",
+      "magnitude": 4.3,
+      "place": "23 km SW of Sipí, Colombia",
+      "depth_km": 76.1,
+      "lat": 4.484,
+      "lon": -76.7735,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tihg"
+    },
+    {
+      "id": "us6000txf0",
+      "time": "2026-09-18T19:19:17.348000+00:00",
+      "magnitude": 4.4,
+      "place": "25 km SSW of Sipí, Colombia",
+      "depth_km": 62.7,
+      "lat": 4.4476,
+      "lon": -76.7537,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000txf0"
+    },
+    {
+      "id": "us7000tie4",
+      "time": "2026-09-18T18:41:23.319000+00:00",
+      "magnitude": 4.5,
+      "place": "28 km S of Sipí, Colombia",
+      "depth_km": 83.3,
+      "lat": 4.3989,
+      "lon": -76.6893,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tie4"
+    },
+    {
+      "id": "us7000ti7x",
+      "time": "2026-09-18T06:17:03.958000+00:00",
+      "magnitude": 4.7,
+      "place": "38 km SSW of Sipí, Colombia",
+      "depth_km": 71.8,
+      "lat": 4.3576,
+      "lon": -76.827,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ti7x"
+    },
+    {
+      "id": "us7000ti5y",
+      "time": "2026-09-17T21:10:25.543000+00:00",
+      "magnitude": 4.9,
+      "place": "28 km SW of Sipí, Colombia",
+      "depth_km": 57.3,
+      "lat": 4.4632,
+      "lon": -76.8127,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ti5y"
+    },
+    {
+      "id": "us7000thyk",
+      "time": "2026-09-17T01:12:49.694000+00:00",
+      "magnitude": 4.4,
+      "place": "21 km SW of Sipí, Colombia",
+      "depth_km": 63.1,
+      "lat": 4.5186,
+      "lon": -76.788,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thyk"
+    },
+    {
+      "id": "us7000thxm",
+      "time": "2026-09-16T20:55:01.454000+00:00",
+      "magnitude": 4.7,
+      "place": "28 km SW of Sipí, Colombia",
+      "depth_km": 56.6,
+      "lat": 4.4631,
+      "lon": -76.8196,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thxm"
+    },
+    {
+      "id": "us6000twwu",
+      "time": "2026-09-16T20:14:30.623000+00:00",
+      "magnitude": 4.5,
+      "place": "25 km SW of Sipí, Colombia",
+      "depth_km": 62.3,
+      "lat": 4.4937,
+      "lon": -76.8127,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000twwu"
+    },
+    {
+      "id": "us7000thxc",
+      "time": "2026-09-16T20:12:52.358000+00:00",
+      "magnitude": 4.9,
+      "place": "25 km WSW of Sipí, Colombia",
+      "depth_km": 65.8,
+      "lat": 4.5473,
+      "lon": -76.8441,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thxc"
+    },
+    {
+      "id": "us7000thsp",
+      "time": "2026-09-16T07:02:12.284000+00:00",
+      "magnitude": 4.8,
+      "place": "45 km WSW of Bahía Solano, Colombia",
+      "depth_km": 10,
+      "lat": 6.0548,
+      "lon": -77.7752,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thsp"
+    },
+    {
+      "id": "us7000thse",
+      "time": "2026-09-16T06:18:04.823000+00:00",
+      "magnitude": 4.6,
+      "place": "30 km SW of Sipí, Colombia",
+      "depth_km": 63.4,
+      "lat": 4.4322,
+      "lon": -76.8119,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thse"
+    },
+    {
+      "id": "us7000thht",
+      "time": "2026-09-14T22:39:03.955000+00:00",
+      "magnitude": 4.5,
+      "place": "24 km SW of Sipí, Colombia",
+      "depth_km": 69.4,
+      "lat": 4.4807,
+      "lon": -76.7835,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thht"
+    },
+    {
+      "id": "us7000thh2",
+      "time": "2026-09-14T21:13:16.363000+00:00",
+      "magnitude": 4.9,
+      "place": "24 km SW of Sipí, Colombia",
+      "depth_km": 52.7,
+      "lat": 4.5305,
+      "lon": -76.8274,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thh2"
+    },
+    {
+      "id": "us7000thgj",
+      "time": "2026-09-14T20:08:04.768000+00:00",
+      "magnitude": 4.6,
+      "place": "28 km SW of Sipí, Colombia",
+      "depth_km": 52.7,
+      "lat": 4.4634,
+      "lon": -76.8214,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thgj"
+    },
+    {
+      "id": "us7000tica",
+      "time": "2026-09-14T20:04:50.939000+00:00",
+      "magnitude": 4.4,
+      "place": "17 km SSW of Sipí, Colombia",
+      "depth_km": 71.5,
+      "lat": 4.5069,
+      "lon": -76.6921,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tica"
+    },
+    {
+      "id": "us7000thge",
+      "time": "2026-09-14T20:02:04.673000+00:00",
+      "magnitude": 4.9,
+      "place": "18 km SSW of Sipí, Colombia",
+      "depth_km": 63.6,
+      "lat": 4.5034,
+      "lon": -76.7177,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thge"
+    },
+    {
+      "id": "us7000thdw",
+      "time": "2026-09-14T14:57:10.300000+00:00",
+      "magnitude": 4.5,
+      "place": "16 km SSW of Sipí, Colombia",
+      "depth_km": 65.2,
+      "lat": 4.5173,
+      "lon": -76.6989,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thdw"
+    },
+    {
+      "id": "us7000th4s",
+      "time": "2026-09-13T07:10:28.766000+00:00",
+      "magnitude": 4.3,
+      "place": "21 km WSW of Sipí, Colombia",
+      "depth_km": 76.4,
+      "lat": 4.6073,
+      "lon": -76.8281,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000th4s"
+    },
+    {
+      "id": "us7000tgyx",
+      "time": "2026-09-12T11:16:12.322000+00:00",
+      "magnitude": 4.7,
+      "place": "26 km SSW of Sipí, Colombia",
+      "depth_km": 77.1,
+      "lat": 4.4328,
+      "lon": -76.7471,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tgyx"
+    },
+    {
+      "id": "us7000tgpu",
+      "time": "2026-09-11T16:42:31.376000+00:00",
+      "magnitude": 4.7,
+      "place": "27 km SW of Sipí, Colombia",
+      "depth_km": 68.3,
+      "lat": 4.4626,
+      "lon": -76.8003,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tgpu"
+    },
+    {
+      "id": "us7000tfql",
+      "time": "2026-09-08T02:01:34.651000+00:00",
+      "magnitude": 4.4,
+      "place": "17 km SW of Sipí, Colombia",
+      "depth_km": 71.3,
+      "lat": 4.5576,
+      "lon": -76.7752,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tfql"
+    },
+    {
+      "id": "us7000tes0",
+      "time": "2026-09-06T22:15:38.927000+00:00",
+      "magnitude": 4.4,
+      "place": "15 km SW of Sipí, Colombia",
+      "depth_km": 67.9,
+      "lat": 4.568,
+      "lon": -76.7599,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tes0"
+    },
+    {
+      "id": "us7000tdu1",
+      "time": "2026-09-03T05:17:15.307000+00:00",
+      "magnitude": 4.5,
+      "place": "29 km SSW of Sipí, Colombia",
+      "depth_km": 71.4,
+      "lat": 4.3985,
+      "lon": -76.7157,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tdu1"
+    },
+    {
+      "id": "us7000tcth",
+      "time": "2026-08-29T10:50:23.751000+00:00",
+      "magnitude": 4.5,
+      "place": "18 km SW of Sipí, Colombia",
+      "depth_km": 60.6,
+      "lat": 4.5132,
+      "lon": -76.7395,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tcth"
+    },
+    {
+      "id": "us7000tca5",
+      "time": "2026-08-27T16:21:22.850000+00:00",
+      "magnitude": 4.5,
+      "place": "11 km SSW of Sipí, Colombia",
+      "depth_km": 63.7,
+      "lat": 4.5588,
+      "lon": -76.6859,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tca5"
+    },
+    {
+      "id": "us7000tc9s",
+      "time": "2026-08-27T15:25:29.013000+00:00",
+      "magnitude": 4.7,
+      "place": "19 km SW of Sipí, Colombia",
+      "depth_km": 61.4,
+      "lat": 4.5126,
+      "lon": -76.7491,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tc9s"
+    },
+    {
+      "id": "us6000tn7y",
+      "time": "2026-08-24T18:55:28.009000+00:00",
+      "magnitude": 4.4,
+      "place": "35 km SSW of Sipí, Colombia",
+      "depth_km": 74.0,
+      "lat": 4.3503,
+      "lon": -76.7599,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tn7y"
+    },
+    {
+      "id": "us6000tn1x",
+      "time": "2026-08-24T02:41:00.522000+00:00",
+      "magnitude": 4.4,
+      "place": "27 km SW of Sipí, Colombia",
+      "depth_km": 78.3,
+      "lat": 4.4825,
+      "lon": -76.8266,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tn1x"
+    },
+    {
+      "id": "us6000tn1w",
+      "time": "2026-08-24T02:28:07.236000+00:00",
+      "magnitude": 4.2,
+      "place": "23 km SSW of Sipí, Colombia",
+      "depth_km": 86.7,
+      "lat": 4.4655,
+      "lon": -76.7355,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tn1w"
+    },
+    {
+      "id": "us6000tluk",
+      "time": "2026-08-19T10:07:16.276000+00:00",
+      "magnitude": 4.3,
+      "place": "37 km WNW of Nuquí, Colombia",
+      "depth_km": 10,
+      "lat": 5.8735,
+      "lon": -77.5719,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tluk"
+    },
+    {
+      "id": "us6000tkl4",
+      "time": "2026-08-14T03:21:46.170000+00:00",
+      "magnitude": 4.3,
+      "place": "20 km W of San José del Palmar, Colombia",
+      "depth_km": 96.7,
+      "lat": 4.9268,
+      "lon": -76.414,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkl4"
+    },
+    {
+      "id": "us6000tkha",
+      "time": "2026-08-13T14:42:32.286000+00:00",
+      "magnitude": 4.3,
+      "place": "1 km E of San José del Palmar, Colombia",
+      "depth_km": 103.4,
+      "lat": 4.8948,
+      "lon": -76.2213,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkha"
+    },
+    {
+      "id": "us6000tkql",
+      "time": "2026-08-11T22:29:34.063000+00:00",
+      "magnitude": 4.5,
+      "place": "12 km ENE of Landázuri, Colombia",
+      "depth_km": 116.7,
+      "lat": 6.2416,
+      "lon": -73.7019,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkql"
+    },
+    {
+      "id": "us6000tjzx",
+      "time": "2026-08-11T15:43:41.168000+00:00",
+      "magnitude": 4.1,
+      "place": "10 km W of San José del Palmar, Colombia",
+      "depth_km": 101.6,
+      "lat": 4.9121,
+      "lon": -76.33,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tjzx"
+    },
+    {
+      "id": "us6000tjms",
+      "time": "2026-08-10T15:01:31.472000+00:00",
+      "magnitude": 4.3,
+      "place": "18 km NW of San José del Palmar, Colombia",
+      "depth_km": 97.9,
+      "lat": 4.9924,
+      "lon": -76.3671,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tjms"
+    },
+    {
+      "id": "us6000tjm4",
+      "time": "2026-08-10T13:18:09.581000+00:00",
+      "magnitude": 5,
+      "place": "10 km WSW of San José del Palmar, Colombia",
+      "depth_km": 91.1,
+      "lat": 4.877,
+      "lon": -76.3246,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tjm4"
+    },
+    {
+      "id": "us6000tjl2",
+      "time": "2026-08-10T12:34:28.828000+00:00",
+      "magnitude": 7.4,
+      "place": "4 km SSW of San José del Palmar, Colombia",
+      "depth_km": 116.1,
+      "lat": 4.8601,
+      "lon": -76.2558,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tjl2"
+    }
+  ]
+}

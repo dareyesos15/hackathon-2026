@@ -35,11 +35,10 @@ const ALERTS_MS = 4000;
 const NO_INCIDENTS: never[] = [];
 const noop = () => {};
 
-const PANEL: Partial<Record<Role, string>> = {
-  operador_pmu: "/pmu/",
-  coe: "/pmu/",
-  agencia: "/agencia/",
+const PANEL: Record<Role, string> = {
   ciudadano: "/reportar/",
+  pmu: "/pmu/",
+  admin: "/admin/",
 };
 
 const LEYENDA = [

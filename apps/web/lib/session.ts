@@ -1,6 +1,16 @@
-/** Sesión de demo: rol + token fijo (research R9), guardados en sessionStorage del navegador. */
+/**
+ * Sesión de demo: rol + token fijo (research R9), guardados en sessionStorage del navegador.
+ *
+ * Tres roles en la interfaz:
+ * - `ciudadano`: reporta emergencias (PWA) y ve el inicio público.
+ * - `pmu` (Entidades y PMU): PMU, COE y agencias de respuesta en un solo rol. Usa el token `coe`
+ *   de la API, que además tiene los permisos del operador y de la agencia; por eso puede
+ *   aprobar alertas oficiales (EMRE tarea 5.5) y lo hecho queda en la bitácora como `coe`.
+ * - `admin`: lanza simulaciones con datos (escenario) o sin datos (tablero vacío).
+ * Sin sesión, la página de inicio consulta como `publico` (solo agregados).
+ */
 
-export type Role = "operador_pmu" | "coe" | "agencia" | "ciudadano" | "publico";
+export type Role = "ciudadano" | "pmu" | "admin";
 
 export interface Session {
   role: Role;
@@ -11,26 +21,27 @@ const KEY = "dacora.session";
 
 /** Tokens de demo (coinciden con .env.example). Solo para el prototipo. */
 export const DEMO_TOKENS: Record<Role, string> = {
-  operador_pmu: "pmu-demo",
-  coe: "coe-demo",
-  agencia: "agencia-demo",
   ciudadano: "ciudadano-demo",
-  publico: "publico-demo",
+  pmu: "coe-demo",
+  admin: "admin-demo",
 };
 
+/** Token del rol `publico` de la API, usado sin sesión (solo datos agregados). */
+export const PUBLIC_TOKEN = "publico-demo";
+
 export const ROLE_LABELS: Record<Role, string> = {
-  operador_pmu: "Operador del PMU",
-  coe: "COE",
-  agencia: "Agencia de respuesta",
   ciudadano: "Ciudadanía",
-  publico: "Público",
+  pmu: "Entidades y PMU",
+  admin: "Administrador",
 };
 
 export function getSession(): Session | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.sessionStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as Session) : null;
+    const session = raw ? (JSON.parse(raw) as Session) : null;
+    // Sesiones de roles que ya no existen (versiones anteriores de la demo) se ignoran.
+    return session && session.role in DEMO_TOKENS ? session : null;
   } catch {
     return null;
   }

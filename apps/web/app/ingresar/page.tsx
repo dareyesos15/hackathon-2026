@@ -7,26 +7,18 @@ import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { DEMO_TOKENS, ROLE_LABELS, setSession, type Role } from "@/lib/session";
 
 const DESTINO: Record<Role, { href: string; descripcion: string }> = {
-  operador_pmu: {
-    href: "/pmu/",
-    descripcion: "Mapa de daños, matriz de triaje, verificación, despacho y borradores de alerta.",
-  },
-  coe: {
-    href: "/pmu/",
-    descripcion: "Tablero del PMU y aprobación de alertas oficiales (solo el COE las emite).",
-  },
-  agencia: {
-    href: "/agencia/",
-    descripcion:
-      "Despachos asignados a su agencia: llegada, atención finalizada o fuera de servicio.",
-  },
   ciudadano: {
     href: "/reportar/",
     descripcion: "Reportar una emergencia, incluso sin señal: se envía al volver la red.",
   },
-  publico: {
-    href: "/",
-    descripcion: "Mapa de afectación por manzana, predicción de cascada e indicadores agregados.",
+  pmu: {
+    href: "/pmu/",
+    descripcion:
+      "PMU, COE y agencias de respuesta: triaje y verificación, despacho de recursos, alertas oficiales y predicción de cascada.",
+  },
+  admin: {
+    href: "/admin/",
+    descripcion: "Simulaciones de la demo: reproducir el escenario con datos o empezar sin datos.",
   },
 };
 

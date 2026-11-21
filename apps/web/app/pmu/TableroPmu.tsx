@@ -65,13 +65,14 @@ export default function TableroPmu() {
     async () => (await api.GET("/api/v1/geo/barrios")).data as unknown as FC | undefined,
   ).data;
   const [manzanas, setManzanas] = useState<FC | null>(null);
-  const token = session?.role === "operador_pmu" || session?.role === "coe" ? session.token : null;
+  const token = session?.role === "pmu" ? session.token : null;
   const live = useLiveIncidents(token);
   const kpis = kpiMap(useKpi(live.kpiRevision + Math.floor(live.revision / 10)));
   const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
   const resourcesFc = useMemo(() => resourcesToGeoJSON(live.resources.values()), [live.resources]);
   const trailsFc = useMemo(() => trailsToGeoJSON(live.trails), [live.trails]);
-  const isCoe = session?.role === "coe";
+  // Entidades y PMU incluye al COE: puede aprobar alertas oficiales.
+  const isCoe = session?.role === "pmu";
   const [tab, setTab] = useState<Tab>("triaje");
   const [activeAlerts, setActiveAlerts] = useState<FC | null>(null);
   const [draft, setDraft] = useState<AlertDraft | null>(null);
@@ -178,9 +179,7 @@ export default function TableroPmu() {
       <header className="flex flex-wrap items-stretch bg-sangre text-white">
         <div className="flex items-center gap-3 px-4 py-2">
           <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
-          <span className="text-sm text-white/75">
-            Tablero del PMU{session?.role === "coe" ? " · COE" : ""}
-          </span>
+          <span className="text-sm text-white/75">Tablero de entidades y PMU</span>
           <EtiquetaSimulado sobreOscuro />
           <span className={`rounded-sm px-2 py-0.5 text-xs font-bold ${mode.cls}`}>
             {live.mode === "en_vivo" && (
@@ -203,6 +202,12 @@ export default function TableroPmu() {
           </button>
         )}
         <nav className="ml-auto flex items-center gap-4 px-4 text-sm">
+          <Link href="/" className="underline decoration-white/40 underline-offset-4">
+            Inicio público
+          </Link>
+          <Link href="/agencia/" className="underline decoration-white/40 underline-offset-4">
+            Despachos por agencia
+          </Link>
           <Link href="/pmu/kpi/" className="underline decoration-white/40 underline-offset-4">
             Panel de KPI
           </Link>

@@ -42,7 +42,7 @@ export default function PanelAgencia() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [showClosed, setShowClosed] = useState(false);
-  const allowed = session?.role === "agencia";
+  const allowed = session?.role === "pmu";
 
   useEffect(() => {
     if (!allowed) {

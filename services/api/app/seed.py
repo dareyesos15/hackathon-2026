@@ -13,7 +13,7 @@ import logging
 
 from geoalchemy2 import WKTElement
 from shapely.geometry import shape
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import delete, func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -89,6 +89,75 @@ async def _sync_places(session: AsyncSession, rows: list[dict[str, str]]) -> Non
     log.info("Lugares del gazetteer cargados: %s", len(rows))
 
 
+# Reportes e incidentes con punto (GPS o barrio) pero sin manzana o barrio: se completan con la
+# manzana que contiene el punto. Cubre los datos previos a la corrección de GPS y las manzanas
+# desvinculadas al recargar la geografía.
+_BACKFILL_REPORTS = text(
+    """
+    UPDATE reports r
+       SET manzana_id = COALESCE(r.manzana_id, m.id),
+           barrio = CASE WHEN r.geo_precision = 'gps' THEN m.barrio
+                         ELSE COALESCE(r.barrio, m.barrio) END
+      FROM manzanas m
+     WHERE r.geom IS NOT NULL
+       AND ST_Contains(m.geom, r.geom)
+       AND (r.manzana_id IS NULL OR r.barrio IS NULL)
+    """
+)
+_BACKFILL_INCIDENTS = text(
+    """
+    UPDATE incidents i
+       SET manzana_id = COALESCE(i.manzana_id, m.id),
+           barrio = COALESCE(i.barrio, m.barrio)
+      FROM manzanas m
+     WHERE i.centroid IS NOT NULL
+       AND ST_Contains(m.geom, i.centroid)
+       AND (i.manzana_id IS NULL OR i.barrio IS NULL)
+    """
+)
+
+
+# Puntos fuera de la grilla de manzanas: barrio más cercano a menos de 1,5 km.
+_BACKFILL_NEAREST = text(
+    """
+    UPDATE reports r
+       SET barrio = (
+           SELECT p.barrio FROM places p
+            WHERE p.kind = 'barrio'
+              AND ST_DWithin(p.geom::geography, r.geom::geography, 1500)
+            ORDER BY ST_Distance(p.geom::geography, r.geom::geography)
+            LIMIT 1)
+     WHERE r.geom IS NOT NULL AND r.barrio IS NULL
+       AND EXISTS (
+           SELECT 1 FROM places p
+            WHERE p.kind = 'barrio'
+              AND ST_DWithin(p.geom::geography, r.geom::geography, 1500))
+    """
+)
+_BACKFILL_INCIDENT_FROM_REPORTS = text(
+    """
+    UPDATE incidents i
+       SET barrio = (
+           SELECT r.barrio FROM reports r
+            WHERE r.incident_id = i.id AND r.barrio IS NOT NULL
+            ORDER BY (r.geo_precision = 'gps') DESC
+            LIMIT 1)
+     WHERE i.barrio IS NULL
+       AND EXISTS (
+           SELECT 1 FROM reports r WHERE r.incident_id = i.id AND r.barrio IS NOT NULL)
+    """
+)
+
+
+async def _backfill_locations(session: AsyncSession) -> None:
+    reports = (await session.execute(_BACKFILL_REPORTS)).rowcount
+    reports += (await session.execute(_BACKFILL_NEAREST)).rowcount
+    incidents = (await session.execute(_BACKFILL_INCIDENTS)).rowcount
+    incidents += (await session.execute(_BACKFILL_INCIDENT_FROM_REPORTS)).rowcount
+    if reports or incidents:
+        log.info("Barrio/manzana completados: %s reportes, %s incidentes", reports, incidents)
+
+
 async def seed_geography(session: AsyncSession) -> None:
     geo_dir = get_settings().data_dir / "geo"
     manzanas = json.loads((geo_dir / "manzanas.geojson").read_text(encoding="utf-8"))
@@ -97,4 +166,6 @@ async def seed_geography(session: AsyncSession) -> None:
 
     await _sync_manzanas(session, manzanas["features"])
     await _sync_places(session, places)
+    await session.flush()
+    await _backfill_locations(session)
     await session.commit()

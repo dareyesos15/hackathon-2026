@@ -85,3 +85,119 @@ export const SIGNAL_LABEL: Record<string, string> = {
   evidencia: "Evidencia (foto)",
   sensor_campo: "Sensor de campo",
 };
+
+// --- Despacho, alertas y cascada (specs/002). Tipos espejo del dominio de la API. ---
+
+export type EmreFunction =
+  | "salvamento_seguridad"
+  | "salud_saneamiento"
+  | "asistencia_social"
+  | "infraestructura_servicios"
+  | "manejo_coordinacion"
+  | "logistica";
+export type ResourceType =
+  | "cuadrilla_rescate"
+  | "maquina_extincion"
+  | "ambulancia"
+  | "patrulla"
+  | "cuadrilla_tecnica"
+  | "vehiculo_logistico";
+export type ResourceStatus = "disponible" | "en_camino" | "en_sitio" | "fuera_de_servicio";
+export type DispatchStatus = "en_camino" | "en_sitio" | "finalizado" | "cancelado";
+export type IncidentDispatchStatus = "sin_despacho" | "en_camino" | "en_sitio" | "finalizado";
+export type AlertType =
+  "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
+export type AlertStatus = "borrador" | "emitida" | "rechazada" | "anulada";
+export type AlertChannel = "tablero" | "mapa_publico" | "sms_cuadrillas";
+export type CascadeLevel = "bajo" | "medio" | "alto" | "muy_alto";
+
+export const EMRE_FUNCTION_LABEL: Record<EmreFunction, string> = {
+  salvamento_seguridad: "1. Salvamento y seguridad",
+  salud_saneamiento: "2. Salud y saneamiento",
+  asistencia_social: "3. Asistencia social",
+  infraestructura_servicios: "4. Infraestructura, servicios y ambiente",
+  manejo_coordinacion: "5. Manejo y coordinación",
+  logistica: "6. Logística",
+};
+
+export const RESOURCE_TYPE_LABEL: Record<ResourceType, string> = {
+  cuadrilla_rescate: "Cuadrilla de rescate",
+  maquina_extincion: "Máquina de extinción",
+  ambulancia: "Ambulancia",
+  patrulla: "Patrulla",
+  cuadrilla_tecnica: "Cuadrilla técnica",
+  vehiculo_logistico: "Vehículo logístico",
+};
+
+export const RESOURCE_STATUS_LABEL: Record<ResourceStatus, string> = {
+  disponible: "Disponible",
+  en_camino: "En camino",
+  en_sitio: "En sitio",
+  fuera_de_servicio: "Fuera de servicio",
+};
+
+/** Colores de recursos en el mapa. */
+export const RESOURCE_STATUS_COLOR: Record<ResourceStatus, string> = {
+  disponible: "#16a34a",
+  en_camino: "#7c3aed",
+  en_sitio: "#0f766e",
+  fuera_de_servicio: "#64748b",
+};
+
+export const DISPATCH_STATUS_LABEL: Record<DispatchStatus, string> = {
+  en_camino: "En camino",
+  en_sitio: "En sitio",
+  finalizado: "Finalizado",
+  cancelado: "Cancelado",
+};
+
+export const INCIDENT_DISPATCH_LABEL: Record<IncidentDispatchStatus, string> = {
+  sin_despacho: "Sin despacho",
+  en_camino: "En camino",
+  en_sitio: "En sitio",
+  finalizado: "Atención finalizada",
+};
+
+export const ALERT_TYPE_LABEL: Record<AlertType, string> = {
+  evacuacion: "Evacuación",
+  deslizamiento: "Deslizamiento",
+  sismo_replica: "Réplica / información sísmica",
+  servicios_publicos: "Servicios públicos",
+  informacion_general: "Información general",
+};
+
+export const ALERT_STATUS_LABEL: Record<AlertStatus, string> = {
+  borrador: "Borrador",
+  emitida: "Emitida",
+  rechazada: "Rechazada",
+  anulada: "Anulada",
+};
+
+export const ALERT_CHANNEL_LABEL: Record<AlertChannel, string> = {
+  tablero: "Tablero del PMU",
+  mapa_publico: "Mapa público",
+  sms_cuadrillas: "SMS a cuadrillas en campo",
+};
+
+export const CASCADE_LEVEL_LABEL: Record<CascadeLevel, string> = {
+  bajo: "Bajo",
+  medio: "Medio",
+  alto: "Alto",
+  muy_alto: "Muy alto",
+};
+
+export const CASCADE_LEVEL_COLOR: Record<CascadeLevel, string> = {
+  bajo: "#bbf7d0",
+  medio: "#fde047",
+  alto: "#f97316",
+  muy_alto: "#7f1d1d",
+};
+
+export const CASCADE_LEVEL_ORDER: CascadeLevel[] = ["bajo", "medio", "alto", "muy_alto"];
+
+export const CASCADE_FACTOR_LABEL: Record<string, string> = {
+  pendiente: "Pendiente del terreno",
+  lluvia: "Lluvia acumulada (3 h)",
+  sismo: "Intensidad sísmica",
+  reportes_cercanos: "Reportes cercanos",
+};

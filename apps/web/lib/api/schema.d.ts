@@ -808,6 +808,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recovery/referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Referrals
+         * @description Derivaciones de la sección 6 por entidad: pendientes y atendidas.
+         */
+        get: operations["list_referrals_api_v1_recovery_referrals_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Reviews
+         * @description Formatos registrados (de un predio, o los últimos 200).
+         */
+        get: operations["list_reviews_api_v1_recovery_reviews_get"];
+        put?: never;
+        /**
+         * Post Review
+         * @description Registra un formato de revisión a predio y alimenta habitabilidad, censo y derivaciones.
+         */
+        post: operations["post_review_api_v1_recovery_reviews_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/reviews/{review_id}/referrals/{entity}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Referral
+         * @description Marca (o desmarca) la visita de una entidad derivada.
+         */
+        patch: operations["patch_referral_api_v1_recovery_reviews__review_id__referrals__entity__patch"];
+        trace?: never;
+    };
     "/api/v1/recovery/shelters": {
         parameters: {
             query?: never;
@@ -1115,6 +1179,18 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Affectation
+         * @description Sección 5: afectación del predio.
+         * @enum {string}
+         */
+        Affectation: "total" | "parcial" | "ninguna";
+        /**
+         * AffectedInfrastructure
+         * @description Sección 5: infraestructura afectada (con área en m²).
+         * @enum {string}
+         */
+        AffectedInfrastructure: "vivienda" | "vial" | "educativa" | "comunitaria";
         /** AgencyList */
         AgencyList: {
             /** Items */
@@ -1726,6 +1802,18 @@ export interface components {
          * @enum {string}
          */
         EmreFunction: "salvamento_seguridad" | "salud_saneamiento" | "asistencia_social" | "infraestructura_servicios" | "manejo_coordinacion" | "logistica";
+        /**
+         * EventStatus
+         * @description Sección 4: el evento es inminente o ya sucedió.
+         * @enum {string}
+         */
+        EventStatus: "inminente" | "sucedido";
+        /**
+         * EventType
+         * @description Sección 4: tipo de evento (el formato no trae sismo; se agrega para este evento).
+         * @enum {string}
+         */
+        EventType: "sismo" | "deslizamiento" | "incendio" | "vendaval" | "avalancha" | "inundacion" | "otro";
         /**
          * Figure
          * @description Cifra con trazabilidad (fuente, versión, fecha de corte). `None` = suprimida (k < 5).
@@ -2423,6 +2511,167 @@ export interface components {
             /** Visits */
             visits: number;
         };
+        /**
+         * PropertyReviewIn
+         * @description Formato GUE-RPD-FR-02 v4 "Revisión a predio" (Alcaldía de Manizales), en digital.
+         *
+         *     Ley 1581: los nombres, teléfonos, cédulas y fechas de nacimiento del papel NO se transcriben.
+         *     El documento del encuestado solo sirve para ligar el hogar del censo (HMAC con sal) y el del
+         *     propietario se guarda solo como HMAC. De los residentes se registran conteos.
+         */
+        PropertyReviewIn: {
+            /** Address */
+            address?: string | null;
+            affectation: components["schemas"]["Affectation"];
+            /** Affected Areas M2 */
+            affected_areas_m2?: {
+                [key: string]: number;
+            };
+            /** Belongings Loss */
+            belongings_loss?: string | null;
+            /** Cadastral Code */
+            cadastral_code?: string | null;
+            color?: components["schemas"]["InspectionColor"] | null;
+            damage_level?: components["schemas"]["DamageLevel"] | null;
+            /**
+             * Disability
+             * @default 0
+             */
+            disability: number;
+            /**
+             * Elderly
+             * @default 0
+             */
+            elderly: number;
+            /**
+             * Evacuation Recommended
+             * @default false
+             */
+            evacuation_recommended: boolean;
+            /** Event Other */
+            event_other?: string | null;
+            /** @default sucedido */
+            event_status: components["schemas"]["EventStatus"];
+            /** Event Types */
+            event_types: components["schemas"]["EventType"][];
+            /**
+             * Form Number
+             * @description N.º impreso del formato en papel
+             */
+            form_number?: string | null;
+            /** Manzana Id */
+            manzana_id?: string | null;
+            /**
+             * Minors
+             * @default 0
+             */
+            minors: number;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Notified Signed
+             * @default false
+             */
+            notified_signed: boolean;
+            /** Owner Document */
+            owner_document?: string | null;
+            /**
+             * Pets
+             * @default 0
+             */
+            pets: number;
+            /**
+             * Pregnancy
+             * @default 0
+             */
+            pregnancy: number;
+            /** Referral Other */
+            referral_other?: string | null;
+            /** Referrals */
+            referrals?: components["schemas"]["ReferralEntity"][];
+            /**
+             * Residents
+             * @default 0
+             */
+            residents: number;
+            /** Respondent Document */
+            respondent_document?: string | null;
+            respondent_relation?: components["schemas"]["RespondentRelation"] | null;
+            /**
+             * Reviewed At
+             * @description Fecha y hora del formato
+             */
+            reviewed_at?: string | null;
+            /**
+             * Reviewer Agency
+             * @default Cuerpo Oficial de Bomberos
+             */
+            reviewer_agency: string;
+            /** Structural Causes */
+            structural_causes?: components["schemas"]["StructuralCause"][];
+        };
+        /** PropertyReviewOut */
+        PropertyReviewOut: {
+            affectation: components["schemas"]["Affectation"];
+            /** Affected Areas M2 */
+            affected_areas_m2: {
+                [key: string]: number;
+            };
+            /** Barrio */
+            barrio: string | null;
+            /** Belongings Loss */
+            belongings_loss: string | null;
+            color: components["schemas"]["InspectionColor"];
+            damage_level: components["schemas"]["DamageLevel"];
+            /** Evacuation Recommended */
+            evacuation_recommended: boolean;
+            /** Event Other */
+            event_other: string | null;
+            event_status: components["schemas"]["EventStatus"];
+            /** Event Types */
+            event_types: components["schemas"]["EventType"][];
+            /** Form Number */
+            form_number: string | null;
+            /** Household Code */
+            household_code: string | null;
+            /** Household Created */
+            household_created: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Next Steps
+             * @description Qué sigue después de esta revisión
+             */
+            next_steps: string[];
+            /** Notified Signed */
+            notified_signed: boolean;
+            /** Property Id */
+            property_id: string;
+            /** Referral Other */
+            referral_other: string | null;
+            /** Referrals */
+            referrals: components["schemas"]["ReferralEntity"][];
+            /** Referrals Done */
+            referrals_done: components["schemas"]["ReferralEntity"][];
+            /** Residents */
+            residents: number;
+            respondent_relation: components["schemas"]["RespondentRelation"] | null;
+            /**
+             * Reviewed At
+             * Format: date-time
+             */
+            reviewed_at: string;
+            /** Reviewer Agency */
+            reviewer_agency: string;
+            /** Structural Causes */
+            structural_causes: components["schemas"]["StructuralCause"][];
+            suggested_color: components["schemas"]["InspectionColor"];
+            /** Visit Number */
+            visit_number: number;
+        };
         /** RainIn */
         RainIn: {
             /** Mm 3H */
@@ -2588,6 +2837,63 @@ export interface components {
             suppressed: boolean;
             /** Version */
             version: number;
+        };
+        /**
+         * ReferralEntity
+         * @description Sección 6: entidades que deben visitar el predio.
+         * @enum {string}
+         */
+        ReferralEntity: "ugr" | "corpocaldas" | "aguas_de_manizales" | "obras_publicas" | "invias" | "chec" | "invama" | "planeacion" | "infraestructura_depto" | "inspeccion_policia" | "otro";
+        /** ReferralList */
+        ReferralList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Pending */
+            pending: components["schemas"]["ReferralRow"][];
+            /** Summary */
+            summary: components["schemas"]["ReferralSummary"][];
+        };
+        /** ReferralPatch */
+        ReferralPatch: {
+            /**
+             * Done
+             * @default true
+             */
+            done: boolean;
+        };
+        /** ReferralRow */
+        ReferralRow: {
+            affectation: components["schemas"]["Affectation"];
+            /** Barrio */
+            barrio: string | null;
+            entity: components["schemas"]["ReferralEntity"];
+            /** Evacuation Recommended */
+            evacuation_recommended: boolean;
+            /** Form Number */
+            form_number: string | null;
+            /** Property Id */
+            property_id: string;
+            /**
+             * Review Id
+             * Format: uuid
+             */
+            review_id: string;
+            /**
+             * Reviewed At
+             * Format: date-time
+             */
+            reviewed_at: string;
+        };
+        /** ReferralSummary */
+        ReferralSummary: {
+            /** Done */
+            done: number;
+            entity: components["schemas"]["ReferralEntity"];
+            /** Pending */
+            pending: number;
         };
         /**
          * ReportAction
@@ -2792,6 +3098,12 @@ export interface components {
          * @enum {string}
          */
         ResourceType: "cuadrilla_rescate" | "maquina_extincion" | "ambulancia" | "patrulla" | "cuadrilla_tecnica" | "vehiculo_logistico";
+        /**
+         * RespondentRelation
+         * @description Sección 2: calidad del encuestado frente al predio.
+         * @enum {string}
+         */
+        RespondentRelation: "propietario" | "arrendatario" | "sucesion" | "otro";
         /** ReviewIn */
         ReviewIn: {
             /**
@@ -3007,6 +3319,12 @@ export interface components {
             /** Title */
             title: string;
         };
+        /**
+         * StructuralCause
+         * @description Sección 4: deterioro estructural, posible causa.
+         * @enum {string}
+         */
+        StructuralCause: "falta_mantenimiento" | "intervencion_antropica" | "evento_natural";
         /** TrackIn */
         TrackIn: {
             /**
@@ -4953,6 +5271,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PropertyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_referrals_api_v1_recovery_referrals_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_reviews_api_v1_recovery_reviews_get: {
+        parameters: {
+            query?: {
+                property_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PropertyReviewOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_review_api_v1_recovery_reviews_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PropertyReviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PropertyReviewOut"];
+                };
+            };
+            /** @description Ese N.º de formato ya fue registrado */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_referral_api_v1_recovery_reviews__review_id__referrals__entity__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+                entity: components["schemas"]["ReferralEntity"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferralPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferralSummary"];
                 };
             };
             /** @description Validation Error */

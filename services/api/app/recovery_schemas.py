@@ -8,7 +8,19 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from app.domain import AidType, DamageLevel, InspectionColor, RudStatus
+from app.domain import (
+    Affectation,
+    AffectedInfrastructure,
+    AidType,
+    DamageLevel,
+    EventStatus,
+    EventType,
+    InspectionColor,
+    ReferralEntity,
+    RespondentRelation,
+    RudStatus,
+    StructuralCause,
+)
 
 
 class PropertyRef(BaseModel):
@@ -101,6 +113,111 @@ class HouseholdCreated(BaseModel):
 class HouseholdList(BaseModel):
     items: list[HouseholdOut]
     cutoff_at: datetime
+
+
+# ---------------------------------------------------------------- revisión a predio
+
+
+class PropertyReviewIn(PropertyRef):
+    """Formato GUE-RPD-FR-02 v4 "Revisión a predio" (Alcaldía de Manizales), en digital.
+
+    Ley 1581: los nombres, teléfonos, cédulas y fechas de nacimiento del papel NO se transcriben.
+    El documento del encuestado solo sirve para ligar el hogar del censo (HMAC con sal) y el del
+    propietario se guarda solo como HMAC. De los residentes se registran conteos.
+    """
+
+    form_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º impreso del formato en papel"
+    )
+    reviewed_at: datetime | None = Field(default=None, description="Fecha y hora del formato")
+    # 2. Encuestado
+    respondent_document: str | None = Field(default=None, min_length=5, max_length=20)
+    respondent_relation: RespondentRelation | None = None
+    owner_document: str | None = Field(default=None, min_length=5, max_length=20)
+    # 3. Residentes (solo conteos)
+    residents: int = Field(default=0, ge=0, le=30)
+    minors: int = Field(default=0, ge=0, le=30)
+    elderly: int = Field(default=0, ge=0, le=30)
+    disability: int = Field(default=0, ge=0, le=30)
+    pregnancy: int = Field(default=0, ge=0, le=30)
+    pets: int = Field(default=0, ge=0, le=30)
+    # 4. Evento
+    event_status: EventStatus = EventStatus.sucedido
+    event_types: list[EventType] = Field(min_length=1)
+    event_other: str | None = Field(default=None, max_length=200)
+    structural_causes: list[StructuralCause] = Field(default_factory=list)
+    # 5. Afectación
+    affectation: Affectation
+    affected_areas_m2: dict[AffectedInfrastructure, float] = Field(default_factory=dict)
+    belongings_loss: str | None = Field(default=None, max_length=300)
+    # 6. Requiere visita
+    referrals: list[ReferralEntity] = Field(default_factory=list)
+    referral_other: str | None = Field(default=None, max_length=120)
+    # 7. Evacuación
+    evacuation_recommended: bool = False
+    # Semáforo NSR-10 (si no se envía, se usa el sugerido por la afectación)
+    color: InspectionColor | None = None
+    damage_level: DamageLevel | None = None
+    notes: str | None = Field(default=None, max_length=500)
+    reviewer_agency: str = Field(default="Cuerpo Oficial de Bomberos", max_length=80)
+    notified_signed: bool = False
+
+
+class PropertyReviewOut(BaseModel):
+    id: uuid.UUID
+    form_number: str | None
+    property_id: str
+    barrio: str | None
+    visit_number: int
+    color: InspectionColor
+    damage_level: DamageLevel
+    suggested_color: InspectionColor
+    residents: int
+    respondent_relation: RespondentRelation | None
+    event_status: EventStatus
+    event_types: list[EventType]
+    event_other: str | None
+    structural_causes: list[StructuralCause]
+    affectation: Affectation
+    affected_areas_m2: dict[str, float]
+    belongings_loss: str | None
+    referrals: list[ReferralEntity]
+    referrals_done: list[ReferralEntity]
+    referral_other: str | None
+    evacuation_recommended: bool
+    reviewed_at: datetime
+    reviewer_agency: str
+    notified_signed: bool
+    household_code: str | None
+    household_created: bool
+    next_steps: list[str] = Field(description="Qué sigue después de esta revisión")
+
+
+class ReferralRow(BaseModel):
+    review_id: uuid.UUID
+    form_number: str | None
+    property_id: str
+    barrio: str | None
+    entity: ReferralEntity
+    evacuation_recommended: bool
+    affectation: Affectation
+    reviewed_at: datetime
+
+
+class ReferralSummary(BaseModel):
+    entity: ReferralEntity
+    pending: int
+    done: int
+
+
+class ReferralList(BaseModel):
+    summary: list[ReferralSummary]
+    pending: list[ReferralRow]
+    cutoff_at: datetime
+
+
+class ReferralPatch(BaseModel):
+    done: bool = True
 
 
 class LookupIn(BaseModel):

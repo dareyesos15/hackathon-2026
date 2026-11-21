@@ -646,9 +646,30 @@ export interface paths {
         put?: never;
         /**
          * Post Aid
-         * @description Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo justificación.
+         * @description Acta de entrega. Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo
+         *     justificación. Un cupo en albergue aloja al hogar y sube la ocupación del albergue.
          */
         post: operations["post_aid_api_v1_recovery_aid_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recovery/aid/{aid_id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * End Stay
+         * @description Salida del albergue: libera los cupos del hogar (la ocupación baja sola).
+         */
+        post: operations["end_stay_api_v1_recovery_aid__aid_id__end_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1225,13 +1246,46 @@ export interface components {
             /** Name */
             name: string;
         };
-        /** AidIn */
+        /**
+         * AidIn
+         * @description Acta de entrega de ayuda humanitaria (una por entrega).
+         */
         AidIn: {
+            /**
+             * Act Number
+             * @description N.º del acta de entrega
+             */
+            act_number?: string | null;
             aid_type: components["schemas"]["AidType"];
+            /**
+             * Amount Cop
+             * @description Valor mensual del subsidio
+             */
+            amount_cop?: number | null;
+            /** Delivered By */
+            delivered_by?: string | null;
             /** Document */
             document: string;
             /** Justification */
             justification?: string | null;
+            /** Months */
+            months?: number | null;
+            /**
+             * Quantity
+             * @default 1
+             */
+            quantity: number;
+            /**
+             * Shelter Id
+             * @description Albergue de destino
+             */
+            shelter_id?: string | null;
+            /**
+             * Signed
+             * @description El jefe de hogar firmó el acta
+             * @default false
+             */
+            signed: boolean;
             /**
              * Source Fund
              * @default Fondo Municipal de Gestión del Riesgo
@@ -1250,12 +1304,20 @@ export interface components {
         };
         /** AidOut */
         AidOut: {
+            /** Act Number */
+            act_number?: string | null;
             aid_type: components["schemas"]["AidType"];
+            /** Amount Cop */
+            amount_cop?: number | null;
             /**
              * At
              * Format: date-time
              */
             at: string;
+            /** Delivered By */
+            delivered_by?: string | null;
+            /** Ended At */
+            ended_at?: string | null;
             /** Household Code */
             household_code: string;
             /**
@@ -1267,6 +1329,27 @@ export interface components {
             is_duplicate: boolean;
             /** Justification */
             justification: string | null;
+            /**
+             * Members
+             * @default 0
+             */
+            members: number;
+            /** Months */
+            months?: number | null;
+            /**
+             * Quantity
+             * @default 1
+             */
+            quantity: number;
+            /** Shelter Id */
+            shelter_id?: string | null;
+            /** Shelter Name */
+            shelter_name?: string | null;
+            /**
+             * Signed
+             * @default false
+             */
+            signed: boolean;
             /** Source Fund */
             source_fund: string;
         };
@@ -1857,13 +1940,52 @@ export interface components {
         HouseholdIn: {
             /** Address */
             address?: string | null;
+            /**
+             * Age 0 5
+             * @default 0
+             */
+            age_0_5: number;
+            /**
+             * Age 18 59
+             * @default 0
+             */
+            age_18_59: number;
+            /**
+             * Age 60 Plus
+             * @default 0
+             */
+            age_60_plus: number;
+            /**
+             * Age 6 17
+             * @default 0
+             */
+            age_6_17: number;
             /** Cadastral Code */
             cadastral_code?: string | null;
+            /**
+             * Census Form Number
+             * @description N.º de la planilla de censo
+             */
+            census_form_number?: string | null;
             /**
              * Document
              * @description Documento del jefe de hogar. Solo se usa para calcular el hash; no se guarda.
              */
             document: string;
+            /**
+             * Ethnic Members
+             * @default 0
+             */
+            ethnic_members: number;
+            /**
+             * Female Members
+             * @default 0
+             */
+            female_members: number;
+            /** @description Si no se envía, se toma del semáforo vigente del predio */
+            housing_status?: components["schemas"]["HousingStatus"] | null;
+            /** Losses */
+            losses?: components["schemas"]["HouseholdLoss"][];
             /** Manzana Id */
             manzana_id?: string | null;
             /** Members Count */
@@ -1875,6 +1997,7 @@ export interface components {
             pets_count: number;
             /** @default pendiente */
             rud_status: components["schemas"]["RudStatus"];
+            tenure?: components["schemas"]["Tenure"] | null;
             /**
              * @default {
              *       "children": false,
@@ -1895,12 +2018,40 @@ export interface components {
             /** Items */
             items: components["schemas"]["HouseholdOut"][];
         };
+        /**
+         * HouseholdLoss
+         * @description Pérdidas del hogar (RUD).
+         * @enum {string}
+         */
+        HouseholdLoss: "enseres" | "herramientas_trabajo" | "animales" | "cultivos" | "vehiculo";
         /** HouseholdOut */
         HouseholdOut: {
+            /**
+             * Age 0 5
+             * @default 0
+             */
+            age_0_5: number;
+            /**
+             * Age 18 59
+             * @default 0
+             */
+            age_18_59: number;
+            /**
+             * Age 60 Plus
+             * @default 0
+             */
+            age_60_plus: number;
+            /**
+             * Age 6 17
+             * @default 0
+             */
+            age_6_17: number;
             /** Aid Count */
             aid_count: number;
             /** Barrio */
             barrio: string | null;
+            /** Census Form Number */
+            census_form_number?: string | null;
             /**
              * Code
              * @description Prefijo corto del hash, para mostrar
@@ -1912,10 +2063,23 @@ export interface components {
              */
             created_at: string;
             /**
+             * Ethnic Members
+             * @default 0
+             */
+            ethnic_members: number;
+            /**
+             * Female Members
+             * @default 0
+             */
+            female_members: number;
+            housing_status?: components["schemas"]["HousingStatus"] | null;
+            /**
              * Id
              * Format: uuid
              */
             id: string;
+            /** Losses */
+            losses?: components["schemas"]["HouseholdLoss"][];
             /** Manzana Id */
             manzana_id: string | null;
             /** Members Count */
@@ -1925,10 +2089,22 @@ export interface components {
             /** Property Id */
             property_id: string | null;
             rud_status: components["schemas"]["RudStatus"];
+            /**
+             * Situation
+             * @description albergue, arriendo, casa o sin_solucion (vivienda hoy)
+             */
+            situation?: string | null;
+            tenure?: components["schemas"]["Tenure"] | null;
             vulnerability: components["schemas"]["Vulnerability"];
             /** Vulnerability Score */
             vulnerability_score: number;
         };
+        /**
+         * HousingStatus
+         * @description Estado de la vivienda (RUD), alineado con el semáforo NSR-10.
+         * @enum {string}
+         */
+        HousingStatus: "habitable" | "no_habitable" | "destruida";
         /** InboxItem */
         InboxItem: {
             /**
@@ -3152,6 +3328,12 @@ export interface components {
             /** Code */
             code: string;
             /**
+             * Families
+             * @description Hogares del censo alojados hoy
+             * @default 0
+             */
+            families: number;
+            /**
              * Id
              * Format: uuid
              */
@@ -3162,25 +3344,51 @@ export interface components {
             lon: number;
             /** Name */
             name: string;
+            /** Operator */
+            operator?: string | null;
             /** People */
             people: number;
             /** Pets */
             pets: number;
+            /** Services */
+            services?: components["schemas"]["ShelterService"][];
             /** Source */
             source: string;
+            /** @default abierto */
+            status: components["schemas"]["ShelterStatus"];
             /**
              * Updated At
              * Format: date-time
              */
             updated_at: string;
         };
-        /** ShelterPatch */
+        /**
+         * ShelterPatch
+         * @description Ajustes del albergue. La ocupación sube y baja sola con las entradas y salidas de hogares;
+         *     `people`/`pets` solo corrigen el conteo (p. ej. personas no censadas).
+         */
         ShelterPatch: {
+            /** Operator */
+            operator?: string | null;
             /** People */
-            people: number;
+            people?: number | null;
             /** Pets */
-            pets: number;
+            pets?: number | null;
+            /** Services */
+            services?: components["schemas"]["ShelterService"][] | null;
+            status?: components["schemas"]["ShelterStatus"] | null;
         };
+        /**
+         * ShelterService
+         * @description Servicios del alojamiento temporal (EMRE 3.2).
+         * @enum {string}
+         */
+        ShelterService: "agua" | "energia" | "banos" | "cocina" | "atencion_salud" | "zona_mascotas" | "zona_infantil";
+        /**
+         * ShelterStatus
+         * @enum {string}
+         */
+        ShelterStatus: "abierto" | "cerrado";
         /** SimulationIn */
         SimulationIn: {
             /**
@@ -3325,6 +3533,12 @@ export interface components {
          * @enum {string}
          */
         StructuralCause: "falta_mantenimiento" | "intervencion_antropica" | "evento_natural";
+        /**
+         * Tenure
+         * @description Régimen de tenencia de la vivienda (RUD).
+         * @enum {string}
+         */
+        Tenure: "propietario" | "arrendatario" | "poseedor" | "ocupante" | "otro";
         /** TrackIn */
         TrackIn: {
             /**
@@ -4951,6 +5165,44 @@ export interface operations {
         responses: {
             /** @description Successful Response */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AidOut"];
+                };
+            };
+            /** @description Ayuda repetida sin justificación o acta ya registrada */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    end_stay_api_v1_recovery_aid__aid_id__end_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                aid_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

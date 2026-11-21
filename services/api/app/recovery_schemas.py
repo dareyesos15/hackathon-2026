@@ -15,11 +15,16 @@ from app.domain import (
     DamageLevel,
     EventStatus,
     EventType,
+    HouseholdLoss,
+    HousingStatus,
     InspectionColor,
     ReferralEntity,
     RespondentRelation,
     RudStatus,
+    ShelterService,
+    ShelterStatus,
     StructuralCause,
+    Tenure,
 )
 
 
@@ -88,6 +93,21 @@ class HouseholdIn(PropertyRef):
     pets_count: int = Field(default=0, ge=0, le=30)
     rud_status: RudStatus = RudStatus.pendiente
     vulnerability: Vulnerability = Vulnerability()
+    # Campos del RUD (UNGRD): solo conteos, nunca datos de una persona (Ley 1581).
+    census_form_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º de la planilla de censo"
+    )
+    tenure: Tenure | None = None
+    housing_status: HousingStatus | None = Field(
+        default=None, description="Si no se envía, se toma del semáforo vigente del predio"
+    )
+    age_0_5: int = Field(default=0, ge=0, le=30)
+    age_6_17: int = Field(default=0, ge=0, le=30)
+    age_18_59: int = Field(default=0, ge=0, le=30)
+    age_60_plus: int = Field(default=0, ge=0, le=30)
+    female_members: int = Field(default=0, ge=0, le=30)
+    ethnic_members: int = Field(default=0, ge=0, le=30)
+    losses: list[HouseholdLoss] = Field(default_factory=list)
 
 
 class HouseholdOut(BaseModel):
@@ -103,6 +123,19 @@ class HouseholdOut(BaseModel):
     vulnerability_score: int
     aid_count: int
     created_at: datetime
+    census_form_number: str | None = None
+    tenure: Tenure | None = None
+    housing_status: HousingStatus | None = None
+    age_0_5: int = 0
+    age_6_17: int = 0
+    age_18_59: int = 0
+    age_60_plus: int = 0
+    female_members: int = 0
+    ethnic_members: int = 0
+    losses: list[HouseholdLoss] = Field(default_factory=list)
+    situation: str | None = Field(
+        default=None, description="albergue, arriendo, casa o sin_solucion (vivienda hoy)"
+    )
 
 
 class HouseholdCreated(BaseModel):
@@ -225,10 +258,21 @@ class LookupIn(BaseModel):
 
 
 class AidIn(BaseModel):
+    """Acta de entrega de ayuda humanitaria (una por entrega)."""
+
     document: str = Field(min_length=5, max_length=20)
     aid_type: AidType
     source_fund: str = Field(default="Fondo Municipal de Gestión del Riesgo", max_length=80)
     justification: str | None = Field(default=None, max_length=300)
+    act_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º del acta de entrega"
+    )
+    delivered_by: str | None = Field(default=None, max_length=80)
+    quantity: int = Field(default=1, ge=1, le=100)
+    amount_cop: float | None = Field(default=None, ge=0, description="Valor mensual del subsidio")
+    months: int | None = Field(default=None, ge=1, le=24)
+    shelter_id: uuid.UUID | None = Field(default=None, description="Albergue de destino")
+    signed: bool = Field(default=False, description="El jefe de hogar firmó el acta")
 
 
 class AidOut(BaseModel):
@@ -239,6 +283,16 @@ class AidOut(BaseModel):
     is_duplicate: bool
     justification: str | None
     at: datetime
+    act_number: str | None = None
+    delivered_by: str | None = None
+    quantity: int = 1
+    amount_cop: float | None = None
+    months: int | None = None
+    shelter_id: uuid.UUID | None = None
+    shelter_name: str | None = None
+    signed: bool = False
+    ended_at: datetime | None = None
+    members: int = 0
 
 
 class AidList(BaseModel):
@@ -258,6 +312,10 @@ class ShelterOut(BaseModel):
     lon: float
     source: str
     updated_at: datetime
+    operator: str | None = None
+    status: ShelterStatus = ShelterStatus.abierto
+    services: list[ShelterService] = Field(default_factory=list)
+    families: int = Field(default=0, description="Hogares del censo alojados hoy")
 
 
 class ShelterList(BaseModel):
@@ -266,8 +324,14 @@ class ShelterList(BaseModel):
 
 
 class ShelterPatch(BaseModel):
-    people: int = Field(ge=0)
-    pets: int = Field(ge=0)
+    """Ajustes del albergue. La ocupación sube y baja sola con las entradas y salidas de hogares;
+    `people`/`pets` solo corrigen el conteo (p. ej. personas no censadas)."""
+
+    people: int | None = Field(default=None, ge=0)
+    pets: int | None = Field(default=None, ge=0)
+    operator: str | None = Field(default=None, max_length=120)
+    status: ShelterStatus | None = None
+    services: list[ShelterService] | None = None
 
 
 class Figure(BaseModel):

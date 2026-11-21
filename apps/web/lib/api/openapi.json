@@ -101,9 +101,48 @@
         "type": "object"
       },
       "AidIn": {
+        "description": "Acta de entrega de ayuda humanitaria (una por entrega).",
         "properties": {
+          "act_number": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{1,20}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "N.º del acta de entrega",
+            "title": "Act Number"
+          },
           "aid_type": {
             "$ref": "#/components/schemas/AidType"
+          },
+          "amount_cop": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Valor mensual del subsidio",
+            "title": "Amount Cop"
+          },
+          "delivered_by": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered By"
           },
           "document": {
             "maxLength": 20,
@@ -122,6 +161,45 @@
               }
             ],
             "title": "Justification"
+          },
+          "months": {
+            "anyOf": [
+              {
+                "maximum": 24.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Months"
+          },
+          "quantity": {
+            "default": 1,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "shelter_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Albergue de destino",
+            "title": "Shelter Id"
+          },
+          "signed": {
+            "default": false,
+            "description": "El jefe de hogar firmó el acta",
+            "title": "Signed",
+            "type": "boolean"
           },
           "source_fund": {
             "default": "Fondo Municipal de Gestión del Riesgo",
@@ -161,13 +239,58 @@
       },
       "AidOut": {
         "properties": {
+          "act_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Number"
+          },
           "aid_type": {
             "$ref": "#/components/schemas/AidType"
+          },
+          "amount_cop": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Cop"
           },
           "at": {
             "format": "date-time",
             "title": "At",
             "type": "string"
+          },
+          "delivered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered By"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
           },
           "household_code": {
             "title": "Household Code",
@@ -192,6 +315,55 @@
               }
             ],
             "title": "Justification"
+          },
+          "members": {
+            "default": 0,
+            "title": "Members",
+            "type": "integer"
+          },
+          "months": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Months"
+          },
+          "quantity": {
+            "default": 1,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "shelter_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shelter Id"
+          },
+          "shelter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shelter Name"
+          },
+          "signed": {
+            "default": false,
+            "title": "Signed",
+            "type": "boolean"
           },
           "source_fund": {
             "title": "Source Fund",
@@ -1797,6 +1969,34 @@
             ],
             "title": "Address"
           },
+          "age_0_5": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 0 5",
+            "type": "integer"
+          },
+          "age_18_59": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 18 59",
+            "type": "integer"
+          },
+          "age_60_plus": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 60 Plus",
+            "type": "integer"
+          },
+          "age_6_17": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 6 17",
+            "type": "integer"
+          },
           "cadastral_code": {
             "anyOf": [
               {
@@ -1809,12 +2009,57 @@
             ],
             "title": "Cadastral Code"
           },
+          "census_form_number": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{1,20}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "N.º de la planilla de censo",
+            "title": "Census Form Number"
+          },
           "document": {
             "description": "Documento del jefe de hogar. Solo se usa para calcular el hash; no se guarda.",
             "maxLength": 20,
             "minLength": 5,
             "title": "Document",
             "type": "string"
+          },
+          "ethnic_members": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Ethnic Members",
+            "type": "integer"
+          },
+          "female_members": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Female Members",
+            "type": "integer"
+          },
+          "housing_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HousingStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si no se envía, se toma del semáforo vigente del predio"
+          },
+          "losses": {
+            "items": {
+              "$ref": "#/components/schemas/HouseholdLoss"
+            },
+            "title": "Losses",
+            "type": "array"
           },
           "manzana_id": {
             "anyOf": [
@@ -1844,6 +2089,16 @@
           "rud_status": {
             "$ref": "#/components/schemas/RudStatus",
             "default": "pendiente"
+          },
+          "tenure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tenure"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "vulnerability": {
             "$ref": "#/components/schemas/Vulnerability",
@@ -1884,8 +2139,40 @@
         "title": "HouseholdList",
         "type": "object"
       },
+      "HouseholdLoss": {
+        "description": "Pérdidas del hogar (RUD).",
+        "enum": [
+          "enseres",
+          "herramientas_trabajo",
+          "animales",
+          "cultivos",
+          "vehiculo"
+        ],
+        "title": "HouseholdLoss",
+        "type": "string"
+      },
       "HouseholdOut": {
         "properties": {
+          "age_0_5": {
+            "default": 0,
+            "title": "Age 0 5",
+            "type": "integer"
+          },
+          "age_18_59": {
+            "default": 0,
+            "title": "Age 18 59",
+            "type": "integer"
+          },
+          "age_60_plus": {
+            "default": 0,
+            "title": "Age 60 Plus",
+            "type": "integer"
+          },
+          "age_6_17": {
+            "default": 0,
+            "title": "Age 6 17",
+            "type": "integer"
+          },
           "aid_count": {
             "title": "Aid Count",
             "type": "integer"
@@ -1901,6 +2188,17 @@
             ],
             "title": "Barrio"
           },
+          "census_form_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Census Form Number"
+          },
           "code": {
             "description": "Prefijo corto del hash, para mostrar",
             "title": "Code",
@@ -1911,10 +2209,37 @@
             "title": "Created At",
             "type": "string"
           },
+          "ethnic_members": {
+            "default": 0,
+            "title": "Ethnic Members",
+            "type": "integer"
+          },
+          "female_members": {
+            "default": 0,
+            "title": "Female Members",
+            "type": "integer"
+          },
+          "housing_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HousingStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "losses": {
+            "items": {
+              "$ref": "#/components/schemas/HouseholdLoss"
+            },
+            "title": "Losses",
+            "type": "array"
           },
           "manzana_id": {
             "anyOf": [
@@ -1949,6 +2274,28 @@
           "rud_status": {
             "$ref": "#/components/schemas/RudStatus"
           },
+          "situation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "albergue, arriendo, casa o sin_solucion (vivienda hoy)",
+            "title": "Situation"
+          },
+          "tenure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tenure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "vulnerability": {
             "$ref": "#/components/schemas/Vulnerability"
           },
@@ -1973,6 +2320,16 @@
         ],
         "title": "HouseholdOut",
         "type": "object"
+      },
+      "HousingStatus": {
+        "description": "Estado de la vivienda (RUD), alineado con el semáforo NSR-10.",
+        "enum": [
+          "habitable",
+          "no_habitable",
+          "destruida"
+        ],
+        "title": "HousingStatus",
+        "type": "string"
       },
       "InboxItem": {
         "properties": {
@@ -5317,6 +5674,12 @@
             "title": "Code",
             "type": "string"
           },
+          "families": {
+            "default": 0,
+            "description": "Hogares del censo alojados hoy",
+            "title": "Families",
+            "type": "integer"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -5334,6 +5697,17 @@
             "title": "Name",
             "type": "string"
           },
+          "operator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator"
+          },
           "people": {
             "title": "People",
             "type": "integer"
@@ -5342,9 +5716,20 @@
             "title": "Pets",
             "type": "integer"
           },
+          "services": {
+            "items": {
+              "$ref": "#/components/schemas/ShelterService"
+            },
+            "title": "Services",
+            "type": "array"
+          },
           "source": {
             "title": "Source",
             "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ShelterStatus",
+            "default": "abierto"
           },
           "updated_at": {
             "format": "date-time",
@@ -5369,24 +5754,93 @@
         "type": "object"
       },
       "ShelterPatch": {
+        "description": "Ajustes del albergue. La ocupación sube y baja sola con las entradas y salidas de hogares;\n`people`/`pets` solo corrigen el conteo (p. ej. personas no censadas).",
         "properties": {
+          "operator": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator"
+          },
           "people": {
-            "minimum": 0.0,
-            "title": "People",
-            "type": "integer"
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People"
           },
           "pets": {
-            "minimum": 0.0,
-            "title": "Pets",
-            "type": "integer"
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pets"
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ShelterService"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ShelterStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
-        "required": [
-          "people",
-          "pets"
-        ],
         "title": "ShelterPatch",
         "type": "object"
+      },
+      "ShelterService": {
+        "description": "Servicios del alojamiento temporal (EMRE 3.2).",
+        "enum": [
+          "agua",
+          "energia",
+          "banos",
+          "cocina",
+          "atencion_salud",
+          "zona_mascotas",
+          "zona_infantil"
+        ],
+        "title": "ShelterService",
+        "type": "string"
+      },
+      "ShelterStatus": {
+        "enum": [
+          "abierto",
+          "cerrado"
+        ],
+        "title": "ShelterStatus",
+        "type": "string"
       },
       "SimulationIn": {
         "properties": {
@@ -5812,6 +6266,18 @@
           "evento_natural"
         ],
         "title": "StructuralCause",
+        "type": "string"
+      },
+      "Tenure": {
+        "description": "Régimen de tenencia de la vivienda (RUD).",
+        "enum": [
+          "propietario",
+          "arrendatario",
+          "poseedor",
+          "ocupante",
+          "otro"
+        ],
+        "title": "Tenure",
         "type": "string"
       },
       "TrackIn": {
@@ -8593,7 +9059,7 @@
         ]
       },
       "post": {
-        "description": "Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo justificación.",
+        "description": "Acta de entrega. Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo\njustificación. Un cupo en albergue aloja al hogar y sube la ocupación del albergue.",
         "operationId": "post_aid_api_v1_recovery_aid_post",
         "requestBody": {
           "content": {
@@ -8607,6 +9073,58 @@
         },
         "responses": {
           "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "Ayuda repetida sin justificación o acta ya registrada"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Aid",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/aid/{aid_id}/end": {
+      "post": {
+        "description": "Salida del albergue: libera los cupos del hogar (la ocupación baja sola).",
+        "operationId": "end_stay_api_v1_recovery_aid__aid_id__end_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aid_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Aid Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "content": {
               "application/json": {
                 "schema": {
@@ -8632,7 +9150,7 @@
             "HTTPBearer": []
           }
         ],
-        "summary": "Post Aid",
+        "summary": "End Stay",
         "tags": [
           "recuperación"
         ]

@@ -63,7 +63,8 @@ async def reset_demo_data(
     await session.execute(
         text(
             "TRUNCATE report_events, resource_tracks, dispatches, alert_events, alert_deliveries,"
-            " alerts, rain_readings, reports, incidents, metrics_snapshots CASCADE"
+            " alerts, rain_readings, reports, incidents, metrics_snapshots,"
+            " aid_deliveries, household_vulnerability, households, building_inspections CASCADE"
         )
     )
     # El catálogo se conserva; los recursos vuelven a su base (research R16).
@@ -72,6 +73,7 @@ async def reset_demo_data(
             "UPDATE resources SET status = 'disponible', last_geom = base_geom, last_seen_at = NULL"
         )
     )
+    await session.execute(text("UPDATE shelters SET people = 0, pets = 0, updated_at = now()"))
     await session.commit()
     cascade.invalidate()
     bus.publish("demo.reset", {})

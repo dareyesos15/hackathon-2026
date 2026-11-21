@@ -131,6 +131,10 @@ docker compose exec api python scripts/simulate_sms.py --sobre-critico   # se un
 # KPI contra la verdad del escenario (código ≠ 0 si no se cumplen las metas)
 docker compose exec api python scripts/evaluate_kpis.py
 
+# SMS reales sin internet: un celular Android con SIM conectado por USB como pasarela
+# (preparación y conexión en docs/pasarela_sms.md).
+uv run --project services/api python scripts/conectar_pasarela_sms.py --usuario <u> --clave <c>
+
 # Fuentes públicas del tablero de recuperación (USGS, SECOP II, CDIAC) — con internet, en el host.
 # Guarda copias fechadas con huella SHA-256 en data/sources/; la API las lee sin internet.
 uv run --project services/api python scripts/fetch_sources.py

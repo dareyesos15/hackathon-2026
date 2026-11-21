@@ -135,7 +135,9 @@ def compute_trust(
     breakdown: dict[str, Any] = {
         "canal": _part(channel_pts, w.channel, channel_detail),
         "fuentes_independientes": _part(
-            sources_pts, w.independent_sources, f"{independent_sources} de {sat} fuentes"
+            sources_pts,
+            w.independent_sources,
+            f"{independent_sources} fuentes (el máximo se alcanza con {sat})",
         ),
         "consistencia_fisica": _part(physical_pts, w.physical_consistency, consistency.detail),
         "precision_geografica": _part(

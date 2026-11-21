@@ -4,15 +4,16 @@
  */
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./schema";
-import { getSession } from "@/lib/session";
+import { DEMO_TOKENS, getSession } from "@/lib/session";
 
 /** Mismo origen en producción (Nginx hace proxy de /api/). En `next dev`, apuntar a la API. */
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
+/** Sin sesión, la página de inicio consulta como `publico`: solo agregados (k ≥ 5) y KPI. */
 const auth: Middleware = {
   onRequest({ request }) {
-    const session = getSession();
-    if (session) request.headers.set("Authorization", `Bearer ${session.token}`);
+    const token = getSession()?.token ?? DEMO_TOKENS.publico;
+    request.headers.set("Authorization", `Bearer ${token}`);
     return request;
   },
 };

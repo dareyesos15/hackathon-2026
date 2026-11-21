@@ -1,6 +1,84 @@
 {
   "components": {
     "schemas": {
+      "AgencyList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AgencyOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "AgencyList",
+        "type": "object"
+      },
+      "AgencyOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "emre_function": {
+            "$ref": "#/components/schemas/EmreFunction"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "resources_available": {
+            "title": "Resources Available",
+            "type": "integer"
+          },
+          "resources_total": {
+            "title": "Resources Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "emre_function",
+          "resources_available",
+          "resources_total"
+        ],
+        "title": "AgencyOut",
+        "type": "object"
+      },
+      "AgencyRef": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "AgencyRef",
+        "type": "object"
+      },
       "BatchIn": {
         "properties": {
           "items": {
@@ -82,6 +160,38 @@
         "title": "BatchOut",
         "type": "object"
       },
+      "CandidateOut": {
+        "properties": {
+          "agency_code": {
+            "title": "Agency Code",
+            "type": "string"
+          },
+          "distance_m": {
+            "title": "Distance M",
+            "type": "integer"
+          },
+          "eta_min": {
+            "title": "Eta Min",
+            "type": "number"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceOut"
+          },
+          "source": {
+            "default": "SIMULADO",
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource",
+          "agency_code",
+          "distance_m",
+          "eta_min"
+        ],
+        "title": "CandidateOut",
+        "type": "object"
+      },
       "Category": {
         "enum": [
           "personas_atrapadas",
@@ -113,6 +223,322 @@
           "lora"
         ],
         "title": "Channel",
+        "type": "string"
+      },
+      "DispatchIn": {
+        "description": "Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid).",
+        "properties": {
+          "client_uuid": {
+            "format": "uuid",
+            "title": "Client Uuid",
+            "type": "string"
+          },
+          "incident_id": {
+            "format": "uuid",
+            "title": "Incident Id",
+            "type": "string"
+          },
+          "is_reinforcement": {
+            "default": false,
+            "title": "Is Reinforcement",
+            "type": "boolean"
+          },
+          "justification": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Justification"
+          },
+          "resource_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 5,
+            "title": "Resource Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "client_uuid",
+          "incident_id",
+          "resource_ids"
+        ],
+        "title": "DispatchIn",
+        "type": "object"
+      },
+      "DispatchList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DispatchOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "DispatchList",
+        "type": "object"
+      },
+      "DispatchOut": {
+        "properties": {
+          "agency": {
+            "$ref": "#/components/schemas/AgencyRef"
+          },
+          "arrived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrived At"
+          },
+          "close_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Note"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "distance_m": {
+            "title": "Distance M",
+            "type": "integer"
+          },
+          "emre_function": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmreFunction"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eta_at": {
+            "format": "date-time",
+            "title": "Eta At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incident_id": {
+            "format": "uuid",
+            "title": "Incident Id",
+            "type": "string"
+          },
+          "is_reinforcement": {
+            "title": "Is Reinforcement",
+            "type": "boolean"
+          },
+          "justification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Justification"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceOut"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DispatchStatus"
+          },
+          "suggested": {
+            "title": "Suggested",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "incident_id",
+          "resource",
+          "agency",
+          "emre_function",
+          "suggested",
+          "is_reinforcement",
+          "justification",
+          "status",
+          "eta_at",
+          "distance_m",
+          "created_by_role",
+          "created_at",
+          "arrived_at",
+          "closed_at",
+          "close_note",
+          "source"
+        ],
+        "title": "DispatchOut",
+        "type": "object"
+      },
+      "DispatchPatchIn": {
+        "properties": {
+          "action": {
+            "enum": [
+              "llegada",
+              "finalizar",
+              "cancelar",
+              "fuera_de_servicio"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "DispatchPatchIn",
+        "type": "object"
+      },
+      "DispatchStatus": {
+        "enum": [
+          "en_camino",
+          "en_sitio",
+          "finalizado",
+          "cancelado"
+        ],
+        "title": "DispatchStatus",
+        "type": "string"
+      },
+      "DispatchSuggestion": {
+        "properties": {
+          "alternative_agencies": {
+            "items": {
+              "$ref": "#/components/schemas/AgencyRef"
+            },
+            "title": "Alternative Agencies",
+            "type": "array"
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateOut"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "emre_function": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmreFunction"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emre_function_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emre Function Label"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "suggested_agency": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgencyRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "emre_function",
+          "emre_function_label",
+          "suggested_agency",
+          "alternative_agencies",
+          "candidates",
+          "fallback_used"
+        ],
+        "title": "DispatchSuggestion",
+        "type": "object"
+      },
+      "EmreFunction": {
+        "description": "Seis funciones de respuesta de la EMRE Manizales 2024.",
+        "enum": [
+          "salvamento_seguridad",
+          "salud_saneamiento",
+          "asistencia_social",
+          "infraestructura_servicios",
+          "manejo_coordinacion",
+          "logistica"
+        ],
+        "title": "EmreFunction",
         "type": "string"
       },
       "GeoPrecision": {
@@ -168,6 +594,17 @@
       },
       "IncidentDetail": {
         "properties": {
+          "assigned_agency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned Agency"
+          },
           "barrio": {
             "anyOf": [
               {
@@ -181,6 +618,24 @@
           },
           "category": {
             "$ref": "#/components/schemas/Category"
+          },
+          "dispatch_status": {
+            "default": "sin_despacho",
+            "enum": [
+              "sin_despacho",
+              "en_camino",
+              "en_sitio",
+              "finalizado"
+            ],
+            "title": "Dispatch Status",
+            "type": "string"
+          },
+          "dispatches": {
+            "items": {
+              "$ref": "#/components/schemas/DispatchOut"
+            },
+            "title": "Dispatches",
+            "type": "array"
           },
           "events": {
             "items": {
@@ -277,6 +732,16 @@
           "status": {
             "$ref": "#/components/schemas/IncidentStatus"
           },
+          "suggestion": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DispatchSuggestion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "triage_level": {
             "$ref": "#/components/schemas/TriageLevel"
           },
@@ -291,6 +756,12 @@
           "trust_score": {
             "title": "Trust Score",
             "type": "integer"
+          },
+          "unattended": {
+            "default": false,
+            "description": "Riesgo vital sin despacho por más del umbral configurado",
+            "title": "Unattended",
+            "type": "boolean"
           },
           "updated_at": {
             "format": "date-time",
@@ -360,6 +831,17 @@
       },
       "IncidentSummary": {
         "properties": {
+          "assigned_agency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned Agency"
+          },
           "barrio": {
             "anyOf": [
               {
@@ -373,6 +855,17 @@
           },
           "category": {
             "$ref": "#/components/schemas/Category"
+          },
+          "dispatch_status": {
+            "default": "sin_despacho",
+            "enum": [
+              "sin_despacho",
+              "en_camino",
+              "en_sitio",
+              "finalizado"
+            ],
+            "title": "Dispatch Status",
+            "type": "string"
           },
           "first_seen": {
             "format": "date-time",
@@ -464,6 +957,12 @@
           "trust_score": {
             "title": "Trust Score",
             "type": "integer"
+          },
+          "unattended": {
+            "default": false,
+            "description": "Riesgo vital sin despacho por más del umbral configurado",
+            "title": "Unattended",
+            "type": "boolean"
           },
           "updated_at": {
             "format": "date-time",
@@ -636,7 +1135,13 @@
           "confirmar",
           "descartar",
           "marcar_duplicado",
-          "reabrir"
+          "reabrir",
+          "despachar",
+          "reforzar",
+          "despacho_estado",
+          "cancelar_despacho",
+          "despacho_doble_bloqueado",
+          "cerrar_atendido"
         ],
         "title": "ReportAction",
         "type": "string"
@@ -1064,6 +1569,134 @@
         "title": "ReportStatus",
         "type": "string"
       },
+      "ResourceList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "ResourceList",
+        "type": "object"
+      },
+      "ResourceOut": {
+        "properties": {
+          "active_dispatch_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Dispatch Id"
+          },
+          "agency_code": {
+            "title": "Agency Code",
+            "type": "string"
+          },
+          "agency_id": {
+            "format": "uuid",
+            "title": "Agency Id",
+            "type": "string"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen At"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResourceStatus"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ResourceType"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "label",
+          "type",
+          "status",
+          "agency_id",
+          "agency_code",
+          "lat",
+          "lon",
+          "last_seen_at",
+          "active_dispatch_id",
+          "source"
+        ],
+        "title": "ResourceOut",
+        "type": "object"
+      },
+      "ResourceStatus": {
+        "enum": [
+          "disponible",
+          "en_camino",
+          "en_sitio",
+          "fuera_de_servicio"
+        ],
+        "title": "ResourceStatus",
+        "type": "string"
+      },
+      "ResourceType": {
+        "enum": [
+          "cuadrilla_rescate",
+          "maquina_extincion",
+          "ambulancia",
+          "patrulla",
+          "cuadrilla_tecnica",
+          "vehiculo_logistico"
+        ],
+        "title": "ResourceType",
+        "type": "string"
+      },
       "ReviewIn": {
         "properties": {
           "action": {
@@ -1071,7 +1704,8 @@
               "confirmar",
               "descartar",
               "marcar_duplicado",
-              "reabrir"
+              "reabrir",
+              "cerrar_atendido"
             ],
             "title": "Action",
             "type": "string"
@@ -1244,6 +1878,142 @@
         "title": "SnapshotsIn",
         "type": "object"
       },
+      "TrackIn": {
+        "properties": {
+          "at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Hora del paso; por defecto, ahora",
+            "title": "At"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrackKind"
+          },
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          }
+        },
+        "required": [
+          "kind",
+          "lat",
+          "lon"
+        ],
+        "title": "TrackIn",
+        "type": "object"
+      },
+      "TrackKind": {
+        "enum": [
+          "salida",
+          "control",
+          "llegada",
+          "regreso",
+          "manual"
+        ],
+        "title": "TrackKind",
+        "type": "string"
+      },
+      "TrackList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TrackOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "TrackList",
+        "type": "object"
+      },
+      "TrackOrigin": {
+        "enum": [
+          "rfid_simulado",
+          "manual"
+        ],
+        "title": "TrackOrigin",
+        "type": "string"
+      },
+      "TrackOut": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "dispatch_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dispatch Id"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrackKind"
+          },
+          "lat": {
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "title": "Lon",
+            "type": "number"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/TrackOrigin"
+          },
+          "resource_id": {
+            "format": "uuid",
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "resource_id",
+          "dispatch_id",
+          "kind",
+          "origin",
+          "lat",
+          "lon",
+          "at",
+          "source"
+        ],
+        "title": "TrackOut",
+        "type": "object"
+      },
       "TriageLevel": {
         "enum": [
           "critico",
@@ -1319,9 +2089,45 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/agencies": {
+      "get": {
+        "operationId": "list_agencies_api_v1_agencies_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgencyList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Agencies",
+        "tags": [
+          "despacho"
+        ]
+      }
+    },
     "/api/v1/demo/reset": {
       "post": {
-        "description": "Borra reportes, incidentes, bitácora y métricas para volver a reproducir el escenario.\n\nConserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.",
+        "description": "Borra reportes, incidentes, despachos, alertas, lluvia, bitácora y métricas.\n\nConserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.",
         "operationId": "reset_demo_data_api_v1_demo_reset_post",
         "responses": {
           "204": {
@@ -1346,6 +2152,218 @@
         "summary": "Reset Demo Data",
         "tags": [
           "demo"
+        ]
+      }
+    },
+    "/api/v1/dispatches": {
+      "get": {
+        "operationId": "list_dispatches_api_v1_dispatches_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "incident_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Incident Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "agency_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agency Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DispatchStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Cambiados después de",
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Cambiados después de",
+              "title": "Since"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Dispatches",
+        "tags": [
+          "despacho"
+        ]
+      },
+      "post": {
+        "operationId": "post_dispatch_api_v1_dispatches_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmación repetida: despacho existente"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Dispatch",
+        "tags": [
+          "despacho"
+        ]
+      }
+    },
+    "/api/v1/dispatches/{dispatch_id}": {
+      "patch": {
+        "operationId": "patch_dispatch_api_v1_dispatches__dispatch_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dispatch_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Dispatch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchPatchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Dispatch",
+        "tags": [
+          "despacho"
         ]
       }
     },
@@ -2133,6 +3151,182 @@
         "summary": "Patch Report",
         "tags": [
           "revisión humana"
+        ]
+      }
+    },
+    "/api/v1/resources": {
+      "get": {
+        "operationId": "list_resources_api_v1_resources_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "agency_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agency Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ResourceStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Resources",
+        "tags": [
+          "despacho"
+        ]
+      }
+    },
+    "/api/v1/resources/{resource_id}/tracks": {
+      "get": {
+        "operationId": "list_tracks_api_v1_resources__resource_id__tracks_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Tracks",
+        "tags": [
+          "despacho"
+        ]
+      },
+      "post": {
+        "description": "Punto de paso manual o de un lector real (FR-008). `llegada` → despacho `en_sitio`.",
+        "operationId": "post_track_api_v1_resources__resource_id__tracks_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Track",
+        "tags": [
+          "despacho"
         ]
       }
     },

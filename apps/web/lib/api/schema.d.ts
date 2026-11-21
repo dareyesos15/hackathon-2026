@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/v1/agencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Agencies */
+        get: operations["list_agencies_api_v1_agencies_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/demo/reset": {
         parameters: {
             query?: never;
@@ -15,7 +32,7 @@ export interface paths {
         put?: never;
         /**
          * Reset Demo Data
-         * @description Borra reportes, incidentes, bitácora y métricas para volver a reproducir el escenario.
+         * @description Borra reportes, incidentes, despachos, alertas, lluvia, bitácora y métricas.
          *
          *     Conserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.
          */
@@ -24,6 +41,41 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dispatches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dispatches */
+        get: operations["list_dispatches_api_v1_dispatches_get"];
+        put?: never;
+        /** Post Dispatch */
+        post: operations["post_dispatch_api_v1_dispatches_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dispatches/{dispatch_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Dispatch */
+        patch: operations["patch_dispatch_api_v1_dispatches__dispatch_id__patch"];
         trace?: never;
     };
     "/api/v1/geo/barrios": {
@@ -240,6 +292,44 @@ export interface paths {
         patch: operations["patch_report_api_v1_reports__report_id__patch"];
         trace?: never;
     };
+    "/api/v1/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Resources */
+        get: operations["list_resources_api_v1_resources_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/resources/{resource_id}/tracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tracks */
+        get: operations["list_tracks_api_v1_resources__resource_id__tracks_get"];
+        put?: never;
+        /**
+         * Post Track
+         * @description Punto de paso manual o de un lector real (FR-008). `llegada` → despacho `en_sitio`.
+         */
+        post: operations["post_track_api_v1_resources__resource_id__tracks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/stream": {
         parameters: {
             query?: never;
@@ -261,6 +351,40 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AgencyList */
+        AgencyList: {
+            /** Items */
+            items: components["schemas"]["AgencyOut"][];
+        };
+        /** AgencyOut */
+        AgencyOut: {
+            /** Code */
+            code: string;
+            emre_function: components["schemas"]["EmreFunction"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Resources Available */
+            resources_available: number;
+            /** Resources Total */
+            resources_total: number;
+        };
+        /** AgencyRef */
+        AgencyRef: {
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+        };
         /** BatchIn */
         BatchIn: {
             /** Items */
@@ -288,6 +412,21 @@ export interface components {
             /** Results */
             results: components["schemas"]["BatchItemResult"][];
         };
+        /** CandidateOut */
+        CandidateOut: {
+            /** Agency Code */
+            agency_code: string;
+            /** Distance M */
+            distance_m: number;
+            /** Eta Min */
+            eta_min: number;
+            resource: components["schemas"]["ResourceOut"];
+            /**
+             * Source
+             * @default SIMULADO
+             */
+            source: string;
+        };
         /**
          * Category
          * @enum {string}
@@ -298,6 +437,119 @@ export interface components {
          * @enum {string}
          */
         Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "entity" | "lora";
+        /**
+         * DispatchIn
+         * @description Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid).
+         */
+        DispatchIn: {
+            /**
+             * Client Uuid
+             * Format: uuid
+             */
+            client_uuid: string;
+            /**
+             * Incident Id
+             * Format: uuid
+             */
+            incident_id: string;
+            /**
+             * Is Reinforcement
+             * @default false
+             */
+            is_reinforcement: boolean;
+            /** Justification */
+            justification?: string | null;
+            /** Resource Ids */
+            resource_ids: string[];
+        };
+        /** DispatchList */
+        DispatchList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["DispatchOut"][];
+        };
+        /** DispatchOut */
+        DispatchOut: {
+            agency: components["schemas"]["AgencyRef"];
+            /** Arrived At */
+            arrived_at: string | null;
+            /** Close Note */
+            close_note: string | null;
+            /** Closed At */
+            closed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by_role: components["schemas"]["Role"];
+            /** Distance M */
+            distance_m: number;
+            emre_function: components["schemas"]["EmreFunction"] | null;
+            /**
+             * Eta At
+             * Format: date-time
+             */
+            eta_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Incident Id
+             * Format: uuid
+             */
+            incident_id: string;
+            /** Is Reinforcement */
+            is_reinforcement: boolean;
+            /** Justification */
+            justification: string | null;
+            resource: components["schemas"]["ResourceOut"];
+            /** Source */
+            source: string;
+            status: components["schemas"]["DispatchStatus"];
+            /** Suggested */
+            suggested: boolean;
+        };
+        /** DispatchPatchIn */
+        DispatchPatchIn: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "llegada" | "finalizar" | "cancelar" | "fuera_de_servicio";
+            /** Note */
+            note?: string | null;
+        };
+        /**
+         * DispatchStatus
+         * @enum {string}
+         */
+        DispatchStatus: "en_camino" | "en_sitio" | "finalizado" | "cancelado";
+        /** DispatchSuggestion */
+        DispatchSuggestion: {
+            /** Alternative Agencies */
+            alternative_agencies: components["schemas"]["AgencyRef"][];
+            /** Candidates */
+            candidates: components["schemas"]["CandidateOut"][];
+            emre_function: components["schemas"]["EmreFunction"] | null;
+            /** Emre Function Label */
+            emre_function_label: string | null;
+            /** Fallback Used */
+            fallback_used: boolean;
+            suggested_agency: components["schemas"]["AgencyRef"] | null;
+        };
+        /**
+         * EmreFunction
+         * @description Seis funciones de respuesta de la EMRE Manizales 2024.
+         * @enum {string}
+         */
+        EmreFunction: "salvamento_seguridad" | "salud_saneamiento" | "asistencia_social" | "infraestructura_servicios" | "manejo_coordinacion" | "logistica";
         /**
          * GeoPrecision
          * @enum {string}
@@ -321,9 +573,19 @@ export interface components {
         };
         /** IncidentDetail */
         IncidentDetail: {
+            /** Assigned Agency */
+            assigned_agency?: string | null;
             /** Barrio */
             barrio: string | null;
             category: components["schemas"]["Category"];
+            /**
+             * Dispatch Status
+             * @default sin_despacho
+             * @enum {string}
+             */
+            dispatch_status: "sin_despacho" | "en_camino" | "en_sitio" | "finalizado";
+            /** Dispatches */
+            dispatches?: components["schemas"]["DispatchOut"][];
             /** Events */
             events: components["schemas"]["ReportEventOut"][];
             /**
@@ -361,6 +623,7 @@ export interface components {
             /** Source */
             source: string;
             status: components["schemas"]["IncidentStatus"];
+            suggestion?: components["schemas"]["DispatchSuggestion"] | null;
             triage_level: components["schemas"]["TriageLevel"];
             /** Trust Breakdown */
             trust_breakdown: {
@@ -369,6 +632,12 @@ export interface components {
             trust_label: components["schemas"]["TrustLabel"];
             /** Trust Score */
             trust_score: number;
+            /**
+             * Unattended
+             * @description Riesgo vital sin despacho por más del umbral configurado
+             * @default false
+             */
+            unattended: boolean;
             /**
              * Updated At
              * Format: date-time
@@ -392,9 +661,17 @@ export interface components {
         IncidentStatus: "abierto" | "en_revision" | "verificado" | "descartado" | "atendido";
         /** IncidentSummary */
         IncidentSummary: {
+            /** Assigned Agency */
+            assigned_agency?: string | null;
             /** Barrio */
             barrio: string | null;
             category: components["schemas"]["Category"];
+            /**
+             * Dispatch Status
+             * @default sin_despacho
+             * @enum {string}
+             */
+            dispatch_status: "sin_despacho" | "en_camino" | "en_sitio" | "finalizado";
             /**
              * First Seen
              * Format: date-time
@@ -432,6 +709,12 @@ export interface components {
             trust_label: components["schemas"]["TrustLabel"];
             /** Trust Score */
             trust_score: number;
+            /**
+             * Unattended
+             * @description Riesgo vital sin despacho por más del umbral configurado
+             * @default false
+             */
+            unattended: boolean;
             /**
              * Updated At
              * Format: date-time
@@ -500,7 +783,7 @@ export interface components {
          * ReportAction
          * @enum {string}
          */
-        ReportAction: "ingerido" | "agrupado" | "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
+        ReportAction: "ingerido" | "agrupado" | "confirmar" | "descartar" | "marcar_duplicado" | "reabrir" | "despachar" | "reforzar" | "despacho_estado" | "cancelar_despacho" | "despacho_doble_bloqueado" | "cerrar_atendido";
         /** ReportEventOut */
         ReportEventOut: {
             action: components["schemas"]["ReportAction"];
@@ -648,13 +931,64 @@ export interface components {
          * @enum {string}
          */
         ReportStatus: "nuevo" | "en_revision" | "verificado" | "descartado" | "duplicado" | "atendido";
+        /** ResourceList */
+        ResourceList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["ResourceOut"][];
+        };
+        /** ResourceOut */
+        ResourceOut: {
+            /** Active Dispatch Id */
+            active_dispatch_id: string | null;
+            /** Agency Code */
+            agency_code: string;
+            /**
+             * Agency Id
+             * Format: uuid
+             */
+            agency_id: string;
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
+            /** Last Seen At */
+            last_seen_at: string | null;
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Source */
+            source: string;
+            status: components["schemas"]["ResourceStatus"];
+            type: components["schemas"]["ResourceType"];
+        };
+        /**
+         * ResourceStatus
+         * @enum {string}
+         */
+        ResourceStatus: "disponible" | "en_camino" | "en_sitio" | "fuera_de_servicio";
+        /**
+         * ResourceType
+         * @enum {string}
+         */
+        ResourceType: "cuadrilla_rescate" | "maquina_extincion" | "ambulancia" | "patrulla" | "cuadrilla_tecnica" | "vehiculo_logistico";
         /** ReviewIn */
         ReviewIn: {
             /**
              * Action
              * @enum {string}
              */
-            action: "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
+            action: "confirmar" | "descartar" | "marcar_duplicado" | "reabrir" | "cerrar_atendido";
             /** Duplicate Of Incident */
             duplicate_of_incident?: string | null;
             /** Note */
@@ -708,6 +1042,62 @@ export interface components {
             /** Items */
             items: components["schemas"]["SnapshotIn"][];
         };
+        /** TrackIn */
+        TrackIn: {
+            /**
+             * At
+             * @description Hora del paso; por defecto, ahora
+             */
+            at?: string | null;
+            kind: components["schemas"]["TrackKind"];
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+        };
+        /**
+         * TrackKind
+         * @enum {string}
+         */
+        TrackKind: "salida" | "control" | "llegada" | "regreso" | "manual";
+        /** TrackList */
+        TrackList: {
+            /** Items */
+            items: components["schemas"]["TrackOut"][];
+        };
+        /**
+         * TrackOrigin
+         * @enum {string}
+         */
+        TrackOrigin: "rfid_simulado" | "manual";
+        /** TrackOut */
+        TrackOut: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Dispatch Id */
+            dispatch_id: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["TrackKind"];
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            origin: components["schemas"]["TrackOrigin"];
+            /**
+             * Resource Id
+             * Format: uuid
+             */
+            resource_id: string;
+            /** Source */
+            source: string;
+        };
         /**
          * TriageLevel
          * @enum {string}
@@ -740,6 +1130,35 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_agencies_api_v1_agencies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgencyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     reset_demo_data_api_v1_demo_reset_post: {
         parameters: {
             query?: never;
@@ -755,6 +1174,116 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dispatches_api_v1_dispatches_get: {
+        parameters: {
+            query?: {
+                incident_id?: string | null;
+                agency_id?: string | null;
+                status?: components["schemas"]["DispatchStatus"] | null;
+                /** @description Cambiados después de */
+                since?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DispatchList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_dispatch_api_v1_dispatches_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DispatchIn"];
+            };
+        };
+        responses: {
+            /** @description Confirmación repetida: despacho existente */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DispatchList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_dispatch_api_v1_dispatches__dispatch_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dispatch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DispatchPatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DispatchOut"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -1192,6 +1721,104 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_resources_api_v1_resources_get: {
+        parameters: {
+            query?: {
+                agency_id?: string | null;
+                status?: components["schemas"]["ResourceStatus"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_tracks_api_v1_resources__resource_id__tracks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrackList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_track_api_v1_resources__resource_id__tracks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resource_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrackIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrackOut"];
                 };
             };
             /** @description Validation Error */

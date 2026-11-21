@@ -11,11 +11,17 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.domain import (
     Category,
     Channel,
+    DispatchStatus,
+    EmreFunction,
     GeoPrecision,
     IncidentStatus,
     ReportAction,
     ReportStatus,
+    ResourceStatus,
+    ResourceType,
     Role,
+    TrackKind,
+    TrackOrigin,
     TriageLevel,
     TrustLabel,
 )
@@ -60,7 +66,7 @@ class BatchIn(BaseModel):
 
 
 class ReviewIn(BaseModel):
-    action: Literal["confirmar", "descartar", "marcar_duplicado", "reabrir"]
+    action: Literal["confirmar", "descartar", "marcar_duplicado", "reabrir", "cerrar_atendido"]
     duplicate_of_incident: uuid.UUID | None = None
     note: str | None = Field(default=None, max_length=500)
 
@@ -115,6 +121,12 @@ class IncidentSummary(BaseModel):
     geo_precision: GeoPrecision
     updated_at: datetime
     source: str
+    # Despacho (specs/002): derivados del despacho más reciente no cancelado.
+    dispatch_status: Literal["sin_despacho", "en_camino", "en_sitio", "finalizado"] = "sin_despacho"
+    assigned_agency: str | None = None
+    unattended: bool = Field(
+        default=False, description="Riesgo vital sin despacho por más del umbral configurado"
+    )
 
 
 class ReportEventOut(BaseModel):
@@ -127,10 +139,131 @@ class ReportEventOut(BaseModel):
     at: datetime
 
 
+# ---------------------------------------------------------------- despacho (specs/002 US1)
+
+
+class AgencyRef(BaseModel):
+    id: uuid.UUID
+    code: str
+    name: str
+
+
+class AgencyOut(AgencyRef):
+    emre_function: EmreFunction
+    resources_available: int
+    resources_total: int
+
+
+class AgencyList(BaseModel):
+    items: list[AgencyOut]
+
+
+class ResourceOut(BaseModel):
+    id: uuid.UUID
+    code: str
+    label: str
+    type: ResourceType
+    status: ResourceStatus
+    agency_id: uuid.UUID
+    agency_code: str
+    lat: float
+    lon: float
+    last_seen_at: datetime | None
+    active_dispatch_id: uuid.UUID | None
+    source: str
+
+
+class ResourceList(BaseModel):
+    items: list[ResourceOut]
+    cutoff_at: datetime
+
+
+class TrackIn(BaseModel):
+    kind: TrackKind
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    at: datetime | None = Field(default=None, description="Hora del paso; por defecto, ahora")
+
+
+class TrackOut(BaseModel):
+    id: uuid.UUID
+    resource_id: uuid.UUID
+    dispatch_id: uuid.UUID | None
+    kind: TrackKind
+    origin: TrackOrigin
+    lat: float
+    lon: float
+    at: datetime
+    source: str
+
+
+class TrackList(BaseModel):
+    items: list[TrackOut]
+
+
+class DispatchIn(BaseModel):
+    """Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid)."""
+
+    client_uuid: uuid.UUID
+    incident_id: uuid.UUID
+    resource_ids: list[uuid.UUID] = Field(max_length=5)
+    is_reinforcement: bool = False
+    justification: str | None = Field(default=None, max_length=500)
+
+
+class DispatchPatchIn(BaseModel):
+    action: Literal["llegada", "finalizar", "cancelar", "fuera_de_servicio"]
+    note: str | None = Field(default=None, max_length=500)
+
+
+class DispatchOut(BaseModel):
+    id: uuid.UUID
+    incident_id: uuid.UUID
+    resource: ResourceOut
+    agency: AgencyRef
+    emre_function: EmreFunction | None
+    suggested: bool
+    is_reinforcement: bool
+    justification: str | None
+    status: DispatchStatus
+    eta_at: datetime
+    distance_m: int
+    created_by_role: Role
+    created_at: datetime
+    arrived_at: datetime | None
+    closed_at: datetime | None
+    close_note: str | None
+    source: str
+
+
+class DispatchList(BaseModel):
+    items: list[DispatchOut]
+    cutoff_at: datetime
+
+
+class CandidateOut(BaseModel):
+    resource: ResourceOut
+    agency_code: str
+    distance_m: int
+    eta_min: float
+    source: str = "SIMULADO"
+
+
+class DispatchSuggestion(BaseModel):
+    emre_function: EmreFunction | None
+    emre_function_label: str | None
+    suggested_agency: AgencyRef | None
+    alternative_agencies: list[AgencyRef]
+    candidates: list[CandidateOut]
+    fallback_used: bool
+
+
 class IncidentDetail(IncidentSummary):
     trust_breakdown: dict[str, Any]
     reports: list[ReportOut]
     events: list[ReportEventOut]
+    dispatches: list[DispatchOut] = Field(default_factory=list)
+    suggestion: DispatchSuggestion | None = None
 
 
 class ReportResult(BaseModel):

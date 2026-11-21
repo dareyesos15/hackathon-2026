@@ -1,5 +1,6 @@
 """Dacora API (servicio principal `api`). REST bajo /api/v1; contrato en /openapi.json."""
 
+import asyncio
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -11,9 +12,20 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import text
 
+from app.adapters.tracks import SimulatedRfidFeed
 from app.config import get_settings
 from app.db import SessionLocal
-from app.routers import demo, incidents, ingest, map, metrics, reports, review, stream
+from app.routers import (
+    demo,
+    dispatch,
+    incidents,
+    ingest,
+    map,
+    metrics,
+    reports,
+    review,
+    stream,
+)
 from app.seed import seed_catalog, seed_geography
 from app.state import load_state
 
@@ -29,8 +41,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await seed_geography(session)
         await seed_catalog(session)
         await load_state(session)
-    log.info("Dacora API lista (similitud: %s)", get_settings().similarity_provider)
+    settings = get_settings()
+    log.info("Dacora API lista (similitud: %s)", settings.similarity_provider)
+    feed_task: asyncio.Task[None] | None = None
+    if settings.simulate_tracks:
+        feed = SimulatedRfidFeed(
+            SessionLocal,
+            dispatch.publish_track,
+            tick_s=settings.track_tick_s,
+            speedup=settings.track_speedup,
+        )
+        feed_task = asyncio.create_task(feed.run())
     yield
+    if feed_task is not None:
+        feed_task.cancel()
 
 
 app = FastAPI(
@@ -94,5 +118,5 @@ async def health() -> Health:
 
 
 app.include_router(health_router, prefix=API_PREFIX)
-for module in (ingest, reports, incidents, review, map, stream, metrics, demo):
+for module in (ingest, reports, incidents, review, dispatch, map, stream, metrics, demo):
     app.include_router(module.router, prefix=API_PREFIX)

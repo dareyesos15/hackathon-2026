@@ -9,12 +9,34 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import case, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.adapters.routing import build_routing
 from app.auth import require_role
+from app.config import get_settings
+from app.core.dispatch import suggest
 from app.db import get_session
-from app.domain import Category, IncidentStatus, Role, TriageLevel, TrustLabel
-from app.models import Incident, Report, ReportEvent
-from app.schemas import IncidentDetail, IncidentList
-from app.serializers import events_out, incidents_out, reports_out
+from app.domain import (
+    EMRE_FUNCTION_LABEL,
+    Category,
+    IncidentStatus,
+    Role,
+    TriageLevel,
+    TrustLabel,
+)
+from app.models import Agency, Dispatch, Incident, Report, ReportEvent, Resource
+from app.schemas import (
+    AgencyRef,
+    CandidateOut,
+    DispatchSuggestion,
+    IncidentDetail,
+    IncidentList,
+)
+from app.serializers import (
+    dispatches_out,
+    events_out,
+    incidents_out,
+    reports_out,
+    resources_out,
+)
 
 router = APIRouter(prefix="/incidents", tags=["incidentes"])
 
@@ -57,6 +79,48 @@ async def list_incidents(
     return IncidentList(items=await incidents_out(session, rows), cutoff_at=cutoff)
 
 
+def _ref(agency: Agency | None) -> AgencyRef | None:
+    return AgencyRef(id=agency.id, code=agency.code, name=agency.name) if agency else None
+
+
+async def suggestion_out(session: AsyncSession, incident: Incident) -> DispatchSuggestion:
+    """Función EMRE, agencia sugerida y candidatos por cercanía (FR-001, FR-003)."""
+    found = await suggest(session, incident, build_routing(get_settings()))
+    resources = await resources_out(
+        session,
+        [
+            r
+            for r in (
+                await session.execute(
+                    select(Resource).where(
+                        Resource.id.in_([c.resource.id for c in found.candidates])
+                    )
+                )
+            ).scalars()
+        ],
+    )
+    by_id = {r.id: r for r in resources}
+    return DispatchSuggestion(
+        emre_function=found.emre_function,
+        emre_function_label=EMRE_FUNCTION_LABEL[found.emre_function]
+        if found.emre_function
+        else None,
+        suggested_agency=_ref(found.suggested_agency),
+        alternative_agencies=[a for a in (_ref(x) for x in found.alternatives) if a],
+        candidates=[
+            CandidateOut(
+                resource=by_id[c.resource.id],
+                agency_code=c.resource.agency_code,
+                distance_m=round(c.distance_m),
+                eta_min=round(c.eta_min, 1),
+            )
+            for c in found.candidates
+            if c.resource.id in by_id
+        ],
+        fallback_used=found.fallback_used,
+    )
+
+
 async def incident_detail(session: AsyncSession, incident: Incident) -> IncidentDetail:
     summary = (await incidents_out(session, [incident]))[0]
     reports = list(
@@ -75,11 +139,22 @@ async def incident_detail(session: AsyncSession, incident: Incident) -> Incident
             )
         ).scalars()
     )
+    dispatches = list(
+        (
+            await session.execute(
+                select(Dispatch)
+                .where(Dispatch.incident_id == incident.id)
+                .order_by(Dispatch.created_at)
+            )
+        ).scalars()
+    )
     return IncidentDetail(
         **summary.model_dump(),
         trust_breakdown=incident.trust_breakdown,
         reports=await reports_out(session, reports),
         events=events_out(events),
+        dispatches=await dispatches_out(session, dispatches),
+        suggestion=await suggestion_out(session, incident),
     )
 
 

@@ -86,25 +86,19 @@ export const SIGNAL_LABEL: Record<string, string> = {
   sensor_campo: "Sensor de campo",
 };
 
-// --- Despacho, alertas y cascada (specs/002). Tipos espejo del dominio de la API. ---
+// --- Despacho, alertas y cascada (specs/002). Tipos generados desde el OpenAPI. ---
 
-export type EmreFunction =
-  | "salvamento_seguridad"
-  | "salud_saneamiento"
-  | "asistencia_social"
-  | "infraestructura_servicios"
-  | "manejo_coordinacion"
-  | "logistica";
-export type ResourceType =
-  | "cuadrilla_rescate"
-  | "maquina_extincion"
-  | "ambulancia"
-  | "patrulla"
-  | "cuadrilla_tecnica"
-  | "vehiculo_logistico";
-export type ResourceStatus = "disponible" | "en_camino" | "en_sitio" | "fuera_de_servicio";
-export type DispatchStatus = "en_camino" | "en_sitio" | "finalizado" | "cancelado";
-export type IncidentDispatchStatus = "sin_despacho" | "en_camino" | "en_sitio" | "finalizado";
+export type EmreFunction = components["schemas"]["EmreFunction"];
+export type ResourceType = components["schemas"]["ResourceType"];
+export type ResourceStatus = components["schemas"]["ResourceStatus"];
+export type DispatchStatus = components["schemas"]["DispatchStatus"];
+export type IncidentDispatchStatus = IncidentSummary["dispatch_status"];
+export type ResourceOut = components["schemas"]["ResourceOut"];
+export type DispatchOut = components["schemas"]["DispatchOut"];
+export type DispatchSuggestion = components["schemas"]["DispatchSuggestion"];
+export type TrackOut = components["schemas"]["TrackOut"];
+export type AgencyOut = components["schemas"]["AgencyOut"];
+// Alertas y cascada: espejo del dominio hasta que sus esquemas existan en el contrato.
 export type AlertType =
   "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
 export type AlertStatus = "borrador" | "emitida" | "rechazada" | "anulada";

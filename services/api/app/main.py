@@ -14,7 +14,7 @@ from sqlalchemy import text
 from app.config import get_settings
 from app.db import SessionLocal
 from app.routers import demo, incidents, ingest, map, metrics, reports, review, stream
-from app.seed import seed_geography
+from app.seed import seed_catalog, seed_geography
 from app.state import load_state
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -27,6 +27,7 @@ API_PREFIX = "/api/v1"
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     async with SessionLocal() as session:
         await seed_geography(session)
+        await seed_catalog(session)
         await load_state(session)
     log.info("Dacora API lista (similitud: %s)", get_settings().similarity_provider)
     yield

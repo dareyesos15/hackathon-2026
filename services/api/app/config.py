@@ -55,6 +55,9 @@ class Settings(BaseSettings):
     dedup: DedupSettings = DedupSettings()
     trust: TrustWeights = TrustWeights()
 
+    # Habilita utilidades de demo (reinicio del escenario). Nunca en producción.
+    demo_mode: bool = True
+
     # Agregación pública por manzana (principio I).
     k_anonymity: int = 5
 

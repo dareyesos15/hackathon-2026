@@ -21,6 +21,129 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Alerts */
+        get: operations["list_alerts_api_v1_alerts_get"];
+        put?: never;
+        /** Post Alert */
+        post: operations["post_alert_api_v1_alerts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Active Alerts
+         * @description Alertas emitidas como GeoJSON. El público solo ve las del mapa público y sin detalles.
+         */
+        get: operations["active_alerts_api_v1_alerts_active_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alert_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Alert */
+        patch: operations["patch_alert_api_v1_alerts__alert_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/alerts/{alert_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve */
+        post: operations["approve_api_v1_alerts__alert_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alert_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel */
+        post: operations["cancel_api_v1_alerts__alert_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alert_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Alert Events */
+        get: operations["alert_events_api_v1_alerts__alert_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/alerts/{alert_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject */
+        post: operations["reject_api_v1_alerts__alert_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/demo/reset": {
         parameters: {
             query?: never;
@@ -204,6 +327,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/map/cascade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cascade Layer
+         * @description GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).
+         */
+        get: operations["cascade_layer_api_v1_map_cascade_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/map/manzanas": {
         parameters: {
             query?: never;
@@ -330,6 +473,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sensors/rain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post Rain */
+        post: operations["post_rain_api_v1_sensors_rain_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sensors/rain/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Latest Rain */
+        get: operations["get_latest_rain_api_v1_sensors_rain_latest_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/stream": {
         parameters: {
             query?: never;
@@ -385,6 +562,174 @@ export interface components {
             /** Name */
             name: string;
         };
+        /**
+         * AlertAction
+         * @enum {string}
+         */
+        AlertAction: "crear" | "editar" | "confirmar_desinformacion" | "aprobar" | "rechazar" | "anular" | "aprobacion_conflicto";
+        /**
+         * AlertAreaIn
+         * @description Uno o más barrios, o un círculo marcado en el mapa (research R8).
+         */
+        AlertAreaIn: {
+            /** Barrios */
+            barrios?: string[] | null;
+            circle?: components["schemas"]["CircleIn"] | null;
+        };
+        /** AlertCancelIn */
+        AlertCancelIn: {
+            /** Reason */
+            reason: string;
+        };
+        /**
+         * AlertChannel
+         * @enum {string}
+         */
+        AlertChannel: "tablero" | "mapa_publico" | "sms_cuadrillas";
+        /** AlertDecisionIn */
+        AlertDecisionIn: {
+            /** Reason */
+            reason?: string | null;
+            /** Version */
+            version: number;
+        };
+        /** AlertEventList */
+        AlertEventList: {
+            /** Items */
+            items: components["schemas"]["AlertEventOut"][];
+        };
+        /** AlertEventOut */
+        AlertEventOut: {
+            action: components["schemas"]["AlertAction"];
+            actor_role: components["schemas"]["Role"];
+            /** Alert Version */
+            alert_version: number;
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+        };
+        /** AlertIn */
+        AlertIn: {
+            area: components["schemas"]["AlertAreaIn"];
+            /** Channels */
+            channels: components["schemas"]["AlertChannel"][];
+            /**
+             * Confirm Misinformation
+             * @default false
+             */
+            confirm_misinformation: boolean;
+            /** Message */
+            message: string;
+            /** Origin Incident Id */
+            origin_incident_id?: string | null;
+            /** Origin Manzana Id */
+            origin_manzana_id?: string | null;
+            type: components["schemas"]["AlertType"];
+        };
+        /** AlertList */
+        AlertList: {
+            /**
+             * Cutoff At
+             * Format: date-time
+             */
+            cutoff_at: string;
+            /** Items */
+            items: components["schemas"]["AlertOut"][];
+        };
+        /** AlertOut */
+        AlertOut: {
+            approved_by_role: components["schemas"]["Role"] | null;
+            /**
+             * Area
+             * @description GeoJSON MultiPolygon
+             */
+            area: {
+                [key: string]: unknown;
+            };
+            /** Area Barrios */
+            area_barrios: string[];
+            /** Area Circle */
+            area_circle: {
+                [key: string]: number;
+            } | null;
+            /** Channels */
+            channels: components["schemas"]["AlertChannel"][];
+            /** Close Reason */
+            close_reason: string | null;
+            /** Closed At */
+            closed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by_role: components["schemas"]["Role"];
+            /** Deliveries */
+            deliveries: components["schemas"]["DeliveryOut"][];
+            /** Emitted At */
+            emitted_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Message */
+            message: string;
+            /** Misinfo Signals */
+            misinfo_signals: string[];
+            /** Origin Incident Id */
+            origin_incident_id: string | null;
+            /** Origin Manzana Id */
+            origin_manzana_id: string | null;
+            /** Source */
+            source: string;
+            status: components["schemas"]["AlertStatus"];
+            type: components["schemas"]["AlertType"];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Version */
+            version: number;
+        };
+        /** AlertPatchIn */
+        AlertPatchIn: {
+            area?: components["schemas"]["AlertAreaIn"] | null;
+            /** Channels */
+            channels?: components["schemas"]["AlertChannel"][] | null;
+            /**
+             * Confirm Misinformation
+             * @default false
+             */
+            confirm_misinformation: boolean;
+            /** Message */
+            message?: string | null;
+            type?: components["schemas"]["AlertType"] | null;
+            /** Version */
+            version: number;
+        };
+        /**
+         * AlertStatus
+         * @enum {string}
+         */
+        AlertStatus: "borrador" | "emitida" | "rechazada" | "anulada";
+        /**
+         * AlertType
+         * @enum {string}
+         */
+        AlertType: "evacuacion" | "deslizamiento" | "sismo_replica" | "servicios_publicos" | "informacion_general";
         /** BatchIn */
         BatchIn: {
             /** Items */
@@ -428,6 +773,11 @@ export interface components {
             source: string;
         };
         /**
+         * CascadeLevel
+         * @enum {string}
+         */
+        CascadeLevel: "bajo" | "medio" | "alto" | "muy_alto";
+        /**
          * Category
          * @enum {string}
          */
@@ -437,6 +787,28 @@ export interface components {
          * @enum {string}
          */
         Channel: "pwa" | "sms" | "whatsapp" | "call_123" | "entity" | "lora";
+        /** CircleIn */
+        CircleIn: {
+            /** Lat */
+            lat: number;
+            /** Lon */
+            lon: number;
+            /** Radius M */
+            radius_m: number;
+        };
+        /** DeliveryOut */
+        DeliveryOut: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            channel: components["schemas"]["AlertChannel"];
+            /** Recipients Count */
+            recipients_count: number | null;
+            /** Source */
+            source: string;
+        };
         /**
          * DispatchIn
          * @description Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid).
@@ -779,6 +1151,35 @@ export interface components {
          * @enum {string}
          */
         MetricUnit: "%" | "conteo" | "min" | "ms";
+        /** RainIn */
+        RainIn: {
+            /** Mm 3H */
+            mm_3h: number;
+            /**
+             * Station Code
+             * @default LLUVIA-URB-01
+             */
+            station_code: string;
+        };
+        /** RainOut */
+        RainOut: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Mm 3H */
+            mm_3h: number;
+            /** Source */
+            source: string;
+            /** Station Code */
+            station_code: string;
+        };
         /**
          * ReportAction
          * @enum {string}
@@ -1146,6 +1547,272 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgencyList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_alerts_api_v1_alerts_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["AlertStatus"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_alert_api_v1_alerts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    active_alerts_api_v1_alerts_active_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_alert_api_v1_alerts__alert_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertPatchIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_api_v1_alerts__alert_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_api_v1_alerts__alert_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertCancelIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    alert_events_api_v1_alerts__alert_id__events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertEventList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_api_v1_alerts__alert_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AlertOut"];
                 };
             };
             /** @description Validation Error */
@@ -1567,6 +2234,39 @@ export interface operations {
             };
         };
     };
+    cascade_layer_api_v1_map_cascade_get: {
+        parameters: {
+            query?: {
+                min_level?: components["schemas"]["CascadeLevel"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     manzanas_layer_api_v1_map_manzanas_get: {
         parameters: {
             query?: never;
@@ -1819,6 +2519,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TrackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_rain_api_v1_sensors_rain_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RainIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RainOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_latest_rain_api_v1_sensors_rain_latest_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RainOut"] | null;
                 };
             };
             /** @description Validation Error */

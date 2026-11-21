@@ -79,6 +79,510 @@
         "title": "AgencyRef",
         "type": "object"
       },
+      "AlertAction": {
+        "enum": [
+          "crear",
+          "editar",
+          "confirmar_desinformacion",
+          "aprobar",
+          "rechazar",
+          "anular",
+          "aprobacion_conflicto"
+        ],
+        "title": "AlertAction",
+        "type": "string"
+      },
+      "AlertAreaIn": {
+        "description": "Uno o más barrios, o un círculo marcado en el mapa (research R8).",
+        "properties": {
+          "barrios": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 30,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrios"
+          },
+          "circle": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CircleIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "AlertAreaIn",
+        "type": "object"
+      },
+      "AlertCancelIn": {
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "AlertCancelIn",
+        "type": "object"
+      },
+      "AlertChannel": {
+        "enum": [
+          "tablero",
+          "mapa_publico",
+          "sms_cuadrillas"
+        ],
+        "title": "AlertChannel",
+        "type": "string"
+      },
+      "AlertDecisionIn": {
+        "properties": {
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "version": {
+            "minimum": 1.0,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "AlertDecisionIn",
+        "type": "object"
+      },
+      "AlertEventList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AlertEventOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "AlertEventList",
+        "type": "object"
+      },
+      "AlertEventOut": {
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/AlertAction"
+          },
+          "actor_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "alert_version": {
+            "title": "Alert Version",
+            "type": "integer"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "actor_role",
+          "alert_version",
+          "payload",
+          "at"
+        ],
+        "title": "AlertEventOut",
+        "type": "object"
+      },
+      "AlertIn": {
+        "properties": {
+          "area": {
+            "$ref": "#/components/schemas/AlertAreaIn"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/AlertChannel"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Channels",
+            "type": "array"
+          },
+          "confirm_misinformation": {
+            "default": false,
+            "title": "Confirm Misinformation",
+            "type": "boolean"
+          },
+          "message": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "origin_incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Incident Id"
+          },
+          "origin_manzana_id": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Manzana Id"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AlertType"
+          }
+        },
+        "required": [
+          "type",
+          "area",
+          "message",
+          "channels"
+        ],
+        "title": "AlertIn",
+        "type": "object"
+      },
+      "AlertList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AlertOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "cutoff_at"
+        ],
+        "title": "AlertList",
+        "type": "object"
+      },
+      "AlertOut": {
+        "properties": {
+          "approved_by_role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "area": {
+            "additionalProperties": true,
+            "description": "GeoJSON MultiPolygon",
+            "title": "Area",
+            "type": "object"
+          },
+          "area_barrios": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Area Barrios",
+            "type": "array"
+          },
+          "area_circle": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Circle"
+          },
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/AlertChannel"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "close_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Reason"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "deliveries": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryOut"
+            },
+            "title": "Deliveries",
+            "type": "array"
+          },
+          "emitted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emitted At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "misinfo_signals": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Misinfo Signals",
+            "type": "array"
+          },
+          "origin_incident_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Incident Id"
+          },
+          "origin_manzana_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Manzana Id"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AlertStatus"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AlertType"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "status",
+          "version",
+          "area",
+          "area_barrios",
+          "area_circle",
+          "message",
+          "channels",
+          "misinfo_signals",
+          "origin_incident_id",
+          "origin_manzana_id",
+          "created_by_role",
+          "approved_by_role",
+          "created_at",
+          "updated_at",
+          "emitted_at",
+          "closed_at",
+          "close_reason",
+          "deliveries",
+          "source"
+        ],
+        "title": "AlertOut",
+        "type": "object"
+      },
+      "AlertPatchIn": {
+        "properties": {
+          "area": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AlertAreaIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "channels": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AlertChannel"
+                },
+                "maxItems": 3,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Channels"
+          },
+          "confirm_misinformation": {
+            "default": false,
+            "title": "Confirm Misinformation",
+            "type": "boolean"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AlertType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "version": {
+            "minimum": 1.0,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "AlertPatchIn",
+        "type": "object"
+      },
+      "AlertStatus": {
+        "enum": [
+          "borrador",
+          "emitida",
+          "rechazada",
+          "anulada"
+        ],
+        "title": "AlertStatus",
+        "type": "string"
+      },
+      "AlertType": {
+        "enum": [
+          "evacuacion",
+          "deslizamiento",
+          "sismo_replica",
+          "servicios_publicos",
+          "informacion_general"
+        ],
+        "title": "AlertType",
+        "type": "string"
+      },
       "BatchIn": {
         "properties": {
           "items": {
@@ -192,6 +696,16 @@
         "title": "CandidateOut",
         "type": "object"
       },
+      "CascadeLevel": {
+        "enum": [
+          "bajo",
+          "medio",
+          "alto",
+          "muy_alto"
+        ],
+        "title": "CascadeLevel",
+        "type": "string"
+      },
       "Category": {
         "enum": [
           "personas_atrapadas",
@@ -224,6 +738,70 @@
         ],
         "title": "Channel",
         "type": "string"
+      },
+      "CircleIn": {
+        "properties": {
+          "lat": {
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "radius_m": {
+            "maximum": 3000.0,
+            "minimum": 100.0,
+            "title": "Radius M",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lon",
+          "radius_m"
+        ],
+        "title": "CircleIn",
+        "type": "object"
+      },
+      "DeliveryOut": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/AlertChannel"
+          },
+          "recipients_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipients Count"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel",
+          "recipients_count",
+          "at",
+          "source"
+        ],
+        "title": "DeliveryOut",
+        "type": "object"
       },
       "DispatchIn": {
         "description": "Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid).",
@@ -1127,6 +1705,62 @@
         ],
         "title": "MetricUnit",
         "type": "string"
+      },
+      "RainIn": {
+        "properties": {
+          "mm_3h": {
+            "maximum": 300.0,
+            "minimum": 0.0,
+            "title": "Mm 3H",
+            "type": "number"
+          },
+          "station_code": {
+            "default": "LLUVIA-URB-01",
+            "maxLength": 32,
+            "title": "Station Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mm_3h"
+        ],
+        "title": "RainIn",
+        "type": "object"
+      },
+      "RainOut": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "mm_3h": {
+            "title": "Mm 3H",
+            "type": "number"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "station_code": {
+            "title": "Station Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "station_code",
+          "mm_3h",
+          "at",
+          "source"
+        ],
+        "title": "RainOut",
+        "type": "object"
       },
       "ReportAction": {
         "enum": [
@@ -2125,6 +2759,423 @@
         ]
       }
     },
+    "/api/v1/alerts": {
+      "get": {
+        "operationId": "list_alerts_api_v1_alerts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/AlertStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Alerts",
+        "tags": [
+          "alertas"
+        ]
+      },
+      "post": {
+        "operationId": "post_alert_api_v1_alerts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Alert",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/active": {
+      "get": {
+        "description": "Alertas emitidas como GeoJSON. El público solo ve las del mapa público y sin detalles.",
+        "operationId": "active_alerts_api_v1_alerts_active_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Active Alerts Api V1 Alerts Active Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Active Alerts",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/{alert_id}": {
+      "patch": {
+        "operationId": "patch_alert_api_v1_alerts__alert_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertPatchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Alert",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/{alert_id}/approve": {
+      "post": {
+        "operationId": "approve_api_v1_alerts__alert_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertDecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/{alert_id}/cancel": {
+      "post": {
+        "operationId": "cancel_api_v1_alerts__alert_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertCancelIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancel",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/{alert_id}/events": {
+      "get": {
+        "operationId": "alert_events_api_v1_alerts__alert_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertEventList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Alert Events",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
+    "/api/v1/alerts/{alert_id}/reject": {
+      "post": {
+        "operationId": "reject_api_v1_alerts__alert_id__reject_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlertDecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Reject",
+        "tags": [
+          "alertas"
+        ]
+      }
+    },
     "/api/v1/demo/reset": {
       "post": {
         "description": "Borra reportes, incidentes, despachos, alertas, lluvia, bitácora y métricas.\n\nConserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.",
@@ -2823,6 +3874,63 @@
         ]
       }
     },
+    "/api/v1/map/cascade": {
+      "get": {
+        "description": "GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).",
+        "operationId": "cascade_layer_api_v1_map_cascade_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "min_level",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CascadeLevel"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Level"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Cascade Layer Api V1 Map Cascade Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cascade Layer",
+        "tags": [
+          "cascada"
+        ]
+      }
+    },
     "/api/v1/map/manzanas": {
       "get": {
         "description": "GeoJSON de manzanas con reportes vigentes. Para `publico`, k-anonimato (principio I).",
@@ -3327,6 +4435,96 @@
         "summary": "Post Track",
         "tags": [
           "despacho"
+        ]
+      }
+    },
+    "/api/v1/sensors/rain": {
+      "post": {
+        "operationId": "post_rain_api_v1_sensors_rain_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RainIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RainOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Rain",
+        "tags": [
+          "cascada"
+        ]
+      }
+    },
+    "/api/v1/sensors/rain/latest": {
+      "get": {
+        "operationId": "get_latest_rain_api_v1_sensors_rain_latest_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/RainOut"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Latest Rain Api V1 Sensors Rain Latest Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Latest Rain",
+        "tags": [
+          "cascada"
         ]
       }
     },

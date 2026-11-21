@@ -6,9 +6,14 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.domain import (
+    AlertAction,
+    AlertChannel,
+    AlertStatus,
+    AlertType,
+    CascadeLevel,
     Category,
     Channel,
     DispatchStatus,
@@ -300,3 +305,137 @@ class ReviewOut(BaseModel):
     report: ReportOut | None
     incident: IncidentSummary
     events: list[ReportEventOut]
+
+
+# ------------------------------------------------------------------ alertas (specs/002 US2)
+
+
+class CircleIn(BaseModel):
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    radius_m: float = Field(ge=100, le=3000)
+
+
+class AlertAreaIn(BaseModel):
+    """Uno o más barrios, o un círculo marcado en el mapa (research R8)."""
+
+    barrios: list[str] | None = Field(default=None, max_length=30)
+    circle: CircleIn | None = None
+
+    @model_validator(mode="after")
+    def _one_kind(self) -> AlertAreaIn:
+        if bool(self.barrios) == bool(self.circle):
+            raise ValueError("Defina el área con barrios o con un círculo (uno de los dos)")
+        return self
+
+
+class AlertIn(BaseModel):
+    type: AlertType
+    area: AlertAreaIn
+    message: str = Field(min_length=1, max_length=500)
+    channels: list[AlertChannel] = Field(min_length=1, max_length=3)
+    origin_incident_id: uuid.UUID | None = None
+    origin_manzana_id: str | None = Field(default=None, max_length=16)
+    confirm_misinformation: bool = False
+
+
+class AlertPatchIn(BaseModel):
+    version: int = Field(ge=1)
+    type: AlertType | None = None
+    area: AlertAreaIn | None = None
+    message: str | None = Field(default=None, min_length=1, max_length=500)
+    channels: list[AlertChannel] | None = Field(default=None, min_length=1, max_length=3)
+    confirm_misinformation: bool = False
+
+
+class AlertDecisionIn(BaseModel):
+    version: int = Field(ge=1)
+    reason: str | None = Field(default=None, max_length=500)
+
+
+class AlertCancelIn(BaseModel):
+    reason: str = Field(min_length=1, max_length=500)
+
+
+class DeliveryOut(BaseModel):
+    channel: AlertChannel
+    recipients_count: int | None
+    at: datetime
+    source: str
+
+
+class AlertOut(BaseModel):
+    id: uuid.UUID
+    type: AlertType
+    status: AlertStatus
+    version: int
+    area: dict[str, Any] = Field(description="GeoJSON MultiPolygon")
+    area_barrios: list[str]
+    area_circle: dict[str, float] | None
+    message: str
+    channels: list[AlertChannel]
+    misinfo_signals: list[str]
+    origin_incident_id: uuid.UUID | None
+    origin_manzana_id: str | None
+    created_by_role: Role
+    approved_by_role: Role | None
+    created_at: datetime
+    updated_at: datetime
+    emitted_at: datetime | None
+    closed_at: datetime | None
+    close_reason: str | None
+    deliveries: list[DeliveryOut]
+    source: str
+
+
+class AlertList(BaseModel):
+    items: list[AlertOut]
+    cutoff_at: datetime
+
+
+class AlertEventOut(BaseModel):
+    id: uuid.UUID
+    action: AlertAction
+    actor_role: Role
+    alert_version: int
+    payload: dict[str, Any]
+    at: datetime
+
+
+class AlertEventList(BaseModel):
+    items: list[AlertEventOut]
+
+
+# ------------------------------------------------------------------ cascada (specs/002 US3)
+
+
+class RainIn(BaseModel):
+    mm_3h: float = Field(ge=0, le=300)
+    station_code: str = Field(default="LLUVIA-URB-01", max_length=32)
+
+
+class RainOut(BaseModel):
+    id: uuid.UUID
+    station_code: str
+    mm_3h: float
+    at: datetime
+    source: str
+
+
+class CascadeFactor(BaseModel):
+    puntos: float
+    max: float
+    detalle: str
+
+
+class CascadeProperties(BaseModel):
+    """Propiedades de cada manzana en `GET /map/cascade` (data-model.md §Estimación de cascada)."""
+
+    manzana_id: str
+    barrio: str
+    level: CascadeLevel
+    score: float
+    slope_deg: float
+    breakdown: dict[str, CascadeFactor]
+    model_version: str
+    source: str = "SIMULADO"

@@ -12,11 +12,13 @@ from app.adapters.event_bus import bus
 from app.adapters.hazard import hazard_provider
 from app.auth import require_role
 from app.config import get_settings
+from app.core.cascade import RELEVANT
 from app.core.pipeline import Engine, IncomingReport, PipelineResult, process_report
 from app.core.privacy import reporter_hash
 from app.core.sms import parse_sms
 from app.db import SessionLocal, get_session
 from app.domain import Channel, GeoPrecision, Role
+from app.routers.cascade import notify_invalidated
 from app.schemas import BatchIn, BatchItemResult, BatchOut, ReportIn, ReportResult, SmsIn
 from app.serializers import incidents_out, reports_out
 from app.state import get_state
@@ -54,6 +56,8 @@ async def to_result(session: AsyncSession, result: PipelineResult) -> ReportResu
             },
         )
         bus.publish("incident.upserted", incident.model_dump(mode="json"))
+        if report.category in RELEVANT:
+            notify_invalidated("reportes")
     return ReportResult(
         report=report,
         incident=incident,

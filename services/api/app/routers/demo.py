@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.adapters.event_bus import bus
 from app.auth import require_role
 from app.config import get_settings
+from app.core import cascade
 from app.db import get_session
 from app.domain import Role
 
@@ -42,4 +43,5 @@ async def reset_demo_data(
         )
     )
     await session.commit()
+    cascade.invalidate()
     bus.publish("demo.reset", {})

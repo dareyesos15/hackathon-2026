@@ -16,6 +16,8 @@ from app.adapters.tracks import SimulatedRfidFeed
 from app.config import get_settings
 from app.db import SessionLocal
 from app.routers import (
+    alerts,
+    cascade,
     demo,
     dispatch,
     incidents,
@@ -118,5 +120,17 @@ async def health() -> Health:
 
 
 app.include_router(health_router, prefix=API_PREFIX)
-for module in (ingest, reports, incidents, review, dispatch, map, stream, metrics, demo):
+for module in (
+    ingest,
+    reports,
+    incidents,
+    review,
+    dispatch,
+    alerts,
+    cascade,
+    map,
+    stream,
+    metrics,
+    demo,
+):
     app.include_router(module.router, prefix=API_PREFIX)

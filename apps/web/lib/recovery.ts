@@ -75,6 +75,16 @@ export type Stage = S["Stage"];
 export type StageStatus = Stage["status"];
 export type ContractRow = S["ContractRow"];
 export type SourceInfo = S["SourceInfo"];
+export type ScenarioComparison = S["ScenarioComparison"];
+export type ScenarioSummary = S["ScenarioSummary"];
+export type ConfidenceStat = S["ConfidenceStat"];
+export type ScenarioKey = "real" | "mejor" | "peor";
+
+export const SCENARIO_LABEL: Record<ScenarioKey, string> = {
+  real: "Datos reales",
+  mejor: "Mejor caso",
+  peor: "Peor caso",
+};
 
 /** Semáforo de etapas: siempre con texto, el color no va solo. */
 export const STAGE_STATUS: Record<StageStatus, { label: string; hex: string }> = {

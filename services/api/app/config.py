@@ -110,6 +110,9 @@ class Settings(BaseSettings):
     # True mientras el registro de Dacora tenga datos sintéticos de demostración (Ley 1581): sus
     # cifras se marcan "SIMULADO". En producción, con registros reales, va en false.
     demo_data: bool = True
+    # Carga los 6 casos de ejemplo de recuperación (scripts/seed_recovery_example.py) al
+    # arrancar la API y después de cada reinicio de la demo. Solo en modo demo.
+    seed_recovery_examples: bool = False
 
     def role_tokens(self) -> dict[str, str]:
         """Mapa token → rol."""

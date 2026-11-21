@@ -16,9 +16,9 @@ import { kpiMap, useKpi } from "@/lib/useKpi";
 type FC = GeoJSON.FeatureCollection;
 
 const MODE_LABEL = {
-  conectando: { text: "Conectando…", cls: "bg-slate-200 text-slate-700" },
-  en_vivo: { text: "En vivo", cls: "bg-emerald-100 text-emerald-800" },
-  respaldo: { text: "Modo de respaldo (consulta cada 3 s)", cls: "bg-amber-100 text-amber-900" },
+  conectando: { text: "Conectando…", cls: "bg-white/10 text-white/80" },
+  en_vivo: { text: "En vivo", cls: "bg-white text-sangre" },
+  respaldo: { text: "Modo de respaldo (consulta cada 3 s)", cls: "bg-[#ffd27a] text-tinta" },
 } as const;
 
 function initialSelection(): string | null {
@@ -64,26 +64,48 @@ export default function TableroPmu() {
 
   if (!token) return null;
 
-  const critical = incidents.filter(
-    (i) => i.is_life_threat && ["abierto", "en_revision"].includes(i.status),
-  ).length;
+  const pendingLife = incidents
+    .filter((i) => i.is_life_threat && ["abierto", "en_revision"].includes(i.status))
+    .sort((a, b) => a.first_seen.localeCompare(b.first_seen));
+  const critical = pendingLife.length;
   const received = kpis.reports_received;
   const consolidated = kpis.incidents_consolidated;
   const mode = MODE_LABEL[live.mode];
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-2">
-        <h1 className="text-lg font-bold">Dacora · Tablero PMU</h1>
-        <EtiquetaSimulado />
-        <span className={`rounded px-2 py-0.5 text-xs font-medium ${mode.cls}`}>{mode.text}</span>
-        <nav className="ml-auto flex gap-3 text-sm">
-          <Link href="/pmu/kpi/" className="text-slate-700 underline">
+      <header className="flex flex-wrap items-stretch bg-sangre text-white">
+        <div className="flex items-center gap-3 px-4 py-2">
+          <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
+          <span className="text-sm text-white/75">Tablero del PMU</span>
+          <EtiquetaSimulado sobreOscuro />
+          <span className={`rounded-sm px-2 py-0.5 text-xs font-bold ${mode.cls}`}>
+            {live.mode === "en_vivo" && (
+              <span className="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-senal motion-reduce:animate-none" />
+            )}
+            {mode.text}
+          </span>
+        </div>
+        {critical > 0 && (
+          <button
+            type="button"
+            onClick={() => select(pendingLife[0].id)}
+            className="flex items-center gap-2 bg-senal px-4 py-2 text-left font-bold hover:bg-[#b51723]"
+          >
+            <span className="font-display text-2xl leading-none tabular-nums">{critical}</span>
+            <span className="text-sm leading-tight">
+              con riesgo vital sin revisar
+              <span className="block text-xs font-normal text-white/85">Abrir el más antiguo</span>
+            </span>
+          </button>
+        )}
+        <nav className="ml-auto flex items-center gap-4 px-4 text-sm">
+          <Link href="/pmu/kpi/" className="underline decoration-white/40 underline-offset-4">
             Panel de KPI
           </Link>
           <button
             type="button"
-            className="text-slate-500"
+            className="text-white/75 hover:text-white"
             onClick={() => {
               clearSession();
               router.replace("/");
@@ -94,7 +116,7 @@ export default function TableroPmu() {
         </nav>
       </header>
 
-      <section className="grid grid-cols-2 gap-2 px-4 py-2 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2 px-4 py-3 md:grid-cols-4">
         {received && (
           <Cifra
             etiqueta="Reportes recibidos"
@@ -143,7 +165,7 @@ export default function TableroPmu() {
       </section>
 
       <main className="grid flex-1 grid-cols-1 gap-3 overflow-hidden px-4 pb-4 lg:grid-cols-[1fr_420px]">
-        <div className="min-h-[420px] overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
           <Mapa
             incidents={incidents}
             barrios={barrios}

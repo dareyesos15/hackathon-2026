@@ -6,6 +6,7 @@ Pesos del trust score: CLAUDE.md §7.4.
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -93,6 +94,14 @@ class Settings(BaseSettings):
     unattended_alert_min: float = 15.0
 
     cascade: CascadeSettings = CascadeSettings()
+
+    # Fuente de lluvia de la cascada: "simulado" o "cdiac" (precipitación real del CDIAC/SIMAC).
+    # El administrador la cambia en caliente; esta variable solo fija el valor al arrancar.
+    rain_source: Literal["simulado", "cdiac"] = "simulado"
+    cdiac_base_url: str = "https://cdiac.manizales.unal.edu.co/etl-cdiac/api/apiGeo"
+    cdiac_poll_s: float = 300.0
+    cdiac_max_age_min: float = 60.0
+    cdiac_timeout_s: float = 10.0
 
     def role_tokens(self) -> dict[str, str]:
         """Mapa token → rol."""

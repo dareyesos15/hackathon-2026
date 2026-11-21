@@ -1,6 +1,7 @@
 "use client";
 /**
- * Capa de efectos en cascada (specs/002 US3): interruptor, leyenda, control de lluvia SIMULADA,
+ * Capa de efectos en cascada (specs/002 US3): interruptor, leyenda, control de lluvia SIMULADA
+ * (oculto si la lluvia viene en vivo del CDIAC/SIMAC),
  * desglose de la manzana elegida y salida a una alerta preventiva (que igual aprueba el COE).
  * Es solo una sugerencia: no despacha ni alerta por sí sola (FR-031).
  */
@@ -21,6 +22,9 @@ export type CascadeLayer = GeoJSON.FeatureCollection & {
   cutoff_at?: string;
   scenario_clock?: string | null;
   rain_mm_3h?: number | null;
+  /** "simulado" | "cdiac" (CDIAC/SIMAC en vivo) | "cdiac_respaldo" (CDIAC caído → SIMULADA). */
+  rain_source?: string;
+  rain_detail?: string;
   model_version?: string;
 };
 
@@ -91,6 +95,7 @@ export function CapaCascada({
 }: Props) {
   const [rain, setRain] = useState<number>(layer?.rain_mm_3h ?? 0);
   const [busy, setBusy] = useState(false);
+  const liveRain = layer?.rain_source === "cdiac";
 
   async function publishRain(value: number) {
     setBusy(true);
@@ -147,13 +152,25 @@ export function CapaCascada({
         </p>
       )}
 
-      {!canControlRain && layer && (
+      {liveRain && layer && (
+        <p className="rounded bg-emerald-50 p-2 text-xs text-emerald-900">
+          Lluvia real en vivo (CDIAC/SIMAC, interpolada por manzana): {layer.rain_detail}
+        </p>
+      )}
+
+      {layer?.rain_source === "cdiac_respaldo" && (
+        <p className="rounded bg-amber-100 p-2 text-xs text-amber-900">
+          CDIAC sin datos recientes: se usa la lluvia{simulado(" SIMULADA")} de respaldo.
+        </p>
+      )}
+
+      {!canControlRain && !liveRain && layer && (
         <p className="text-xs text-tinta-suave">
           Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm{simulado(" (SIMULADA)")}
         </p>
       )}
 
-      {canControlRain && (
+      {canControlRain && !liveRain && (
         <label className="flex flex-col gap-1 text-xs">
           Lluvia acumulada en 3 h{simulado(" (SIMULADA)")}
           <div className="flex items-center gap-2">

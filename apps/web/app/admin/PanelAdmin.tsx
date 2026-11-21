@@ -3,7 +3,8 @@
  * Panel del administrador de la demo: simulaciones con datos (reproduce el escenario sintético,
  * con lluvia SIMULADA opcional) o sin datos (reinicia y deja el tablero vacío para reportes en
  * vivo). La reproducción corre en el servidor; esta página solo la lanza, la detiene y muestra
- * su avance. Todos los datos son SIMULADOS.
+ * su avance. También elige la fuente de lluvia de la predicción de cascada: SIMULADA o real del
+ * CDIAC/SIMAC (con respaldo SIMULADO si CDIAC no responde). Salvo esa lluvia, todo es SIMULADO.
  */
 import { simulado } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
@@ -12,11 +13,13 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
-import { formatDateTime, formatInt } from "@/lib/format";
+import { formatDateTime, formatInt, formatNumber } from "@/lib/format";
 import { clearSession, getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
 
 type Status = components["schemas"]["SimulationStatus"];
+type RainStatus = components["schemas"]["RainSourceStatus"];
+type RainSource = RainStatus["source"];
 type Speed = "normal" | "rapida";
 
 const REFRESH_MS = 2000;
@@ -35,16 +38,37 @@ export default function PanelAdmin() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
+  const [rainStatus, setRainStatus] = useState<RainStatus | null>(null);
+  const [rainBusy, setRainBusy] = useState(false);
   const allowed = session?.role === "admin";
   const k = kpiMap(useKpi(tick));
 
   const refresh = useCallback(
     () =>
-      api.GET("/api/v1/demo/simulation").then(({ data }) => {
-        if (data) setStatus(data);
-      }),
+      Promise.all([
+        api.GET("/api/v1/demo/simulation").then(({ data }) => {
+          if (data) setStatus(data);
+        }),
+        api.GET("/api/v1/sensors/rain/source").then(({ data }) => {
+          if (data) setRainStatus(data);
+        }),
+      ]),
     [],
   );
+
+  async function changeRainSource(source: RainSource) {
+    setRainBusy(true);
+    const { data } = await api.PUT("/api/v1/sensors/rain/source", { body: { source } });
+    setRainBusy(false);
+    if (data) setRainStatus(data);
+  }
+
+  async function refreshRain() {
+    setRainBusy(true);
+    const { data } = await api.POST("/api/v1/sensors/rain/source/refresh");
+    setRainBusy(false);
+    if (data) setRainStatus(data);
+  }
 
   useEffect(() => {
     if (!allowed) {
@@ -136,6 +160,11 @@ export default function PanelAdmin() {
               <input type="checkbox" checked={rain} onChange={(e) => setRain(e.target.checked)} />
               Incluir lluvia{simulado(" SIMULADA")} (para la predicción de cascada)
             </label>
+            {rainStatus?.source === "cdiac" && (
+              <p className="text-xs text-tinta-suave">
+                La fuente de lluvia activa es CDIAC: la curva SIMULADA solo se usa como respaldo.
+              </p>
+            )}
             <button
               type="button"
               disabled={busy}
@@ -163,6 +192,13 @@ export default function PanelAdmin() {
             </button>
           </article>
         </section>
+
+        <FuenteLluvia
+          status={rainStatus}
+          busy={rainBusy}
+          onChange={changeRainSource}
+          onRefresh={refreshRain}
+        />
 
         <section className="flex flex-col gap-3 rounded-md border border-linea bg-white p-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -233,5 +269,132 @@ export default function PanelAdmin() {
         </section>
       </main>
     </div>
+  );
+}
+
+const EFFECTIVE_LABEL: Record<RainStatus["effective"], string> = {
+  simulado: "Lluvia SIMULADA",
+  cdiac: "CDIAC en vivo",
+  cdiac_respaldo: "Respaldo SIMULADO (CDIAC sin datos recientes)",
+};
+
+function FuenteLluvia({
+  status,
+  busy,
+  onChange,
+  onRefresh,
+}: {
+  status: RainStatus | null;
+  busy: boolean;
+  onChange: (source: RainSource) => void;
+  onRefresh: () => void;
+}) {
+  const source = status?.source ?? "simulado";
+  const effective = status?.effective ?? "simulado";
+  const top = status?.stations.slice(0, 5) ?? [];
+  return (
+    <section className="flex flex-col gap-3 rounded-md border border-linea bg-white p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="font-display text-xl font-semibold">Fuente de lluvia (cascada)</h2>
+        <span
+          className={`rounded-sm px-2 py-0.5 text-xs font-bold ${
+            effective === "cdiac"
+              ? "bg-emerald-700 text-white"
+              : effective === "cdiac_respaldo"
+                ? "bg-amber-100 text-amber-900"
+                : "bg-papel text-tinta"
+          }`}
+        >
+          {EFFECTIVE_LABEL[effective]}
+        </span>
+      </div>
+      <p className="text-sm text-tinta-suave">
+        La predicción de efectos en cascada usa la lluvia acumulada en 3 h. Con CDIAC se consulta
+        cada {formatInt((status?.poll_interval_s ?? 300) / 60)} min la precipitación real de{" "}
+        {formatInt(status?.catalog_size ?? 0)} estaciones urbanas del SIMAC y se interpola por
+        manzana. Si CDIAC no responde o sus datos tienen más de{" "}
+        {formatInt(status?.max_age_min ?? 60)} min, se usa la lluvia SIMULADA.
+      </p>
+      <fieldset className="flex flex-col gap-1 text-sm" disabled={busy}>
+        <legend className="sr-only">Fuente de lluvia</legend>
+        <label className="flex items-center gap-2">
+          <input
+            type="radio"
+            name="rain-source"
+            checked={source === "simulado"}
+            onChange={() => onChange("simulado")}
+          />
+          SIMULADA (curva del escenario o deslizador del tablero)
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="radio"
+            name="rain-source"
+            checked={source === "cdiac"}
+            onChange={() => onChange("cdiac")}
+          />
+          CDIAC / SIMAC en vivo (requiere internet en el servidor)
+        </label>
+      </fieldset>
+
+      {source === "cdiac" && (
+        <div className="flex flex-col gap-2 text-sm">
+          <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <div>
+              <dt className="text-tinta-suave">Última consulta exitosa</dt>
+              <dd className="font-medium">
+                {status?.last_ok_at ? formatDateTime(status.last_ok_at) : "—"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-tinta-suave">Estaciones con dato</dt>
+              <dd className="font-medium">
+                {formatInt(status?.stations.length ?? 0)} de {formatInt(status?.catalog_size ?? 0)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-tinta-suave">Último intento</dt>
+              <dd className="font-medium">
+                {status?.last_attempt_at ? formatDateTime(status.last_attempt_at) : "—"}
+              </dd>
+            </div>
+          </dl>
+          {status?.last_error && (
+            <p className="text-senal">No se pudo leer CDIAC: {status.last_error}</p>
+          )}
+          {top.length > 0 && (
+            <table className="text-xs">
+              <thead className="text-left text-tinta-suave">
+                <tr>
+                  <th className="font-normal">Estación (más lluvia primero)</th>
+                  <th className="text-right font-normal">mm en 3 h</th>
+                  <th className="text-right font-normal">Último dato</th>
+                </tr>
+              </thead>
+              <tbody>
+                {top.map((st) => (
+                  <tr key={st.code}>
+                    <td>{st.name}</td>
+                    <td className="text-right tabular-nums">{formatNumber(st.mm_3h)}</td>
+                    <td className="text-right">{formatDateTime(st.last_data_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onRefresh}
+              className="rounded-sm border border-linea px-3 py-1 disabled:opacity-40"
+            >
+              {busy ? "Consultando…" : "Consultar ahora"}
+            </button>
+            <span className="text-xs text-tinta-suave">{status?.attribution}</span>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }

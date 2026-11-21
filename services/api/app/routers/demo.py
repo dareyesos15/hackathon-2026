@@ -22,6 +22,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.event_bus import bus
+from app.adapters.rain import rain_feed
 from app.auth import require_role
 from app.config import get_settings
 from app.core import cascade
@@ -80,6 +81,7 @@ async def reset_demo_data(
     await session.execute(text("UPDATE shelters SET people = 0, pets = 0, updated_at = now()"))
     await session.commit()
     cascade.invalidate()
+    rain_feed.forget()  # con fuente CDIAC, vuelve a consultar sin esperar al siguiente ciclo
     bus.publish("demo.reset", {})
 
 

@@ -7123,6 +7123,124 @@
         ]
       }
     },
+    "/api/v1/sensors/rain/source": {
+      "get": {
+        "operationId": "get_rain_source_api_v1_sensors_rain_source_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RainSourceStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Rain Source",
+        "tags": [
+          "cascada"
+        ]
+      },
+      "put": {
+        "description": "Cambia la fuente de lluvia. Con `cdiac` consulta de inmediato; si falla, usa el respaldo.",
+        "operationId": "put_rain_source_api_v1_sensors_rain_source_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RainSourceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RainSourceStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Put Rain Source",
+        "tags": [
+          "cascada"
+        ]
+      }
+    },
+    "/api/v1/sensors/rain/source/refresh": {
+      "post": {
+        "description": "Fuerza una consulta a CDIAC ahora (solo si la fuente activa es `cdiac`).",
+        "operationId": "refresh_rain_source_api_v1_sensors_rain_source_refresh_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RainSourceStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Refresh Rain Source",
+        "tags": [
+          "cascada"
+        ]
+      }
+    },
     "/api/v1/sensors/zones": {
       "get": {
         "operationId": "list_sensors_api_v1_sensors_zones_get",

@@ -50,7 +50,13 @@ autofirmado y entre como Ciudadanía. El reporte queda en el punto exacto del GP
 PMU. Por `http://…:8080` el GPS no está disponible y la PWA ofrece el enlace seguro.
 
 Despacho, alertas y cascada (specs/002): los recursos, sus recorridos tipo RFID, la hora estimada
-de llegada, el envío de SMS, la lluvia y la pendiente son **SIMULADOS**. El avance de los recursos
+de llegada, el envío de SMS y la pendiente son **SIMULADOS**. La lluvia de la cascada es SIMULADA
+por defecto; desde **/admin/** (sección "Fuente de lluvia") se puede cambiar en caliente a la
+**precipitación real del CDIAC/SIMAC** (UNAL Manizales): la API consulta cada 5 min las estaciones
+hidrometeorológicas urbanas y la interpola por manzana. Si CDIAC no responde o sus datos tienen
+más de 60 min, la cascada vuelve sola a la lluvia SIMULADA y lo indica (`RAIN_SOURCE`,
+`CDIAC_POLL_S`, `CDIAC_MAX_AGE_MIN`). Requiere internet en el servidor; en Plan B, déjela en
+SIMULADA. El avance de los recursos
 despachados va 20 veces acelerado (`TRACK_SPEEDUP`); para que un crítico sin despacho se marque
 antes en la demo, baje `UNATTENDED_ALERT_MIN` (por defecto 15 min).
 

@@ -7,19 +7,28 @@
  * Sin sesión, la API se consulta con el rol `publico`.
  */
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
+import {
+  CapaCascada,
+  selectionFrom,
+  type CascadeLayer,
+  type CascadeSelection,
+} from "@/components/CapaCascada";
 import { CifraKpi } from "@/components/CifraKpi";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
 import { api } from "@/lib/api/client";
+import { useOfflineData } from "@/lib/offline";
 import { formatDateTime, formatInt } from "@/lib/format";
 import { ROLE_LABELS, clearSession, getSession, type Role } from "@/lib/session";
-import { kpiMap, useKpi } from "@/lib/useKpi";
+import { kpiMap, type Kpi } from "@/lib/useKpi";
 
 type FC = GeoJSON.FeatureCollection & { cutoff_at?: string };
 
 const MAP_MS = 10000;
+// La predicción de cascada se recalcula con lluvia o reportes nuevos; el público no tiene SSE.
+const CASCADE_MS = 15000;
 const KPI_MS = 5000;
 // Alertas oficiales vigentes: < 5 s desde su emisión (specs/002 SC-006).
 const ALERTS_MS = 4000;
@@ -41,6 +50,10 @@ const LEYENDA = [
   { color: "#f59e0b", texto: "Área de alerta oficial vigente" },
 ];
 
+async function getData<T>(promise: Promise<{ data?: unknown }>): Promise<T | undefined> {
+  return (await promise).data as T | undefined;
+}
+
 const DETECTION = [
   "duplicate_detection_rate",
   "fake_detection_rate",
@@ -57,35 +70,36 @@ const OPERATION = [
 
 export default function InicioPublico() {
   const [session, setSession] = useState(getSession);
-  const [barrios, setBarrios] = useState<FC | null>(null);
-  const [manzanas, setManzanas] = useState<FC | null>(null);
-  const [alerts, setAlerts] = useState<FC | null>(null);
-  const [tick, setTick] = useState(0);
-  const items = useKpi(tick);
+  const [cascadeOn, setCascadeOn] = useState(false);
+  const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
+  // Todo se guarda en el dispositivo: sin conexión se ve la última información recibida.
+  const barrios = useOfflineData<FC>("barrios", () => getData(api.GET("/api/v1/geo/barrios"))).data;
+  const manzanasData = useOfflineData<FC>(
+    "manzanas-publico",
+    () => getData(api.GET("/api/v1/map/manzanas")),
+    { pollMs: MAP_MS },
+  );
+  const alertsData = useOfflineData<FC>(
+    "alertas-vigentes",
+    () => getData(api.GET("/api/v1/alerts/active")),
+    { pollMs: ALERTS_MS },
+  );
+  const kpiData = useOfflineData<Kpi[]>(
+    "kpi",
+    async () => (await api.GET("/api/v1/metrics/kpi")).data?.items,
+    { pollMs: KPI_MS },
+  );
+  const cascadeData = useOfflineData<CascadeLayer>(
+    "cascade-publico",
+    () => getData(api.GET("/api/v1/map/cascade")),
+    { enabled: cascadeOn, pollMs: CASCADE_MS },
+  );
+  const manzanas = manzanasData.data;
+  const alerts = alertsData.data;
+  const items = kpiData.data ?? [];
   const k = kpiMap(items);
   const panel = session ? PANEL[session.role] : undefined;
-
-  useEffect(() => {
-    api.GET("/api/v1/geo/barrios").then(({ data }) => {
-      if (data) setBarrios(data as unknown as FC);
-    });
-    const loadMap = () =>
-      api.GET("/api/v1/map/manzanas").then(({ data }) => {
-        if (data) setManzanas(data as unknown as FC);
-      });
-    const loadAlerts = () =>
-      api.GET("/api/v1/alerts/active").then(({ data }) => {
-        if (data) setAlerts(data as unknown as FC);
-      });
-    void loadMap();
-    void loadAlerts();
-    const timers = [
-      setInterval(() => void loadMap(), MAP_MS),
-      setInterval(() => void loadAlerts(), ALERTS_MS),
-      setInterval(() => setTick((t) => t + 1), KPI_MS),
-    ];
-    return () => timers.forEach(clearInterval);
-  }, []);
+  const offline = manzanasData.offline || kpiData.offline || alertsData.offline;
 
   const features = manzanas?.features ?? [];
   const visibles = features.filter((f) => f.properties?.report_count != null).length;
@@ -140,6 +154,14 @@ export default function InicioPublico() {
         </nav>
       </header>
 
+      {offline && (
+        <p className="mx-4 mt-3 rounded-lg bg-amber-100 px-3 py-2 text-sm text-amber-900">
+          Sin conexión: se muestra la última información recibida
+          {manzanasData.savedAt ? ` (${formatDateTime(manzanasData.savedAt)})` : ""}. Se actualiza
+          sola al volver la conexión.
+        </p>
+      )}
+
       <div className="px-4 pt-3">
         <AvisoAlerta alerts={alertsFromGeoJSON(alerts)} />
       </div>
@@ -178,11 +200,30 @@ export default function InicioPublico() {
             selectedId={null}
             onSelect={noop}
             alertAreas={alerts}
+            cascade={cascadeOn ? cascadeData.data : null}
+            onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascadeData.data))}
           />
         </div>
         <aside className="flex flex-col gap-4 rounded-xl bg-white p-4 text-sm shadow-sm">
+          <CapaCascada
+            enabled={cascadeOn}
+            onToggle={(on) => {
+              setCascadeOn(on);
+              if (!on) setCascadeSel(null);
+            }}
+            layer={cascadeData.data}
+            selected={cascadeSel}
+            canControlRain={false}
+            offline={cascadeData.offline}
+            savedAt={cascadeData.savedAt}
+          />
           <section>
             <h2 className="mb-2 font-semibold">Reportes por manzana</h2>
+            {cascadeOn && (
+              <p className="mb-1 text-xs text-slate-500">
+                Con la predicción activa, el color de las manzanas muestra el riesgo de cascada.
+              </p>
+            )}
             <ul className="flex flex-col gap-1.5">
               {LEYENDA.map((l) => (
                 <li key={l.texto} className="flex items-center gap-2">

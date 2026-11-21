@@ -77,7 +77,7 @@ async def patch_report(
 async def patch_incident(
     incident_id: uuid.UUID,
     body: ReviewIn,
-    role: Role = Depends(require_role(Role.operador_pmu)),
+    role: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
     engine: Engine = Depends(get_engine),
 ) -> ReviewOut:

@@ -37,7 +37,7 @@ async def list_incidents(
     trust_label: TrustLabel | None = None,
     since: datetime | None = Query(default=None, description="Actualizados después de"),
     limit: int = Query(default=500, ge=1, le=2000),
-    _: Role = Depends(require_role(Role.operador_pmu)),
+    _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
 ) -> IncidentList:
     cutoff = datetime.now(UTC)
@@ -86,7 +86,7 @@ async def incident_detail(session: AsyncSession, incident: Incident) -> Incident
 @router.get("/{incident_id}", response_model=IncidentDetail)
 async def get_incident(
     incident_id: uuid.UUID,
-    _: Role = Depends(require_role(Role.operador_pmu)),
+    _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
 ) -> IncidentDetail:
     incident = await session.get(Incident, incident_id)

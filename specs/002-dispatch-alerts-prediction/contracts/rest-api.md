@@ -13,7 +13,7 @@ regeneran en el mismo commit que cambie un modelo (principio X).
 | `PATCH /incidents/{id}` | roles: `operador_pmu`, **`coe`**. Nueva acción `cerrar_atendido` (`verificado → atendido`) |
 | `GET /map/manzanas` | roles: + `coe` |
 | `GET /stream` | roles: `operador_pmu`, **`coe`**, **`agencia`** (la agencia solo recibe eventos de despacho) |
-| `GET /metrics/kpi` | + `critical_without_dispatch`, `median_time_to_dispatch_min`, `double_dispatch_prevented` |
+| `GET /metrics/kpi` | roles: + `coe`. Indicadores nuevos: `critical_without_dispatch`, `median_time_to_dispatch_min`, `double_dispatch_prevented` |
 | `POST /demo/reset` | también limpia despacho, alertas y lluvia; recursos vuelven a su base |
 
 `suggestion` en `IncidentDetail`:

@@ -17,6 +17,8 @@ from app.domain import Role
 
 router = APIRouter(tags=["tiempo real"])
 HEARTBEAT_SECONDS = 15.0
+# La agencia solo ve sus despachos y recursos, no incidentes ni alertas (specs/002, R14).
+AGENCY_EVENTS = frozenset({"dispatch.upserted", "resource.moved"})
 
 
 @router.get(
@@ -27,7 +29,9 @@ HEARTBEAT_SECONDS = 15.0
 async def stream(
     request: Request,
     last_event_id: str | None = Header(default=None, alias="Last-Event-ID"),
-    _: Role = Depends(require_role(Role.operador_pmu, allow_query_token=True)),
+    role: Role = Depends(
+        require_role(Role.operador_pmu, Role.coe, Role.agencia, allow_query_token=True)
+    ),
 ) -> StreamingResponse:
     last_id = int(last_event_id) if last_event_id and last_event_id.isdigit() else None
     queue = bus.subscribe(last_id)
@@ -40,6 +44,8 @@ async def stream(
                     event = await asyncio.wait_for(queue.get(), timeout=HEARTBEAT_SECONDS)
                 except TimeoutError:
                     yield ": ping\n\n"
+                    continue
+                if role == Role.agencia and event.type not in AGENCY_EVENTS:
                     continue
                 yield event.to_sse()
         finally:

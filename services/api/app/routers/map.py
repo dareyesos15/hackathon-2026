@@ -27,7 +27,7 @@ RANK_NAME = {4: "critico", 3: "alto", 2: "medio", 1: "bajo"}
 
 @router.get("/map/manzanas")
 async def manzanas_layer(
-    role: Role = Depends(require_role(Role.operador_pmu, Role.publico)),
+    role: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.publico)),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, Any]:
     """GeoJSON de manzanas con reportes vigentes. Para `publico`, k-anonimato (principio I)."""

@@ -28,6 +28,7 @@ from app.core.privacy import redact
 from app.core.recovery import (
     consistent,
     household_hash,
+    housing_status_for,
     owner_hash,
     review_inconsistency,
     suggest_semaphore,
@@ -48,6 +49,13 @@ from app.routers.recovery import FIELD, SOURCE, _barrios, _error, _resolve_prope
 router = APIRouter(prefix="/recovery", tags=["recuperación"])
 
 REFERRAL_ROLES = (*FIELD, Role.agencia)
+#: Calidad del encuestado (formato de revisión) → régimen de tenencia del RUD.
+TENURE = {
+    "propietario": "propietario",
+    "arrendatario": "arrendatario",
+    "sucesion": "poseedor",
+    "otro": "otro",
+}
 CRUZ_ROJA = (
     "Evacuación recomendada: orientar a la familia a la Cruz Roja Colombiana Seccional Caldas "
     "(886 6300) para el auxilio de arrendamiento o la ayuda humanitaria, con fotocopia de esta "
@@ -196,6 +204,12 @@ async def post_review(
                 property_id=key,
                 manzana_id=manzana_id,
                 rud_status=RudStatus.pendiente,
+                tenure=TENURE.get(body.respondent_relation.value)
+                if body.respondent_relation
+                else None,
+                housing_status=housing_status_for(color.value, damage.value),
+                age_60_plus=min(body.elderly, max(body.residents, 1)),
+                losses=["enseres"] if body.belongings_loss else [],
                 source=SOURCE,
             )
             session.add(household)

@@ -333,7 +333,7 @@ async def dashboard(
         for h, t, at in (
             await session.execute(
                 select(AidDelivery.household_id, AidDelivery.aid_type, AidDelivery.at)
-                .where(AidDelivery.aid_type.in_(HOUSING_AID))
+                .where(AidDelivery.aid_type.in_(HOUSING_AID), AidDelivery.ended_at.is_(None))
                 .order_by(AidDelivery.at)
             )
         ).all()

@@ -20,7 +20,7 @@ async def reset_demo_data(
     _: Role = Depends(require_role(Role.operador_pmu)),
     session: AsyncSession = Depends(get_session),
 ) -> None:
-    """Borra reportes, incidentes, bitácora y métricas para volver a reproducir el escenario.
+    """Borra reportes, incidentes, despachos, alertas, lluvia, bitácora y métricas.
 
     Conserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.
     """
@@ -30,7 +30,16 @@ async def reset_demo_data(
             detail={"detail": "Reinicio deshabilitado fuera de modo demo", "code": "forbidden"},
         )
     await session.execute(
-        text("TRUNCATE report_events, reports, incidents, metrics_snapshots CASCADE")
+        text(
+            "TRUNCATE report_events, resource_tracks, dispatches, alert_events, alert_deliveries,"
+            " alerts, rain_readings, reports, incidents, metrics_snapshots CASCADE"
+        )
+    )
+    # El catálogo se conserva; los recursos vuelven a su base (research R16).
+    await session.execute(
+        text(
+            "UPDATE resources SET status = 'disponible', last_geom = base_geom, last_seen_at = NULL"
+        )
     )
     await session.commit()
     bus.publish("demo.reset", {})

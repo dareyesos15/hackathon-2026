@@ -86,7 +86,7 @@ Fuente: imagen embebida en `estudio_integral_de_prefactibilidad_y_arquitectura_s
 Flujo de izquierda a derecha, seis bloques:
 
 **1. Captación de datos (inputs)**
-- *Online:* web scraping, redes sociales, WhatsApp, medios, APIs públicas.
+- *Online:* WhatsApp y APIs públicas.
 - *Entidades confiables:* SIMAC, SGC, Alcaldía, Bomberos, Cruz Roja, Defensa Civil.
 - *Offline/SMS:* SMS de emergencia y reporte del canal 123 (red celular de señalización).
 - *Hardware de campo:* nodos LoRaWAN / malla + sensores de zonas inseguras UNAL.
@@ -123,7 +123,7 @@ Flujo de izquierda a derecha, seis bloques:
 
 | Plan | Condición | Cómo opera |
 |---|---|---|
-| **A — Online total** | Nube, 4G/fibra | Web scraping, APIs, dashboards remotos |
+| **A — Online total** | Nube, 4G/fibra | APIs, dashboards remotos |
 | **B — Offline-first** | Sin internet | Servidor local (Supercómputo UNAL / PMU), edge computing, **SMS gateway sin internet** |
 | **C — Colapso total** | Sin red celular | Redes malla LoRaWAN, radiofrecuencia de rescatistas, telemetría de campo UNAL |
 
@@ -132,7 +132,7 @@ flowchart LR
   subgraph IN[1. Captación]
     PWA[PWA ciudadana offline]
     SMS[SMS / 123]
-    WA[WhatsApp / redes / medios]
+    WA[WhatsApp]
     ENT[Entidades confiables\nSGC, SIMAC, Bomberos, Cruz Roja]
     IOT[Nodos LoRa/Meshtastic\n+ sensor zonas inseguras]
   end
@@ -258,7 +258,7 @@ Todas las tablas llevan `id UUID`, `created_at`, `source`, `version` y, donde ap
 
 | Tabla | Campos clave |
 |---|---|
-| `reports` | `client_uuid` (idempotencia), `channel` (pwa, sms, whatsapp, call_123, scraping, entity, lora), `received_at`, `occurred_at`, `text_redacted`, `location_text`, `geom POINT(4326)`, `geo_precision` (gps, address, barrio, none), `manzana_id`, `category`, `severity`, `triage_level` (critico, alto, medio, bajo), `people_affected`, `has_media`, `reporter_hash` (hash con sal, nunca el dato claro), `cluster_id`, `trust_score`, `trust_breakdown JSONB`, `status` (nuevo, en_revision, verificado, descartado, duplicado, atendido), `is_life_threat` |
+| `reports` | `client_uuid` (idempotencia), `channel` (pwa, sms, whatsapp, call_123, entity, lora), `received_at`, `occurred_at`, `text_redacted`, `location_text`, `geom POINT(4326)`, `geo_precision` (gps, address, barrio, none), `manzana_id`, `category`, `severity`, `triage_level` (critico, alto, medio, bajo), `people_affected`, `has_media`, `reporter_hash` (hash con sal, nunca el dato claro), `cluster_id`, `trust_score`, `trust_breakdown JSONB`, `status` (nuevo, en_revision, verificado, descartado, duplicado, atendido), `is_life_threat` |
 | `report_events` | `report_id`, `actor_role`, `action`, `payload`, `at` (bitácora auditable) |
 | `incidents` (clusters) | `centroid`, `category`, `triage_level`, `report_count`, `independent_sources`, `trust_score`, `first_seen`, `last_seen`, `status`, `assigned_agency` |
 | `manzanas` | `id` (código DANE o sintético), `geom POLYGON`, `barrio`, `comuna`, `seismic_zone`, `buildings_pre_1984_pct`, `population` |
@@ -311,7 +311,7 @@ Suma ponderada, guardando el desglose en `trust_breakdown` para mostrarlo en el 
 
 | Señal | Peso orientativo |
 |---|---|
-| Confiabilidad del canal (entidad oficial 0,9 · inspector/organismo de socorro 0,85 · PWA con GPS y foto 0,6 · SMS 0,5 · WhatsApp reenviado 0,3 · scraping 0,3) | 30 |
+| Confiabilidad del canal (entidad oficial 0,9 · inspector/organismo de socorro 0,85 · PWA con GPS y foto 0,6 · SMS 0,5 · WhatsApp reenviado 0,3) | 30 |
 | Fuentes independientes en el mismo incidente (saturación en 4) | 25 |
 | Consistencia física: PGA/daño estimado en la manzana vs. lo reportado | 20 |
 | Precisión geográfica (GPS > dirección > barrio > nada) | 10 |

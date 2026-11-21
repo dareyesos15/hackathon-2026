@@ -1,5 +1,9 @@
 "use client";
-/** Tablero situacional del PMU (US2). Solo en el navegador: usa sessionStorage, SSE y MapLibre. */
+/**
+ * Tablero situacional del PMU. Solo en el navegador: usa sessionStorage, SSE y MapLibre.
+ * specs/002: despacho y recorridos (US1), bandeja de alertas y alertas vigentes (US2) y capa de
+ * efectos en cascada (US3). El COE usa el mismo tablero y además aprueba alertas.
+ */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -7,14 +11,38 @@ import { Cifra } from "@/components/Cifra";
 import { DetalleIncidente } from "@/components/DetalleIncidente";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
+import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
+import { BandejaAlertas } from "@/components/BandejaAlertas";
+import {
+  CapaCascada,
+  selectionFrom,
+  type CascadeLayer,
+  type CascadeSelection,
+} from "@/components/CapaCascada";
+import { EditorAlerta } from "@/components/EditorAlerta";
 import { MatrizTriaje } from "@/components/MatrizTriaje";
+import {
+  circlePreview,
+  draftFromIncident,
+  draftFromManzana,
+  emptyDraft,
+  type AlertDraft,
+} from "@/lib/alerts";
 import { api } from "@/lib/api/client";
 import { resourcesToGeoJSON, trailsToGeoJSON } from "@/lib/dispatch";
+import type { AlertOut } from "@/lib/labels";
 import { useLiveIncidents } from "@/lib/live";
 import { clearSession, getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
 
 type FC = GeoJSON.FeatureCollection;
+type Tab = "triaje" | "alertas" | "cascada";
+
+const TAB_LABEL: Record<Tab, string> = {
+  triaje: "Triaje",
+  alertas: "Alertas",
+  cascada: "Cascada",
+};
 
 const MODE_LABEL = {
   conectando: { text: "Conectando…", cls: "bg-slate-200 text-slate-700" },
@@ -38,6 +66,84 @@ export default function TableroPmu() {
   const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
   const resourcesFc = useMemo(() => resourcesToGeoJSON(live.resources.values()), [live.resources]);
   const trailsFc = useMemo(() => trailsToGeoJSON(live.trails), [live.trails]);
+  const isCoe = session?.role === "coe";
+  const [tab, setTab] = useState<Tab>("triaje");
+  const [activeAlerts, setActiveAlerts] = useState<FC | null>(null);
+  const [draft, setDraft] = useState<AlertDraft | null>(null);
+  const [editing, setEditing] = useState<AlertOut | null>(null);
+  const [picking, setPicking] = useState(false);
+  const [cascadeOn, setCascadeOn] = useState(false);
+  const [cascade, setCascade] = useState<CascadeLayer | null>(null);
+  const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
+  const barrioNames = useMemo(
+    () => ((barrios as (FC & { names?: string[] }) | null)?.names ?? []).slice(),
+    [barrios],
+  );
+
+  // Alertas vigentes: se refrescan con cada evento `alert.changed` (o en el modo de respaldo).
+  useEffect(() => {
+    if (!token) return;
+    let active = true;
+    api.GET("/api/v1/alerts/active").then(({ data }) => {
+      if (active && data) setActiveAlerts(data as unknown as FC);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, live.alertRevision]);
+
+  // Capa de cascada: solo si está activa; se recalcula con `cascade.invalidated`.
+  useEffect(() => {
+    if (!token || !cascadeOn) return;
+    let active = true;
+    api.GET("/api/v1/map/cascade").then(({ data }) => {
+      if (active && data) setCascade(data as unknown as CascadeLayer);
+    });
+    return () => {
+      active = false;
+    };
+  }, [token, cascadeOn, live.cascadeRevision]);
+
+  const alertAreasFc = useMemo<FC | null>(() => {
+    const preview = draft?.circle ? circlePreview(draft.circle).features : [];
+    return {
+      type: "FeatureCollection",
+      features: [...(activeAlerts?.features ?? []), ...preview],
+    };
+  }, [activeAlerts, draft]);
+
+  function openEditor(next: AlertDraft, existing: AlertOut | null = null) {
+    setDraft(next);
+    setEditing(existing);
+    setPicking(false);
+    setTab("alertas");
+    select(null);
+  }
+
+  function editExisting(alert: AlertOut) {
+    openEditor(
+      {
+        type: alert.type,
+        barrios: alert.area_barrios,
+        circle: alert.area_circle
+          ? {
+              lat: alert.area_circle.lat,
+              lon: alert.area_circle.lon,
+              radius_m: alert.area_circle.radius_m,
+            }
+          : null,
+        message: alert.message,
+        channels: alert.channels,
+      },
+      alert,
+    );
+  }
+
+  function closeEditor() {
+    setDraft(null);
+    setEditing(null);
+    setPicking(false);
+  }
 
   useEffect(() => {
     if (!token) router.replace("/");
@@ -98,6 +204,10 @@ export default function TableroPmu() {
           </button>
         </nav>
       </header>
+
+      <div className="px-4 pt-2">
+        <AvisoAlerta alerts={alertsFromGeoJSON(activeAlerts)} />
+      </div>
 
       <section className="grid grid-cols-2 gap-2 px-4 py-2 md:grid-cols-5">
         {received && (
@@ -170,21 +280,89 @@ export default function TableroPmu() {
             onSelect={select}
             resources={resourcesFc}
             trails={trailsFc}
+            alertAreas={alertAreasFc}
+            cascade={cascadeOn ? cascade : null}
+            onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascade))}
+            onMapClick={
+              picking && draft
+                ? (lat, lon) => {
+                    setDraft({
+                      ...draft,
+                      barrios: [],
+                      circle: { lat, lon, radius_m: draft.circle?.radius_m ?? 300 },
+                    });
+                    setPicking(false);
+                  }
+                : undefined
+            }
           />
         </div>
-        <aside className="overflow-hidden">
-          {selectedId ? (
-            <DetalleIncidente
-              key={selectedId}
-              incidentId={selectedId}
-              incidents={incidents}
-              revision={live.revision}
-              onClose={() => select(null)}
-              onSelect={select}
-            />
-          ) : (
-            <MatrizTriaje incidents={incidents} selectedId={selectedId} onSelect={select} />
-          )}
+        <aside className="flex flex-col gap-2 overflow-hidden">
+          <nav className="flex gap-1">
+            {(Object.keys(TAB_LABEL) as Tab[]).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => {
+                  setTab(t);
+                  if (t !== "triaje") select(null);
+                }}
+                className={`flex-1 rounded px-2 py-1 text-sm font-medium ${
+                  tab === t ? "bg-slate-900 text-white" : "bg-white text-slate-700 shadow-sm"
+                }`}
+              >
+                {TAB_LABEL[t]}
+              </button>
+            ))}
+          </nav>
+          <div className="flex-1 overflow-y-auto">
+            {tab === "triaje" &&
+              (selectedId ? (
+                <DetalleIncidente
+                  key={selectedId}
+                  incidentId={selectedId}
+                  incidents={incidents}
+                  revision={live.revision}
+                  onClose={() => select(null)}
+                  onSelect={select}
+                  onCreateAlert={(incident) => openEditor(draftFromIncident(incident))}
+                />
+              ) : (
+                <MatrizTriaje incidents={incidents} selectedId={selectedId} onSelect={select} />
+              ))}
+            {tab === "alertas" &&
+              (draft ? (
+                <EditorAlerta
+                  draft={draft}
+                  existing={editing}
+                  barrioNames={barrioNames}
+                  picking={picking}
+                  onPickCenter={() => setPicking((p) => !p)}
+                  onChange={setDraft}
+                  onClose={closeEditor}
+                  onSaved={closeEditor}
+                />
+              ) : (
+                <BandejaAlertas
+                  isCoe={isCoe}
+                  revision={live.alertRevision}
+                  onEdit={editExisting}
+                  onNew={() => openEditor(emptyDraft())}
+                />
+              ))}
+            {tab === "cascada" && (
+              <CapaCascada
+                enabled={cascadeOn}
+                onToggle={(on) => {
+                  setCascadeOn(on);
+                  if (!on) setCascadeSel(null);
+                }}
+                layer={cascade}
+                selected={cascadeSel}
+                onCreateAlert={(sel) => openEditor(draftFromManzana(sel))}
+              />
+            )}
+          </div>
         </aside>
       </main>
     </div>

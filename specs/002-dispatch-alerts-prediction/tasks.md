@@ -125,12 +125,12 @@ público y SMS a cuadrillas, con advertencia de desinformación y bitácora.
 - [X] T039 [US2] Agregar los esquemas `AlertIn`, `AlertPatchIn`, `AlertDecisionIn`, `AlertOut`, `AlertEventOut` y el GeoJSON público de alertas vigentes (contracts/rest-api.md §Alertas) en `services/api/app/schemas.py`
 - [X] T040 [US2] Implementar `POST/GET /alerts`, `PATCH /alerts/{id}`, `GET /alerts/{id}/events`, `POST /alerts/{id}/approve|reject|cancel` (403 con `code: coe_only`) y `GET /alerts/active`, publicando `alert.changed`, y registrar el router en `services/api/app/routers/alerts.py` y `services/api/app/main.py`
 - [X] T041 [US2] Exportar el OpenAPI, regenerar los tipos TS y actualizar el snapshot del contrato con `scripts/export_openapi.py` → `apps/web/lib/api/openapi.json`, `apps/web/lib/api/schema.d.ts` y `services/api/tests/contract/test_openapi_snapshot.py`
-- [ ] T042 [US2] Manejar `alert.changed` en el flujo en vivo, con respaldo por polling a `GET /alerts?status=borrador`, en `apps/web/lib/live.ts`
+- [X] T042 [US2] Manejar `alert.changed` en el flujo en vivo, con respaldo por polling a `GET /alerts?status=borrador`, en `apps/web/lib/live.ts`
 - [X] T043 [P] [US2] Crear `EditorAlerta` (tipo, área por barrios o círculo con centro elegido en el mapa y radio, mensaje con contador de 160 caracteres al elegir SMS, canales, confirmación de señales de desinformación, precarga desde incidente o manzana) en `apps/web/components/EditorAlerta.tsx`
 - [X] T044 [P] [US2] Crear `BandejaAlertas` (borradores con versión; solo el COE ve "Aprobar", "Rechazar" con motivo y "Anular"; manejo de `409 version_conflict` recargando la versión nueva) en `apps/web/components/BandejaAlertas.tsx`
 - [X] T045 [P] [US2] Crear `AvisoAlerta` (alerta vigente destacada con tipo, mensaje, hora de emisión y etiqueta SIMULADO en los envíos) en `apps/web/components/AvisoAlerta.tsx`
-- [ ] T046 [US2] Agregar a `Mapa` la capa de áreas de alerta vigentes y un modo "elegir centro" por clic para el círculo del editor, en `apps/web/components/Mapa.tsx`
-- [ ] T047 [US2] Integrar `EditorAlerta`, `BandejaAlertas` (visible para el COE) y `AvisoAlerta` en el tablero, y el botón "Crear alerta desde este incidente" en el detalle, en `apps/web/app/pmu/TableroPmu.tsx` y `apps/web/components/DetalleIncidente.tsx`
+- [X] T046 [US2] Agregar a `Mapa` la capa de áreas de alerta vigentes y un modo "elegir centro" por clic para el círculo del editor, en `apps/web/components/Mapa.tsx`
+- [X] T047 [US2] Integrar `EditorAlerta`, `BandejaAlertas` (visible para el COE) y `AvisoAlerta` en el tablero, y el botón "Crear alerta desde este incidente" en el detalle, en `apps/web/app/pmu/TableroPmu.tsx` y `apps/web/components/DetalleIncidente.tsx`
 - [ ] T048 [US2] Mostrar las alertas vigentes (área sombreada y `AvisoAlerta`) consultando `GET /alerts/active` cada 4 s en `apps/web/app/mapa/MapaPublico.tsx`
 - [ ] T049 [P] [US2] Pruebas `vitest` del contador de caracteres para SMS y de la construcción del cuerpo `area` (barrios o círculo) en `apps/web/tests/alerts.test.ts`
 
@@ -160,9 +160,9 @@ precargada.
 - [X] T055 [US3] Implementar `POST /sensors/rain`, `GET /sensors/rain/latest` y `GET /map/cascade`, y registrar el router en `services/api/app/routers/cascade.py` y `services/api/app/main.py`
 - [X] T056 [US3] Publicar `cascade.invalidated` (como máximo uno cada 3 s) al procesar reportes de `dano_estructural`, `colapso_estructura` o `deslizamiento`, en `services/api/app/routers/ingest.py`
 - [X] T057 [US3] Exportar el OpenAPI, regenerar los tipos TS y actualizar el snapshot del contrato con `scripts/export_openapi.py` → `apps/web/lib/api/openapi.json`, `apps/web/lib/api/schema.d.ts` y `services/api/tests/contract/test_openapi_snapshot.py`
-- [ ] T058 [US3] Manejar `cascade.invalidated` en el flujo en vivo (refrescar la capa como máximo una vez cada 3 s) en `apps/web/lib/live.ts`
+- [X] T058 [US3] Manejar `cascade.invalidated` en el flujo en vivo (refrescar la capa como máximo una vez cada 3 s) en `apps/web/lib/live.ts`
 - [X] T059 [P] [US3] Crear `CapaCascada` (interruptor, leyenda de 4 niveles con etiqueta SIMULADO, control de lluvia 0–60 mm que publica `POST /sensors/rain`, desglose de la manzana elegida, botón "Crear alerta preventiva" que abre `EditorAlerta` con tipo `deslizamiento` y círculo centrado en la manzana) en `apps/web/components/CapaCascada.tsx`
-- [ ] T060 [US3] Agregar a `Mapa` la capa de cascada (color por nivel, clic para elegir manzana) e integrar `CapaCascada` en el tablero, en `apps/web/components/Mapa.tsx` y `apps/web/app/pmu/TableroPmu.tsx`
+- [X] T060 [US3] Agregar a `Mapa` la capa de cascada (color por nivel, clic para elegir manzana) e integrar `CapaCascada` en el tablero, en `apps/web/components/Mapa.tsx` y `apps/web/app/pmu/TableroPmu.tsx`
 - [ ] T061 [P] [US3] Agregar la opción `--rain` (curva de lluvia SIMULADA publicada en `POST /sensors/rain` durante la reproducción) en `scripts/replay_scenario.py`
 
 **Checkpoint**: US3 funciona sola: [quickstart.md](quickstart.md) §Escenario 3 pasa completo.

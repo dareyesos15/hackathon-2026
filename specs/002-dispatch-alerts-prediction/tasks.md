@@ -39,7 +39,7 @@ cascada) para implementarlas y probarlas por separado.
 
 - [X] T001 Agregar a `Settings` las claves `simulate_tracks`, `track_tick_s`, `track_speedup`, `routing_speed_kmh`, `routing_tortuosity`, `unattended_alert_min` y el submodelo `CascadeSettings` (pesos 35/30/15/20, saturaciones 45°/40 mm/3 reportes, radio 300 m, ventana 6 h, cortes 25/50/75) según la tabla "Configuración nueva" de data-model.md, en `services/api/app/config.py`
 - [X] T002 [P] Documentar `SIMULATE_TRACKS`, `TRACK_SPEEDUP` y `UNATTENDED_ALERT_MIN` con sus valores por defecto en `.env.example`
-- [ ] T003 [P] Crear el catálogo SIMULADO de 10 agencias y 24 recursos (reparto de research R1, bases en coordenadas aproximadas de Manizales, `source: "SIMULADO"`) con los campos data-model.md `Agency.code`, `Agency.name`, `Agency.emre_function`, `Resource.code`, `Resource.type`, `Resource.label`, `Resource.base_geom` en `data/seed/resources.json`
+- [X] T003 [P] Crear el catálogo SIMULADO de 10 agencias y 24 recursos (reparto de research R1, bases en coordenadas aproximadas de Manizales, `source: "SIMULADO"`) con los campos data-model.md `Agency.code`, `Agency.name`, `Agency.emre_function`, `Resource.code`, `Resource.type`, `Resource.label`, `Resource.base_geom` en `data/seed/resources.json`
 
 ---
 

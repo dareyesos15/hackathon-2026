@@ -1,0 +1,250 @@
+{
+  "source": "SIMULADO",
+  "description": "Catálogo SIMULADO de agencias y recursos para el despacho (specs/002, research R1). Bases en ubicaciones aproximadas de Manizales.",
+  "agencies": [
+    {
+      "code": "BOMBEROS",
+      "name": "Cuerpo Oficial de Bomberos",
+      "emre_function": "salvamento_seguridad"
+    },
+    {
+      "code": "DEFENSA_CIVIL",
+      "name": "Defensa Civil Colombiana",
+      "emre_function": "salvamento_seguridad"
+    },
+    {
+      "code": "POLICIA",
+      "name": "Policía Metropolitana de Manizales",
+      "emre_function": "salvamento_seguridad"
+    },
+    {
+      "code": "CRUZ_ROJA",
+      "name": "Cruz Roja Colombiana",
+      "emre_function": "salud_saneamiento"
+    },
+    {
+      "code": "SEC_SALUD",
+      "name": "Secretaría de Salud",
+      "emre_function": "salud_saneamiento"
+    },
+    {
+      "code": "SEC_DESARROLLO_SOCIAL",
+      "name": "Secretaría de Desarrollo Social",
+      "emre_function": "asistencia_social"
+    },
+    {
+      "code": "SEC_INFRAESTRUCTURA",
+      "name": "Secretaría de Infraestructura",
+      "emre_function": "infraestructura_servicios"
+    },
+    {
+      "code": "AGUAS_MANIZALES",
+      "name": "Aguas de Manizales",
+      "emre_function": "infraestructura_servicios"
+    },
+    {
+      "code": "CHEC",
+      "name": "CHEC (energía)",
+      "emre_function": "infraestructura_servicios"
+    },
+    {
+      "code": "EFIGAS",
+      "name": "Efigas (gas)",
+      "emre_function": "infraestructura_servicios"
+    }
+  ],
+  "resources": [
+    {
+      "code": "BOM-M1",
+      "agency": "BOMBEROS",
+      "type": "maquina_extincion",
+      "label": "Máquina 1 · Estación Central",
+      "lat": 5.0682,
+      "lon": -75.516
+    },
+    {
+      "code": "BOM-M2",
+      "agency": "BOMBEROS",
+      "type": "maquina_extincion",
+      "label": "Máquina 2 · Estación Chipre",
+      "lat": 5.0712,
+      "lon": -75.527
+    },
+    {
+      "code": "BOM-M3",
+      "agency": "BOMBEROS",
+      "type": "maquina_extincion",
+      "label": "Máquina 3 · Estación Palermo",
+      "lat": 5.0548,
+      "lon": -75.4885
+    },
+    {
+      "code": "BOM-R1",
+      "agency": "BOMBEROS",
+      "type": "cuadrilla_rescate",
+      "label": "Rescate 1 · Estación Central",
+      "lat": 5.0684,
+      "lon": -75.5163
+    },
+    {
+      "code": "BOM-R2",
+      "agency": "BOMBEROS",
+      "type": "cuadrilla_rescate",
+      "label": "Rescate 2 · Estación La Enea",
+      "lat": 5.0305,
+      "lon": -75.466
+    },
+    {
+      "code": "BOM-R3",
+      "agency": "BOMBEROS",
+      "type": "cuadrilla_rescate",
+      "label": "Rescate 3 · Estación Palermo",
+      "lat": 5.0546,
+      "lon": -75.4882
+    },
+    {
+      "code": "DC-R1",
+      "agency": "DEFENSA_CIVIL",
+      "type": "cuadrilla_rescate",
+      "label": "Socorristas 1 · Sede Fundadores",
+      "lat": 5.065,
+      "lon": -75.505
+    },
+    {
+      "code": "DC-R2",
+      "agency": "DEFENSA_CIVIL",
+      "type": "cuadrilla_rescate",
+      "label": "Socorristas 2 · Sede Fundadores",
+      "lat": 5.0652,
+      "lon": -75.5053
+    },
+    {
+      "code": "DC-R3",
+      "agency": "DEFENSA_CIVIL",
+      "type": "cuadrilla_rescate",
+      "label": "Socorristas 3 · Sede La Sultana",
+      "lat": 5.0424,
+      "lon": -75.4875
+    },
+    {
+      "code": "POL-P1",
+      "agency": "POLICIA",
+      "type": "patrulla",
+      "label": "Patrulla 1 · Estación Centro",
+      "lat": 5.0692,
+      "lon": -75.518
+    },
+    {
+      "code": "POL-P2",
+      "agency": "POLICIA",
+      "type": "patrulla",
+      "label": "Patrulla 2 · Estación Milán",
+      "lat": 5.0507,
+      "lon": -75.4828
+    },
+    {
+      "code": "CR-A1",
+      "agency": "CRUZ_ROJA",
+      "type": "ambulancia",
+      "label": "Ambulancia 1 · Sede Belén",
+      "lat": 5.0641,
+      "lon": -75.5004
+    },
+    {
+      "code": "CR-A2",
+      "agency": "CRUZ_ROJA",
+      "type": "ambulancia",
+      "label": "Ambulancia 2 · Sede Belén",
+      "lat": 5.0643,
+      "lon": -75.5006
+    },
+    {
+      "code": "CR-A3",
+      "agency": "CRUZ_ROJA",
+      "type": "ambulancia",
+      "label": "Ambulancia 3 · Base Villa Pilar",
+      "lat": 5.0612,
+      "lon": -75.521
+    },
+    {
+      "code": "CR-L1",
+      "agency": "CRUZ_ROJA",
+      "type": "vehiculo_logistico",
+      "label": "Logística 1 · Sede Belén",
+      "lat": 5.0639,
+      "lon": -75.5002
+    },
+    {
+      "code": "SS-A1",
+      "agency": "SEC_SALUD",
+      "type": "ambulancia",
+      "label": "Ambulancia SS 1 · Hospital Santa Sofía",
+      "lat": 5.0638,
+      "lon": -75.4992
+    },
+    {
+      "code": "SS-A2",
+      "agency": "SEC_SALUD",
+      "type": "ambulancia",
+      "label": "Ambulancia SS 2 · Hospital Santa Sofía",
+      "lat": 5.0636,
+      "lon": -75.499
+    },
+    {
+      "code": "DS-L1",
+      "agency": "SEC_DESARROLLO_SOCIAL",
+      "type": "vehiculo_logistico",
+      "label": "Ayuda humanitaria 1 · Coliseo Mayor",
+      "lat": 5.0612,
+      "lon": -75.5048
+    },
+    {
+      "code": "DS-L2",
+      "agency": "SEC_DESARROLLO_SOCIAL",
+      "type": "vehiculo_logistico",
+      "label": "Ayuda humanitaria 2 · Coliseo Mayor",
+      "lat": 5.0614,
+      "lon": -75.505
+    },
+    {
+      "code": "INF-T1",
+      "agency": "SEC_INFRAESTRUCTURA",
+      "type": "cuadrilla_tecnica",
+      "label": "Evaluación estructural 1 · Alcaldía",
+      "lat": 5.0688,
+      "lon": -75.5168
+    },
+    {
+      "code": "INF-T2",
+      "agency": "SEC_INFRAESTRUCTURA",
+      "type": "cuadrilla_tecnica",
+      "label": "Maquinaria vías 1 · Plantel Galán",
+      "lat": 5.0748,
+      "lon": -75.5205
+    },
+    {
+      "code": "AM-T1",
+      "agency": "AGUAS_MANIZALES",
+      "type": "cuadrilla_tecnica",
+      "label": "Cuadrilla acueducto 1 · Sede Aranjuez",
+      "lat": 5.0628,
+      "lon": -75.5072
+    },
+    {
+      "code": "CHEC-T1",
+      "agency": "CHEC",
+      "type": "cuadrilla_tecnica",
+      "label": "Cuadrilla eléctrica 1 · Sede Estrella",
+      "lat": 5.0562,
+      "lon": -75.4972
+    },
+    {
+      "code": "EFI-T1",
+      "agency": "EFIGAS",
+      "type": "cuadrilla_tecnica",
+      "label": "Cuadrilla gas 1 · Sede Palogrande",
+      "lat": 5.0575,
+      "lon": -75.493
+    }
+  ]
+}

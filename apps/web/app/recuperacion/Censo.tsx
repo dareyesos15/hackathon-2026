@@ -334,12 +334,18 @@ export function Censo({ manzanas, tick }: { manzanas: ManzanaRef[]; tick: number
                   {h.housing_status && (
                     <span>Vivienda {HOUSING_STATUS_LABEL[h.housing_status].toLowerCase()}</span>
                   )}
-                  {h.age_0_5 + h.age_6_17 + h.age_18_59 + h.age_60_plus > 0 && (
-                    <span>
-                      Edades: {h.age_0_5} de 0–5 · {h.age_6_17} de 6–17 · {h.age_18_59} de 18–59 ·{" "}
-                      {h.age_60_plus} de 60+
-                    </span>
-                  )}
+                  {(() => {
+                    const known = h.age_0_5 + h.age_6_17 + h.age_18_59 + h.age_60_plus;
+                    if (known === 0) return <span>Edades por completar</span>;
+                    return (
+                      <span>
+                        Edades: {h.age_0_5} de 0–5 · {h.age_6_17} de 6–17 · {h.age_18_59} de 18–59 ·{" "}
+                        {h.age_60_plus} de 60+
+                        {known < h.members_count &&
+                          ` (faltan ${h.members_count - known} por completar en la planilla)`}
+                      </span>
+                    );
+                  })()}
                   {h.vulnerability_score > 0 && (
                     <span className="rounded bg-amber-100 px-1.5 text-amber-900">
                       Prioridad {h.vulnerability_score}

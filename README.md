@@ -139,6 +139,7 @@ docker compose exec api python scripts/seed_recovery_example.py
 # SMS reales sin internet: un celular Android con SIM conectado por USB como pasarela
 # (preparación y conexión en docs/pasarela_sms.md).
 powershell -ExecutionPolicy Bypass -File scripts\preparar_pasarela_sms.ps1
+bash scripts/preparar_pasarela_sms.sh            # en macOS o Linux
 
 # Fuentes públicas del tablero de recuperación (USGS, SECOP II, CDIAC) — con internet, en el host.
 # Guarda copias fechadas con huella SHA-256 en data/sources/; la API las lee sin internet.

@@ -34,6 +34,17 @@ git pull
 powershell -ExecutionPolicy Bypass -File scripts\preparar_pasarela_sms.ps1
 ```
 
+**En una Mac** (Intel o Apple Silicon) o en Linux, con Docker Desktop abierto:
+
+```bash
+git pull
+bash scripts/preparar_pasarela_sms.sh
+```
+
+Requisitos en la Mac: [Homebrew](https://brew.sh) y `uv` (`brew install uv`). El script instala
+`adb` con Homebrew si falta (`brew install --cask android-platform-tools`). macOS no necesita
+controladores USB para Android.
+
 El script hace todo lo demás y se puede repetir sin problema:
 
 | Paso del script | Qué hace | Qué tiene que hacer usted |

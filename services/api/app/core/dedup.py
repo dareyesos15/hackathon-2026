@@ -61,13 +61,18 @@ PRECISION_RANK: dict[GeoPrecision, int] = {
 NO_GEO_THRESHOLD = 0.5
 
 _ADDRESS_RE = re.compile(
-    r"(?<![a-z0-9])(calle|carrera|avenida [a-z]+|diagonal|transversal) (\d{1,3}[a-z]?)(?![0-9])"
+    r"(?<![a-z0-9])(calle|carrera|avenida|diagonal|transversal) (\d{1,3}[a-z]?)(?![0-9])"
 )
+# Avenidas con nombre y sin número ("avenida Paralela con calle 53").
+_NAMED_AVENUE_RE = re.compile(r"(?<![a-z0-9])avenida ([a-z]{4,})(?! \d)")
 
 
 def address_signature(text: str) -> frozenset[str]:
     """Cruce de vías mencionado ("calle 43 con carrera 23" → {calle 43, carrera 23})."""
-    return frozenset(f"{kind} {num}" for kind, num in _ADDRESS_RE.findall(normalize(text)))
+    norm = normalize(text)
+    parts = {f"{kind} {num}" for kind, num in _ADDRESS_RE.findall(norm)}
+    parts |= {f"avenida {name}" for name in _NAMED_AVENUE_RE.findall(norm)}
+    return frozenset(parts)
 
 
 def address_relation(report_text: str, candidate_texts: Sequence[str]) -> str:

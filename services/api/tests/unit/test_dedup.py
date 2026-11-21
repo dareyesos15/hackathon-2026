@@ -127,6 +127,13 @@ def test_address_signature() -> None:
     assert sig == frozenset({"carrera 23", "calle 43"})
 
 
+def test_named_avenue_signature() -> None:
+    sig = address_signature("colapsó la casa de la avenida Paralela con calle 60, Avenida Paralela")
+    assert sig == frozenset({"avenida paralela", "calle 60"})
+    other = address_signature("el local de la avenida Paralela con calle 53")
+    assert sig != other
+
+
 def test_same_intersection_joins_despite_coarse_location() -> None:
     cand = candidate(
         category=Category.heridos,

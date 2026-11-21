@@ -30,6 +30,7 @@ import {
 } from "@/lib/alerts";
 import { api } from "@/lib/api/client";
 import { resourcesToGeoJSON, trailsToGeoJSON } from "@/lib/dispatch";
+import { useOfflineData } from "@/lib/offline";
 import type { AlertOut } from "@/lib/labels";
 import { useLiveIncidents } from "@/lib/live";
 import { clearSession, getSession } from "@/lib/session";
@@ -58,7 +59,11 @@ export default function TableroPmu() {
   const router = useRouter();
   const [session] = useState(getSession);
   const [selectedId, setSelectedId] = useState<string | null>(initialSelection);
-  const [barrios, setBarrios] = useState<FC | null>(null);
+  // Mapa base: guardado en el dispositivo para seguir viéndolo sin conexión.
+  const barrios = useOfflineData<FC>(
+    "barrios",
+    async () => (await api.GET("/api/v1/geo/barrios")).data as unknown as FC | undefined,
+  ).data;
   const [manzanas, setManzanas] = useState<FC | null>(null);
   const token = session?.role === "operador_pmu" || session?.role === "coe" ? session.token : null;
   const live = useLiveIncidents(token);
@@ -73,7 +78,12 @@ export default function TableroPmu() {
   const [editing, setEditing] = useState<AlertOut | null>(null);
   const [picking, setPicking] = useState(false);
   const [cascadeOn, setCascadeOn] = useState(false);
-  const [cascade, setCascade] = useState<CascadeLayer | null>(null);
+  const cascadeData = useOfflineData<CascadeLayer>(
+    "cascade",
+    async () => (await api.GET("/api/v1/map/cascade")).data as CascadeLayer | undefined,
+    { enabled: Boolean(token) && cascadeOn, refreshKey: live.cascadeRevision },
+  );
+  const cascade = cascadeData.data;
   const [cascadeSel, setCascadeSel] = useState<CascadeSelection | null>(null);
   const barrioNames = useMemo(
     () => ((barrios as (FC & { names?: string[] }) | null)?.names ?? []).slice(),
@@ -91,18 +101,6 @@ export default function TableroPmu() {
       active = false;
     };
   }, [token, live.alertRevision]);
-
-  // Capa de cascada: solo si está activa; se recalcula con `cascade.invalidated`.
-  useEffect(() => {
-    if (!token || !cascadeOn) return;
-    let active = true;
-    api.GET("/api/v1/map/cascade").then(({ data }) => {
-      if (active && data) setCascade(data as unknown as CascadeLayer);
-    });
-    return () => {
-      active = false;
-    };
-  }, [token, cascadeOn, live.cascadeRevision]);
 
   const alertAreasFc = useMemo<FC | null>(() => {
     const preview = draft?.circle ? circlePreview(draft.circle).features : [];
@@ -148,12 +146,6 @@ export default function TableroPmu() {
   useEffect(() => {
     if (!token) router.replace("/ingresar/");
   }, [token, router]);
-
-  useEffect(() => {
-    api.GET("/api/v1/geo/barrios").then(({ data }) => {
-      if (data) setBarrios(data as unknown as FC);
-    });
-  }, []);
 
   // Capa por manzana: como máximo una consulta cada 5 s mientras llegan reportes.
   useEffect(() => {
@@ -360,6 +352,8 @@ export default function TableroPmu() {
                 layer={cascade}
                 selected={cascadeSel}
                 onCreateAlert={(sel) => openEditor(draftFromManzana(sel))}
+                offline={cascadeData.offline}
+                savedAt={cascadeData.savedAt}
               />
             )}
           </div>

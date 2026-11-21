@@ -318,12 +318,21 @@ async def dispatch_plan(
     point = await incident_point(session, incident)
     if point is None:
         return []
+    types = dict((await session.execute(select(Resource.id, Resource.type))).tuples().all())
     units = []
     for view in await resource_views(session):
         if view.status != ResourceStatus.disponible:
             continue
         route = routing.estimate(view.lat, view.lon, point[0], point[1])
-        units.append(Unit(view.id, view.agency_code, route.distance_m, route.duration_s / 60))
+        units.append(
+            Unit(
+                view.id,
+                view.agency_code,
+                route.distance_m,
+                route.duration_s / 60,
+                types[view.id].value,
+            )
+        )
     units.sort(key=lambda u: u.distance_m)
     return build_plan(recipients, units, await active_agency_codes(session, incident.id))
 

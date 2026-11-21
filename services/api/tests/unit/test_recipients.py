@@ -145,3 +145,11 @@ def test_plan_skips_agencies_already_dispatched_and_flags_missing() -> None:
     assert by_agency["BOMBEROS"].already_dispatched and by_agency["BOMBEROS"].unit is None
     assert by_agency["EFIGAS"].unit is None and not by_agency["EFIGAS"].already_dispatched
     assert by_agency["POLICIA"].unit is not None
+
+
+def test_plan_prefers_the_resource_type_of_the_emre_task() -> None:
+    routing = _route(Category.heridos, triage=TriageLevel.medio)
+    truck = Unit(uuid.uuid4(), "CRUZ_ROJA", 200, 1, "vehiculo_logistico")
+    ambulance = Unit(uuid.uuid4(), "CRUZ_ROJA", 900, 3, "ambulancia")
+    plan = build_plan(routing, [truck, ambulance], [])
+    assert plan[0].unit == ambulance

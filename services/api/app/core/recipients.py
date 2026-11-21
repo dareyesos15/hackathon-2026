@@ -317,6 +317,25 @@ class Unit:
     agency: str
     distance_m: float
     eta_min: float
+    type: str = ""
+
+
+# Tipo de recurso preferido según la tarea EMRE (prefijo); si no hay, cualquiera de la agencia.
+TASK_RESOURCE: dict[str, tuple[str, ...]] = {
+    "1.1": ("patrulla",),
+    "1.2": ("cuadrilla_rescate",),
+    "1.3": ("maquina_extincion",),
+    "1.4": ("maquina_extincion", "cuadrilla_rescate"),
+    "1.5": ("patrulla", "cuadrilla_rescate"),
+    "2.1": ("ambulancia",),
+    "2.2": ("ambulancia",),
+    "3.": ("vehiculo_logistico",),
+    "4.": ("cuadrilla_tecnica",),
+}
+
+
+def preferred_types(task: str) -> tuple[str, ...]:
+    return next((types for prefix, types in TASK_RESOURCE.items() if task.startswith(prefix)), ())
 
 
 @dataclass(frozen=True)
@@ -344,6 +363,9 @@ def build_plan(
             continue
         wanted = routing.lead_units if recipient.role == RecipientRole.lider else 1
         pool = [u for u in units if u.agency == recipient.agency and u.resource_id not in taken]
+        preferred = preferred_types(recipient.task)
+        # Primero el tipo adecuado a la tarea (más cercano), luego los demás por cercanía.
+        pool.sort(key=lambda u: u.type not in preferred)
         if not pool:
             lines.append(PlanLine(recipient, None, False))
             continue

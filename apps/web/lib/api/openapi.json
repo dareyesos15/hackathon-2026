@@ -1163,6 +1163,37 @@
         "title": "DispatchPatchIn",
         "type": "object"
       },
+      "DispatchPlanIn": {
+        "description": "Confirma el plan multiagencia; `resource_ids` permite despachar solo parte de él.",
+        "properties": {
+          "client_uuid": {
+            "format": "uuid",
+            "title": "Client Uuid",
+            "type": "string"
+          },
+          "resource_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "maxItems": 8,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resource Ids"
+          }
+        },
+        "required": [
+          "client_uuid"
+        ],
+        "title": "DispatchPlanIn",
+        "type": "object"
+      },
       "DispatchStatus": {
         "enum": [
           "en_camino",
@@ -1539,6 +1570,69 @@
         "title": "HouseholdOut",
         "type": "object"
       },
+      "InboxItem": {
+        "properties": {
+          "dispatched": {
+            "description": "La agencia ya tiene un recurso en camino o en sitio",
+            "title": "Dispatched",
+            "type": "boolean"
+          },
+          "emre_task": {
+            "title": "Emre Task",
+            "type": "string"
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IncidentSummary"
+          },
+          "notify_coe": {
+            "title": "Notify Coe",
+            "type": "boolean"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/RecipientRole"
+          }
+        },
+        "required": [
+          "incident",
+          "role",
+          "emre_task",
+          "reason",
+          "dispatched",
+          "notify_coe"
+        ],
+        "title": "InboxItem",
+        "type": "object"
+      },
+      "InboxList": {
+        "properties": {
+          "agency": {
+            "$ref": "#/components/schemas/AgencyRef"
+          },
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/InboxItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "agency",
+          "items",
+          "cutoff_at"
+        ],
+        "title": "InboxList",
+        "type": "object"
+      },
       "IncidentDetail": {
         "properties": {
           "assigned_agency": {
@@ -1672,6 +1766,16 @@
             "title": "Reports",
             "type": "array"
           },
+          "routing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IncidentRouting"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "source": {
             "title": "Source",
             "type": "string"
@@ -1763,6 +1867,83 @@
           "cutoff_at"
         ],
         "title": "IncidentList",
+        "type": "object"
+      },
+      "IncidentRouting": {
+        "description": "A quién le llega el incidente y plan de despacho multiagencia propuesto (SIMULADO).",
+        "properties": {
+          "coe_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coe Reason"
+          },
+          "held": {
+            "description": "Aviso retenido: posible falso sin riesgo vital",
+            "title": "Held",
+            "type": "boolean"
+          },
+          "hold_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold Reason"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "notify_coe": {
+            "title": "Notify Coe",
+            "type": "boolean"
+          },
+          "plan": {
+            "items": {
+              "$ref": "#/components/schemas/PlanLineOut"
+            },
+            "title": "Plan",
+            "type": "array"
+          },
+          "plan_resource_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Plan Resource Ids",
+            "type": "array"
+          },
+          "recipients": {
+            "items": {
+              "$ref": "#/components/schemas/RecipientOut"
+            },
+            "title": "Recipients",
+            "type": "array"
+          }
+        },
+        "required": [
+          "recipients",
+          "notify_coe",
+          "coe_reason",
+          "held",
+          "hold_reason",
+          "notes",
+          "plan",
+          "plan_resource_ids"
+        ],
+        "title": "IncidentRouting",
         "type": "object"
       },
       "IncidentStatus": {
@@ -2265,6 +2446,44 @@
         "title": "MetricUnit",
         "type": "string"
       },
+      "PlanLineOut": {
+        "properties": {
+          "agency": {
+            "$ref": "#/components/schemas/AgencyRef"
+          },
+          "already_dispatched": {
+            "title": "Already Dispatched",
+            "type": "boolean"
+          },
+          "candidate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CandidateOut"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Recurso más cercano propuesto; null si no hay o si la agencia ya fue"
+          },
+          "emre_task": {
+            "title": "Emre Task",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/RecipientRole"
+          }
+        },
+        "required": [
+          "agency",
+          "role",
+          "emre_task",
+          "candidate",
+          "already_dispatched"
+        ],
+        "title": "PlanLineOut",
+        "type": "object"
+      },
       "PropertyList": {
         "properties": {
           "cutoff_at": {
@@ -2398,6 +2617,58 @@
         ],
         "title": "RainOut",
         "type": "object"
+      },
+      "RecipientOut": {
+        "description": "Actor que debe recibir la información del incidente (EMRE, anexos I–VI).",
+        "properties": {
+          "agency": {
+            "$ref": "#/components/schemas/AgencyRef"
+          },
+          "dispatched": {
+            "description": "La agencia ya tiene un despacho activo en el incidente",
+            "title": "Dispatched",
+            "type": "boolean"
+          },
+          "emre_function": {
+            "$ref": "#/components/schemas/EmreFunction"
+          },
+          "emre_function_label": {
+            "title": "Emre Function Label",
+            "type": "string"
+          },
+          "emre_task": {
+            "title": "Emre Task",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/RecipientRole"
+          }
+        },
+        "required": [
+          "agency",
+          "role",
+          "emre_function",
+          "emre_function_label",
+          "emre_task",
+          "reason",
+          "dispatched"
+        ],
+        "title": "RecipientOut",
+        "type": "object"
+      },
+      "RecipientRole": {
+        "description": "Papel de una agencia frente a un incidente (app/core/recipients.py).",
+        "enum": [
+          "lider",
+          "apoyo",
+          "informada"
+        ],
+        "title": "RecipientRole",
+        "type": "string"
       },
       "RecoverySummary": {
         "properties": {
@@ -4211,6 +4482,79 @@
         ]
       }
     },
+    "/api/v1/agencies/{agency_id}/inbox": {
+      "get": {
+        "description": "Incidentes abiertos que le llegan a la agencia según las reglas EMRE, con su papel.\n\nLos avisos de posibles falsos sin riesgo vital quedan retenidos hasta que el PMU los\nverifique; los de riesgo vital llegan siempre (CLAUDE.md §0.6).",
+        "operationId": "agency_inbox_api_v1_agencies__agency_id__inbox_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agency_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Agency Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Incluir avisos retenidos",
+            "in": "query",
+            "name": "include_held",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Incluir avisos retenidos",
+              "title": "Include Held",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Agency Inbox",
+        "tags": [
+          "despacho"
+        ]
+      }
+    },
     "/api/v1/alerts": {
       "get": {
         "operationId": "list_alerts_api_v1_alerts_get",
@@ -5281,6 +5625,68 @@
         "summary": "Patch Incident",
         "tags": [
           "revisión humana"
+        ]
+      }
+    },
+    "/api/v1/incidents/{incident_id}/dispatch-plan": {
+      "post": {
+        "description": "Genera el despacho multiagencia propuesto: un recurso por agencia líder y de apoyo.\n\nEs la confirmación humana del plan (la IA solo sugiere). Idempotente por `client_uuid`.",
+        "operationId": "post_dispatch_plan_api_v1_incidents__incident_id__dispatch_plan_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchPlanIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmación repetida: despachos existentes"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Dispatch Plan",
+        "tags": [
+          "despacho"
         ]
       }
     },

@@ -22,6 +22,7 @@ import {
 } from "@/lib/labels";
 import { IconoCategoria } from "./IconoCategoria";
 import { PanelDespacho } from "./PanelDespacho";
+import { PanelDestinatarios } from "./PanelDestinatarios";
 
 type Action = "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
 
@@ -304,6 +305,7 @@ export function DetalleIncidente({
         {error && <p className="mt-2 text-xs text-senal">{error}</p>}
       </section>
 
+      <PanelDestinatarios detail={detail} onChanged={load} />
       <PanelDespacho detail={detail} onChanged={load} />
 
       {onCreateAlert && (

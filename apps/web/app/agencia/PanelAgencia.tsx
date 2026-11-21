@@ -1,6 +1,7 @@
 "use client";
 /**
- * Pantalla de la agencia de respuesta (specs/002 US1, FR-010): despachos de su agencia y
+ * Pantalla de la agencia de respuesta (specs/002 US1, FR-010): avisos de los incidentes que le
+ * llegan según las reglas EMRE (líder, apoyo o informada), despachos de su agencia y
  * actualización de estado (llegada, atención finalizada, fuera de servicio con motivo).
  * En la demo, una sola credencial `agencia` puede actuar por cualquier agencia (spec, Supuestos).
  * Consulta cada 3 s; el cierre del incidente lo decide el PMU, no la agencia.
@@ -14,10 +15,16 @@ import { api } from "@/lib/api/client";
 import { isActive } from "@/lib/dispatch";
 import { formatDateTime, formatNumber, formatTime } from "@/lib/format";
 import {
+  CATEGORY_LABEL,
   DISPATCH_STATUS_LABEL,
   EMRE_FUNCTION_LABEL,
+  RECIPIENT_ROLE_LABEL,
+  RECIPIENT_ROLE_STYLE,
+  TRIAGE_COLOR,
+  TRIAGE_LABEL,
   type AgencyOut,
   type DispatchOut,
+  type InboxItem,
 } from "@/lib/labels";
 import { clearSession, getSession } from "@/lib/session";
 
@@ -40,6 +47,7 @@ export default function PanelAgencia() {
   const [agencies, setAgencies] = useState<AgencyOut[]>([]);
   const [agencyId, setAgencyId] = useState<string>(storedAgency);
   const [dispatches, setDispatches] = useState<DispatchOut[]>([]);
+  const [inbox, setInbox] = useState<InboxItem[]>([]);
   const [cutoff, setCutoff] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -56,14 +64,23 @@ export default function PanelAgencia() {
 
   const fetchDispatches = useCallback(
     () =>
-      api
-        .GET("/api/v1/dispatches", { params: { query: { agency_id: agencyId } } })
-        .then(({ data }) => {
-          if (data) {
-            setDispatches(data.items);
-            setCutoff(data.cutoff_at);
-          }
-        }),
+      Promise.all([
+        api
+          .GET("/api/v1/dispatches", { params: { query: { agency_id: agencyId } } })
+          .then(({ data }) => {
+            if (data) {
+              setDispatches(data.items);
+              setCutoff(data.cutoff_at);
+            }
+          }),
+        api
+          .GET("/api/v1/agencies/{agency_id}/inbox", {
+            params: { path: { agency_id: agencyId }, query: { limit: 50 } },
+          })
+          .then(({ data }) => {
+            if (data) setInbox(data.items);
+          }),
+      ]),
     [agencyId],
   );
 
@@ -148,6 +165,64 @@ export default function PanelAgencia() {
           {EMRE_FUNCTION_LABEL[agency.emre_function]} · se actualiza cada 3 s
           {DEMO_MODE && cutoff ? ` · corte ${formatDateTime(cutoff)}` : ""}
         </p>
+      )}
+
+      {agencyId && (
+        <section className="flex flex-col gap-2">
+          <h2 className="font-semibold">
+            Avisos para su agencia{" "}
+            <span className="text-sm font-normal text-tinta-suave">
+              ({inbox.filter((i) => !i.dispatched).length} sin recurso despachado)
+            </span>
+          </h2>
+          {inbox.length === 0 && (
+            <p className="rounded-lg bg-white p-4 text-sm text-tinta-suave shadow-sm">
+              No hay incidentes abiertos que le correspondan a esta agencia.
+            </p>
+          )}
+          <ul className="flex max-h-96 flex-col gap-1.5 overflow-y-auto">
+            {inbox.map((item) => (
+              <li
+                key={item.incident.id}
+                className={`rounded-lg bg-white p-2 text-xs shadow-sm ${
+                  item.dispatched ? "opacity-70" : ""
+                }`}
+              >
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span
+                    className="rounded px-1.5 text-[10px] font-semibold text-white"
+                    style={{ backgroundColor: TRIAGE_COLOR[item.incident.triage_level] }}
+                  >
+                    {TRIAGE_LABEL[item.incident.triage_level]}
+                  </span>
+                  <span
+                    className={`rounded px-1.5 text-[10px] font-semibold ${
+                      RECIPIENT_ROLE_STYLE[item.role]
+                    }`}
+                  >
+                    {RECIPIENT_ROLE_LABEL[item.role]}
+                  </span>
+                  <strong className="text-sm">{CATEGORY_LABEL[item.incident.category]}</strong>
+                  <span className="text-tinta-suave">
+                    · {item.incident.barrio ?? "sin barrio"} · {item.incident.report_count} reportes
+                    · visto {formatTime(item.incident.last_seen)}
+                  </span>
+                </div>
+                <p className="mt-0.5 text-tinta-suave">
+                  {item.emre_task} · {item.reason}
+                  {item.notify_coe ? " · COE informado" : ""}
+                </p>
+                <p className="mt-0.5 font-medium">
+                  {item.dispatched
+                    ? "Su agencia ya tiene un recurso en camino o en sitio."
+                    : item.role === "informada"
+                      ? "Para su conocimiento: prepare su respuesta."
+                      : "Pendiente: el PMU confirmará el despacho de su recurso."}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {agencyId && (

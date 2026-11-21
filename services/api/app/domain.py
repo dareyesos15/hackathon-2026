@@ -165,6 +165,14 @@ class DispatchStatus(StrEnum):
     cancelado = "cancelado"
 
 
+class RecipientRole(StrEnum):
+    """Papel de una agencia frente a un incidente (app/core/recipients.py)."""
+
+    lider = "lider"
+    apoyo = "apoyo"
+    informada = "informada"
+
+
 ACTIVE_DISPATCH: frozenset[DispatchStatus] = frozenset(
     {DispatchStatus.en_camino, DispatchStatus.en_sitio}
 )

@@ -20,6 +20,7 @@ from app.domain import (
     EmreFunction,
     GeoPrecision,
     IncidentStatus,
+    RecipientRole,
     ReportAction,
     ReportStatus,
     ResourceStatus,
@@ -263,12 +264,70 @@ class DispatchSuggestion(BaseModel):
     fallback_used: bool
 
 
+class RecipientOut(BaseModel):
+    """Actor que debe recibir la información del incidente (EMRE, anexos I–VI)."""
+
+    agency: AgencyRef
+    role: RecipientRole
+    emre_function: EmreFunction
+    emre_function_label: str
+    emre_task: str
+    reason: str
+    dispatched: bool = Field(description="La agencia ya tiene un despacho activo en el incidente")
+
+
+class PlanLineOut(BaseModel):
+    agency: AgencyRef
+    role: RecipientRole
+    emre_task: str
+    candidate: CandidateOut | None = Field(
+        description="Recurso más cercano propuesto; null si no hay o si la agencia ya fue"
+    )
+    already_dispatched: bool
+
+
+class IncidentRouting(BaseModel):
+    """A quién le llega el incidente y plan de despacho multiagencia propuesto (SIMULADO)."""
+
+    recipients: list[RecipientOut]
+    notify_coe: bool
+    coe_reason: str | None
+    held: bool = Field(description="Aviso retenido: posible falso sin riesgo vital")
+    hold_reason: str | None
+    notes: list[str]
+    plan: list[PlanLineOut]
+    plan_resource_ids: list[uuid.UUID]
+
+
+class DispatchPlanIn(BaseModel):
+    """Confirma el plan multiagencia; `resource_ids` permite despachar solo parte de él."""
+
+    client_uuid: uuid.UUID
+    resource_ids: list[uuid.UUID] | None = Field(default=None, max_length=8)
+
+
+class InboxItem(BaseModel):
+    incident: IncidentSummary
+    role: RecipientRole
+    emre_task: str
+    reason: str
+    dispatched: bool = Field(description="La agencia ya tiene un recurso en camino o en sitio")
+    notify_coe: bool
+
+
+class InboxList(BaseModel):
+    agency: AgencyRef
+    items: list[InboxItem]
+    cutoff_at: datetime
+
+
 class IncidentDetail(IncidentSummary):
     trust_breakdown: dict[str, Any]
     reports: list[ReportOut]
     events: list[ReportEventOut]
     dispatches: list[DispatchOut] = Field(default_factory=list)
     suggestion: DispatchSuggestion | None = None
+    routing: IncidentRouting | None = None
 
 
 class ReportResult(BaseModel):

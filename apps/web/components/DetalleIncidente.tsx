@@ -20,6 +20,7 @@ import {
   type IncidentSummary,
 } from "@/lib/labels";
 import { EtiquetaSimulado } from "./EtiquetaSimulado";
+import { PanelDespacho } from "./PanelDespacho";
 
 type Action = "confirmar" | "descartar" | "marcar_duplicado" | "reabrir";
 
@@ -36,6 +37,8 @@ interface Props {
   revision: number;
   onClose: () => void;
   onSelect: (id: string) => void;
+  /** Abre el editor de alertas precargado con el área y el tipo del incidente (US2). */
+  onCreateAlert?: (incident: IncidentDetail) => void;
 }
 
 const ACTION_LABEL: Record<Action, string> = {
@@ -52,6 +55,12 @@ const EVENT_LABEL: Record<string, string> = {
   descartar: "Descartado",
   marcar_duplicado: "Marcado como duplicado",
   reabrir: "Reabierto",
+  despachar: "Despachado",
+  reforzar: "Refuerzo despachado",
+  despacho_estado: "Cambio de estado del despacho",
+  cancelar_despacho: "Despacho cancelado",
+  despacho_doble_bloqueado: "Doble despacho bloqueado",
+  cerrar_atendido: "Cerrado como atendido",
 };
 
 function distanceKm(a: IncidentSummary, b: IncidentSummary): number {
@@ -61,7 +70,14 @@ function distanceKm(a: IncidentSummary, b: IncidentSummary): number {
   return Math.hypot(dLat, dLon);
 }
 
-export function DetalleIncidente({ incidentId, incidents, revision, onClose, onSelect }: Props) {
+export function DetalleIncidente({
+  incidentId,
+  incidents,
+  revision,
+  onClose,
+  onSelect,
+  onCreateAlert,
+}: Props) {
   const [detail, setDetail] = useState<IncidentDetail | null>(null);
   const [note, setNote] = useState("");
   const [target, setTarget] = useState("");
@@ -281,6 +297,18 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
         {error && <p className="mt-2 text-xs text-rose-700">{error}</p>}
       </section>
 
+      <PanelDespacho detail={detail} onChanged={load} />
+
+      {onCreateAlert && (
+        <button
+          type="button"
+          onClick={() => onCreateAlert(detail)}
+          className="rounded border border-amber-500 bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-900"
+        >
+          Crear alerta desde este incidente
+        </button>
+      )}
+
       <section className="rounded-lg bg-white p-3 shadow-sm">
         <h3 className="text-sm font-semibold">
           Reportes ({formatInt(detail.reports.length)}) · {formatInt(detail.independent_sources)}{" "}
@@ -316,6 +344,15 @@ export function DetalleIncidente({ incidentId, incidents, revision, onClose, onS
                 {EVENT_LABEL[e.action] ?? e.action}
                 {typeof e.payload.nota === "string" && (
                   <span className="text-slate-500"> — “{e.payload.nota}”</span>
+                )}
+                {typeof e.payload.recurso === "string" && (
+                  <span className="text-slate-500">
+                    {" "}
+                    — {String(e.payload.agencia)} · {e.payload.recurso}
+                  </span>
+                )}
+                {typeof e.payload.estado === "string" && (
+                  <span className="text-slate-500"> — {e.payload.estado.replace("_", " ")}</span>
                 )}
               </span>
               <span className="shrink-0 text-slate-500">

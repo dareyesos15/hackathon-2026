@@ -64,9 +64,13 @@ async def reset_demo_data(
         text(
             "TRUNCATE report_events, resource_tracks, dispatches, alert_events, alert_deliveries,"
             " alerts, rain_readings, reports, incidents, metrics_snapshots,"
-            " aid_deliveries, household_vulnerability, households, building_inspections CASCADE"
+            " aid_deliveries, household_vulnerability, households, building_inspections,"
+            " zone_sensor_events CASCADE"
         )
     )
+    # Sensores de zonas inseguras: se conservan los sembrados; los instalados en incidentes no.
+    await session.execute(text("DELETE FROM zone_sensors WHERE incident_id IS NOT NULL"))
+    await session.execute(text("UPDATE zone_sensors SET battery_pct = 100, last_seen_at = NULL"))
     # El catálogo se conserva; los recursos vuelven a su base (research R16).
     await session.execute(
         text(

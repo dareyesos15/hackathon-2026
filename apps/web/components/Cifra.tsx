@@ -30,25 +30,32 @@ function formatValue(valor: number, unidad: CifraProps["unidad"]): string {
   }
 }
 
-const ESTADO: Record<NonNullable<CifraProps["estado"]>, string> = {
-  ok: "border-emerald-500",
-  alerta: "border-red-500",
-  neutral: "border-slate-300",
+/** El rojo solo aparece cuando la cifra exige atención: el estado no es decoración. */
+const ESTADO: Record<NonNullable<CifraProps["estado"]>, { caja: string; valor: string }> = {
+  ok: { caja: "border-linea bg-white", valor: "text-tinta" },
+  alerta: { caja: "border-senal bg-senal-fondo", valor: "text-senal" },
+  neutral: { caja: "border-linea bg-white", valor: "text-tinta" },
 };
 
 export function Cifra(props: CifraProps) {
   const { etiqueta, valor, unidad, fuente, version, corte, simulado, meta, estado } = props;
+  const tono = ESTADO[estado ?? "neutral"];
   return (
-    <div className={`rounded-lg border-l-4 bg-white p-3 shadow-sm ${ESTADO[estado ?? "neutral"]}`}>
+    <div className={`rounded-md border p-3 ${tono.caja}`}>
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs font-medium text-slate-600">{etiqueta}</p>
+        <p className="text-sm leading-tight text-tinta-suave">{etiqueta}</p>
         {simulado && <EtiquetaSimulado />}
       </div>
-      <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">
+      <p
+        className={`mt-1 font-display text-4xl font-semibold leading-none tabular-nums ${tono.valor}`}
+      >
         {valor === null ? "—" : formatValue(valor, unidad)}
+        {estado === "ok" && (
+          <span className="ml-2 align-middle text-sm font-medium text-verificado">cumple</span>
+        )}
       </p>
-      {meta && <p className="text-[11px] text-slate-500">Meta: {meta}</p>}
-      <p className="mt-1 text-[10px] leading-tight text-slate-500">
+      {meta && <p className="mt-1 text-xs text-tinta-suave">Meta: {meta}</p>}
+      <p className="mt-1 text-[10px] leading-tight text-tinta-suave">
         Fuente: {fuente} · v{version} · corte {formatDateTime(corte)}
       </p>
     </div>

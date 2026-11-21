@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+<defs><marker id='arrow' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#cbd5e1'/></marker></defs>
+<rect width="1600" height="1040" fill="#0b1220"/>
+<text x="800.0" y="46" font-size="30" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">DACORA · ARQUITECTURA ACTUAL DEL PROTOTIPO</text>
+<text x="800.0" y="74" font-size="15" font-weight="normal" fill="#94a3b8" text-anchor="middle" opacity="1.0">Reto 05 · Datos &amp; Inteligencia Operativa · PMU Eje Cafetero (Manizales – UNAL) · Estado al 21 nov 2026</text>
+<rect x="595.0" y="90" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="636.2" y="102" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="735.0" y="90" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="763.8" y="102" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
+<rect x="875.0" y="90" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="903.8" y="102" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<text x="800.0" y="126" font-size="11" font-weight="normal" fill="#94a3b8" text-anchor="middle" opacity="1.0">Implementado: en el código y en la demo · Simulado: canal real con datos sintéticos · Planeado: punto de integración listo</text>
+<rect x="24.0" y="146" width="242.0" height="624" rx="12" fill="#f59e0b" fill-opacity="0.07" stroke="#f59e0b" stroke-width="2"/>
+<rect x="24.0" y="146" width="242.0" height="62" rx="12" fill="#f59e0b" fill-opacity="0.22"/>
+<text x="145.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">1. CAPTACIÓN DE DATOS</text>
+<text x="145.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Entradas</text>
+<rect x="34.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="44.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">PWA ciudadana offline</text>
+<text x="44.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">IndexedDB (Dexie) + outbox; envía</text>
+<text x="44.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">al volver la red</text>
+<rect x="44.0" y="282" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="85.2" y="294" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="34.0" y="326" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="44.0" y="346" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">SMS / Línea 123</text>
+<text x="44.0" y="362" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Formato compacto DACORA ≤ 160</text>
+<text x="44.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">caracteres</text>
+<rect x="44.0" y="388" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="72.8" y="400" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
+<rect x="34.0" y="432" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="44.0" y="452" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">WhatsApp y APIs públicas</text>
+<text x="44.0" y="468" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Reportes reenviados, ingresados</text>
+<text x="44.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">por el operador</text>
+<rect x="44.0" y="494" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="72.8" y="506" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
+<rect x="34.0" y="538" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="44.0" y="558" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Entidades confiables</text>
+<text x="44.0" y="574" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">SGC, SIMAC, Alcaldía, Bomberos,</text>
+<text x="44.0" y="588" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Cruz Roja, Defensa Civil</text>
+<rect x="44.0" y="600" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="72.8" y="612" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
+<rect x="34.0" y="644" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="44.0" y="664" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Hardware de campo</text>
+<text x="44.0" y="680" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Nodos LoRa/Meshtastic + sensor de</text>
+<text x="44.0" y="694" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">zonas inseguras UNAL</text>
+<rect x="44.0" y="706" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="72.8" y="718" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<line x1="268.0" y1="458.0" x2="284.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="286.0" y="146" width="242.0" height="624" rx="12" fill="#10b981" fill-opacity="0.07" stroke="#10b981" stroke-width="2"/>
+<rect x="286.0" y="146" width="242.0" height="62" rx="12" fill="#10b981" fill-opacity="0.22"/>
+<text x="407.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">2. INGESTA Y SST</text>
+<text x="407.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Single Source of Truth</text>
+<rect x="296.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#10b981" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="306.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">API REST FastAPI /api/v1</text>
+<text x="306.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Ingesta idempotente por</text>
+<text x="306.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">client_uuid; contrato OpenAPI</text>
+<rect x="306.0" y="282" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="347.2" y="294" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="296.0" y="326" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#10b981" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="306.0" y="346" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Módulo Habeas Data</text>
+<text x="306.0" y="362" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Redacción de PII en el borde y en</text>
+<text x="306.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">la API + HMAC-SHA256 (Ley 1581)</text>
+<rect x="306.0" y="388" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="347.2" y="400" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="296.0" y="432" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#10b981" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="306.0" y="452" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">SST PostgreSQL 16 + PostGIS</text>
+<text x="306.0" y="468" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Reportes solo-agregar y bitácora</text>
+<text x="306.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">auditable</text>
+<rect x="306.0" y="494" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="347.2" y="506" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="296.0" y="538" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#10b981" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="306.0" y="558" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Bus de eventos</text>
+<text x="306.0" y="574" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">En memoria → SSE; interfaz lista</text>
+<text x="306.0" y="588" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">para Kafka</text>
+<rect x="306.0" y="600" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="347.2" y="612" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<line x1="530.0" y1="458.0" x2="546.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="548.0" y="146" width="242.0" height="624" rx="12" fill="#3b82f6" fill-opacity="0.07" stroke="#3b82f6" stroke-width="2"/>
+<rect x="548.0" y="146" width="242.0" height="62" rx="12" fill="#3b82f6" fill-opacity="0.22"/>
+<text x="669.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">3. MOTOR DE INTELIGENCIA</text>
+<text x="669.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Y VERIFICACIÓN</text>
+<rect x="558.0" y="220" width="222.0" height="98" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="568.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Clasificación y triaje</text>
+<text x="568.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Reglas/léxico en español</text>
+<text x="568.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">colombiano; gravedad y lugar por</text>
+<text x="568.0" y="284" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">gazetteer</text>
+<rect x="568.0" y="296" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="609.2" y="308" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="558.0" y="340" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="568.0" y="360" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Deduplicación</text>
+<text x="568.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Espacio ≤ 250 m · tiempo ≤ 3 h ·</text>
+<text x="568.0" y="390" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">similitud de texto TF-IDF</text>
+<rect x="568.0" y="402" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="609.2" y="414" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="558.0" y="446" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="568.0" y="466" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Trust Score 0–100</text>
+<text x="568.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Desglose explicable por señal y</text>
+<text x="568.0" y="496" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">etiqueta de veracidad</text>
+<rect x="568.0" y="508" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="609.2" y="520" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="558.0" y="552" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="568.0" y="572" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Validación cruzada GIS</text>
+<text x="568.0" y="588" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Interfaz HazardProvider;</text>
+<text x="568.0" y="602" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">acelerógrafos tipo RAMAN en P1</text>
+<rect x="568.0" y="614" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="596.8" y="626" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="558.0" y="658" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#3b82f6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="568.0" y="678" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">RAG local (Ollama)</text>
+<text x="568.0" y="694" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Protocolos EMRE Manizales 2024</text>
+<rect x="568.0" y="706" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="596.8" y="718" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<line x1="792.0" y1="458.0" x2="808.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="810.0" y="146" width="242.0" height="624" rx="12" fill="#22c55e" fill-opacity="0.07" stroke="#22c55e" stroke-width="2"/>
+<rect x="810.0" y="146" width="242.0" height="62" rx="12" fill="#22c55e" fill-opacity="0.22"/>
+<text x="931.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">4. TABLERO SITUACIONAL</text>
+<text x="931.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">PMU y público</text>
+<rect x="820.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="830.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Mapa de daños por manzana</text>
+<text x="830.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">MapLibre offline; SSE con respaldo</text>
+<text x="830.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">por polling</text>
+<rect x="830.0" y="282" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="871.2" y="294" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="820.0" y="326" width="222.0" height="100" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="830.0" y="346" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Matriz de triaje + revisión</text>
+<text x="830.0" y="362" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">humana</text>
+<text x="830.0" y="378" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Confirmar / Descartar / Duplicado;</text>
+<text x="830.0" y="392" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">la IA solo sugiere</text>
+<rect x="830.0" y="404" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="871.2" y="416" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="820.0" y="448" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="830.0" y="468" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Panel de KPI</text>
+<text x="830.0" y="484" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Cada cifra con fuente, versión y</text>
+<text x="830.0" y="498" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">fecha de corte</text>
+<rect x="830.0" y="510" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="871.2" y="522" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="820.0" y="554" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="830.0" y="574" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Mapa público agregado</text>
+<text x="830.0" y="590" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Solo conteos por manzana con k ≥ 5</text>
+<rect x="830.0" y="602" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="871.2" y="614" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="820.0" y="646" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="830.0" y="666" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Trazabilidad de recursos</text>
+<text x="830.0" y="682" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Cuadrillas y vehículos (RFID)</text>
+<rect x="830.0" y="694" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="858.8" y="706" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<line x1="1054.0" y1="458.0" x2="1070.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="1072.0" y="146" width="242.0" height="624" rx="12" fill="#8b5cf6" fill-opacity="0.07" stroke="#8b5cf6" stroke-width="2"/>
+<rect x="1072.0" y="146" width="242.0" height="62" rx="12" fill="#8b5cf6" fill-opacity="0.22"/>
+<text x="1193.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">5. DESPACHO, ALERTAS</text>
+<text x="1193.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Y PREDICCIÓN</text>
+<rect x="1082.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1092.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Despacho a agencias</text>
+<text x="1092.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Según las 6 funciones de respuesta</text>
+<text x="1092.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">de la EMRE</text>
+<rect x="1092.0" y="282" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1120.8" y="294" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1082.0" y="326" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1092.0" y="346" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Alertas multicanal</text>
+<text x="1092.0" y="362" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Push al PMU + SMS; solo el COE</text>
+<text x="1092.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">aprueba</text>
+<rect x="1092.0" y="388" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1120.8" y="400" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1082.0" y="432" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1092.0" y="452" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Efectos en cascada</text>
+<text x="1092.0" y="468" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Deslizamientos y colapsos por</text>
+<text x="1092.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">lluvia o réplica</text>
+<rect x="1092.0" y="494" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1120.8" y="506" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<line x1="1316.0" y1="458.0" x2="1332.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="1334.0" y="146" width="242.0" height="624" rx="12" fill="#ec4899" fill-opacity="0.07" stroke="#ec4899" stroke-width="2"/>
+<rect x="1334.0" y="146" width="242.0" height="62" rx="12" fill="#ec4899" fill-opacity="0.22"/>
+<text x="1455.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">6. RECUPERACIÓN</text>
+<text x="1455.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Post-sismo (diferencial)</text>
+<rect x="1344.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Semáforo de habitabilidad</text>
+<text x="1354.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Inspección por predio</text>
+<text x="1354.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">(verde/amarillo/rojo)</text>
+<rect x="1354.0" y="282" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="294" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1344.0" y="317.2" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="337.2" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Censo único de damnificados</text>
+<text x="1354.0" y="353.2" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Hogar por hash; evita duplicidad</text>
+<rect x="1354.0" y="365.2" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="377.2" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1344.0" y="400.4" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="420.4" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Ayudas y albergues</text>
+<text x="1354.0" y="436.4" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Control de subsidios y ayudas</text>
+<text x="1354.0" y="450.4" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">humanitarias</text>
+<rect x="1354.0" y="462.4" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="474.4" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1344.0" y="497.59999999999997" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="517.5999999999999" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Infraestructura y servicios</text>
+<text x="1354.0" y="533.5999999999999" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Agua, energía, gas, vías,</text>
+<text x="1354.0" y="547.5999999999999" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">escombros</text>
+<rect x="1354.0" y="559.5999999999999" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="571.5999999999999" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1344.0" y="594.8" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="614.8" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Reconstrucción transparente</text>
+<text x="1354.0" y="630.8" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">NSR-10, Findeter/Bancóldex,</text>
+<text x="1354.0" y="644.8" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">control de fondos</text>
+<rect x="1354.0" y="656.8" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="668.8" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1344.0" y="692.0" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#ec4899" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1354.0" y="712.0" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Portal “Reconstruir Mejor”</text>
+<text x="1354.0" y="728.0" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Índice de recuperación por barrio</text>
+<rect x="1354.0" y="740.0" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1382.8" y="752.0" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="24" y="790" width="1552" height="64" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+<text x="800.0" y="814" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">SERVICIOS (docker compose up)</text>
+<text x="800.0" y="837" font-size="13" font-weight="normal" fill="#cbd5e1" text-anchor="middle" opacity="1.0">web · Next.js PWA (frontend puro, export estático + Nginx)   ⇄   REST /api/v1 + SSE /stream   ⇄   api · FastAPI (motor + adaptadores)   ⇄   db · PostgreSQL 16 + PostGIS</text>
+<rect x="24" y="872" width="1552" height="148" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.6" stroke-width="1.5"/>
+<text x="800.0" y="900" font-size="15" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">MATRIZ DE RESILIENCIA (CONTINUIDAD OPERATIVA)</text>
+<rect x="44.0" y="916" width="490.6666666666667" height="88" rx="8" fill="#111a2e" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="289.33333333333337" y="940" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">PLAN A · ONLINE TOTAL</text>
+<text x="289.33333333333337" y="962" font-size="12" font-weight="normal" fill="#cbd5e1" text-anchor="middle" opacity="1.0">Nube, 4G/fibra, APIs públicas, tableros remotos</text>
+<rect x="260.53333333333336" y="976" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="289.33333333333337" y="988" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="554.6666666666667" y="916" width="490.6666666666667" height="88" rx="8" fill="#111a2e" stroke="#38bdf8" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="800.0000000000001" y="940" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">PLAN B · OFFLINE-FIRST</text>
+<text x="800.0000000000001" y="962" font-size="12" font-weight="normal" fill="#cbd5e1" text-anchor="middle" opacity="1.0">docker compose en portátil o servidor del PMU, PWA offline, SMS gateway</text>
+<rect x="758.8000000000001" y="976" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="800.0000000000001" y="988" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="1065.3333333333335" y="916" width="490.6666666666667" height="88" rx="8" fill="#111a2e" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="1310.6666666666667" y="940" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">PLAN C · COLAPSO TOTAL</text>
+<text x="1310.6666666666667" y="962" font-size="12" font-weight="normal" fill="#cbd5e1" text-anchor="middle" opacity="1.0">Malla LoRaWAN, radio de rescatistas, telemetría UNAL</text>
+<rect x="1281.8666666666668" y="976" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
+<text x="1310.6666666666667" y="988" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+</svg>

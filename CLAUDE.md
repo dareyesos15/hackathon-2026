@@ -79,7 +79,7 @@ Indicadores que realmente usó el PMU para decidir (mostrarlos en el tablero): s
 
 ## 3. Arquitectura objetivo (diagrama técnico)
 
-Fuente: imagen embebida en `estudio_integral_de_prefactibilidad_y_arquitectura_sidar.md` (Drive, carpeta Hackathon 2026). Se reproduce aquí en texto y Mermaid. Si quieres ver la imagen original, está también en Drive como `arquitectura_sidar_diagrama_tecnico.png`; la copia del repositorio está en [docs/arquitectura.jpeg](docs/arquitectura.jpeg).
+Fuente: imagen embebida en `estudio_integral_de_prefactibilidad_y_arquitectura_sidar.md` (Drive, carpeta Hackathon 2026). Se reproduce aquí en texto y Mermaid. Si quieres ver la imagen original, está también en Drive como `arquitectura_sidar_diagrama_tecnico.png`; la copia del repositorio está en [docs/arquitectura.jpeg](docs/arquitectura.jpeg). El estado actual del prototipo (qué está implementado, simulado o planeado) está en [docs/arquitectura_actual.png](docs/arquitectura_actual.png), con fuente editable en [docs/arquitectura_actual.svg](docs/arquitectura_actual.svg).
 
 **Título del diagrama:** "Diagrama técnico: Sistema Integral de Datos, Alerta y Recuperación Post-Sismo — Reto 05 · Datos & Inteligencia Operativa · PMU Eje Cafetero (Manizales – UNAL) — Solución End-to-End desde Crisis hasta Reconstrucción".
 

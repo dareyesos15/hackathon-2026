@@ -83,6 +83,9 @@ class Settings(BaseSettings):
 
     # Despacho (specs/002, research R4, R5, R13).
     simulate_tracks: bool = True
+    # Sensor de zonas inseguras (patente NC2025/0015763, specs/004). SIMULADO por defecto.
+    simulate_zone_sensors: bool = True
+    zone_tick_s: float = 6.0
     track_tick_s: float = 5.0
     track_speedup: float = 20.0
     routing_speed_kmh: float = 25.0

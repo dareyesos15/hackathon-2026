@@ -25,7 +25,7 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --
 | Inicio público: mapa agregado (k ≥ 5), alertas vigentes y KPI | http://localhost:8080 | — (sin sesión) |
 | Iniciar sesión (elegir rol) | http://localhost:8080/ingresar/ | — |
 | Tablero de entidades y PMU (triaje, despacho, alertas con aprobación, cascada) | http://localhost:8080/pmu/ | Entidades y PMU · `coe-demo` |
-| Despachos por agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
+| Avisos y despachos por agencia (incidentes que le llegan según la EMRE, llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Entidades y PMU · `coe-demo` |
 | Simulaciones: con datos (escenario) o sin datos (tablero vacío) | http://localhost:8080/admin/ | Administrador · `admin-demo` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | — (cualquiera) |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |

@@ -45,6 +45,17 @@ def test_text_with_abbreviation(gaz: Gazetteer) -> None:
     assert loc.place_name == "Avenida Santander"
 
 
+def test_barrio_wins_over_long_road(gaz: Gazetteer) -> None:
+    gaz2 = Gazetteer(
+        [
+            *gaz.entries,
+            PlaceEntry("Carrera 23", PlaceKind.via, 5.0668, -75.5142, "Centro", ("carrera 23",)),
+        ]
+    )
+    loc = locate(gazetteer=gaz2, text="grietas en la calle 26 con carrera 23, Milán")
+    assert loc.barrio == "Milán"
+
+
 def test_reference_gives_address_precision(gaz: Gazetteer) -> None:
     loc = locate(gazetteer=gaz, text="hay atrapados en el Coliseo Mayor")
     assert loc.precision == GeoPrecision.address

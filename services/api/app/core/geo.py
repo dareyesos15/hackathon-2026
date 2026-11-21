@@ -52,6 +52,14 @@ _PRECISION_BY_KIND: dict[PlaceKind, GeoPrecision] = {
 }
 
 
+KIND_PRIORITY: dict[PlaceKind, int] = {
+    PlaceKind.referencia: 0,
+    PlaceKind.barrio: 1,
+    PlaceKind.via: 2,
+    PlaceKind.comuna: 3,
+}
+
+
 def in_manizales(lat: float, lon: float) -> bool:
     return LAT_MIN <= lat <= LAT_MAX and LON_MIN <= lon <= LON_MAX
 
@@ -83,11 +91,19 @@ class Gazetteer:
         return self._by_alias.get(norm) or self.find(norm)
 
     def find(self, text: str) -> PlaceEntry | None:
+        """Lugar más específico del texto: referencia > barrio > vía > comuna.
+
+        Una vía (p. ej. la carrera 23) atraviesa varios barrios: si el texto también nombra el
+        barrio, el barrio es mejor ubicación que el punto genérico de la vía.
+        """
         norm = normalize(text)
+        found: list[PlaceEntry] = []
         for pattern, entry in self._patterns:
-            if pattern.search(norm):
-                return entry
-        return None
+            if entry not in found and pattern.search(norm):
+                found.append(entry)
+        if not found:
+            return None
+        return min(found, key=lambda e: KIND_PRIORITY[e.kind])
 
 
 def locate(

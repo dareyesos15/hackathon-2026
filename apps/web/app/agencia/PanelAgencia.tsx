@@ -46,7 +46,7 @@ export default function PanelAgencia() {
 
   useEffect(() => {
     if (!allowed) {
-      router.replace("/");
+      router.replace("/ingresar/");
       return;
     }
     api.GET("/api/v1/agencies").then(({ data }) => setAgencies(data?.items ?? []));

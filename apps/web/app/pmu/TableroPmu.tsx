@@ -146,7 +146,7 @@ export default function TableroPmu() {
   }
 
   useEffect(() => {
-    if (!token) router.replace("/");
+    if (!token) router.replace("/ingresar/");
   }, [token, router]);
 
   useEffect(() => {

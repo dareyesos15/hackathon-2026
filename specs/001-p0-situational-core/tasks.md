@@ -82,30 +82,30 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 
 ### Tests for User Story 1
 
-- [ ] T022 [P] [US1] Crear casos compartidos de redacción (celulares con y sin +57, cédulas, correos, placas, "me llamo/soy/mi mamá…", falsos positivos como "carrera 23" o "3 personas") en `data/fixtures/pii_cases.json`
-- [ ] T023 [P] [US1] Pruebas unitarias de redacción y HMAC contra `data/fixtures/pii_cases.json` en `services/api/tests/unit/test_privacy.py`
-- [ ] T024 [P] [US1] Pruebas unitarias del parser SMS con la tabla de ejemplos de [contracts/sms-format.md](contracts/sms-format.md) en `services/api/tests/unit/test_sms.py`
-- [ ] T025 [P] [US1] Pruebas unitarias de clasificación, triaje y señales de desinformación (ejemplos de spec US1 y research R6) en `services/api/tests/unit/test_nlp.py`
-- [ ] T026 [P] [US1] Pruebas unitarias de agrupación (mismo hecho por dos fuentes, mismo remitente repetido, categorías distintas en la misma cuadra, > 3 h) en `services/api/tests/unit/test_dedup.py`
-- [ ] T027 [P] [US1] Pruebas unitarias del trust score (etiquetas por rango, desinformación resta, desglose suma el total) en `services/api/tests/unit/test_trust.py`
+- [X] T022 [P] [US1] Crear casos compartidos de redacción (celulares con y sin +57, cédulas, correos, placas, "me llamo/soy/mi mamá…", falsos positivos como "carrera 23" o "3 personas") en `data/fixtures/pii_cases.json`
+- [X] T023 [P] [US1] Pruebas unitarias de redacción y HMAC contra `data/fixtures/pii_cases.json` en `services/api/tests/unit/test_privacy.py`
+- [X] T024 [P] [US1] Pruebas unitarias del parser SMS con la tabla de ejemplos de [contracts/sms-format.md](contracts/sms-format.md) en `services/api/tests/unit/test_sms.py`
+- [X] T025 [P] [US1] Pruebas unitarias de clasificación, triaje y señales de desinformación (ejemplos de spec US1 y research R6) en `services/api/tests/unit/test_nlp.py`
+- [X] T026 [P] [US1] Pruebas unitarias de agrupación (mismo hecho por dos fuentes, mismo remitente repetido, categorías distintas en la misma cuadra, > 3 h) en `services/api/tests/unit/test_dedup.py`
+- [X] T027 [P] [US1] Pruebas unitarias del trust score (etiquetas por rango, desinformación resta, desglose suma el total) en `services/api/tests/unit/test_trust.py`
 
 ### Implementation for User Story 1
 
-- [ ] T028 [P] [US1] Implementar redacción (`[TEL]`, `[CC]`, `[CORREO]`, `[PLACA]`, `[NOMBRE]`) y `reporter_hash` HMAC-SHA256 en `services/api/app/core/privacy.py` — data-model.md `Report.text_redacted`, `Report.location_text`, `Report.reporter_hash`
-- [ ] T029 [P] [US1] Implementar el parser del SMS compacto según [contracts/sms-format.md](contracts/sms-format.md) en `services/api/app/core/sms.py` — data-model.md `Report.client_uuid` (UUIDv5 para SMS), `Report.people_affected`, `Report.geo_precision`
-- [ ] T030 [P] [US1] Implementar normalización, léxico por categoría, matriz de triaje (CLAUDE.md §7.2), `severity` y señales de desinformación en `services/api/app/core/nlp.py` — data-model.md `Report.category`, `Report.severity`, `Report.triage_level`, `Report.is_life_threat`, `Report.misinfo_signals`
-- [ ] T031 [P] [US1] Implementar búsqueda en gazetteer, punto→manzana, validación del rectángulo de Manizales y haversine en `services/api/app/core/geo.py` — data-model.md `Report.geom`, `Report.geo_precision`, `Report.manzana_id`
-- [ ] T032 [P] [US1] Implementar `SimilarityProvider` con `tfidf` (char_wb 3–5) y `minilm` opcional perezoso en `services/api/app/core/similarity.py`
-- [ ] T033 [US1] Implementar agrupación (candidatos SQL con `ST_DWithin` y ventana de 3 h, categorías compatibles, umbral por precisión, bloqueo asesor por celda, completar datos del incidente, fuentes independientes) en `services/api/app/core/dedup.py` — data-model.md `Incident.centroid`, `Incident.independent_sources`, `Incident.people_affected`, `Incident.triage_level`, `Incident.is_life_threat`, `Report.incident_id` (depende de T031, T032)
-- [ ] T034 [US1] Implementar trust score con las 7 señales y el formato de desglose en `services/api/app/core/trust.py` — data-model.md `Incident.trust_score`, `Incident.trust_label`, `Incident.trust_breakdown` (depende de T014)
-- [ ] T035 [US1] Implementar el pipeline (redactar → clasificar → ubicar → agrupar → puntuar → registrar `ReportEvent` → publicar en `EventBus`, midiendo `processing_ms`) con la regla de que el sistema solo lleva a `en_revision` en `services/api/app/core/pipeline.py` — data-model.md `Report.status`, `Report.processing_ms`, `ReportEvent.action`
-- [ ] T036 [US1] Definir esquemas Pydantic `ReportIn`, `SmsIn`, `BatchIn`, `Report`, `IncidentSummary`, `IncidentDetail`, `ReportResult` según [contracts/rest-api.md](contracts/rest-api.md) en `services/api/app/schemas.py`
-- [ ] T037 [US1] Implementar `POST /ingest/report`, `POST /ingest/sms` y `POST /ingest/batch` con idempotencia (`201`/`200`) y consentimiento obligatorio en `pwa` en `services/api/app/routers/ingest.py` — data-model.md `Report.client_uuid`, `Report.channel`
-- [ ] T038 [US1] Implementar `GET /reports`, `GET /incidents` y `GET /incidents/{id}` (filtros, orden, cursor, `cutoff_at`) en `services/api/app/routers/reports.py` y `services/api/app/routers/incidents.py`
-- [ ] T039 [P] [US1] Crear `scripts/simulate_sms.py` (cliente REST de `/ingest/sms`, `--from`)
-- [ ] T040 [US1] Prueba de integración: idempotencia por `client_uuid` en report y batch, y procesamiento < 1 s p95 sobre 100 reportes en `services/api/tests/integration/test_ingest.py`
-- [ ] T041 [P] [US1] Prueba de aislamiento: `app/core` no importa `metrics` ni abre `ground_truth` en `services/api/tests/unit/test_core_isolation.py`
-- [ ] T042 [US1] Exportar OpenAPI y regenerar tipos del frontend (`scripts/export_openapi.py`, `apps/web/lib/api/schema.d.ts`) y añadir prueba de contrato que falla si están desalineados en `services/api/tests/contract/test_openapi_snapshot.py`
+- [X] T028 [P] [US1] Implementar redacción (`[TEL]`, `[CC]`, `[CORREO]`, `[PLACA]`, `[NOMBRE]`) y `reporter_hash` HMAC-SHA256 en `services/api/app/core/privacy.py` — data-model.md `Report.text_redacted`, `Report.location_text`, `Report.reporter_hash`
+- [X] T029 [P] [US1] Implementar el parser del SMS compacto según [contracts/sms-format.md](contracts/sms-format.md) en `services/api/app/core/sms.py` — data-model.md `Report.client_uuid` (UUIDv5 para SMS), `Report.people_affected`, `Report.geo_precision`
+- [X] T030 [P] [US1] Implementar normalización, léxico por categoría, matriz de triaje (CLAUDE.md §7.2), `severity` y señales de desinformación en `services/api/app/core/nlp.py` — data-model.md `Report.category`, `Report.severity`, `Report.triage_level`, `Report.is_life_threat`, `Report.misinfo_signals`
+- [X] T031 [P] [US1] Implementar búsqueda en gazetteer, punto→manzana, validación del rectángulo de Manizales y haversine en `services/api/app/core/geo.py` — data-model.md `Report.geom`, `Report.geo_precision`, `Report.manzana_id`
+- [X] T032 [P] [US1] Implementar `SimilarityProvider` con `tfidf` (char_wb 3–5) y `minilm` opcional perezoso en `services/api/app/core/similarity.py`
+- [X] T033 [US1] Implementar agrupación (candidatos SQL con `ST_DWithin` y ventana de 3 h, categorías compatibles, umbral por precisión, bloqueo asesor por celda, completar datos del incidente, fuentes independientes) en `services/api/app/core/dedup.py` — data-model.md `Incident.centroid`, `Incident.independent_sources`, `Incident.people_affected`, `Incident.triage_level`, `Incident.is_life_threat`, `Report.incident_id` (depende de T031, T032)
+- [X] T034 [US1] Implementar trust score con las 7 señales y el formato de desglose en `services/api/app/core/trust.py` — data-model.md `Incident.trust_score`, `Incident.trust_label`, `Incident.trust_breakdown` (depende de T014)
+- [X] T035 [US1] Implementar el pipeline (redactar → clasificar → ubicar → agrupar → puntuar → registrar `ReportEvent` → publicar en `EventBus`, midiendo `processing_ms`) con la regla de que el sistema solo lleva a `en_revision` en `services/api/app/core/pipeline.py` — data-model.md `Report.status`, `Report.processing_ms`, `ReportEvent.action`
+- [X] T036 [US1] Definir esquemas Pydantic `ReportIn`, `SmsIn`, `BatchIn`, `Report`, `IncidentSummary`, `IncidentDetail`, `ReportResult` según [contracts/rest-api.md](contracts/rest-api.md) en `services/api/app/schemas.py`
+- [X] T037 [US1] Implementar `POST /ingest/report`, `POST /ingest/sms` y `POST /ingest/batch` con idempotencia (`201`/`200`) y consentimiento obligatorio en `pwa` en `services/api/app/routers/ingest.py` — data-model.md `Report.client_uuid`, `Report.channel`
+- [X] T038 [US1] Implementar `GET /reports`, `GET /incidents` y `GET /incidents/{id}` (filtros, orden, cursor, `cutoff_at`) en `services/api/app/routers/reports.py` y `services/api/app/routers/incidents.py`
+- [X] T039 [P] [US1] Crear `scripts/simulate_sms.py` (cliente REST de `/ingest/sms`, `--from`)
+- [X] T040 [US1] Prueba de integración: idempotencia por `client_uuid` en report y batch, y procesamiento < 1 s p95 sobre 100 reportes en `services/api/tests/integration/test_ingest.py`
+- [X] T041 [P] [US1] Prueba de aislamiento: `app/core` no importa `metrics` ni abre `ground_truth` en `services/api/tests/unit/test_core_isolation.py`
+- [X] T042 [US1] Exportar OpenAPI y regenerar tipos del frontend (`scripts/export_openapi.py`, `apps/web/lib/api/schema.d.ts`) y añadir prueba de contrato que falla si están desalineados en `services/api/tests/contract/test_openapi_snapshot.py`
 
 **Checkpoint**: quickstart §2, §3 (parte API) y §4 pasan solo con la API.
 

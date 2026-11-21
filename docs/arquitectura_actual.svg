@@ -137,34 +137,42 @@
 <text x="830.0" y="590" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Solo conteos por manzana con k ≥ 5</text>
 <rect x="830.0" y="602" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
 <text x="871.2" y="614" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
-<rect x="820.0" y="646" width="222.0" height="70" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="830.0" y="666" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Trazabilidad de recursos</text>
-<text x="830.0" y="682" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Cuadrillas y vehículos (RFID)</text>
-<rect x="830.0" y="694" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
-<text x="858.8" y="706" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="820.0" y="646" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#22c55e" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="830.0" y="666" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Trazabilidad de recursos</text>
+<text x="830.0" y="682" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Recorridos tipo RFID (patente</text>
+<text x="830.0" y="696" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">15111163)</text>
+<rect x="830.0" y="708" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="858.8" y="720" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
 <line x1="1054.0" y1="458.0" x2="1070.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
 <rect x="1072.0" y="146" width="242.0" height="624" rx="12" fill="#8b5cf6" fill-opacity="0.07" stroke="#8b5cf6" stroke-width="2"/>
 <rect x="1072.0" y="146" width="242.0" height="62" rx="12" fill="#8b5cf6" fill-opacity="0.22"/>
 <text x="1193.0" y="173" font-size="14" font-weight="bold" fill="#f8fafc" text-anchor="middle" opacity="1.0">5. DESPACHO, ALERTAS</text>
 <text x="1193.0" y="193" font-size="12" font-weight="normal" fill="#e2e8f0" text-anchor="middle" opacity="0.85">Y PREDICCIÓN</text>
-<rect x="1082.0" y="220" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="1092.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Despacho a agencias</text>
-<text x="1092.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Según las 6 funciones de respuesta</text>
-<text x="1092.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">de la EMRE</text>
-<rect x="1092.0" y="282" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
-<text x="1120.8" y="294" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
-<rect x="1082.0" y="326" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="1092.0" y="346" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Alertas multicanal</text>
-<text x="1092.0" y="362" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Push al PMU + SMS; solo el COE</text>
-<text x="1092.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">aprueba</text>
-<rect x="1092.0" y="388" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
-<text x="1120.8" y="400" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
-<rect x="1082.0" y="432" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.45" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="1092.0" y="452" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="0.75">Efectos en cascada</text>
-<text x="1092.0" y="468" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">Deslizamientos y colapsos por</text>
-<text x="1092.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="0.75">lluvia o réplica</text>
-<rect x="1092.0" y="494" width="58" height="16" rx="8" fill="#94a3b8" fill-opacity="0.18" stroke="#94a3b8" stroke-width="1"/>
-<text x="1120.8" y="506" font-size="10" font-weight="bold" fill="#94a3b8" text-anchor="middle" opacity="1.0">Planeado</text>
+<rect x="1082.0" y="220" width="222.0" height="98" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="1092.0" y="240" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Despacho a agencias</text>
+<text x="1092.0" y="256" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Agencia sugerida por la EMRE,</text>
+<text x="1092.0" y="270" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">recurso más cercano, sin doble</text>
+<text x="1092.0" y="284" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">despacho</text>
+<rect x="1092.0" y="296" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="1133.2" y="308" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="1082.0" y="340" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="1092.0" y="360" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Alertas multicanal</text>
+<text x="1092.0" y="376" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Tablero y mapa público + SMS</text>
+<text x="1092.0" y="390" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">SIMULADO; solo el COE aprueba</text>
+<rect x="1092.0" y="402" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="1133.2" y="414" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
+<rect x="1082.0" y="446" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="1092.0" y="466" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Efectos en cascada</text>
+<text x="1092.0" y="482" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Pendiente y lluvia SIMULADAS +</text>
+<text x="1092.0" y="496" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">reportes cercanos</text>
+<rect x="1092.0" y="508" width="58" height="16" rx="8" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1"/>
+<text x="1120.8" y="520" font-size="10" font-weight="bold" fill="#f59e0b" text-anchor="middle" opacity="1.0">Simulado</text>
+<rect x="1082.0" y="552" width="222.0" height="84" rx="8" fill="#111a2e" stroke="#8b5cf6" stroke-opacity="0.9" stroke-width="1.3"/>
+<text x="1092.0" y="572" font-size="13" font-weight="bold" fill="#f8fafc" text-anchor="start" opacity="1">Pantalla de agencia</text>
+<text x="1092.0" y="588" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">Llegada, atención finalizada,</text>
+<text x="1092.0" y="602" font-size="11" font-weight="normal" fill="#cbd5e1" text-anchor="start" opacity="1">fuera de servicio</text>
+<rect x="1092.0" y="614" width="82" height="16" rx="8" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-width="1"/>
+<text x="1133.2" y="626" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="middle" opacity="1.0">Implementado</text>
 <line x1="1316.0" y1="458.0" x2="1332.0" y2="458.0" stroke="#cbd5e1" stroke-width="2.5" marker-end="url(#arrow)"/>
 <rect x="1334.0" y="146" width="242.0" height="624" rx="12" fill="#ec4899" fill-opacity="0.07" stroke="#ec4899" stroke-width="2"/>
 <rect x="1334.0" y="146" width="242.0" height="62" rx="12" fill="#ec4899" fill-opacity="0.22"/>

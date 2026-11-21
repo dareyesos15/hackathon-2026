@@ -80,11 +80,17 @@ class Engine:
     bus: EventBus
 
 
-async def _manzana_for(session: AsyncSession, lat: float, lon: float) -> str | None:
+async def _manzana_for(
+    session: AsyncSession, lat: float, lon: float
+) -> tuple[str, str] | tuple[None, None]:
+    """(id, barrio) de la manzana que contiene el punto."""
     point = WKTElement(f"POINT({lon} {lat})", srid=4326)
-    return await session.scalar(
-        select(Manzana.id).where(func.ST_Contains(Manzana.geom, point)).limit(1)
-    )
+    row = (
+        await session.execute(
+            select(Manzana.id, Manzana.barrio).where(func.ST_Contains(Manzana.geom, point)).limit(1)
+        )
+    ).first()
+    return (row[0], row[1]) if row else (None, None)
 
 
 async def refresh_trust(session: AsyncSession, engine: Engine, incident: Incident) -> None:
@@ -142,8 +148,14 @@ async def process_report(
         text=classify_source,
     )
     manzana_id: str | None = None
+    barrio = loc.barrio
     if loc.lat is not None and loc.lon is not None:
-        manzana_id = await _manzana_for(session, loc.lat, loc.lon)
+        manzana_id, manzana_barrio = await _manzana_for(session, loc.lat, loc.lon)
+        # Con GPS manda el punto: el barrio es el de la manzana donde cae, no el del texto.
+        if loc.precision == GeoPrecision.gps and manzana_barrio:
+            barrio = manzana_barrio
+        else:
+            barrio = barrio or manzana_barrio
 
     occurred_at = incoming.occurred_at or incoming.received_at
     if occurred_at > incoming.received_at + MAX_FUTURE_SKEW:
@@ -191,7 +203,7 @@ async def process_report(
         geom=WKTElement(f"POINT({loc.lon} {loc.lat})", srid=4326) if loc.has_point else None,
         geo_precision=loc.precision,
         manzana_id=manzana_id,
-        barrio=loc.barrio,
+        barrio=barrio,
         category=cls.category,
         severity=cls.severity,
         triage_level=cls.triage_level,

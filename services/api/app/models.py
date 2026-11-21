@@ -41,6 +41,8 @@ from app.domain import (
     GeoPrecision,
     IncidentStatus,
     InspectionColor,
+    MassAlertEvent,
+    MassAlertStatus,
     MetricUnit,
     PlaceKind,
     ReportAction,
@@ -114,11 +116,54 @@ class Place(CommonMixin, Base):
     barrio: Mapped[str] = mapped_column(String(80), nullable=False)
 
 
+class MassAlert(CommonMixin, Base):
+    """Alerta masiva de toda la ciudad (p. ej. un sismo): abre una sesión de operación propia.
+
+    Mientras está activa, todo incidente nuevo queda en su sesión (triaje, cascada y zonas).
+    Cuando todos sus incidentes se cierran (atendidos o descartados) se resuelve sola y guarda el
+    reporte final (problemas, trazabilidad y tiempos de solución) en `final_report`.
+    """
+
+    __tablename__ = "mass_alerts"
+    __table_args__ = (
+        CheckConstraint("char_length(title) BETWEEN 1 AND 120", name="ck_mass_alert_title_len"),
+        CheckConstraint(
+            "created_by_role IN ('operador_pmu', 'coe')", name="ck_mass_alert_created_by_role"
+        ),
+        # Una sola alerta masiva activa a la vez.
+        Index(
+            "uq_mass_alert_active",
+            "status",
+            unique=True,
+            postgresql_where=text("status = 'activa'"),
+        ),
+    )
+
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+    event_type: Mapped[MassAlertEvent] = mapped_column(
+        _enum(MassAlertEvent, "mass_alert_event"), nullable=False
+    )
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[MassAlertStatus] = mapped_column(
+        _enum(MassAlertStatus, "mass_alert_status"), nullable=False, default=MassAlertStatus.activa
+    )
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by_role: Mapped[Role] = mapped_column(
+        _enum(Role, "mass_alert_created_by"), nullable=False
+    )
+    official_alert_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("alerts.id", ondelete="SET NULL"), nullable=True
+    )
+    final_report: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+
+
 class Incident(CommonMixin, Base):
     __tablename__ = "incidents"
     __table_args__ = (
         CheckConstraint("trust_score BETWEEN 0 AND 100", name="ck_incident_trust_range"),
         Index("ix_incidents_category_last_seen", "category", "last_seen"),
+        Index("ix_incidents_mass_alert", "mass_alert_id"),
     )
 
     centroid: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=True)
@@ -144,6 +189,10 @@ class Incident(CommonMixin, Base):
     barrio: Mapped[str | None] = mapped_column(String(80), nullable=True)
     geo_precision: Mapped[GeoPrecision] = mapped_column(
         _enum(GeoPrecision, "geo_precision"), nullable=False, default=GeoPrecision.none
+    )
+    # Sesión de alerta masiva a la que pertenece (None: operación ordinaria).
+    mass_alert_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("mass_alerts.id"), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False

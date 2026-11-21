@@ -31,6 +31,7 @@ from app.domain import (
     Channel,
     GeoPrecision,
     IncidentStatus,
+    MassAlertStatus,
     PlaceKind,
     ReportAction,
     ReportStatus,
@@ -38,7 +39,16 @@ from app.domain import (
     ZoneDetector,
     ZoneEventKind,
 )
-from app.models import Incident, Manzana, Place, Report, ReportEvent, ZoneSensor, ZoneSensorEvent
+from app.models import (
+    Incident,
+    Manzana,
+    MassAlert,
+    Place,
+    Report,
+    ReportEvent,
+    ZoneSensor,
+    ZoneSensorEvent,
+)
 
 DEDUP_LOCK_KEY = 0xDAC0A  # bloqueo asesor: agrupación serializada (research R10)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
@@ -221,7 +231,13 @@ async def process_report(
         text=redacted.text,
         reporter_hash=hashed,
     )
-    candidates = await find_candidates(session, ctx, engine.settings.dedup)
+    # Sesión vigente: si hay alerta masiva activa, el reporte pertenece a ella.
+    mass_alert_id = await session.scalar(
+        select(MassAlert.id).where(MassAlert.status == MassAlertStatus.activa).limit(1)
+    )
+    candidates = await find_candidates(
+        session, ctx, engine.settings.dedup, mass_alert_id=mass_alert_id
+    )
     match = choose_incident(ctx, candidates, engine.similarity, engine.settings.dedup)
 
     if match is not None:
@@ -237,6 +253,7 @@ async def process_report(
             last_seen=occurred_at,
             status=IncidentStatus.abierto,
             geo_precision=loc.precision,
+            mass_alert_id=mass_alert_id,
             source=incoming.source,
         )
         session.add(incident)

@@ -66,7 +66,7 @@ async def reset_demo_data(
             "TRUNCATE report_events, resource_tracks, dispatches, alert_events, alert_deliveries,"
             " alerts, rain_readings, reports, incidents, metrics_snapshots,"
             " aid_deliveries, household_vulnerability, households, building_inspections,"
-            " zone_sensor_events CASCADE"
+            " zone_sensor_events, mass_alerts CASCADE"
         )
     )
     # Sensores de zonas inseguras: se conservan los sembrados; los instalados en incidentes no.

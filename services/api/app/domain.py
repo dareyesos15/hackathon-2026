@@ -276,3 +276,22 @@ class ZoneDetector(StrEnum):
 class ZoneSensorStatus(StrEnum):
     armado = "armado"
     desarmado = "desarmado"
+
+
+# ------------------------------------------------------------- alerta masiva (toda la ciudad)
+
+
+class MassAlertStatus(StrEnum):
+    activa = "activa"
+    resuelta = "resuelta"
+
+
+class MassAlertEvent(StrEnum):
+    """Tipo de evento que dispara la alerta masiva (EMRE Manizales 2024: amenazas principales)."""
+
+    sismo = "sismo"
+    deslizamientos = "deslizamientos"
+    inundacion = "inundacion"
+    ceniza_volcanica = "ceniza_volcanica"
+    incendio_estructural = "incendio_estructural"
+    otro = "otro"

@@ -246,15 +246,27 @@ def _point(lat: float, lon: float) -> WKTElement:
 
 
 async def find_candidates(
-    session: AsyncSession, report: ReportCtx, cfg: DedupSettings, limit: int = 20
+    session: AsyncSession,
+    report: ReportCtx,
+    cfg: DedupSettings,
+    limit: int = 20,
+    mass_alert_id: uuid.UUID | None = None,
 ) -> list[Candidate]:
+    """Incidentes candidatos. Solo se agrupa dentro de la misma sesión (ordinaria o de una alerta
+    masiva): un reporte de la alerta masiva nunca se une a un incidente de otra sesión."""
     window = timedelta(hours=cfg.window_hours)
     group = list(compatible_group(report.category))
+    session_filter = (
+        Incident.mass_alert_id.is_(None)
+        if mass_alert_id is None
+        else Incident.mass_alert_id == mass_alert_id
+    )
     stmt = select(Incident, func.ST_Y(Incident.centroid), func.ST_X(Incident.centroid)).where(
         Incident.category.in_(group),
         Incident.status != IncidentStatus.descartado,
         Incident.last_seen >= report.occurred_at - window,
         Incident.first_seen <= report.occurred_at + window,
+        session_filter,
     )
     if report.lat is not None and report.lon is not None:
         stmt = stmt.where(

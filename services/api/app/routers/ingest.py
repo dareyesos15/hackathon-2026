@@ -73,7 +73,7 @@ def incoming_from(body: ReportIn, role: Role) -> IncomingReport:
         )
     if body.channel == Channel.pwa and not body.consent:
         raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "detail": "Debe aceptar el aviso de privacidad antes de reportar",
                 "code": "consent_required",

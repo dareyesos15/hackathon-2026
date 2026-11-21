@@ -267,7 +267,7 @@ function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
   );
 }
 
-function Componentes({ c }: { c: Record<string, number | null> }) {
+function Componentes({ c, simulated }: { c: Record<string, number | null>; simulated: boolean }) {
   const names: [string, string][] = [
     ["habitabilidad", "Habitabilidad (3)"],
     ["familias", "Familias en casa (7)"],
@@ -282,7 +282,9 @@ function Componentes({ c }: { c: Record<string, number | null> }) {
             <dt className="text-xs text-tinta-suave">{label}</dt>
             <dd className="font-semibold tabular-nums">
               {c[k] === null || c[k] === undefined ? (
-                <span className="font-normal text-tinta-suave">sin fuente: no cuenta</span>
+                <span className="font-normal text-tinta-suave">
+                  {simulated ? "sin dato en este corte" : "sin fuente: no cuenta"}
+                </span>
               ) : (
                 formatPercent(c[k])
               )}
@@ -291,8 +293,9 @@ function Componentes({ c }: { c: Record<string, number | null> }) {
         ))}
       </dl>
       <p className="text-xs text-tinta-suave">
-        El índice promedia solo los componentes con fuente; los demás se suman cuando haya convenio
-        con su entidad.
+        {simulated
+          ? "El índice promedia solo los componentes cuya fuente entregó dato en este corte."
+          : "El índice promedia solo los componentes con fuente; los demás se suman cuando haya convenio con su entidad."}
       </p>
     </div>
   );
@@ -869,8 +872,10 @@ export function TableroRecuperacion() {
         </div>
         <p className="flex flex-wrap items-center gap-2 text-xs text-white/70 sm:col-span-3">
           {DEMO_MODE && <EtiquetaSimulado sobreOscuro />}
-          Corte {formatDateTime(data.cutoff_at)} · predios únicos, no visitas · sin cifras
-          inventadas: ver &ldquo;Respaldo de las cifras&rdquo;
+          Corte {formatDateTime(data.cutoff_at)} · predios únicos, no visitas ·{" "}
+          {data.scenario === "real"
+            ? "sin cifras inventadas: ver «Respaldo de las cifras»"
+            : "escenario SIMULADO: cifras sintéticas para medir la confianza del sistema"}
         </p>
       </section>
 
@@ -881,7 +886,7 @@ export function TableroRecuperacion() {
       <Indicador ind={ind[2]} />
       <Indicador ind={ind[3]} />
       <Indicador ind={ind[4]} cols={2}>
-        <Componentes c={data.index_components} />
+        <Componentes c={data.index_components} simulated={data.scenario !== "real"} />
         <CurvaIndice points={data.index_curve} day={data.day} />
       </Indicador>
       <Indicador ind={ind[5]} cols={4} />

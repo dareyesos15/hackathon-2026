@@ -119,17 +119,17 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 
 ### Implementation for User Story 2
 
-- [ ] T043 [US2] Implementar la máquina de estados (transiciones permitidas, `409 invalid_transition`, nota obligatoria al descartar riesgo vital, recálculo del incidente) en `services/api/app/core/review.py` — data-model.md `Report.status`, `Report.is_life_threat`, `Incident.status`, `ReportEvent.action`, `ReportEvent.actor_role`
-- [ ] T044 [US2] Implementar `PATCH /reports/{id}` y `PATCH /incidents/{id}` (solo `operador_pmu`, eventos por reporte, evento SSE `incident.status_changed`) en `services/api/app/routers/reports.py` y `services/api/app/routers/incidents.py`
-- [ ] T045 [P] [US2] Prueba de integración: el sistema nunca descarta un reporte de riesgo vital; descartar sin nota → 422; bitácora solo-agregar en `services/api/tests/integration/test_review.py`
-- [ ] T046 [US2] Implementar `GET /stream` (SSE, latido 15 s, `Last-Event-ID`) según [contracts/sse-events.md](contracts/sse-events.md) en `services/api/app/routers/stream.py`
-- [ ] T047 [P] [US2] Implementar `GET /map/manzanas` (agregado por manzana, k ≥ 5 para `publico`) y `GET /geo/barrios` en `services/api/app/routers/map.py`
-- [ ] T048 [US2] Regenerar OpenAPI y tipos del frontend tras T044–T047 en `apps/web/lib/api/schema.d.ts`
-- [ ] T049 [P] [US2] Implementar cliente en vivo (EventSource con token, reconexión, fallback a polling cada 3 s tras 2 fallos, estado "Modo de respaldo") en `apps/web/lib/live.ts`
-- [ ] T050 [P] [US2] Implementar el mapa MapLibre con fondo GeoJSON offline (barrios), capa de manzanas por concentración y círculos de incidentes (color por triaje, radio por `report_count`) en `apps/web/components/Mapa.tsx`
-- [ ] T051 [P] [US2] Implementar la matriz/lista de triaje con filtros de nivel, estado y categoría en `apps/web/components/MatrizTriaje.tsx`
-- [ ] T052 [P] [US2] Implementar el detalle de incidente (reportes redactados, desglose de las 7 señales, bitácora, botones Confirmar/Descartar/Marcar duplicado con nota obligatoria si es riesgo vital) en `apps/web/components/DetalleIncidente.tsx`
-- [ ] T053 [US2] Componer el tablero `/pmu` (mapa + matriz + detalle por `?incidente=`, cabecera con cifras `Cifra` y etiqueta SIMULADO) en `apps/web/app/pmu/page.tsx`
+- [X] T043 [US2] Implementar la máquina de estados (transiciones permitidas, `409 invalid_transition`, nota obligatoria al descartar riesgo vital, recálculo del incidente) en `services/api/app/core/review.py` — data-model.md `Report.status`, `Report.is_life_threat`, `Incident.status`, `ReportEvent.action`, `ReportEvent.actor_role`
+- [X] T044 [US2] Implementar `PATCH /reports/{id}` y `PATCH /incidents/{id}` (solo `operador_pmu`, eventos por reporte, evento SSE `incident.status_changed`) en `services/api/app/routers/reports.py` y `services/api/app/routers/incidents.py`
+- [X] T045 [P] [US2] Prueba de integración: el sistema nunca descarta un reporte de riesgo vital; descartar sin nota → 422; bitácora solo-agregar en `services/api/tests/integration/test_review.py`
+- [X] T046 [US2] Implementar `GET /stream` (SSE, latido 15 s, `Last-Event-ID`) según [contracts/sse-events.md](contracts/sse-events.md) en `services/api/app/routers/stream.py`
+- [X] T047 [P] [US2] Implementar `GET /map/manzanas` (agregado por manzana, k ≥ 5 para `publico`) y `GET /geo/barrios` en `services/api/app/routers/map.py`
+- [X] T048 [US2] Regenerar OpenAPI y tipos del frontend tras T044–T047 en `apps/web/lib/api/schema.d.ts`
+- [X] T049 [P] [US2] Implementar cliente en vivo (EventSource con token, reconexión, fallback a polling cada 3 s tras 2 fallos, estado "Modo de respaldo") en `apps/web/lib/live.ts`
+- [X] T050 [P] [US2] Implementar el mapa MapLibre con fondo GeoJSON offline (barrios), capa de manzanas por concentración y círculos de incidentes (color por triaje, radio por `report_count`) en `apps/web/components/Mapa.tsx`
+- [X] T051 [P] [US2] Implementar la matriz/lista de triaje con filtros de nivel, estado y categoría en `apps/web/components/MatrizTriaje.tsx`
+- [X] T052 [P] [US2] Implementar el detalle de incidente (reportes redactados, desglose de las 7 señales, bitácora, botones Confirmar/Descartar/Marcar duplicado con nota obligatoria si es riesgo vital) en `apps/web/components/DetalleIncidente.tsx`
+- [X] T053 [US2] Componer el tablero `/pmu` (mapa + matriz + detalle por `?incidente=`, cabecera con cifras `Cifra` y etiqueta SIMULADO) en `apps/web/app/pmu/page.tsx`
 
 **Checkpoint**: quickstart §5 completo en el navegador.
 

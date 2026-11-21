@@ -3,6 +3,8 @@
 import uuid
 from datetime import UTC, datetime, timedelta
 
+import pytest
+
 from app.config import DedupSettings
 from app.core.dedup import (
     Candidate,
@@ -115,11 +117,31 @@ def test_forwarded_chains_do_not_corroborate() -> None:
     assert independent_sources([*chains, ("z" * 64, Channel.sms, False)]) == 1
 
 
-def test_weighted_centroid_prefers_gps() -> None:
-    lat, lon = weighted_centroid(
+def test_weighted_centroid_pins_to_gps() -> None:
+    """Un reporte con GPS fija el incidente en su punto exacto."""
+    centroid = weighted_centroid(
         [(5.0, -75.0, GeoPrecision.gps), (5.1, -75.1, GeoPrecision.barrio)]
     )
-    assert abs(lat - 5.0) < abs(lat - 5.1)
+    assert centroid == (5.0, -75.0)
+
+
+def test_weighted_centroid_averages_only_gps_points() -> None:
+    centroid = weighted_centroid(
+        [
+            (5.0, -75.0, GeoPrecision.gps),
+            (5.002, -75.002, GeoPrecision.gps),
+            (5.1, -75.1, GeoPrecision.barrio),
+        ]
+    )
+    assert centroid is not None
+    assert centroid[0] == pytest.approx(5.001)
+    assert centroid[1] == pytest.approx(-75.001)
+
+
+def test_weighted_centroid_without_gps_uses_barrio_points() -> None:
+    centroid = weighted_centroid([(5.0, -75.0, GeoPrecision.barrio)])
+    assert centroid == (5.0, -75.0)
+    assert weighted_centroid([]) is None
 
 
 def test_address_signature() -> None:

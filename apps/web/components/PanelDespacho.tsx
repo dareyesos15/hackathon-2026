@@ -118,7 +118,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
       {dispatches.length > 0 && (
         <ul className="mt-2 space-y-1.5">
           {dispatches.map((d) => (
-            <li key={d.id} className="rounded border border-slate-100 p-2 text-xs">
+            <li key={d.id} className="rounded border border-linea p-2 text-xs">
               <div className="flex justify-between gap-2">
                 <span className="font-medium">
                   {d.agency.name} · {d.resource.label}
@@ -134,18 +134,18 @@ export function PanelDespacho({ detail, onChanged }: Props) {
                   {DISPATCH_STATUS_LABEL[d.status]}
                 </span>
               </div>
-              <p className="text-slate-500">
+              <p className="text-tinta-suave">
                 Salió {formatTime(d.created_at)} · {formatNumber(d.distance_m / 1000, 1)} km ·
                 llegada estimada {formatTime(d.eta_at)} (SIMULADA)
                 {d.arrived_at && ` · llegó ${formatTime(d.arrived_at)}`}
               </p>
-              {d.justification && <p className="text-slate-600">“{d.justification}”</p>}
-              {d.close_note && <p className="text-slate-600">Motivo: {d.close_note}</p>}
+              {d.justification && <p className="text-tinta-suave">“{d.justification}”</p>}
+              {d.close_note && <p className="text-tinta-suave">Motivo: {d.close_note}</p>}
               {isActive(d.status) &&
                 (cancelling === d.id ? (
                   <div className="mt-1 flex gap-1">
                     <input
-                      className="flex-1 rounded border border-slate-300 px-1 py-0.5"
+                      className="flex-1 rounded border border-linea px-1 py-0.5"
                       placeholder="Motivo de la cancelación"
                       value={cancelNote}
                       onChange={(e) => setCancelNote(e.target.value)}
@@ -187,14 +187,14 @@ export function PanelDespacho({ detail, onChanged }: Props) {
         </div>
       )}
       {finishedButUnverified && (
-        <p className="mt-2 text-[11px] text-slate-600">
+        <p className="mt-2 text-[11px] text-tinta-suave">
           La agencia finalizó. Confirme el incidente para poder cerrarlo como atendido.
         </p>
       )}
 
       {!closed && suggestion && (
         <div className="mt-3">
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-tinta-suave">
             {suggestion.emre_function_label ?? "Sin función EMRE sugerida para esta categoría"}
             {suggestion.suggested_agency && (
               <>
@@ -203,7 +203,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
               </>
             )}
             {suggestion.alternative_agencies.length > 0 && (
-              <span className="text-slate-500">
+              <span className="text-tinta-suave">
                 {" "}
                 (alternativas: {suggestion.alternative_agencies.map((a) => a.name).join(", ")})
               </span>
@@ -218,7 +218,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
           <ul className="mt-2 max-h-48 space-y-1 overflow-y-auto">
             {suggestion.candidates.map((c) => (
               <li key={c.resource.id}>
-                <label className="flex cursor-pointer items-center gap-2 rounded px-1 py-0.5 text-xs hover:bg-slate-50">
+                <label className="flex cursor-pointer items-center gap-2 rounded px-1 py-0.5 text-xs hover:bg-papel">
                   <input
                     type="checkbox"
                     checked={selected.includes(c.resource.id)}
@@ -226,11 +226,11 @@ export function PanelDespacho({ detail, onChanged }: Props) {
                   />
                   <span className="flex-1">
                     {c.resource.label}{" "}
-                    <span className="text-slate-500">
+                    <span className="text-tinta-suave">
                       · {RESOURCE_TYPE_LABEL[c.resource.type]} · {c.agency_code}
                     </span>
                   </span>
-                  <span className="tabular-nums text-slate-600">
+                  <span className="tabular-nums text-tinta-suave">
                     {formatNumber(c.distance_m / 1000, 1)} km · {formatInt(Math.ceil(c.eta_min))}{" "}
                     min
                   </span>
@@ -238,7 +238,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
               </li>
             ))}
             {suggestion.candidates.length === 0 && (
-              <li className="text-xs text-slate-500">No hay recursos disponibles.</li>
+              <li className="text-xs text-tinta-suave">No hay recursos disponibles.</li>
             )}
           </ul>
 

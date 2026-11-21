@@ -106,18 +106,18 @@ export function EditorAlerta({
         <h3 className="font-semibold">
           {existing ? `Editar borrador (versión ${existing.version})` : "Nueva alerta (borrador)"}
         </h3>
-        <button type="button" onClick={onClose} className="text-slate-500" aria-label="Cerrar">
+        <button type="button" onClick={onClose} className="text-tinta-suave" aria-label="Cerrar">
           ✕
         </button>
       </div>
-      <p className="text-[11px] text-slate-500">
+      <p className="text-[11px] text-tinta-suave">
         Solo el COE aprueba y emite alertas oficiales (EMRE, tarea 5.5).
       </p>
 
       <label className="flex flex-col gap-1 text-xs">
         Tipo
         <select
-          className="rounded border border-slate-300 bg-white px-2 py-1"
+          className="rounded border border-linea bg-white px-2 py-1"
           value={draft.type}
           onChange={(e) => set({ type: e.target.value as AlertType })}
         >
@@ -143,7 +143,7 @@ export function EditorAlerta({
                 min={100}
                 max={3000}
                 step={50}
-                className="w-20 rounded border border-slate-300 px-1"
+                className="w-20 rounded border border-linea px-1"
                 value={draft.circle.radius_m}
                 onChange={(e) =>
                   set({
@@ -163,7 +163,7 @@ export function EditorAlerta({
         ) : (
           <select
             multiple
-            className="h-24 rounded border border-slate-300 bg-white px-1"
+            className="h-24 rounded border border-linea bg-white px-1"
             value={draft.barrios}
             onChange={(e) => set({ barrios: Array.from(e.target.selectedOptions, (o) => o.value) })}
           >
@@ -178,7 +178,7 @@ export function EditorAlerta({
           type="button"
           onClick={onPickCenter}
           className={`self-start rounded border px-2 py-0.5 ${
-            picking ? "border-amber-600 bg-amber-100" : "border-slate-300"
+            picking ? "border-amber-600 bg-amber-100" : "border-linea"
           }`}
         >
           {picking ? "Haga clic en el mapa…" : "Marcar centro de un círculo en el mapa"}
@@ -188,7 +188,7 @@ export function EditorAlerta({
       <label className="flex flex-col gap-1 text-xs">
         Mensaje
         <textarea
-          className="rounded border border-slate-300 p-2"
+          className="rounded border border-linea p-2"
           rows={3}
           maxLength={500}
           value={draft.message}
@@ -198,7 +198,7 @@ export function EditorAlerta({
             setConfirmed(false);
           }}
         />
-        <span className={overflow > 0 ? "text-rose-700" : "text-slate-500"}>
+        <span className={overflow > 0 ? "text-rose-700" : "text-tinta-suave"}>
           {formatInt(draft.message.trim().length)} caracteres
           {draft.channels.includes("sms_cuadrillas") &&
             ` · SMS máximo ${SMS_MAX}${overflow > 0 ? ` (sobran ${overflow})` : ""}`}
@@ -215,7 +215,7 @@ export function EditorAlerta({
               onChange={() => toggleChannel(c)}
             />
             {ALERT_CHANNEL_LABEL[c]}
-            {c === "sms_cuadrillas" && <span className="text-slate-500">(SIMULADO)</span>}
+            {c === "sms_cuadrillas" && <span className="text-tinta-suave">(SIMULADO)</span>}
           </label>
         ))}
       </fieldset>

@@ -35,12 +35,12 @@ export const TRIAGE_LABEL: Record<TriageLevel, string> = {
   bajo: "Bajo",
 };
 
-/** Colores por nivel de triaje (mapa y lista). */
+/** Colores por nivel de triaje (mapa y lista): cuanto más rojo, más urgente. */
 export const TRIAGE_COLOR: Record<TriageLevel, string> = {
-  critico: "#dc2626",
-  alto: "#f97316",
-  medio: "#eab308",
-  bajo: "#3b82f6",
+  critico: "#d21f2b",
+  alto: "#ee6a2c",
+  medio: "#e8a92a",
+  bajo: "#6e7c8c",
 };
 
 export const TRIAGE_ORDER: TriageLevel[] = ["critico", "alto", "medio", "bajo"];
@@ -53,10 +53,10 @@ export const TRUST_LABEL: Record<TrustLabel, string> = {
 };
 
 export const TRUST_STYLE: Record<TrustLabel, string> = {
-  verificado: "bg-emerald-100 text-emerald-800 border-emerald-300",
-  probable: "bg-sky-100 text-sky-800 border-sky-300",
-  sin_verificar: "bg-slate-100 text-slate-700 border-slate-300",
-  posible_falso: "bg-rose-100 text-rose-800 border-rose-300",
+  verificado: "bg-[#e3f1e9] text-verificado border-[#a9d3bb]",
+  probable: "bg-white text-tinta border-linea",
+  sin_verificar: "bg-papel text-tinta-suave border-linea border-dashed",
+  posible_falso: "bg-tinta text-white border-tinta",
 };
 
 export const STATUS_LABEL: Record<IncidentStatus, string> = {

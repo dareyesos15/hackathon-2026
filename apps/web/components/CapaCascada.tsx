@@ -116,7 +116,7 @@ export function CapaCascada({
         </label>
         <EtiquetaSimulado />
       </div>
-      <p className="text-[11px] text-slate-500">
+      <p className="text-[11px] text-tinta-suave">
         Riesgo de deslizamiento o colapso secundario por manzana: pendiente, lluvia, intensidad
         sísmica y reportes cercanos. Sugerencia; decide el PMU.
       </p>
@@ -125,11 +125,11 @@ export function CapaCascada({
         {CASCADE_LEVEL_ORDER.map((level) => (
           <li key={level} className="flex items-center gap-2">
             <span
-              className="inline-block h-3 w-5 rounded-sm border border-slate-300"
+              className="inline-block h-3 w-5 rounded-sm border border-linea"
               style={{ background: CASCADE_LEVEL_COLOR[level] }}
             />
             {CASCADE_LEVEL_LABEL[level]}
-            {enabled && <span className="text-slate-500">({formatInt(counts[level])})</span>}
+            {enabled && <span className="text-tinta-suave">({formatInt(counts[level])})</span>}
           </li>
         ))}
       </ul>
@@ -141,13 +141,13 @@ export function CapaCascada({
         </p>
       )}
       {enabled && offline && !layer && (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-tinta-suave">
           Aún no hay una predicción guardada en este dispositivo.
         </p>
       )}
 
       {!canControlRain && layer && (
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-tinta-suave">
           Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm (estación LLUVIA-URB-01,
           SIMULADA)
         </p>
@@ -176,14 +176,14 @@ export function CapaCascada({
       )}
 
       {enabled && layer?.cutoff_at && (
-        <p className="text-[10px] text-slate-400">
+        <p className="text-[10px] text-tinta-suave">
           Modelo {layer.model_version} · corte {formatDateTime(layer.cutoff_at)}
           {layer.scenario_clock && ` · reloj del escenario ${formatDateTime(layer.scenario_clock)}`}
         </p>
       )}
 
       {enabled && selected && (
-        <div className="rounded border border-slate-200 p-2">
+        <div className="rounded border border-linea p-2">
           <div className="flex items-center justify-between">
             <span className="font-medium">
               {selected.barrio} · {selected.manzana_id}
@@ -213,7 +213,7 @@ export function CapaCascada({
                     style={{ width: `${Math.min(100, (f.puntos / f.max) * 100)}%` }}
                   />
                 </div>
-                <p className="text-[11px] text-slate-500">{f.detalle}</p>
+                <p className="text-[11px] text-tinta-suave">{f.detalle}</p>
               </li>
             ))}
           </ul>
@@ -229,7 +229,9 @@ export function CapaCascada({
         </div>
       )}
       {enabled && !selected && (
-        <p className="text-xs text-slate-500">Toque una manzana en el mapa para ver el desglose.</p>
+        <p className="text-xs text-tinta-suave">
+          Toque una manzana en el mapa para ver el desglose.
+        </p>
       )}
     </section>
   );

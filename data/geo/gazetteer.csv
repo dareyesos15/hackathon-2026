@@ -1,51 +1,63 @@
 name,kind,lat,lon,barrio,comuna,aliases,source
-Centro,barrio,5.06890,-75.51740,Centro,Cumanday,centro|centro historico|el centro,SIMULADO
-Chipre,barrio,5.07050,-75.52850,Chipre,Atardeceres,chipre,SIMULADO
-Villa Pilar,barrio,5.06120,-75.52120,Villa Pilar,Atardeceres,villa pilar|villapilar,SIMULADO
-Arenillo,barrio,5.05600,-75.52620,Arenillo,Atardeceres,arenillo,SIMULADO
-San José,barrio,5.07220,-75.50980,San José,San José,san jose,SIMULADO
-Los Agustinos,barrio,5.07030,-75.51280,Los Agustinos,Cumanday,agustinos|los agustinos,SIMULADO
-Marmato,barrio,5.07420,-75.51420,Marmato,San José,marmato,SIMULADO
-Galán,barrio,5.07480,-75.52050,Galán,Cumanday,galan,SIMULADO
-Solferino,barrio,5.07620,-75.50880,Solferino,San José,solferino,SIMULADO
-Campohermoso,barrio,5.07320,-75.50480,Campohermoso,San José,campo hermoso|campohermoso,SIMULADO
-Fundadores,barrio,5.06520,-75.50520,Fundadores,Cumanday,fundadores,SIMULADO
-Aranjuez,barrio,5.06280,-75.50720,Aranjuez,La Estación,aranjuez,SIMULADO
-Belén,barrio,5.06410,-75.50020,Belén,La Estación,belen,SIMULADO
-Laureles,barrio,5.06120,-75.49820,Laureles,Palogrande,laureles,SIMULADO
-El Cable,barrio,5.05900,-75.49580,El Cable,Palogrande,cable|el cable,SIMULADO
-Estrella,barrio,5.05620,-75.49720,Estrella,Palogrande,estrella|la estrella,SIMULADO
-Palogrande,barrio,5.05750,-75.49300,Palogrande,Palogrande,palogrande,SIMULADO
-Versalles,barrio,5.05680,-75.48980,Versalles,Palogrande,versalles,SIMULADO
-Palermo,barrio,5.05450,-75.48780,Palermo,Palogrande,palermo,SIMULADO
-Baja Suiza,barrio,5.05400,-75.49080,Baja Suiza,Ecoturístico Cerro de Oro,baja suiza,SIMULADO
-Alta Suiza,barrio,5.05280,-75.48680,Alta Suiza,Ecoturístico Cerro de Oro,alta suiza,SIMULADO
-Milán,barrio,5.05050,-75.48250,Milán,Ecoturístico Cerro de Oro,milan,SIMULADO
-Sancancio,barrio,5.04820,-75.49580,Sancancio,Ecoturístico Cerro de Oro,sancancio,SIMULADO
-La Florida,barrio,5.04680,-75.47880,La Florida,Ecoturístico Cerro de Oro,florida|la florida,SIMULADO
-La Sultana,barrio,5.04220,-75.48780,La Sultana,Tesorito,la sultana|sultana,SIMULADO
-La Francia,barrio,5.04850,-75.49180,La Francia,Universitaria,francia|la francia,SIMULADO
-La Enea,barrio,5.03020,-75.46520,La Enea,La Fuente,enea|la enea,SIMULADO
-Bosques del Norte,barrio,5.08980,-75.49520,Bosques del Norte,Ciudadela del Norte,bosques|bosques del norte,SIMULADO
-La Linda,barrio,5.08180,-75.52480,La Linda,Atardeceres,la linda,SIMULADO
-El Carmen,barrio,5.07820,-75.51520,El Carmen,San José,carmen|el carmen,SIMULADO
-Comuna Cumanday,comuna,5.06520,-75.50520,Centro,Cumanday,comuna cumanday,SIMULADO
-Comuna Atardeceres,comuna,5.08180,-75.52480,Chipre,Atardeceres,comuna atardeceres,SIMULADO
-Comuna San José,comuna,5.07820,-75.51520,San José,San José,comuna san jose,SIMULADO
-Comuna La Estación,comuna,5.06410,-75.50020,Aranjuez,La Estación,comuna la estacion,SIMULADO
-Comuna Palogrande,comuna,5.05450,-75.48780,Laureles,Palogrande,comuna palogrande,SIMULADO
-Comuna Ecoturístico Cerro de Oro,comuna,5.04680,-75.47880,Baja Suiza,Ecoturístico Cerro de Oro,comuna ecoturistico cerro de oro,SIMULADO
-Comuna Tesorito,comuna,5.04220,-75.48780,La Sultana,Tesorito,comuna tesorito,SIMULADO
-Comuna Universitaria,comuna,5.04850,-75.49180,La Francia,Universitaria,comuna universitaria,SIMULADO
-Comuna La Fuente,comuna,5.03020,-75.46520,La Enea,La Fuente,comuna la fuente,SIMULADO
-Comuna Ciudadela del Norte,comuna,5.08980,-75.49520,Bosques del Norte,Ciudadela del Norte,comuna ciudadela del norte,SIMULADO
-Avenida Santander,via,5.06120,-75.50020,Laureles,Palogrande,av santander|avenida santander|santander,SIMULADO
-Avenida Paralela,via,5.05780,-75.49920,Estrella,Palogrande,av paralela|avenida paralela|paralela,SIMULADO
-Carrera 23,via,5.06680,-75.51420,Centro,Cumanday,carrera 23|cr 23|cra 23|cra23|kra 23|la 23,SIMULADO
-Catedral,referencia,5.06870,-75.51730,Centro,Cumanday,catedral|catedral basilica|la catedral|plaza de bolivar,SIMULADO
-Coliseo Mayor,referencia,5.06120,-75.50480,Aranjuez,La Estación,coliseo|coliseo mayor,SIMULADO
-Hospital Santa Sofía,referencia,5.06380,-75.49920,Belén,La Estación,hospital santa sofia|santa sofia,SIMULADO
-Torre del Cable Aéreo,referencia,5.05970,-75.49660,El Cable,Palogrande,cable aereo|torre del cable|torre del cable aereo,SIMULADO
-Estadio Palogrande,referencia,5.05600,-75.49200,Palogrande,Palogrande,estadio|estadio palogrande,SIMULADO
-Monumento a los Colonizadores,referencia,5.07230,-75.53020,Chipre,Atardeceres,colonizadores|monumento|monumento a los colonizadores,SIMULADO
-Plaza de Mercado,referencia,5.07220,-75.52120,Galán,Cumanday,galerias|la galeria|plaza de mercado,SIMULADO
+Centro,barrio,5.06769,-75.51833,Centro,Cumanday,centro|centro historico|el centro,OpenStreetMap (ODbL)
+Chipre,barrio,5.07584,-75.52544,Chipre,Atardeceres,chipre,OpenStreetMap (ODbL)
+Villa Pilar,barrio,5.08396,-75.52595,Villa Pilar,Atardeceres,villa pilar|villapilar,OpenStreetMap (ODbL)
+San José,barrio,5.07203,-75.51488,San José,San José,san jose,OpenStreetMap (ODbL)
+Los Agustinos,barrio,5.06962,-75.52180,Los Agustinos,Cumanday,agustinos|los agustinos,OpenStreetMap (ODbL)
+Marmato,barrio,5.06250,-75.51590,Marmato,La Fuente,marmato,OpenStreetMap (ODbL)
+Galán,barrio,5.07451,-75.51184,Galán,San José,galan,OpenStreetMap (ODbL)
+Solferino,barrio,5.07643,-75.48759,Solferino,Nuevo Horizonte,solferino,OpenStreetMap (ODbL)
+Campohermoso,barrio,5.07436,-75.52167,Campohermoso,Atardeceres,campo hermoso|campohermoso,OpenStreetMap (ODbL)
+Fundadores,barrio,5.06633,-75.50988,Fundadores,Cumanday,fundadores,OpenStreetMap (ODbL)
+Cervantes,barrio,5.06341,-75.50948,Cervantes,La Fuente,cervantes,OpenStreetMap (ODbL)
+Lleras,barrio,5.06402,-75.50154,Lleras,La Estación,lleras,OpenStreetMap (ODbL)
+Aranjuez,barrio,5.04254,-75.49978,Aranjuez,Universitaria,aranjuez,OpenStreetMap (ODbL)
+Belén,barrio,5.06116,-75.49258,Belén,Palogrande,belen,OpenStreetMap (ODbL)
+Versalles,barrio,5.06315,-75.49881,Versalles,La Estación,versalles,OpenStreetMap (ODbL)
+Laureles,barrio,5.05647,-75.48367,Laureles,Palogrande,laureles,OpenStreetMap (ODbL)
+El Cable,barrio,5.05634,-75.48642,El Cable,Palogrande,cable|el cable,OpenStreetMap (ODbL)
+La Estrella,barrio,5.05944,-75.48941,La Estrella,Palogrande,estrella|la estrella,OpenStreetMap (ODbL)
+Palogrande,barrio,5.05761,-75.48887,Palogrande,Palogrande,palogrande,OpenStreetMap (ODbL)
+Palermo,barrio,5.05144,-75.48864,Palermo,Palogrande,palermo,OpenStreetMap (ODbL)
+Baja Suiza,barrio,5.05536,-75.47960,Baja Suiza,Ecoturística Cerro de Oro,baja suiza,OpenStreetMap (ODbL)
+Alta Suiza,barrio,5.05110,-75.48151,Alta Suiza,Ecoturística Cerro de Oro,alta suiza,OpenStreetMap (ODbL)
+Milán,barrio,5.04590,-75.47986,Milán,Palogrande,milan,OpenStreetMap (ODbL)
+Sancancio,barrio,5.04773,-75.49228,Sancancio,Palogrande,sancancio,OpenStreetMap (ODbL)
+Fátima,barrio,5.05255,-75.49648,Fátima,Universitaria,fatima,OpenStreetMap (ODbL)
+Persia,barrio,5.05833,-75.50299,Persia,La Fuente,persia,OpenStreetMap (ODbL)
+La Florida,barrio,5.03385,-75.48500,La Florida,Tesorito,florida|la florida,OpenStreetMap (ODbL)
+La Sultana,barrio,5.06108,-75.47277,La Sultana,Ecoturística Cerro de Oro,la sultana|sultana,OpenStreetMap (ODbL)
+La Francia,barrio,5.06829,-75.53268,La Francia,Atardeceres,francia|la francia,OpenStreetMap (ODbL)
+Asturias,barrio,5.05957,-75.52842,Asturias,Atardeceres,asturias,OpenStreetMap (ODbL)
+El Carmen,barrio,5.06014,-75.51913,El Carmen,La Macarena,carmen|el carmen,OpenStreetMap (ODbL)
+La Enea,barrio,5.03182,-75.46306,La Enea,Tesorito,enea|la enea,OpenStreetMap (ODbL)
+Bosques de la Enea,barrio,5.03353,-75.45752,Bosques de la Enea,Tesorito,bosques de la enea,OpenStreetMap (ODbL)
+Lusitania,barrio,5.03077,-75.47756,Lusitania,Tesorito,lusitania,OpenStreetMap (ODbL)
+San Marcel,barrio,5.03566,-75.46963,San Marcel,Tesorito,san marcel,OpenStreetMap (ODbL)
+El Trébol,barrio,5.04013,-75.47908,El Trébol,Palogrande,el trebol|trebol,OpenStreetMap (ODbL)
+Chachafruto,barrio,5.03848,-75.47510,Chachafruto,Tesorito,chachafruto,OpenStreetMap (ODbL)
+Sinaí,barrio,5.07246,-75.48735,Sinaí,Nuevo Horizonte,sinai,OpenStreetMap (ODbL)
+Bengala,barrio,5.07839,-75.49059,Bengala,Ciudadela del Norte,bengala,OpenStreetMap (ODbL)
+Bosques del Norte,barrio,5.08299,-75.48930,Bosques del Norte,Ciudadela del Norte,bosques|bosques del norte,OpenStreetMap (ODbL)
+Comuna Atardeceres,comuna,5.07633,-75.52375,Chipre,Atardeceres,comuna atardeceres,OpenStreetMap (ODbL)
+Comuna Ciudadela del Norte,comuna,5.08743,-75.49070,Bosques del Norte,Ciudadela del Norte,comuna ciudadela del norte,OpenStreetMap (ODbL)
+Comuna Cumanday,comuna,5.06727,-75.51601,Centro,Cumanday,comuna cumanday,OpenStreetMap (ODbL)
+Comuna Ecoturística Cerro de Oro,comuna,5.05895,-75.47465,La Sultana,Ecoturística Cerro de Oro,comuna ecoturistica cerro de oro,OpenStreetMap (ODbL)
+Comuna La Estación,comuna,5.06517,-75.49944,Versalles,La Estación,comuna la estacion,OpenStreetMap (ODbL)
+Comuna La Fuente,comuna,5.05914,-75.50911,Cervantes,La Fuente,comuna la fuente,OpenStreetMap (ODbL)
+Comuna La Macarena,comuna,5.05189,-75.52741,Asturias,La Macarena,comuna la macarena,OpenStreetMap (ODbL)
+Comuna Nuevo Horizonte,comuna,5.07268,-75.48701,Sinaí,Nuevo Horizonte,comuna nuevo horizonte,OpenStreetMap (ODbL)
+Comuna Palogrande,comuna,5.05223,-75.48881,Palermo,Palogrande,comuna palogrande,OpenStreetMap (ODbL)
+Comuna San José,comuna,5.07424,-75.51416,San José,San José,comuna san jose,OpenStreetMap (ODbL)
+Comuna Tesorito,comuna,5.03540,-75.46223,La Enea,Tesorito,comuna tesorito,OpenStreetMap (ODbL)
+Comuna Universitaria,comuna,5.04867,-75.50405,Aranjuez,Universitaria,comuna universitaria,OpenStreetMap (ODbL)
+Avenida Santander,via,5.06216,-75.49415,Belén,Palogrande,av santander|avenida santander|santander,OpenStreetMap (ODbL)
+Avenida Paralela,via,5.06062,-75.49559,Belén,Palogrande,av paralela|avenida paralela|paralela,OpenStreetMap (ODbL)
+Carrera 23,via,5.06716,-75.51535,Centro,Cumanday,carrera 23|cr 23|cra 23|cra23|kra 23|la 23,OpenStreetMap (ODbL)
+Catedral,referencia,5.06738,-75.51732,Centro,Cumanday,catedral|catedral basilica|la catedral|plaza de bolivar,OpenStreetMap (ODbL)
+Coliseo Mayor,referencia,5.05804,-75.48845,Palogrande,Palogrande,coliseo|coliseo mayor,OpenStreetMap (ODbL)
+Hospital Santa Sofía,referencia,5.05799,-75.52958,Asturias,Atardeceres,hospital santa sofia|santa sofia,OpenStreetMap (ODbL)
+Torre del Cable Aéreo,referencia,5.05584,-75.48613,El Cable,Palogrande,cable aereo|torre del cable|torre del cable aereo,OpenStreetMap (ODbL)
+Estadio Palogrande,referencia,5.05703,-75.49009,Palogrande,Palogrande,estadio|estadio palogrande,OpenStreetMap (ODbL)
+Monumento a los Colonizadores,referencia,5.07699,-75.52781,Chipre,Atardeceres,colonizadores|monumento|monumento a los colonizadores,OpenStreetMap (ODbL)
+Plaza de Mercado,referencia,5.07165,-75.51719,San José,San José,galerias|la galeria|plaza de mercado,OpenStreetMap (ODbL)

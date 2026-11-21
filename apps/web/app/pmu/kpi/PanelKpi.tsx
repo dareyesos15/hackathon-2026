@@ -35,13 +35,7 @@ export default function PanelKpi() {
 
   if (!allowed) return null;
 
-  const detection = [
-    "duplicate_detection_rate",
-    "fake_detection_rate",
-    "false_positive_rate",
-    "critical_recall",
-    "critical_auto_discarded",
-  ];
+  const detection = ["duplicate_detection_rate", "critical_recall", "critical_auto_discarded"];
   const received = k.reports_received;
   const consolidated = k.incidents_consolidated;
   const mapLatency = k.time_to_consolidated_map_min;
@@ -53,9 +47,9 @@ export default function PanelKpi() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6">
       <header className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold">Dacora · Panel de KPI</h1>
+        <h1 className="font-display text-3xl font-semibold">Panel de KPI de Dacora</h1>
         <EtiquetaSimulado />
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-tinta-suave">
           Se actualiza cada 5 s{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
         </span>
         {(session?.role === "operador_pmu" || session?.role === "coe") && (
@@ -64,46 +58,46 @@ export default function PanelKpi() {
           </Link>
         )}
         {session?.role === "publico" && (
-          <Link href="/mapa/" className="ml-auto text-sm underline">
-            Ver mapa público
+          <Link href="/" className="ml-auto text-sm underline">
+            Ver mapa e indicadores
           </Link>
         )}
       </header>
 
-      <section className="grid gap-4 rounded-xl bg-slate-900 p-5 text-white md:grid-cols-2">
+      <section className="grid gap-4 rounded-md bg-sangre p-5 text-white md:grid-cols-2">
         <div>
-          <p className="text-sm text-slate-300">Información dispersa → decisiones consolidadas</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums">
+          <p className="text-sm text-white/75">Información dispersa → decisiones consolidadas</p>
+          <p className="mt-1 font-display text-5xl font-semibold leading-none tabular-nums">
             {received?.value != null ? formatInt(received.value) : "—"} reportes →{" "}
             {consolidated?.value != null ? formatInt(consolidated.value) : "—"} incidentes
           </p>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-white/70">
             Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
           </p>
         </div>
         <div>
-          <p className="text-sm text-slate-300">Cada hecho aparece en el mapa (p90)</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums">
+          <p className="text-sm text-white/75">Cada hecho aparece en el mapa (p90)</p>
+          <p className="mt-1 font-display text-5xl font-semibold leading-none tabular-nums">
             {mapLatency?.value != null
               ? `${mapLatency.value.toLocaleString("es-CO", { maximumFractionDigits: 1 })} min`
               : "—"}
           </p>
-          <p className="mt-1 text-xs text-slate-400">
-            En el sismo real, las cifras de viviendas afectadas cambiaron durante días (1.449 →
-            2.700 → 1.512, 13–15 ago). Fuente: {mapLatency?.source ?? "evaluate_kpis.py"}.
+          <p className="mt-1 text-xs text-white/70">
+            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
+            {mapLatency?.source ?? "evaluate_kpis.py"}.
           </p>
         </div>
       </section>
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">
-          Detección de duplicados y falsos (KPI oficial &gt; 90 %) y seguridad de los críticos
+        <h2 className="mb-2 font-display text-xl font-semibold">
+          Detección de duplicados y seguridad de los críticos
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {detection.map((key) => (k[key] ? <CifraKpi key={key} k={k[key]} /> : null))}
         </div>
         {!k.duplicate_detection_rate && (
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-tinta-suave">
             Aún no hay evaluación: ejecute la reproducción del escenario
             (scripts/replay_scenario.py).
           </p>
@@ -111,7 +105,7 @@ export default function PanelKpi() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">Operación del motor</h2>
+        <h2 className="mb-2 font-display text-xl font-semibold">Operación del motor</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {["reports_received", "incidents_consolidated", "p95_processing_ms"].map((key) =>
             k[key] ? <CifraKpi key={key} k={k[key]} /> : null,
@@ -119,7 +113,7 @@ export default function PanelKpi() {
         </div>
       </section>
 
-      <footer className="text-xs text-slate-500">
+      <footer className="text-xs text-tinta-suave">
         Definiciones en docs/diccionario_indicadores.md. Los porcentajes de detección se calculan
         contra la verdad del escenario sintético, que el motor nunca ve. Datos SIMULADOS.
       </footer>

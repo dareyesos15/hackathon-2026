@@ -5,6 +5,7 @@ import statistics
 import uuid
 
 import httpx
+import pytest
 
 from tests.integration.conftest import CIUDADANO, PMU
 
@@ -92,3 +93,50 @@ async def test_processing_under_one_second(client: httpx.AsyncClient) -> None:
         times.append(resp.json()["processing_ms"])
     p95 = statistics.quantiles(times, n=20)[18]
     assert p95 < 1000, f"p95 = {p95} ms"
+
+
+async def test_gps_report_is_placed_exactly_at_its_point(client: httpx.AsyncClient) -> None:
+    """El GPS manda: el incidente queda en el punto exacto y el barrio sale de la manzana."""
+    lat, lon = 5.04590, -75.47986  # Milán (OpenStreetMap)
+    by_barrio = await client.post(
+        "/ingest/report",
+        json=pwa_report(text="se cayó una casa en Milán", barrio="Milán"),
+        headers=CIUDADANO,
+    )
+    assert by_barrio.status_code == 201
+
+    gps = await client.post(
+        "/ingest/report",
+        json=pwa_report(
+            text="se cayó una casa, hay gente adentro",
+            barrio=None,
+            location={"lat": lat, "lon": lon, "precision": "gps"},
+        ),
+        headers=CIUDADANO,
+    )
+    assert gps.status_code == 201
+    report = gps.json()["report"]
+    assert report["geo_precision"] == "gps"
+    assert (report["lat"], report["lon"]) == (lat, lon)
+    assert report["barrio"] == "Milán"
+
+    incident = await client.get(f"/incidents/{report['incident_id']}", headers=PMU)
+    assert incident.status_code == 200
+    body = incident.json()
+    assert body["lat"] == pytest.approx(lat, abs=1e-6)
+    assert body["lon"] == pytest.approx(lon, abs=1e-6)
+
+
+async def test_gps_report_on_city_edge_gets_nearest_barrio(client: httpx.AsyncClient) -> None:
+    """Un GPS en el borde de la ciudad (sector La Nubia) no queda sin barrio."""
+    resp = await client.post(
+        "/ingest/report",
+        json=pwa_report(
+            text="se cayó una pared",
+            barrio=None,
+            location={"lat": 5.028805, "lon": -75.472579, "precision": "gps"},
+        ),
+        headers=CIUDADANO,
+    )
+    assert resp.status_code == 201
+    assert resp.json()["report"]["barrio"] is not None

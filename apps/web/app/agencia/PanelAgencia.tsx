@@ -115,7 +115,7 @@ export default function PanelAgencia() {
         <EtiquetaSimulado />
         <button
           type="button"
-          className="ml-auto text-sm text-slate-500"
+          className="ml-auto text-sm text-tinta-suave"
           onClick={() => {
             clearSession();
             router.replace("/");
@@ -128,7 +128,7 @@ export default function PanelAgencia() {
       <label className="flex flex-col gap-1 text-sm">
         Agencia
         <select
-          className="rounded border border-slate-300 bg-white px-2 py-1.5"
+          className="rounded border border-linea bg-white px-2 py-1.5"
           value={agencyId}
           onChange={(e) => choose(e.target.value)}
         >
@@ -142,7 +142,7 @@ export default function PanelAgencia() {
       </label>
 
       {agency && (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-tinta-suave">
           {EMRE_FUNCTION_LABEL[agency.emre_function]} · se actualiza cada 3 s
           {cutoff ? ` · corte ${formatDateTime(cutoff)}` : ""}
         </p>
@@ -152,7 +152,7 @@ export default function PanelAgencia() {
         <section className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Despachos</h2>
-            <label className="flex items-center gap-1 text-xs text-slate-600">
+            <label className="flex items-center gap-1 text-xs text-tinta-suave">
               <input
                 type="checkbox"
                 checked={showClosed}
@@ -162,7 +162,7 @@ export default function PanelAgencia() {
             </label>
           </div>
           {visible.length === 0 && (
-            <p className="rounded-lg bg-white p-4 text-sm text-slate-500 shadow-sm">
+            <p className="rounded-lg bg-white p-4 text-sm text-tinta-suave shadow-sm">
               No hay despachos activos para esta agencia.
             </p>
           )}
@@ -179,12 +179,12 @@ export default function PanelAgencia() {
                   {DISPATCH_STATUS_LABEL[d.status]}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-tinta-suave">
                 Despachado {formatTime(d.created_at)} · {formatNumber(d.distance_m / 1000, 1)} km ·
                 llegada estimada {formatTime(d.eta_at)} (SIMULADA)
                 {d.arrived_at && ` · llegó ${formatTime(d.arrived_at)}`}
               </p>
-              <p className="text-xs text-slate-500">Incidente {d.incident_id.slice(0, 8)}</p>
+              <p className="text-xs text-tinta-suave">Incidente {d.incident_id.slice(0, 8)}</p>
               {isActive(d.status) && (
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   {d.status === "en_camino" && (
@@ -206,7 +206,7 @@ export default function PanelAgencia() {
                     </button>
                   )}
                   <input
-                    className="min-w-40 flex-1 rounded border border-slate-300 px-2 py-1 text-xs"
+                    className="min-w-40 flex-1 rounded border border-linea px-2 py-1 text-xs"
                     placeholder="Motivo (para fuera de servicio)"
                     value={notes[d.id] ?? ""}
                     onChange={(e) => setNotes((n) => ({ ...n, [d.id]: e.target.value }))}
@@ -222,14 +222,14 @@ export default function PanelAgencia() {
                 </div>
               )}
               {d.close_note && (
-                <p className="mt-1 text-xs text-slate-600">Motivo: {d.close_note}</p>
+                <p className="mt-1 text-xs text-tinta-suave">Motivo: {d.close_note}</p>
               )}
             </article>
           ))}
         </section>
       )}
       {error && <p className="text-sm text-rose-700">{error}</p>}
-      <footer className="text-xs text-slate-500">
+      <footer className="text-xs text-tinta-suave">
         El cierre del incidente lo decide el PMU. Recursos y recorridos SIMULADOS.
       </footer>
     </main>

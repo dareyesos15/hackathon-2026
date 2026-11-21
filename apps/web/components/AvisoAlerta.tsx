@@ -21,15 +21,15 @@ export function AvisoAlerta({ alerts }: { alerts: ActiveAlert[] }) {
       {alerts.map((a) => (
         <div
           key={a.id}
-          className="flex flex-wrap items-center gap-2 rounded-lg bg-red-700 px-3 py-2 text-sm text-white shadow"
+          className="flex flex-wrap items-center gap-2 rounded-lg bg-senal px-3 py-2 text-sm text-white shadow"
         >
-          <span className="rounded bg-white px-1.5 text-[10px] font-bold text-red-700">
+          <span className="rounded bg-white px-1.5 text-[10px] font-bold text-senal">
             ALERTA OFICIAL · COE
           </span>
           <span className="font-semibold">{ALERT_TYPE_LABEL[a.type]}</span>
           <span className="flex-1">{a.message}</span>
           {a.emitted_at && (
-            <span className="text-xs text-red-100">emitida {formatTime(a.emitted_at)}</span>
+            <span className="text-xs text-white/85">emitida {formatTime(a.emitted_at)}</span>
           )}
         </div>
       ))}

@@ -24,7 +24,7 @@ const STATUS_STYLE: Record<AlertOut["status"], string> = {
   borrador: "bg-amber-100 text-amber-900",
   emitida: "bg-red-600 text-white",
   rechazada: "bg-slate-200 text-slate-700",
-  anulada: "bg-slate-200 text-slate-500 line-through",
+  anulada: "bg-slate-200 text-tinta-suave line-through",
 };
 
 export function BandejaAlertas({ isCoe, revision, onEdit, onNew }: Props) {
@@ -94,10 +94,10 @@ export function BandejaAlertas({ isCoe, revision, onEdit, onNew }: Props) {
       {error && <p className="text-xs text-rose-700">{error}</p>}
 
       <section className="flex flex-col gap-2">
-        <h3 className="text-xs font-semibold text-slate-600">
+        <h3 className="text-xs font-semibold text-tinta-suave">
           Pendientes de aprobación ({formatInt(drafts.length)})
         </h3>
-        {drafts.length === 0 && <p className="text-xs text-slate-500">No hay borradores.</p>}
+        {drafts.length === 0 && <p className="text-xs text-tinta-suave">No hay borradores.</p>}
         {drafts.map((a) => (
           <AlertCard key={a.id} alert={a}>
             <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -118,7 +118,7 @@ export function BandejaAlertas({ isCoe, revision, onEdit, onNew }: Props) {
                     Aprobar y emitir (v{a.version})
                   </button>
                   <input
-                    className="min-w-32 flex-1 rounded border border-slate-300 px-1 text-xs"
+                    className="min-w-32 flex-1 rounded border border-linea px-1 text-xs"
                     placeholder="Motivo del rechazo"
                     value={reasons[a.id] ?? ""}
                     onChange={(e) => setReasons((r) => ({ ...r, [a.id]: e.target.value }))}
@@ -139,13 +139,13 @@ export function BandejaAlertas({ isCoe, revision, onEdit, onNew }: Props) {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h3 className="text-xs font-semibold text-slate-600">Historial</h3>
+        <h3 className="text-xs font-semibold text-tinta-suave">Historial</h3>
         {others.map((a) => (
           <AlertCard key={a.id} alert={a}>
             {isCoe && a.status === "emitida" && (
               <div className="mt-2 flex gap-2">
                 <input
-                  className="flex-1 rounded border border-slate-300 px-1 text-xs"
+                  className="flex-1 rounded border border-linea px-1 text-xs"
                   placeholder="Motivo de la anulación"
                   value={reasons[a.id] ?? ""}
                   onChange={(e) => setReasons((r) => ({ ...r, [a.id]: e.target.value }))}
@@ -178,7 +178,7 @@ function AlertCard({ alert, children }: { alert: AlertOut; children?: React.Reac
         </span>
       </div>
       <p className="mt-1">{alert.message}</p>
-      <p className="mt-1 text-[11px] text-slate-500">
+      <p className="mt-1 text-[11px] text-tinta-suave">
         {alert.area_barrios.length > 0
           ? alert.area_barrios.join(", ")
           : alert.area_circle
@@ -189,7 +189,7 @@ function AlertCard({ alert, children }: { alert: AlertOut; children?: React.Reac
         {alert.emitted_at && ` · emitida ${formatTime(alert.emitted_at)} por el COE`}
       </p>
       {sms && (
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-tinta-suave">
           SMS a cuadrillas: {formatInt(sms.recipients_count ?? 0)} destinatarios (SIMULADO)
         </p>
       )}
@@ -199,7 +199,7 @@ function AlertCard({ alert, children }: { alert: AlertOut; children?: React.Reac
         </p>
       )}
       {alert.close_reason && (
-        <p className="text-[11px] text-slate-600">Motivo: {alert.close_reason}</p>
+        <p className="text-[11px] text-tinta-suave">Motivo: {alert.close_reason}</p>
       )}
       {children}
     </article>

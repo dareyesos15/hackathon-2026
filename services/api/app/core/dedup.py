@@ -216,8 +216,19 @@ def independent_sources(rows: Iterable[tuple[str | None, Channel, bool]]) -> int
 def weighted_centroid(
     points: Iterable[tuple[float, float, GeoPrecision]],
 ) -> tuple[float, float] | None:
+    """Ubicación del incidente: promedio de los reportes MÁS precisos que tenga.
+
+    Si hay un reporte con GPS, el incidente queda exactamente en ese punto (o en el promedio de
+    los GPS si hay varios); los reportes ubicados solo por barrio no lo arrastran al centro del
+    barrio. Sin GPS ni dirección, se promedian los de barrio.
+    """
+    pts = list(points)
+    if not pts:
+        return None
+    best = max(PRECISION_RANK[p] for _, _, p in pts)
+    pts = [pt for pt in pts if PRECISION_RANK[pt[2]] == best]
     total = lat_acc = lon_acc = 0.0
-    for lat, lon, precision in points:
+    for lat, lon, precision in pts:
         w = PRECISION_WEIGHT[precision] or 0.5
         total += w
         lat_acc += lat * w

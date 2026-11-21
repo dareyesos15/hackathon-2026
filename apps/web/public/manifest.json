@@ -1,7 +1,7 @@
 {
   "name": "Dacora · Reportar emergencia",
   "short_name": "Dacora",
-  "description": "Reporte ciudadano offline para la respuesta al sismo en Manizales (prototipo, datos simulados).",
+  "description": "Reporte ciudadano offline para emergencias y crisis en Manizales (prototipo, datos simulados).",
   "lang": "es-CO",
   "start_url": "/reportar/",
   "scope": "/",

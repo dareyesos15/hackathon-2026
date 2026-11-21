@@ -43,10 +43,10 @@ const PANEL: Partial<Record<Role, string>> = {
 };
 
 const LEYENDA = [
-  { color: "#fde68a", texto: "Pocos reportes" },
-  { color: "#fb923c", texto: "Varios reportes" },
-  { color: "#b91c1c", texto: "Alta concentración" },
-  { color: "#cbd5e1", texto: "Menos de 5 reportes (dato protegido)" },
+  { color: "#f9d5c6", texto: "Pocos reportes" },
+  { color: "#ee6a2c", texto: "Varios reportes" },
+  { color: "#a3121f", texto: "Alta concentración" },
+  { color: "#cfc6c4", texto: "Menos de 5 reportes (dato protegido)" },
   { color: "#f59e0b", texto: "Área de alerta oficial vigente" },
 ];
 
@@ -54,13 +54,7 @@ async function getData<T>(promise: Promise<{ data?: unknown }>): Promise<T | und
   return (await promise).data as T | undefined;
 }
 
-const DETECTION = [
-  "duplicate_detection_rate",
-  "fake_detection_rate",
-  "false_positive_rate",
-  "critical_recall",
-  "critical_auto_discarded",
-];
+const DETECTION = ["duplicate_detection_rate", "critical_recall", "critical_auto_discarded"];
 const OPERATION = [
   "critical_without_dispatch",
   "median_time_to_dispatch_min",
@@ -114,27 +108,27 @@ export default function InicioPublico() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-white px-4 py-3">
-        <h1 className="text-xl font-bold tracking-tight">Dacora</h1>
-        <EtiquetaSimulado />
-        <span className="hidden text-sm text-slate-600 sm:inline">
-          Sismo del 10 ago 2026 · Manizales · mapa e indicadores públicos
+      <header className="flex flex-wrap items-center gap-3 bg-sangre px-4 py-2 text-white">
+        <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
+        <EtiquetaSimulado sobreOscuro />
+        <span className="hidden text-sm text-white/75 sm:inline">
+          Manizales · mapa, predicción e indicadores públicos
         </span>
         <nav className="ml-auto flex items-center gap-3 text-sm">
           {session ? (
             <>
-              <span className="text-slate-500">{ROLE_LABELS[session.role]}</span>
+              <span className="text-white/75">{ROLE_LABELS[session.role]}</span>
               {panel && (
                 <Link
                   href={panel}
-                  className="rounded-lg bg-slate-900 px-3 py-1.5 font-medium text-white"
+                  className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
                 >
                   Ir a mi panel
                 </Link>
               )}
               <button
                 type="button"
-                className="text-slate-500"
+                className="text-white/75 hover:text-white"
                 onClick={() => {
                   clearSession();
                   setSession(null);
@@ -146,7 +140,7 @@ export default function InicioPublico() {
           ) : (
             <Link
               href="/ingresar/"
-              className="rounded-lg bg-slate-900 px-3 py-1.5 font-medium text-white hover:bg-slate-700"
+              className="rounded-sm bg-senal px-3 py-1.5 font-bold text-white hover:bg-sangre-claro"
             >
               Iniciar sesión
             </Link>
@@ -166,33 +160,33 @@ export default function InicioPublico() {
         <AvisoAlerta alerts={alertsFromGeoJSON(alerts)} />
       </div>
 
-      <section className="mx-4 mt-3 grid gap-4 rounded-xl bg-slate-900 p-5 text-white md:grid-cols-2">
+      <section className="mx-4 mt-3 grid gap-4 rounded-md bg-sangre p-5 text-white md:grid-cols-2">
         <div>
-          <p className="text-sm text-slate-300">Información dispersa → decisiones consolidadas</p>
-          <p className="mt-1 text-3xl font-bold tabular-nums sm:text-4xl">
+          <p className="text-sm text-white/75">Información dispersa → decisiones consolidadas</p>
+          <p className="mt-1 font-display text-4xl font-semibold leading-none tabular-nums sm:text-5xl">
             {received?.value != null ? formatInt(received.value) : "—"} reportes →{" "}
             {consolidated?.value != null ? formatInt(consolidated.value) : "—"} incidentes
           </p>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-white/70">
             Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
           </p>
         </div>
         <div>
-          <p className="text-sm text-slate-300">Cada hecho aparece en el mapa (p90)</p>
-          <p className="mt-1 text-3xl font-bold tabular-nums sm:text-4xl">
+          <p className="text-sm text-white/75">Cada hecho aparece en el mapa (p90)</p>
+          <p className="mt-1 font-display text-4xl font-semibold leading-none tabular-nums sm:text-5xl">
             {mapLatency?.value != null
               ? `${mapLatency.value.toLocaleString("es-CO", { maximumFractionDigits: 1 })} min`
               : "—"}
           </p>
-          <p className="mt-1 text-xs text-slate-400">
-            En el sismo real, las cifras de viviendas afectadas cambiaron durante días (1.449 →
-            2.700 → 1.512, 13–15 ago). Fuente: {mapLatency?.source ?? "evaluate_kpis.py"}.
+          <p className="mt-1 text-xs text-white/70">
+            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
+            {mapLatency?.source ?? "evaluate_kpis.py"}.
           </p>
         </div>
       </section>
 
       <main className="grid gap-3 p-4 lg:grid-cols-[1fr_300px]">
-        <div className="h-[60vh] min-h-[420px] overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="h-[60vh] min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
           <Mapa
             incidents={NO_INCIDENTS}
             barrios={barrios}
@@ -200,11 +194,12 @@ export default function InicioPublico() {
             selectedId={null}
             onSelect={noop}
             alertAreas={alerts}
+            leyenda={false}
             cascade={cascadeOn ? cascadeData.data : null}
             onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascadeData.data))}
           />
         </div>
-        <aside className="flex flex-col gap-4 rounded-xl bg-white p-4 text-sm shadow-sm">
+        <aside className="flex flex-col gap-4 rounded-md border border-linea bg-white p-4 text-sm">
           <CapaCascada
             enabled={cascadeOn}
             onToggle={(on) => {
@@ -220,7 +215,7 @@ export default function InicioPublico() {
           <section>
             <h2 className="mb-2 font-semibold">Reportes por manzana</h2>
             {cascadeOn && (
-              <p className="mb-1 text-xs text-slate-500">
+              <p className="mb-1 text-xs text-tinta-suave">
                 Con la predicción activa, el color de las manzanas muestra el riesgo de cascada.
               </p>
             )}
@@ -228,7 +223,7 @@ export default function InicioPublico() {
               {LEYENDA.map((l) => (
                 <li key={l.texto} className="flex items-center gap-2">
                   <span
-                    className="inline-block h-3 w-5 rounded-sm border border-slate-300"
+                    className="inline-block h-3 w-5 rounded-sm border border-linea"
                     style={{ backgroundColor: l.color }}
                   />
                   {l.texto}
@@ -237,20 +232,20 @@ export default function InicioPublico() {
             </ul>
           </section>
           <section className="grid grid-cols-2 gap-2">
-            <div className="rounded-lg bg-slate-50 p-2">
-              <p className="text-xs text-slate-500">Manzanas con reportes</p>
+            <div className="rounded-lg bg-papel p-2">
+              <p className="text-xs text-tinta-suave">Manzanas con reportes</p>
               <p className="text-xl font-bold tabular-nums">{formatInt(features.length)}</p>
             </div>
-            <div className="rounded-lg bg-slate-50 p-2">
-              <p className="text-xs text-slate-500">Barrios con reportes</p>
+            <div className="rounded-lg bg-papel p-2">
+              <p className="text-xs text-tinta-suave">Barrios con reportes</p>
               <p className="text-xl font-bold tabular-nums">{formatInt(barriosAfectados)}</p>
             </div>
-            <p className="col-span-2 text-xs text-slate-500">
+            <p className="col-span-2 text-xs text-tinta-suave">
               {formatInt(visibles)} manzanas con conteo publicable (k ≥ 5). Fuente: api · corte{" "}
               {manzanas?.cutoff_at ? formatDateTime(manzanas.cutoff_at) : "—"}.
             </p>
           </section>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-tinta-suave">
             Solo datos agregados: nunca nombres, teléfonos, direcciones exactas ni reportes
             individuales (Ley 1581 de 2012). Para reportar una emergencia, inicie sesión como
             ciudadanía o llame al 123.
@@ -259,27 +254,27 @@ export default function InicioPublico() {
       </main>
 
       <section className="px-4">
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">
-          Detección de duplicados y falsos (KPI oficial &gt; 90 %) y seguridad de los críticos
+        <h2 className="mb-2 font-display text-xl font-semibold">
+          Detección de duplicados y seguridad de los críticos
         </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {DETECTION.map((key) => (k[key] ? <CifraKpi key={key} k={k[key]} /> : null))}
         </div>
         {!k.duplicate_detection_rate && (
-          <p className="mt-2 text-sm text-slate-500">
-            Aún no hay evaluación: el escenario del sismo no se ha reproducido.
+          <p className="mt-2 text-sm text-tinta-suave">
+            Aún no hay evaluación: el escenario aún no se ha reproducido.
           </p>
         )}
       </section>
 
       <section className="px-4 pt-4">
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">Respuesta y operación</h2>
+        <h2 className="mb-2 font-display text-xl font-semibold">Respuesta y operación</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {OPERATION.map((key) => (k[key] ? <CifraKpi key={key} k={k[key]} /> : null))}
         </div>
       </section>
 
-      <footer className="px-4 py-4 text-xs text-slate-500">
+      <footer className="px-4 py-4 text-xs text-tinta-suave">
         Se actualiza sola{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}.
         Definiciones en docs/diccionario_indicadores.md. Los porcentajes de detección se calculan
         contra la verdad del escenario sintético, que el motor nunca ve. Datos SIMULADOS. La IA solo

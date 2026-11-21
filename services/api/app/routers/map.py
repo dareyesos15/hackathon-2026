@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import json
+import uuid
 from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,7 +16,7 @@ from app.auth import require_role
 from app.config import get_settings
 from app.db import get_session
 from app.domain import ReportStatus, Role
-from app.models import Manzana, Report
+from app.models import Incident, Manzana, Report
 
 router = APIRouter(tags=["mapa"])
 
@@ -27,6 +28,10 @@ RANK_NAME = {4: "critico", 3: "alto", 2: "medio", 1: "bajo"}
 
 @router.get("/map/manzanas")
 async def manzanas_layer(
+    sesion: str | None = Query(
+        default=None,
+        description="`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+    ),
     role: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.publico)),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, Any]:
@@ -46,6 +51,15 @@ async def manzanas_layer(
         .where(Report.status != ReportStatus.descartado)
         .group_by(Manzana.id)
     )
+    if sesion:
+        stmt = stmt.join(Incident, Incident.id == Report.incident_id)
+        if sesion == "ordinaria":
+            stmt = stmt.where(Incident.mass_alert_id.is_(None))
+        else:
+            try:
+                stmt = stmt.where(Incident.mass_alert_id == uuid.UUID(sesion))
+            except ValueError:
+                stmt = stmt.where(Incident.mass_alert_id.is_(None))
     rows = (await session.execute(stmt)).all()
     cutoff = datetime.now(UTC).isoformat()
     features = []

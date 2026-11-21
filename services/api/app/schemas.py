@@ -127,6 +127,9 @@ class IncidentSummary(BaseModel):
     geo_precision: GeoPrecision
     updated_at: datetime
     source: str
+    mass_alert_id: uuid.UUID | None = Field(
+        default=None, description="Sesión de alerta masiva (None: operación ordinaria)"
+    )
     # Despacho (specs/002): derivados del despacho más reciente no cancelado.
     dispatch_status: Literal["sin_despacho", "en_camino", "en_sitio", "finalizado"] = "sin_despacho"
     assigned_agency: str | None = None

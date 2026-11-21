@@ -1811,6 +1811,19 @@
             ],
             "title": "Manzana Id"
           },
+          "mass_alert_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Sesión de alerta masiva (None: operación ordinaria)",
+            "title": "Mass Alert Id"
+          },
           "people_affected": {
             "anyOf": [
               {
@@ -2120,6 +2133,19 @@
               }
             ],
             "title": "Manzana Id"
+          },
+          "mass_alert_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Sesión de alerta masiva (None: operación ordinaria)",
+            "title": "Mass Alert Id"
           },
           "people_affected": {
             "anyOf": [
@@ -2579,6 +2605,223 @@
         ],
         "title": "ManzanaRef",
         "type": "object"
+      },
+      "MassAlertEvent": {
+        "description": "Tipo de evento que dispara la alerta masiva (EMRE Manizales 2024: amenazas principales).",
+        "enum": [
+          "sismo",
+          "deslizamientos",
+          "inundacion",
+          "ceniza_volcanica",
+          "incendio_estructural",
+          "otro"
+        ],
+        "title": "MassAlertEvent",
+        "type": "string"
+      },
+      "MassAlertIn": {
+        "properties": {
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/AlertChannel"
+            },
+            "title": "Channels",
+            "type": "array"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/MassAlertEvent"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Mensaje de la alerta oficial; si falta se genera uno estándar",
+            "title": "Message"
+          },
+          "official_alert": {
+            "default": true,
+            "description": "Crear también el borrador de alerta oficial para toda la ciudad (la aprueba el COE, EMRE tarea 5.5)",
+            "title": "Official Alert",
+            "type": "boolean"
+          },
+          "title": {
+            "examples": [
+              "Sismo M 6,1 · Manizales"
+            ],
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "event_type"
+        ],
+        "title": "MassAlertIn",
+        "type": "object"
+      },
+      "MassAlertList": {
+        "properties": {
+          "active": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MassAlertOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MassAlertOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "active"
+        ],
+        "title": "MassAlertList",
+        "type": "object"
+      },
+      "MassAlertOut": {
+        "properties": {
+          "created_by_role": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "event_type": {
+            "$ref": "#/components/schemas/MassAlertEvent"
+          },
+          "has_report": {
+            "title": "Has Report",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incidents_closed": {
+            "title": "Incidents Closed",
+            "type": "integer"
+          },
+          "incidents_total": {
+            "title": "Incidents Total",
+            "type": "integer"
+          },
+          "official_alert_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Alert Id"
+          },
+          "resolved_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved At"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MassAlertStatus"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_type",
+          "description",
+          "status",
+          "started_at",
+          "resolved_at",
+          "created_by_role",
+          "official_alert_id",
+          "incidents_total",
+          "incidents_closed",
+          "has_report"
+        ],
+        "title": "MassAlertOut",
+        "type": "object"
+      },
+      "MassAlertReport": {
+        "description": "Reporte de problemas, trazabilidad y tiempos (preliminar mientras la alerta siga activa).",
+        "properties": {
+          "mass_alert": {
+            "$ref": "#/components/schemas/MassAlertOut"
+          },
+          "report": {
+            "additionalProperties": true,
+            "title": "Report",
+            "type": "object"
+          }
+        },
+        "required": [
+          "mass_alert",
+          "report"
+        ],
+        "title": "MassAlertReport",
+        "type": "object"
+      },
+      "MassAlertStatus": {
+        "enum": [
+          "activa",
+          "resuelta"
+        ],
+        "title": "MassAlertStatus",
+        "type": "string"
       },
       "MetricUnit": {
         "enum": [
@@ -6258,6 +6501,26 @@
       "get": {
         "description": "GeoJSON de manzanas con reportes vigentes. Para `publico`, k-anonimato (principio I).",
         "operationId": "manzanas_layer_api_v1_map_manzanas_get",
+        "parameters": [
+          {
+            "description": "`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+            "in": "query",
+            "name": "sesion",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "`ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones",
+              "title": "Sesion"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -6290,6 +6553,184 @@
         "summary": "Manzanas Layer",
         "tags": [
           "mapa"
+        ]
+      }
+    },
+    "/api/v1/mass-alerts": {
+      "get": {
+        "operationId": "list_mass_alerts_api_v1_mass_alerts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MassAlertList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Mass Alerts",
+        "tags": [
+          "alerta masiva"
+        ]
+      },
+      "post": {
+        "description": "Activa la alerta masiva. Solo puede haber una activa a la vez (409).",
+        "operationId": "post_mass_alert_api_v1_mass_alerts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MassAlertIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MassAlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Mass Alert",
+        "tags": [
+          "alerta masiva"
+        ]
+      }
+    },
+    "/api/v1/mass-alerts/{mass_alert_id}": {
+      "get": {
+        "operationId": "get_mass_alert_api_v1_mass_alerts__mass_alert_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mass_alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mass Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MassAlertOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Mass Alert",
+        "tags": [
+          "alerta masiva"
+        ]
+      }
+    },
+    "/api/v1/mass-alerts/{mass_alert_id}/report": {
+      "get": {
+        "description": "Reporte final guardado al resolverse; mientras siga activa, uno preliminar al corte.",
+        "operationId": "get_mass_alert_report_api_v1_mass_alerts__mass_alert_id__report_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mass_alert_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mass Alert Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MassAlertReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Mass Alert Report",
+        "tags": [
+          "alerta masiva"
         ]
       }
     },

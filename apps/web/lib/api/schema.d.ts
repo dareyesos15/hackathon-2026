@@ -495,6 +495,64 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/mass-alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Mass Alerts */
+        get: operations["list_mass_alerts_api_v1_mass_alerts_get"];
+        put?: never;
+        /**
+         * Post Mass Alert
+         * @description Activa la alerta masiva. Solo puede haber una activa a la vez (409).
+         */
+        post: operations["post_mass_alert_api_v1_mass_alerts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mass-alerts/{mass_alert_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Mass Alert */
+        get: operations["get_mass_alert_api_v1_mass_alerts__mass_alert_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mass-alerts/{mass_alert_id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Mass Alert Report
+         * @description Reporte final guardado al resolverse; mientras siga activa, uno preliminar al corte.
+         */
+        get: operations["get_mass_alert_report_api_v1_mass_alerts__mass_alert_id__report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/metrics/kpi": {
         parameters: {
             query?: never;
@@ -1663,6 +1721,11 @@ export interface components {
             lon: number | null;
             /** Manzana Id */
             manzana_id: string | null;
+            /**
+             * Mass Alert Id
+             * @description Sesión de alerta masiva (None: operación ordinaria)
+             */
+            mass_alert_id?: string | null;
             /** People Affected */
             people_affected: number | null;
             /** Report Count */
@@ -1773,6 +1836,11 @@ export interface components {
             lon: number | null;
             /** Manzana Id */
             manzana_id: string | null;
+            /**
+             * Mass Alert Id
+             * @description Sesión de alerta masiva (None: operación ordinaria)
+             */
+            mass_alert_id?: string | null;
             /** People Affected */
             people_affected: number | null;
             /** Report Count */
@@ -1935,6 +2003,88 @@ export interface components {
             /** Id */
             id: string;
         };
+        /**
+         * MassAlertEvent
+         * @description Tipo de evento que dispara la alerta masiva (EMRE Manizales 2024: amenazas principales).
+         * @enum {string}
+         */
+        MassAlertEvent: "sismo" | "deslizamientos" | "inundacion" | "ceniza_volcanica" | "incendio_estructural" | "otro";
+        /** MassAlertIn */
+        MassAlertIn: {
+            /** Channels */
+            channels?: components["schemas"]["AlertChannel"][];
+            /** Description */
+            description?: string | null;
+            event_type: components["schemas"]["MassAlertEvent"];
+            /**
+             * Message
+             * @description Mensaje de la alerta oficial; si falta se genera uno estándar
+             */
+            message?: string | null;
+            /**
+             * Official Alert
+             * @description Crear también el borrador de alerta oficial para toda la ciudad (la aprueba el COE, EMRE tarea 5.5)
+             * @default true
+             */
+            official_alert: boolean;
+            /**
+             * Title
+             * @example Sismo M 6,1 · Manizales
+             */
+            title: string;
+        };
+        /** MassAlertList */
+        MassAlertList: {
+            active: components["schemas"]["MassAlertOut"] | null;
+            /** Items */
+            items: components["schemas"]["MassAlertOut"][];
+        };
+        /** MassAlertOut */
+        MassAlertOut: {
+            created_by_role: components["schemas"]["Role"];
+            /** Description */
+            description: string | null;
+            event_type: components["schemas"]["MassAlertEvent"];
+            /** Has Report */
+            has_report: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Incidents Closed */
+            incidents_closed: number;
+            /** Incidents Total */
+            incidents_total: number;
+            /** Official Alert Id */
+            official_alert_id: string | null;
+            /** Resolved At */
+            resolved_at: string | null;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            status: components["schemas"]["MassAlertStatus"];
+            /** Title */
+            title: string;
+        };
+        /**
+         * MassAlertReport
+         * @description Reporte de problemas, trazabilidad y tiempos (preliminar mientras la alerta siga activa).
+         */
+        MassAlertReport: {
+            mass_alert: components["schemas"]["MassAlertOut"];
+            /** Report */
+            report: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * MassAlertStatus
+         * @enum {string}
+         */
+        MassAlertStatus: "activa" | "resuelta";
         /**
          * MetricUnit
          * @enum {string}
@@ -3720,7 +3870,10 @@ export interface operations {
     };
     manzanas_layer_api_v1_map_manzanas_get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description `ordinaria` o el id de una alerta masiva; sin valor, todas las sesiones */
+                sesion?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3736,6 +3889,130 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_mass_alerts_api_v1_mass_alerts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MassAlertList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    post_mass_alert_api_v1_mass_alerts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MassAlertIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MassAlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_mass_alert_api_v1_mass_alerts__mass_alert_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mass_alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MassAlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_mass_alert_report_api_v1_mass_alerts__mass_alert_id__report_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mass_alert_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MassAlertReport"];
                 };
             };
             /** @description Validation Error */

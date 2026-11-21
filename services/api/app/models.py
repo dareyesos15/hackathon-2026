@@ -1,4 +1,7 @@
-"""Modelos ORM de la SST (data-model.md). Reportes y bitácora son solo-agregar."""
+"""Modelos ORM de la SST (data-model.md). Reportes y bitácora son solo-agregar.
+
+Los índices GIST de las geometrías los crea GeoAlchemy2 (spatial_index=True por defecto).
+"""
 
 import uuid
 from datetime import datetime
@@ -98,7 +101,6 @@ class Incident(CommonMixin, Base):
     __tablename__ = "incidents"
     __table_args__ = (
         CheckConstraint("trust_score BETWEEN 0 AND 100", name="ck_incident_trust_range"),
-        Index("ix_incidents_centroid", "centroid", postgresql_using="gist"),
         Index("ix_incidents_category_last_seen", "category", "last_seen"),
     )
 
@@ -140,7 +142,6 @@ class Report(CommonMixin, Base):
         CheckConstraint(
             "(geo_precision = 'none') OR (geom IS NOT NULL)", name="ck_report_geom_precision"
         ),
-        Index("ix_reports_geom", "geom", postgresql_using="gist"),
         Index("ix_reports_category_occurred", "category", "occurred_at"),
         Index("ix_reports_incident", "incident_id"),
     )

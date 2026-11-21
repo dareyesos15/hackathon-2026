@@ -49,7 +49,8 @@ export default function ReporteCiudadano() {
   const [category, setCategory] = useState<Category | "">("");
   const [text, setText] = useState("");
   const [barrio, setBarrio] = useState("");
-  const [gps, setGps] = useState<{ lat: number; lon: number } | null>(null);
+  const [gps, setGps] = useState<{ lat: number; lon: number; accuracy: number } | null>(null);
+  const [secureUrl, setSecureUrl] = useState<string | null>(null);
   const [gpsMsg, setGpsMsg] = useState<string | null>(null);
   const [people, setPeople] = useState("");
   const [contact, setContact] = useState("");
@@ -98,18 +99,34 @@ export default function ReporteCiudadano() {
   }
 
   function locate() {
-    if (!("geolocation" in navigator) || !window.isSecureContext) {
-      setGpsMsg("GPS no disponible en esta conexión: elija su barrio.");
+    if (!window.isSecureContext) {
+      // Los navegadores solo entregan el GPS por https: ofrecer la misma página segura.
+      const { hostname, pathname } = window.location;
+      setSecureUrl(`https://${hostname}:8443${pathname}`);
+      setGpsMsg("Esta conexión no es segura y el teléfono no comparte el GPS.");
+      return;
+    }
+    if (!("geolocation" in navigator)) {
+      setGpsMsg("Este teléfono no tiene GPS disponible: elija su barrio.");
       return;
     }
     setGpsMsg("Buscando ubicación…");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setGps({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-        setGpsMsg("Ubicación GPS lista.");
+        setGps({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        });
+        setGpsMsg(null);
       },
-      () => setGpsMsg("No se pudo obtener el GPS: elija su barrio."),
-      { enableHighAccuracy: true, timeout: 8000 },
+      (err) =>
+        setGpsMsg(
+          err.code === err.PERMISSION_DENIED
+            ? "Sin permiso para usar el GPS: actívelo en el navegador o elija su barrio."
+            : "No se pudo obtener el GPS: intente de nuevo o elija su barrio.",
+        ),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     );
   }
 
@@ -236,14 +253,41 @@ export default function ReporteCiudadano() {
 
         <div className="flex flex-col gap-2 text-sm">
           <span className="font-medium">Ubicación</span>
-          <button
-            type="button"
-            onClick={locate}
-            className="rounded border border-linea px-3 py-2 text-left"
-          >
-            📍 Usar mi ubicación (GPS)
-          </button>
+          {gps ? (
+            <div className="flex items-start gap-2 rounded-sm border border-verificado bg-[#e3f1e9] px-3 py-2">
+              <span className="flex-1">
+                <span className="block font-bold text-verificado">Ubicación GPS lista</span>
+                <span className="block text-xs tabular-nums text-tinta">
+                  {gps.lat.toFixed(5)}, {gps.lon.toFixed(5)} · precisión ±{Math.round(gps.accuracy)}{" "}
+                  m
+                </span>
+                <span className="block text-xs text-tinta-suave">
+                  El reporte aparecerá en este punto exacto del mapa.
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setGps(null)}
+                className="text-xs text-tinta-suave underline"
+              >
+                Quitar
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={locate}
+              className="rounded-sm border border-linea bg-white px-3 py-2 text-left"
+            >
+              📍 Usar mi ubicación (GPS)
+            </button>
+          )}
           {gpsMsg && <span className="text-xs text-tinta-suave">{gpsMsg}</span>}
+          {secureUrl && !gps && (
+            <a href={secureUrl} className="text-xs font-bold text-senal underline">
+              Abrir la versión segura para usar el GPS
+            </a>
+          )}
           {!gps && (
             <select
               aria-label="Barrio"

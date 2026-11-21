@@ -73,16 +73,8 @@ export type BarrioRecovery = S["BarrioRecovery"];
 export type CurvePoint = S["CurvePoint"];
 export type Stage = S["Stage"];
 export type StageStatus = Stage["status"];
-
-export const SERVICE_LABEL = {
-  agua: "Agua",
-  energia: "Energía",
-  gas: "Gas",
-  telecom: "Telecom.",
-  vias: "Vías",
-} as const;
-
-export type ServiceKey = keyof typeof SERVICE_LABEL;
+export type ContractRow = S["ContractRow"];
+export type SourceInfo = S["SourceInfo"];
 
 /** Semáforo de etapas: siempre con texto, el color no va solo. */
 export const STAGE_STATUS: Record<StageStatus, { label: string; hex: string }> = {
@@ -90,6 +82,13 @@ export const STAGE_STATUS: Record<StageStatus, { label: string; hex: string }> =
   amarillo: { label: "Con retraso", hex: "#e8a92a" },
   rojo: { label: "Estancada", hex: "#d21f2b" },
   pendiente: { label: "Aún no empieza", hex: "#b9adab" },
+  sin_fuente: { label: "Sin fuente para medir", hex: "#ffffff" },
+};
+
+export const SOURCE_STATUS: Record<SourceInfo["status"], string> = {
+  conectada: "Conectada",
+  sin_copia: "Sin copia descargada",
+  sin_convenio: "Requiere convenio",
 };
 
 export const NEED_SEVERITY: Record<Need["severity"], { label: string; cls: string }> = {

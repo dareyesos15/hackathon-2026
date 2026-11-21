@@ -49,7 +49,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if shutil.which("adb") is None:
-        print("No se encontró adb. Instale Android platform-tools (ver docs/pasarela_sms.md).")
+        print(
+            "No se encontró adb. Use scripts\preparar_pasarela_sms.ps1, que lo instala, o "
+            "instale Android Platform-Tools (ver docs/pasarela_sms.md)."
+        )
         return 1
     devices = [line for line in adb("devices").splitlines()[1:] if line.endswith("device")]
     if not devices:

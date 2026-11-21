@@ -87,6 +87,20 @@ dispositivo real.
 Zonas: sensores y conos). El control *Capas del mapa* (arriba a la izquierda) permite elegir a
 mano qué módulos se ven a la vez.
 
+**Alerta masiva (toda la ciudad):** en el tablero del PMU, *Activar alerta masiva* (usuarios
+`pmu` o `coe`) abre una sesión de operación propia para un evento de ciudad, como un sismo. Desde
+ese momento todo reporte nuevo queda en esa sesión y solo se agrupa con incidentes de la misma
+alerta; el selector *Sesión del tablero* cambia entre la operación ordinaria y cada alerta, y
+Triaje, mapa, Cascada y Zonas muestran solo los puntos de la sesión elegida. Opcionalmente crea el
+borrador de alerta oficial para todos los barrios, que como siempre solo aprueba el COE. La alerta
+se **resuelve sola** cuando todos sus incidentes están atendidos o descartados y no queda ningún
+despacho activo; entonces se guarda el **reporte final** (`/pmu/alerta-masiva/?id=`): problemas,
+bitácora de cada uno, despachos y tiempos desde el registro hasta la verificación, el despacho, la
+llegada y el cierre, con promedio, mediana y máximo por nivel de triaje. Mientras sigue activa, el
+mismo enlace muestra un reporte preliminar. Se imprime a PDF o se descarga en CSV y JSON, sin
+datos personales. Solo puede haber una alerta masiva activa a la vez
+(`GET/POST /api/v1/mass-alerts`, `GET /api/v1/mass-alerts/{id}/report`).
+
 ### Requisitos
 
 - Docker Desktop con Docker Compose v2.

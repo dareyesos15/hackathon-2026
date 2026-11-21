@@ -8763,6 +8763,40 @@
         ]
       }
     },
+    "/api/v1/ingest/sms-gateway": {
+      "post": {
+        "description": "Recibe un SMS reenviado por el celular Android con SIM y lo procesa como reporte SMS.",
+        "operationId": "sms_gateway_webhook_api_v1_ingest_sms_gateway_post",
+        "responses": {
+          "200": {
+            "description": "SMS ya recibido (reintento de la pasarela)"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "204": {
+            "description": "Evento distinto de sms:received: se ignora"
+          },
+          "401": {
+            "description": "Firma inválida o vencida"
+          },
+          "503": {
+            "description": "Pasarela SMS no configurada"
+          }
+        },
+        "summary": "Sms Gateway Webhook",
+        "tags": [
+          "ingesta"
+        ]
+      }
+    },
     "/api/v1/map/cascade": {
       "get": {
         "description": "GeoJSON de manzanas con nivel de riesgo de cascada y desglose (SIMULADO).\n\nVisible para todos los roles, también el público: es una predicción agregada por manzana\npara que la ciudadanía sepa qué puede pasar. Solo es una sugerencia (FR-031).",

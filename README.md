@@ -136,6 +136,10 @@ docker compose exec api python scripts/evaluate_kpis.py
 # después de cada reinicio de la demo; este comando los carga a mano (no duplica nada).
 docker compose exec api python scripts/seed_recovery_example.py
 
+# SMS reales sin internet: un celular Android con SIM conectado por USB como pasarela
+# (preparación y conexión en docs/pasarela_sms.md).
+powershell -ExecutionPolicy Bypass -File scripts\preparar_pasarela_sms.ps1
+
 # Fuentes públicas del tablero de recuperación (USGS, SECOP II, CDIAC) — con internet, en el host.
 # Guarda copias fechadas con huella SHA-256 en data/sources/; la API las lee sin internet.
 uv run --project services/api python scripts/fetch_sources.py

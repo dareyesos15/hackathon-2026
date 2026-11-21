@@ -23,6 +23,8 @@ x-api-env: &api-env
   UNATTENDED_ALERT_MIN: ${UNATTENDED_ALERT_MIN:-15}
   # Casos de ejemplo de recuperación al arrancar y tras cada reinicio de la demo.
   SEED_RECOVERY_EXAMPLES: ${SEED_RECOVERY_EXAMPLES:-true}
+  # Pasarela SMS Android (docs/pasarela_sms.md): Signing Key de la app. Vacía = apagada.
+  SMS_GATEWAY_SIGNING_KEY: ${SMS_GATEWAY_SIGNING_KEY:-}
   RAIN_SOURCE: ${RAIN_SOURCE:-simulado}
   CDIAC_POLL_S: ${CDIAC_POLL_S:-300}
   CDIAC_MAX_AGE_MIN: ${CDIAC_MAX_AGE_MIN:-60}

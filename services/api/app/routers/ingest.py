@@ -135,15 +135,30 @@ async def ingest_sms(
     engine: Engine = Depends(get_engine),
 ) -> ReportResult:
     received_at = body.received_at or datetime.now(UTC)
-    sms = parse_sms(body.body)
     sender = reporter_hash(body.from_, salt=engine.settings.pii_salt) or ""
     minute = received_at.strftime("%Y%m%d%H%M")
     client_uuid = uuid.uuid5(SMS_NAMESPACE, f"{sender}|{body.body}|{minute}")
+    result = await process_sms(session, engine, body.from_, body.body, received_at, client_uuid)
+    if not result.created:
+        response.status_code = status.HTTP_200_OK
+    return await to_result(session, result)
+
+
+async def process_sms(
+    session: AsyncSession,
+    engine: Engine,
+    sender: str,
+    text: str,
+    received_at: datetime,
+    client_uuid: uuid.UUID,
+) -> PipelineResult:
+    """Un SMS (formato compacto o texto libre) pasa por el mismo motor que cualquier reporte."""
+    sms = parse_sms(text)
     incoming = IncomingReport(
         client_uuid=client_uuid,
         channel=Channel.sms,
-        text=body.body,
-        classify_text=sms.text if sms.has_prefix else body.body,
+        text=text,
+        classify_text=sms.text if sms.has_prefix else text,
         received_at=received_at,
         occurred_at=received_at,
         category_hint=sms.category,
@@ -151,13 +166,10 @@ async def ingest_sms(
         lon=sms.coords[1] if sms.coords else None,
         place_token=sms.place_token,
         people_affected=sms.people,
-        reporter_contact=body.from_,
+        reporter_contact=sender,
         location_text=sms.place_token,
     )
-    result = await process_report(session, engine, incoming)
-    if not result.created:
-        response.status_code = status.HTTP_200_OK
-    return await to_result(session, result)
+    return await process_report(session, engine, incoming)
 
 
 @router.post("/batch", response_model=BatchOut)

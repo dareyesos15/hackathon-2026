@@ -35,6 +35,7 @@ from app.routers import (
     recovery_scenarios,
     reports,
     review,
+    sms_gateway,
     stream,
     zone_sensors,
 )
@@ -150,6 +151,7 @@ app.include_router(health_router, prefix=API_PREFIX)
 for module in (
     auth,
     ingest,
+    sms_gateway,
     reports,
     incidents,
     review,

@@ -1,0 +1,29 @@
+[project]
+name = "dacora-api"
+version = "0.1.0"
+description = "Dacora API: ingesta, motor de verificación y tablero PMU (prototipo Hackathon UNAL Manizales 2026)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.20.1",
+    "asyncpg>=0.32.0",
+    "fastapi>=0.165.0",
+    "geoalchemy2>=0.21.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.16.3",
+    "scikit-learn>=1.9.1",
+    "shapely>=2.2.0",
+    "sqlalchemy[asyncio]>=2",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "black>=26.10.1",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.5.0",
+    "ruff>=0.17.6",
+]

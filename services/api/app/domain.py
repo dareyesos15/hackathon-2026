@@ -261,6 +261,78 @@ class AidType(StrEnum):
     albergue = "albergue"
 
 
+# --- Revisión a predio: formato GUE-RPD-FR-02 v4 de la Alcaldía de Manizales -----------------
+
+
+class RespondentRelation(StrEnum):
+    """Sección 2: calidad del encuestado frente al predio."""
+
+    propietario = "propietario"
+    arrendatario = "arrendatario"
+    sucesion = "sucesion"
+    otro = "otro"
+
+
+class EventStatus(StrEnum):
+    """Sección 4: el evento es inminente o ya sucedió."""
+
+    inminente = "inminente"
+    sucedido = "sucedido"
+
+
+class EventType(StrEnum):
+    """Sección 4: tipo de evento (el formato no trae sismo; se agrega para este evento)."""
+
+    sismo = "sismo"
+    deslizamiento = "deslizamiento"
+    incendio = "incendio"
+    vendaval = "vendaval"
+    avalancha = "avalancha"
+    inundacion = "inundacion"
+    otro = "otro"
+
+
+class StructuralCause(StrEnum):
+    """Sección 4: deterioro estructural, posible causa."""
+
+    falta_mantenimiento = "falta_mantenimiento"
+    intervencion_antropica = "intervencion_antropica"
+    evento_natural = "evento_natural"
+
+
+class Affectation(StrEnum):
+    """Sección 5: afectación del predio."""
+
+    total = "total"
+    parcial = "parcial"
+    ninguna = "ninguna"
+
+
+class AffectedInfrastructure(StrEnum):
+    """Sección 5: infraestructura afectada (con área en m²)."""
+
+    vivienda = "vivienda"
+    vial = "vial"
+    educativa = "educativa"
+    comunitaria = "comunitaria"
+
+
+class ReferralEntity(StrEnum):
+    """Sección 6: entidades que deben visitar el predio."""
+
+    ugr = "ugr"
+    corpocaldas = "corpocaldas"
+    aguas_de_manizales = "aguas_de_manizales"
+    obras_publicas = "obras_publicas"
+    invias = "invias"
+    chec = "chec"
+    invama = "invama"
+    planeacion = "planeacion"
+    infraestructura_depto = "infraestructura_depto"
+    inspeccion_policia = "inspeccion_policia"
+    otro = "otro"
+
+
 # ------------------------------------------- sensor de zonas inseguras (specs/004, NC2025/0015763)
 
 

@@ -219,3 +219,31 @@ class CascadeLevel(StrEnum):
     medio = "medio"
     alto = "alto"
     muy_alto = "muy_alto"
+
+
+# ---------------------------------------------------------------- recuperación (specs/003)
+
+
+class InspectionColor(StrEnum):
+    verde = "verde"
+    amarillo = "amarillo"
+    rojo = "rojo"
+
+
+class DamageLevel(StrEnum):
+    menor = "menor"
+    mediano_uso_restringido = "mediano_uso_restringido"
+    mayor = "mayor"
+    colapso = "colapso"
+
+
+class RudStatus(StrEnum):
+    pendiente = "pendiente"
+    inscrito = "inscrito"
+
+
+class AidType(StrEnum):
+    subsidio_arriendo = "subsidio_arriendo"
+    kit = "kit"
+    mercado = "mercado"
+    albergue = "albergue"

@@ -5,7 +5,6 @@
  */
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
 import { db, enqueue, flush, newClientUuid, startSync, type OutboxItem } from "@/lib/db";
 import { formatTime } from "@/lib/format";
@@ -185,9 +184,6 @@ export default function ReporteCiudadano() {
             </li>
             <li>Lo que se publique será agregado por manzana o barrio, nunca individual.</li>
           </ul>
-          <p className="mt-2 text-xs text-tinta-suave">
-            Prototipo con datos SIMULADOS · Hackathon UNAL Manizales 2026.
-          </p>
         </section>
         <button
           type="button"
@@ -204,7 +200,6 @@ export default function ReporteCiudadano() {
     <main className="mx-auto flex w-full max-w-lg flex-col gap-4 px-4 py-6">
       <header className="flex flex-wrap items-center gap-2">
         <h1 className="font-display text-2xl font-semibold">Reportar una emergencia</h1>
-        <EtiquetaSimulado />
         <Link href="/" className="text-sm underline underline-offset-4">
           Ver mapa e indicadores
         </Link>
@@ -331,7 +326,7 @@ export default function ReporteCiudadano() {
             onChange={(e) => setPhoto(Boolean(e.target.files?.length))}
           />
           <span className="text-[11px] font-normal text-tinta-suave">
-            En este prototipo la foto se queda en su teléfono; solo se informa que existe.
+            La foto se queda en su teléfono; solo se informa que existe.
           </span>
         </label>
 

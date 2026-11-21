@@ -11,7 +11,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Dacora · Datos, alerta y coordinación",
   description:
-    "Tablero situacional y reporte ciudadano para responder a emergencias y recuperarse de crisis en Manizales. Prototipo con datos SIMULADOS.",
+    "Tablero situacional y reporte ciudadano para responder a emergencias y recuperarse de crisis en Manizales.",
   manifest: "/manifest.json",
   icons: { icon: "/icon.svg" },
 };

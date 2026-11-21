@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CifraKpi } from "@/components/CifraKpi";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { formatDateTime, formatInt } from "@/lib/format";
 import { getSession } from "@/lib/session";
 import { kpiMap, useKpi } from "@/lib/useKpi";
@@ -47,7 +46,6 @@ export default function PanelKpi() {
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6">
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="font-display text-3xl font-semibold">Panel de KPI de Dacora</h1>
-        <EtiquetaSimulado />
         <span className="text-xs text-tinta-suave">
           Se actualiza cada 5 s{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
         </span>
@@ -83,7 +81,7 @@ export default function PanelKpi() {
           </p>
           <p className="mt-1 text-xs text-white/70">
             Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
-            {mapLatency?.source ?? "evaluate_kpis.py"}.
+            {mapLatency?.source ?? "api"}.
           </p>
         </div>
       </section>
@@ -96,10 +94,7 @@ export default function PanelKpi() {
           {detection.map((key) => (k[key] ? <CifraKpi key={key} k={k[key]} /> : null))}
         </div>
         {!k.duplicate_detection_rate && (
-          <p className="mt-2 text-sm text-tinta-suave">
-            Aún no hay evaluación: ejecute la reproducción del escenario
-            (scripts/replay_scenario.py).
-          </p>
+          <p className="mt-2 text-sm text-tinta-suave">Aún no hay datos de evaluación.</p>
         )}
       </section>
 
@@ -111,11 +106,6 @@ export default function PanelKpi() {
           )}
         </div>
       </section>
-
-      <footer className="text-xs text-tinta-suave">
-        Definiciones en docs/diccionario_indicadores.md. Los porcentajes de detección se calculan
-        contra la verdad del escenario sintético, que el motor nunca ve. Datos SIMULADOS.
-      </footer>
     </main>
   );
 }

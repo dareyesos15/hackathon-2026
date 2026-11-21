@@ -14,7 +14,6 @@ import {
   CASCADE_LEVEL_ORDER,
   type CascadeLevel,
 } from "@/lib/labels";
-import { EtiquetaSimulado } from "./EtiquetaSimulado";
 
 export type CascadeLayer = GeoJSON.FeatureCollection & {
   cutoff_at?: string;
@@ -114,11 +113,10 @@ export function CapaCascada({
           <input type="checkbox" checked={enabled} onChange={(e) => onToggle(e.target.checked)} />
           Efectos en cascada
         </label>
-        <EtiquetaSimulado />
       </div>
       <p className="text-[11px] text-tinta-suave">
         Riesgo de deslizamiento o colapso secundario por manzana: pendiente, lluvia, intensidad
-        sísmica y reportes cercanos. Sugerencia; decide el PMU.
+        sísmica y reportes cercanos.
       </p>
 
       <ul className="grid grid-cols-2 gap-1 text-xs">
@@ -148,14 +146,13 @@ export function CapaCascada({
 
       {!canControlRain && layer && (
         <p className="text-xs text-tinta-suave">
-          Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm (estación LLUVIA-URB-01,
-          SIMULADA)
+          Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm
         </p>
       )}
 
       {canControlRain && (
         <label className="flex flex-col gap-1 text-xs">
-          Lluvia acumulada en 3 h · estación LLUVIA-URB-01 (SIMULADA, patente NC2022/0005821)
+          Lluvia acumulada en 3 h
           <div className="flex items-center gap-2">
             <input
               type="range"
@@ -178,7 +175,6 @@ export function CapaCascada({
       {enabled && layer?.cutoff_at && (
         <p className="text-[10px] text-tinta-suave">
           Modelo {layer.model_version} · corte {formatDateTime(layer.cutoff_at)}
-          {layer.scenario_clock && ` · reloj del escenario ${formatDateTime(layer.scenario_clock)}`}
         </p>
       )}
 

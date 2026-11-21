@@ -165,7 +165,7 @@ export function Mapa({
         zoom: 13.4,
         attributionControl: {
           compact: true,
-          customAttribution: "Barrios e incidentes SIMULADOS · Dacora",
+          customAttribution: "Dacora",
         },
         style: base.style,
       });
@@ -351,7 +351,7 @@ export function Mapa({
             new maplibre.Popup({ closeButton: false })
               .setLngLat(e.lngLat)
               .setText(
-                `${props.label} · ${RESOURCE_STATUS_LABEL[props.status as keyof typeof RESOURCE_STATUS_LABEL] ?? props.status} (SIMULADO)`,
+                `${props.label} · ${RESOURCE_STATUS_LABEL[props.status as keyof typeof RESOURCE_STATUS_LABEL] ?? props.status}`,
               )
               .addTo(map);
           } else if (hit.layer.id === "cascada-relleno") {
@@ -477,7 +477,7 @@ function Leyenda({ incidents, basemap }: { incidents: IncidentSummary[]; basemap
         </p>
         <p className="leading-snug text-tinta-suave">
           {basemap === "osm" && "Mapa base: OpenStreetMap vía OpenFreeMap (en línea)."}
-          {basemap === "offline" && "Sin internet: mapa base offline con barrios SIMULADOS."}
+          {basemap === "offline" && "Sin internet: mapa base sin conexión."}
           {basemap === "cargando" && "Cargando mapa base…"}
         </p>
       </div>

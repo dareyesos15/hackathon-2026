@@ -7,7 +7,6 @@
  */
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
 import { isActive } from "@/lib/dispatch";
 import { formatDateTime, formatNumber, formatTime } from "@/lib/format";
@@ -112,7 +111,6 @@ export default function PanelAgencia() {
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-6">
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-bold">Dacora · Agencia</h1>
-        <EtiquetaSimulado />
         <button
           type="button"
           className="ml-auto text-sm text-tinta-suave"
@@ -181,7 +179,7 @@ export default function PanelAgencia() {
               </div>
               <p className="text-xs text-tinta-suave">
                 Despachado {formatTime(d.created_at)} · {formatNumber(d.distance_m / 1000, 1)} km ·
-                llegada estimada {formatTime(d.eta_at)} (SIMULADA)
+                llegada estimada {formatTime(d.eta_at)}
                 {d.arrived_at && ` · llegó ${formatTime(d.arrived_at)}`}
               </p>
               <p className="text-xs text-tinta-suave">Incidente {d.incident_id.slice(0, 8)}</p>
@@ -229,9 +227,6 @@ export default function PanelAgencia() {
         </section>
       )}
       {error && <p className="text-sm text-rose-700">{error}</p>}
-      <footer className="text-xs text-tinta-suave">
-        El cierre del incidente lo decide el PMU. Recursos y recorridos SIMULADOS.
-      </footer>
     </main>
   );
 }

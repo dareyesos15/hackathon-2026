@@ -1,9 +1,8 @@
 "use client";
-/** Iniciar sesión: elegir el rol de la demo (token fijo por rol, research R9 de 001). */
+/** Iniciar sesión: elegir el rol. */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { DEMO_TOKENS, ROLE_LABELS, setSession, type Role } from "@/lib/session";
 
 const DESTINO: Record<Role, { href: string; descripcion: string }> = {
@@ -19,7 +18,7 @@ const DESTINO: Record<Role, { href: string; descripcion: string }> = {
   },
   admin: {
     href: "/admin/",
-    descripcion: "Simulaciones de la demo: reproducir el escenario con datos o empezar sin datos.",
+    descripcion: "Simulaciones: reproducir el escenario con datos o empezar sin datos.",
   },
 };
 
@@ -50,10 +49,9 @@ const HORA = new Intl.DateTimeFormat("es-CO", {
 export default function Ingresar() {
   const router = useRouter();
   const ahora = useAhora();
-  const [tokens, setTokens] = useState<Record<Role, string>>(DEMO_TOKENS);
 
   function entrar(role: Role) {
-    setSession({ role, token: tokens[role] });
+    setSession({ role, token: DEMO_TOKENS[role] });
     router.push(DESTINO[role].href);
   }
 
@@ -66,7 +64,6 @@ export default function Ingresar() {
           </Link>
           <div className="flex items-center gap-3">
             <h1 className="font-display text-6xl font-semibold leading-none">Dacora</h1>
-            <EtiquetaSimulado sobreOscuro />
           </div>
           <p className="max-w-[60ch] text-lg leading-snug text-white/85">
             Datos, alerta y coordinación para responder a emergencias y recuperarse de crisis en
@@ -103,15 +100,6 @@ export default function Ingresar() {
               <div className="flex-1">
                 <h3 className="font-display text-xl font-semibold">{ROLE_LABELS[role]}</h3>
                 <p className="text-sm text-tinta-suave">{DESTINO[role].descripcion}</p>
-                <details className="mt-1 text-xs text-tinta-suave">
-                  <summary className="cursor-pointer">Token de demo</summary>
-                  <input
-                    aria-label={`Token de demo para ${ROLE_LABELS[role]}`}
-                    className="mt-1 w-full max-w-xs rounded-sm border border-linea px-2 py-1 font-mono text-xs"
-                    value={tokens[role]}
-                    onChange={(e) => setTokens({ ...tokens, [role]: e.target.value })}
-                  />
-                </details>
               </div>
               <button
                 type="button"
@@ -124,11 +112,6 @@ export default function Ingresar() {
             </li>
           ))}
         </ul>
-
-        <p className="mt-6 max-w-[65ch] text-sm text-tinta-suave">
-          La IA solo sugiere; decide un humano. Ningún dato personal se guarda en claro (Ley 1581 de
-          2012). Todos los datos de esta demo son sintéticos.
-        </p>
       </section>
     </main>
   );

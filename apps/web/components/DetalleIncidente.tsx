@@ -19,7 +19,6 @@ import {
   type IncidentDetail,
   type IncidentSummary,
 } from "@/lib/labels";
-import { EtiquetaSimulado } from "./EtiquetaSimulado";
 import { IconoCategoria } from "./IconoCategoria";
 import { PanelDespacho } from "./PanelDespacho";
 
@@ -159,7 +158,6 @@ export function DetalleIncidente({
             <h2 className="font-display text-2xl font-semibold leading-tight">
               {CATEGORY_LABEL[detail.category]}
             </h2>
-            <EtiquetaSimulado />
           </div>
           <p className="text-xs text-tinta-suave">
             <span className="font-bold" style={{ color: TRIAGE_COLOR[detail.triage_level] }}>
@@ -223,7 +221,7 @@ export function DetalleIncidente({
           })}
         </ul>
         <p className="mt-2 text-[10px] text-tinta-suave">
-          Modelo {String(breakdown.version_modelo ?? "")} · la IA sugiere, decide un humano.
+          Modelo {String(breakdown.version_modelo ?? "")}
         </p>
       </section>
 

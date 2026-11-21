@@ -190,7 +190,7 @@ function AlertCard({ alert, children }: { alert: AlertOut; children?: React.Reac
       </p>
       {sms && (
         <p className="text-[11px] text-tinta-suave">
-          SMS a cuadrillas: {formatInt(sms.recipients_count ?? 0)} destinatarios (SIMULADO)
+          SMS a cuadrillas: {formatInt(sms.recipients_count ?? 0)} destinatarios
         </p>
       )}
       {alert.misinfo_signals.length > 0 && (

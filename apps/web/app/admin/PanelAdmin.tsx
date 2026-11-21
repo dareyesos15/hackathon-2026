@@ -8,7 +8,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { formatDateTime, formatInt } from "@/lib/format";
@@ -90,7 +89,6 @@ export default function PanelAdmin() {
       <header className="flex flex-wrap items-center gap-3 bg-sangre px-4 py-2 text-white">
         <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
         <span className="text-sm text-white/75">Administración de simulaciones</span>
-        <EtiquetaSimulado sobreOscuro />
         <nav className="ml-auto flex items-center gap-4 text-sm">
           <Link href="/" className="underline decoration-white/40 underline-offset-4">
             Inicio público
@@ -113,9 +111,9 @@ export default function PanelAdmin() {
           <article className="flex flex-col gap-3 rounded-md border border-linea bg-white p-4">
             <h2 className="font-display text-xl font-semibold">Simulación con datos</h2>
             <p className="text-sm text-tinta-suave">
-              Borra los datos actuales y reproduce el escenario sintético: reportes por app, SMS,
-              WhatsApp, 123 y entidades, con duplicados y rumores. El mapa, los KPI y la predicción
-              de cascada se llenan en vivo.
+              Borra los datos actuales y reproduce el escenario: reportes por app, SMS, WhatsApp,
+              123 y entidades, con duplicados y rumores. El mapa, los KPI y la predicción de cascada
+              se llenan en vivo.
             </p>
             <fieldset className="flex flex-col gap-1 text-sm">
               <legend className="mb-1 font-medium">Velocidad</legend>
@@ -133,7 +131,7 @@ export default function PanelAdmin() {
             </fieldset>
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={rain} onChange={(e) => setRain(e.target.checked)} />
-              Incluir lluvia SIMULADA (para la predicción de cascada)
+              Incluir lluvia (para la predicción de cascada)
             </label>
             <button
               type="button"
@@ -149,8 +147,8 @@ export default function PanelAdmin() {
             <h2 className="font-display text-xl font-semibold">Simulación sin datos</h2>
             <p className="text-sm text-tinta-suave">
               Borra reportes, incidentes, despachos, alertas y lluvia, y devuelve los recursos a su
-              base. El tablero queda vacío para una demo en vivo: los reportes entran desde la app
-              ciudadana o por SMS. Conserva la geografía y el catálogo de recursos.
+              base. El tablero queda vacío: los reportes entran desde la app ciudadana o por SMS.
+              Conserva la geografía y el catálogo de recursos.
             </p>
             <button
               type="button"
@@ -230,11 +228,6 @@ export default function PanelAdmin() {
           )}
           {error && <p className="text-sm text-senal">{error}</p>}
         </section>
-
-        <p className="text-xs text-tinta-suave">
-          Para ver la simulación: abra el inicio público o entre como Entidades y PMU en otra
-          pestaña. Todos los datos son SIMULADOS (Ley 1581 de 2012: ningún dato personal real).
-        </p>
       </main>
     </div>
   );

@@ -14,7 +14,6 @@ import {
   type DispatchOut,
   type IncidentDetail,
 } from "@/lib/labels";
-import { EtiquetaSimulado } from "./EtiquetaSimulado";
 
 interface Props {
   detail: IncidentDetail;
@@ -112,7 +111,6 @@ export function PanelDespacho({ detail, onChanged }: Props) {
     <section className="rounded-lg bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold">Despacho</h3>
-        <EtiquetaSimulado />
       </div>
 
       {dispatches.length > 0 && (
@@ -136,7 +134,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
               </div>
               <p className="text-tinta-suave">
                 Salió {formatTime(d.created_at)} · {formatNumber(d.distance_m / 1000, 1)} km ·
-                llegada estimada {formatTime(d.eta_at)} (SIMULADA)
+                llegada estimada {formatTime(d.eta_at)}
                 {d.arrived_at && ` · llegó ${formatTime(d.arrived_at)}`}
               </p>
               {d.justification && <p className="text-tinta-suave">“{d.justification}”</p>}
@@ -195,7 +193,7 @@ export function PanelDespacho({ detail, onChanged }: Props) {
       {!closed && suggestion && (
         <div className="mt-3">
           <p className="text-xs text-tinta-suave">
-            {suggestion.emre_function_label ?? "Sin función EMRE sugerida para esta categoría"}
+            {suggestion.emre_function_label ?? "Sin agencia sugerida para esta categoría"}
             {suggestion.suggested_agency && (
               <>
                 {" "}

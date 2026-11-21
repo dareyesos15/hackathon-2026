@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Cifra } from "@/components/Cifra";
 import { DetalleIncidente } from "@/components/DetalleIncidente";
-import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { Mapa } from "@/components/Mapa";
 import { AvisoAlerta, alertsFromGeoJSON } from "@/components/AvisoAlerta";
 import { BandejaAlertas } from "@/components/BandejaAlertas";
@@ -180,7 +179,6 @@ export default function TableroPmu() {
         <div className="flex items-center gap-3 px-4 py-2">
           <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
           <span className="text-sm text-white/75">Tablero de entidades y PMU</span>
-          <EtiquetaSimulado sobreOscuro />
           <span className={`rounded-sm px-2 py-0.5 text-xs font-bold ${mode.cls}`}>
             {live.mode === "en_vivo" && (
               <span className="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-senal motion-reduce:animate-none" />

@@ -110,9 +110,6 @@ export function EditorAlerta({
           ✕
         </button>
       </div>
-      <p className="text-[11px] text-tinta-suave">
-        Solo el COE aprueba y emite alertas oficiales (EMRE, tarea 5.5).
-      </p>
 
       <label className="flex flex-col gap-1 text-xs">
         Tipo
@@ -215,7 +212,6 @@ export function EditorAlerta({
               onChange={() => toggleChannel(c)}
             />
             {ALERT_CHANNEL_LABEL[c]}
-            {c === "sms_cuadrillas" && <span className="text-tinta-suave">(SIMULADO)</span>}
           </label>
         ))}
       </fieldset>

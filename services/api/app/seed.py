@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.domain import EmreFunction, PlaceKind, ResourceStatus, ResourceType
-from app.models import Agency, Alert, Incident, Manzana, Place, Report, Resource
+from app.models import Agency, Alert, Incident, Manzana, Place, Report, Resource, Shelter
 
 log = logging.getLogger("dacora.seed")
 
@@ -222,3 +222,33 @@ async def seed_catalog(session: AsyncSession) -> None:
         len(agencies),
         len(data["resources"]),
     )
+
+
+SHELTERS = [
+    ("ALB-01", "Coliseo Mayor", "Palogrande", 5.05804, -75.48845, 400),
+    ("ALB-02", "Estadio Palogrande · gradería sur", "Palogrande", 5.05703, -75.49009, 250),
+    ("ALB-03", "Institución educativa · sede Milán", "Milán", 5.04590, -75.47986, 120),
+    ("ALB-04", "Salón comunal La Enea", "La Enea", 5.03182, -75.46306, 80),
+    ("ALB-05", "Polideportivo Chipre", "Chipre", 5.07584, -75.52544, 150),
+]
+
+
+async def seed_shelters(session: AsyncSession) -> None:
+    """Albergues temporales SIMULADOS (specs/003 US4). Solo si no existen."""
+    if await session.scalar(select(func.count()).select_from(Shelter)):
+        return
+    for code, name, barrio, lat, lon, capacity in SHELTERS:
+        session.add(
+            Shelter(
+                code=code,
+                name=name,
+                barrio=barrio,
+                capacity=capacity,
+                people=0,
+                pets=0,
+                geom=WKTElement(f"POINT({lon} {lat})", srid=4326),
+                source="SIMULADO",
+            )
+        )
+    await session.commit()
+    log.info("Albergues SIMULADOS cargados: %s", len(SHELTERS))

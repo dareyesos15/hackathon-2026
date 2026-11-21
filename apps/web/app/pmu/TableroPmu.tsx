@@ -211,6 +211,9 @@ export default function TableroPmu() {
           <Link href="/pmu/kpi/" className="underline decoration-white/40 underline-offset-4">
             Panel de KPI
           </Link>
+          <Link href="/recuperacion/" className="underline decoration-white/40 underline-offset-4">
+            Recuperación
+          </Link>
           <button
             type="button"
             className="text-white/75 hover:text-white"

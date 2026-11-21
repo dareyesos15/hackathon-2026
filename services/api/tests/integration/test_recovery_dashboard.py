@@ -87,10 +87,17 @@ async def test_red_property_family_becomes_a_need_until_housed(
     assert _fig(after, "familias_sin_solucion") == _fig(before, "familias_sin_solucion") + 1
     assert "familias_sin_solucion" in {n["key"] for n in after["needs"]}
 
+    from app.db import SessionLocal
+    from app.seed import seed_shelters
+
+    async with SessionLocal() as session:
+        await seed_shelters(session)
+    shelters = (await client.get("/recovery/shelters", headers=PMU)).json()["items"]
+    shelter = max(shelters, key=lambda x: x["capacity"] - x["people"])
     resp = await client.post(
         "/recovery/aid",
         headers=PMU,
-        json={"document": document, "aid_type": "albergue"},
+        json={"document": document, "aid_type": "albergue", "shelter_id": shelter["id"]},
     )
     assert resp.status_code == 201, resp.text
     housed = await _dashboard(client)

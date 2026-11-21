@@ -33,8 +33,10 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | 4 | 1:30–2:00 | "Llega un SMS de personas atrapadas: entra como Crítico y se une al incidente que ya existía; no es basura, suma corroboración." | Terminal: `docker compose exec api python scripts/simulate_sms.py --sobre-critico`. Leer "se unió a un incidente existente: N reportes, N fuentes". |
 | 5 | 2:00–2:40 | "Este es un rumor de WhatsApp: Posible falso, y el sistema explica por qué." | En la matriz, categoría **Rumor / información** → abrir uno → desglose: canal WhatsApp, señales "reenvía", "dicen que", "réplica de 9". |
 | 6 | 2:40–3:10 | "La IA solo sugiere: un reporte con riesgo vital nunca se descarta solo. Para descartarlo, un humano deja una nota que queda en la bitácora." | Abrir un incidente **Crítico** → intentar *Descartar* sin nota (botón deshabilitado) → *Confirmar* → mostrar la bitácora con rol y hora. |
+| 6b | +0:30 | "Despachamos Bomberos: el sistema sugiere la agencia según la EMRE, el recurso más cercano y bloquea el doble despacho; se ve el recorrido del vehículo." | Abrir el incidente **Crítico** de Milán → sección *Despacho* → marcar la máquina más cercana → *Despachar*. Ver el recorrido morado en el mapa (llega en ~20 s). Intentar despachar otro recurso: pide justificar un refuerzo. |
+| 6c | +0:30 | "Llueve sobre laderas ya golpeadas: Dacora anticipa el siguiente deslizamiento, pero solo el COE emite la alerta." | Pestaña *Cascada* → activar la capa → subir la lluvia a 40 mm → tocar una manzana **Muy alto** → *Crear alerta preventiva* → mensaje corto → *Guardar borrador*. Cambiar a rol **COE** (`coe-demo`) → pestaña *Alertas* → *Aprobar y emitir*. Mostrar el aviso rojo en el tablero y en la pestaña del mapa público (`/mapa/`). |
 | 7 | 3:10–3:40 | "Resultados medidos contra la verdad del escenario: más de 90 % de duplicados y falsos detectados, cero críticos descartados por la IA, cada hecho en el mapa en minutos y no en días. Cada cifra con fuente y fecha de corte." | Pestaña B (Panel de KPI). |
-| 8 | 3:40–4:00 | "Todo corre en un portátil sin internet, con Habeas Data desde el diseño y software abierto. Siguiente paso: sensores RAMAN, despacho y recuperación." | Volver al tablero. |
+| 8 | 3:40–4:00 | "Todo corre en un portátil sin internet, con Habeas Data desde el diseño y software abierto. Siguiente paso: sensores RAMAN y recuperación." | Volver al tablero. |
 
 ## Si algo falla
 
@@ -44,6 +46,8 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | El mapa no carga | Recargar la pestaña. Si persiste: `docker compose restart web`. |
 | El panel de KPI está vacío | `docker compose exec api python scripts/evaluate_kpis.py` |
 | El celular no abre la página | Usar la pestaña C del portátil con DevTools *Offline*. |
+| El recurso no avanza en el mapa | Esperar ~20 s (`TRACK_SPEEDUP=20`) o, en la pestaña Agencia, marcar *Llegamos al sitio*. |
+| La capa de cascada no cambia | Mover de nuevo el control de lluvia y soltarlo; se recalcula en < 10 s. |
 | Nada responde | `docker compose down && docker compose up -d` (los datos se conservan) y repetir la reproducción con `--speed 720`. |
 | Último recurso | Video/GIF de respaldo (ver abajo). |
 

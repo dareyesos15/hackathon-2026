@@ -176,7 +176,7 @@ precargada.
 - [ ] T062 Extender la prueba de Habeas Data del escenario para verificar que no hay teléfonos, cédulas ni correos en data-model.md `Alert.message`, `Dispatch.justification`, `Dispatch.close_note` y `Alert.close_reason` (SC-007), en `services/api/tests/integration/test_pii_scenario.py`
 - [ ] T063 [P] Agregar `app.core.dispatch`, `app.core.alerts` y `app.core.cascade` a los módulos con mypy estricto en `services/api/pyproject.toml` y corregir lo que reporte
 - [X] T064 [P] Documentar las pantallas `/agencia/` y la bandeja del COE con sus tokens (`coe-demo`, `agencia-demo`) en `README.md`
-- [ ] T065 [P] Agregar al guion los pasos de despacho, recorrido, lluvia, alerta preventiva, aprobación del COE y aviso en el mapa público (≤ 2 min, SC-009) en `docs/guion_demo.md`
+- [X] T065 [P] Agregar al guion los pasos de despacho, recorrido, lluvia, alerta preventiva, aprobación del COE y aviso en el mapa público (≤ 2 min, SC-009) en `docs/guion_demo.md`
 - [ ] T066 [P] Mover el generador del diagrama a `scripts/generate_architecture_diagram.py`, marcar el bloque 5 y la trazabilidad de recursos como "Implementado" y regenerar `docs/arquitectura_actual.svg` y `docs/arquitectura_actual.png`
 - [ ] T067 Ejecutar [quickstart.md](quickstart.md) completo desde `docker compose up` con la base vacía, más `ruff`, `black --check`, `mypy`, `pytest`, `npm run typecheck`, `npm run lint` y `npm test`, y registrar el resultado en `specs/002-dispatch-alerts-prediction/quickstart.md`
 

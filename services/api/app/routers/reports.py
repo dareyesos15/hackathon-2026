@@ -28,7 +28,7 @@ async def list_reports(
     since: datetime | None = None,
     limit: int = Query(default=100, ge=1, le=500),
     cursor: str | None = None,
-    _: Role = Depends(require_role(Role.operador_pmu)),
+    _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
 ) -> ReportList:
     stmt = select(Report)

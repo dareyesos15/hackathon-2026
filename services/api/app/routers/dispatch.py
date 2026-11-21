@@ -177,7 +177,7 @@ async def list_tracks(
 async def post_track(
     resource_id: uuid.UUID,
     body: TrackIn,
-    role: Role = Depends(require_role(Role.agencia, Role.operador_pmu)),
+    role: Role = Depends(require_role(Role.agencia, Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
 ) -> TrackOut:
     """Punto de paso manual o de un lector real (FR-008). `llegada` → despacho `en_sitio`."""

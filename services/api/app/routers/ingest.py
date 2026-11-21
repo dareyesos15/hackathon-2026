@@ -109,7 +109,7 @@ def incoming_from(body: ReportIn, role: Role) -> IncomingReport:
 async def ingest_report(
     body: ReportIn,
     response: Response,
-    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu)),
+    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
     engine: Engine = Depends(get_engine),
 ) -> ReportResult:
@@ -128,7 +128,7 @@ async def ingest_report(
 async def ingest_sms(
     body: SmsIn,
     response: Response,
-    _: Role = Depends(require_role(Role.operador_pmu)),
+    _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
     engine: Engine = Depends(get_engine),
 ) -> ReportResult:
@@ -161,7 +161,7 @@ async def ingest_sms(
 @router.post("/batch", response_model=BatchOut)
 async def ingest_batch(
     body: BatchIn,
-    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu)),
+    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu, Role.coe)),
     engine: Engine = Depends(get_engine),
 ) -> BatchOut:
     """Sincronización del outbox de la PWA. Un ítem inválido no hace fallar el lote."""

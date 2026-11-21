@@ -104,6 +104,10 @@ class Settings(BaseSettings):
     cdiac_max_age_min: float = 60.0
     cdiac_timeout_s: float = 10.0
 
+    # Pasarela SMS en un celular Android (docs/pasarela_sms.md). Clave de firma de los
+    # webhooks (Ajustes → Webhooks → Signing Key en la app). Vacía: pasarela apagada.
+    sms_gateway_signing_key: str = ""
+
     # Tablero de recuperación. Umbral operativo de lluvia (mm en 3 h) para avisar riesgo de
     # deslizamiento: valor configurable, no oficial; calibrarlo con el SAT de Manizales.
     landslide_rain_threshold_mm_3h: float = 25.0

@@ -231,19 +231,18 @@ async def process_report(
         text=redacted.text,
         reporter_hash=hashed,
     )
-    # Sesión vigente: si hay alerta masiva activa, el reporte pertenece a ella.
-    mass_alert_id = await session.scalar(
-        select(MassAlert.id).where(MassAlert.status == MassAlertStatus.activa).limit(1)
-    )
-    candidates = await find_candidates(
-        session, ctx, engine.settings.dedup, mass_alert_id=mass_alert_id
-    )
+    candidates = await find_candidates(session, ctx, engine.settings.dedup)
     match = choose_incident(ctx, candidates, engine.similarity, engine.settings.dedup)
 
     if match is not None:
         incident = await session.get(Incident, match.incident_id)
         assert incident is not None
     else:
+        # Con alertas masivas activas, el incidente nuevo espera asignación manual del PMU/COE;
+        # sin ninguna, es de la operación ordinaria.
+        alerts_active = await session.scalar(
+            select(func.count(MassAlert.id)).where(MassAlert.status == MassAlertStatus.activa)
+        )
         incident = Incident(
             id=uuid.uuid4(),
             category=cls.category,
@@ -253,7 +252,7 @@ async def process_report(
             last_seen=occurred_at,
             status=IncidentStatus.abierto,
             geo_precision=loc.precision,
-            mass_alert_id=mass_alert_id,
+            pending_assignment=bool(alerts_active),
             source=incoming.source,
         )
         session.add(incident)

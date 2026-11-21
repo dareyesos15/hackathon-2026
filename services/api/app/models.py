@@ -117,11 +117,11 @@ class Place(CommonMixin, Base):
 
 
 class MassAlert(CommonMixin, Base):
-    """Alerta masiva de toda la ciudad (p. ej. un sismo): abre una sesión de operación propia.
+    """Alerta masiva de toda la ciudad (p. ej. un sismo): sesión de operación propia.
 
-    Mientras está activa, todo incidente nuevo queda en su sesión (triaje, cascada y zonas).
-    Cuando todos sus incidentes se cierran (atendidos o descartados) se resuelve sola y guarda el
-    reporte final (problemas, trazabilidad y tiempos de solución) en `final_report`.
+    Puede haber varias activas a la vez. Mientras exista al menos una, los incidentes nuevos
+    quedan *sin asignar* y el PMU/COE los asigna a mano. El cierre es manual y guarda el reporte
+    final (problemas, trazabilidad y tiempos de solución) en `final_report`.
     """
 
     __tablename__ = "mass_alerts"
@@ -130,13 +130,7 @@ class MassAlert(CommonMixin, Base):
         CheckConstraint(
             "created_by_role IN ('operador_pmu', 'coe')", name="ck_mass_alert_created_by_role"
         ),
-        # Una sola alerta masiva activa a la vez.
-        Index(
-            "uq_mass_alert_active",
-            "status",
-            unique=True,
-            postgresql_where=text("status = 'activa'"),
-        ),
+        Index("ix_mass_alerts_status", "status"),
     )
 
     title: Mapped[str] = mapped_column(String(120), nullable=False)
@@ -193,6 +187,10 @@ class Incident(CommonMixin, Base):
     # Sesión de alerta masiva a la que pertenece (None: operación ordinaria).
     mass_alert_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("mass_alerts.id"), nullable=True
+    )
+    # Creado mientras había alertas masivas activas: espera que el PMU/COE lo asigne.
+    pending_assignment: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=text("false")
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False

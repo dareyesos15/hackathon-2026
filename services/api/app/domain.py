@@ -102,6 +102,10 @@ class ReportAction(StrEnum):
     cancelar_despacho = "cancelar_despacho"
     despacho_doble_bloqueado = "despacho_doble_bloqueado"
     cerrar_atendido = "cerrar_atendido"
+    # Gestión de incidentes (PMU/COE): creación manual y sesión de alerta masiva.
+    crear_manual = "crear_manual"
+    asignar_alerta = "asignar_alerta"
+    desacoplar_alerta = "desacoplar_alerta"
 
 
 class PlaceKind(StrEnum):

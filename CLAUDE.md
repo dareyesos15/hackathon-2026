@@ -70,7 +70,7 @@ Indicadores que realmente usó el PMU para decidir (mostrarlos en el tablero): s
 
 ## 3. Arquitectura objetivo (diagrama técnico)
 
-Fuente: imagen embebida en `estudio_integral_de_prefactibilidad_y_arquitectura_sidar.md` (Drive, carpeta Hackathon 2026). Se reproduce aquí en texto y Mermaid. Si quieres ver la imagen original, está también en Drive como `arquitectura_sidar_diagrama_tecnico.png`; guárdala en `docs/arquitectura.png`.
+Fuente: imagen embebida en `estudio_integral_de_prefactibilidad_y_arquitectura_sidar.md` (Drive, carpeta Hackathon 2026). Se reproduce aquí en texto y Mermaid. Si quieres ver la imagen original, está también en Drive como `arquitectura_sidar_diagrama_tecnico.png`; la copia del repositorio está en [docs/arquitectura.jpeg](docs/arquitectura.jpeg).
 
 **Título del diagrama:** "Diagrama técnico: Sistema Integral de Datos, Alerta y Recuperación Post-Sismo — Reto 05 · Datos & Inteligencia Operativa · PMU Eje Cafetero (Manizales – UNAL) — Solución End-to-End desde Crisis hasta Reconstrucción".
 
@@ -207,7 +207,7 @@ dacora/
 ├── docker-compose.yml            # api, web (principales) + db (postgis), [ollama]
 ├── .env.example
 ├── docs/
-│   ├── arquitectura.png          # diagrama técnico
+│   ├── arquitectura.jpeg         # diagrama técnico
 │   ├── diccionario_indicadores.md
 │   └── guion_demo.md
 ├── apps/web/                     # Next.js PWA (frontend puro, sin app/api/)

@@ -27,6 +27,8 @@ MAP_PATH = Path(os.environ.get("REPLAY_MAP", "/tmp/dacora_replay_map.json"))
 # Desplazamiento (s) que replay_scenario.py aplicó a las fechas para anclar la crisis al presente.
 SHIFT_PATH = MAP_PATH.with_name("dacora_replay_shift.json")
 SOURCE = "evaluate_kpis.py"
+# Se calculan y se imprimen, pero no se publican en el panel (decisión del equipo, 21 nov 2026).
+NOT_PUBLISHED = {"fake_detection_rate", "false_positive_rate"}
 
 TARGETS = {
     "duplicate_detection_rate": (90.0, ">"),
@@ -237,7 +239,7 @@ def publish(client: Any, result: Result) -> None:
             "details": result.details.get(k, {}),
         }
         for k, v in result.values.items()
-        if v is not None
+        if v is not None and k not in NOT_PUBLISHED
     ]
     if items:
         client.post("/metrics/snapshots", json={"items": items}).raise_for_status()

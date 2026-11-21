@@ -5,7 +5,7 @@
  * Es solo una sugerencia: no despacha ni alerta por sí sola (FR-031).
  */
 import { EtiquetaSimulado } from "./EtiquetaSimulado";
-import { simulado } from "@/lib/env";
+import { DEMO_MODE, simulado } from "@/lib/env";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
 import { formatDateTime, formatInt, formatNumber } from "@/lib/format";
@@ -175,7 +175,7 @@ export function CapaCascada({
         </label>
       )}
 
-      {enabled && layer?.cutoff_at && (
+      {DEMO_MODE && enabled && layer?.cutoff_at && (
         <p className="text-[10px] text-tinta-suave">
           Modelo {layer.model_version} · corte {formatDateTime(layer.cutoff_at)}
         </p>

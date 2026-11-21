@@ -1,4 +1,5 @@
 import { EtiquetaSimulado } from "./EtiquetaSimulado";
+import { DEMO_MODE } from "@/lib/env";
 import { formatDateTime, formatInt, formatNumber, formatPercent } from "@/lib/format";
 
 /**
@@ -55,9 +56,11 @@ export function Cifra(props: CifraProps) {
         )}
       </p>
       {meta && <p className="mt-1 text-xs text-tinta-suave">Meta: {meta}</p>}
-      <p className="mt-1 text-[10px] leading-tight text-tinta-suave">
-        Fuente: {fuente} · v{version} · corte {formatDateTime(corte)}
-      </p>
+      {DEMO_MODE && (
+        <p className="mt-1 text-[10px] leading-tight text-tinta-suave">
+          Fuente: {fuente} · v{version} · corte {formatDateTime(corte)}
+        </p>
+      )}
     </div>
   );
 }

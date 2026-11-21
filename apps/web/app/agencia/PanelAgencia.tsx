@@ -5,6 +5,7 @@
  * En la demo, una sola credencial `agencia` puede actuar por cualquier agencia (spec, Supuestos).
  * Consulta cada 3 s; el cierre del incidente lo decide el PMU, no la agencia.
  */
+import { DEMO_MODE } from "@/lib/env";
 import { simulado } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { useRouter } from "next/navigation";
@@ -145,7 +146,7 @@ export default function PanelAgencia() {
       {agency && (
         <p className="text-xs text-tinta-suave">
           {EMRE_FUNCTION_LABEL[agency.emre_function]} · se actualiza cada 3 s
-          {cutoff ? ` · corte ${formatDateTime(cutoff)}` : ""}
+          {DEMO_MODE && cutoff ? ` · corte ${formatDateTime(cutoff)}` : ""}
         </p>
       )}
 

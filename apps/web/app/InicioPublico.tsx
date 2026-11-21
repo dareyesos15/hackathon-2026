@@ -7,6 +7,7 @@
  * La API se consulta siempre con el rol `publico`, también con sesión de Ciudadanía o
  * Administrador: todos ven el mismo mapa agregado.
  */
+import { DEMO_MODE } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useState } from "react";
@@ -174,9 +175,11 @@ export default function InicioPublico() {
             {received?.value != null ? formatInt(received.value) : "—"} reportes →{" "}
             {consolidated?.value != null ? formatInt(consolidated.value) : "—"} incidentes
           </p>
-          <p className="mt-1 text-xs text-white/70">
-            Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
-          </p>
+          {DEMO_MODE && (
+            <p className="mt-1 text-xs text-white/70">
+              Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
+            </p>
+          )}
         </div>
         <div>
           <p className="text-sm text-white/75">Cada hecho aparece en el mapa (p90)</p>
@@ -186,8 +189,8 @@ export default function InicioPublico() {
               : "—"}
           </p>
           <p className="mt-1 text-xs text-white/70">
-            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
-            {mapLatency?.source ?? "api"}.
+            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa.
+            {DEMO_MODE && ` Fuente: ${mapLatency?.source ?? "api"}.`}
           </p>
         </div>
       </section>
@@ -248,8 +251,9 @@ export default function InicioPublico() {
               <p className="text-xl font-bold tabular-nums">{formatInt(barriosAfectados)}</p>
             </div>
             <p className="col-span-2 text-xs text-tinta-suave">
-              {formatInt(visibles)} manzanas con conteo publicable (k ≥ 5). Fuente: api · corte{" "}
-              {manzanas?.cutoff_at ? formatDateTime(manzanas.cutoff_at) : "—"}.
+              {formatInt(visibles)} manzanas con conteo publicable (k ≥ 5).
+              {DEMO_MODE &&
+                ` Fuente: api · corte ${manzanas?.cutoff_at ? formatDateTime(manzanas.cutoff_at) : "—"}.`}
             </p>
           </section>
           <p className="text-xs text-tinta-suave">
@@ -279,7 +283,8 @@ export default function InicioPublico() {
       </section>
 
       <footer className="px-4 py-4 text-xs text-tinta-suave">
-        Se actualiza sola{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}.
+        Se actualiza sola
+        {DEMO_MODE && latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}.
       </footer>
     </div>
   );

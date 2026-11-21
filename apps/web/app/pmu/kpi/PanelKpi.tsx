@@ -4,6 +4,7 @@
  * Los KPI de detección los publica scripts/evaluate_kpis.py contra la verdad del escenario
  * SIMULADO; la API no la conoce (principio IV).
  */
+import { DEMO_MODE } from "@/lib/env";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,8 @@ export default function PanelKpi() {
         <h1 className="font-display text-3xl font-semibold">Panel de KPI de Dacora</h1>
         <EtiquetaSimulado />
         <span className="text-xs text-tinta-suave">
-          Se actualiza cada 5 s{latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
+          Se actualiza cada 5 s
+          {DEMO_MODE && latestCut ? ` · último corte ${formatDateTime(latestCut)}` : ""}
         </span>
         {session?.role === "pmu" && (
           <Link href="/pmu/" className="ml-auto text-sm underline">
@@ -70,9 +72,11 @@ export default function PanelKpi() {
             {received?.value != null ? formatInt(received.value) : "—"} reportes →{" "}
             {consolidated?.value != null ? formatInt(consolidated.value) : "—"} incidentes
           </p>
-          <p className="mt-1 text-xs text-white/70">
-            Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
-          </p>
+          {DEMO_MODE && (
+            <p className="mt-1 text-xs text-white/70">
+              Fuente: api · corte {received ? formatDateTime(received.cutoff_at) : "—"}
+            </p>
+          )}
         </div>
         <div>
           <p className="text-sm text-white/75">Cada hecho aparece en el mapa (p90)</p>
@@ -82,8 +86,8 @@ export default function PanelKpi() {
               : "—"}
           </p>
           <p className="mt-1 text-xs text-white/70">
-            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa. Fuente:{" "}
-            {mapLatency?.source ?? "api"}.
+            Tiempo desde que llega un hecho hasta que aparece consolidado en el mapa.
+            {DEMO_MODE && ` Fuente: ${mapLatency?.source ?? "api"}.`}
           </p>
         </div>
       </section>

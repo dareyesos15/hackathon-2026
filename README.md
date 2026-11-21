@@ -17,18 +17,26 @@ Abra **http://localhost:8080** y elija un rol. Para llenar el tablero con el sis
 ```bash
 docker compose exec api python scripts/replay_scenario.py --reset            # 12 min (1 h = 1 min)
 docker compose exec api python scripts/replay_scenario.py --reset --speed 720  # ~1 min (ensayo)
+docker compose exec api python scripts/replay_scenario.py --reset --speed 720 --rain  # + lluvia SIMULADA
 ```
 
 | Pantalla | URL | Rol / token de demo |
 |---|---|---|
 | Inicio (elegir rol) | http://localhost:8080 | — |
-| Tablero del PMU | http://localhost:8080/pmu/ | Operador PMU · `pmu-demo` |
+| Tablero del PMU (triaje, despacho, borradores de alerta, cascada) | http://localhost:8080/pmu/ | Operador PMU · `pmu-demo` |
+| Tablero + bandeja del COE (aprobar, rechazar y anular alertas) | http://localhost:8080/pmu/ | COE · `coe-demo` |
+| Despachos de una agencia (llegada, finalizado, fuera de servicio) | http://localhost:8080/agencia/ | Agencia · `agencia-demo` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | Operador PMU o Público · `publico-demo` |
-| Mapa público (agregado por manzana, k ≥ 5) | http://localhost:8080/mapa/ | Público · `publico-demo` |
+| Mapa público (agregado por manzana, k ≥ 5, y alertas oficiales vigentes) | http://localhost:8080/mapa/ | Público · `publico-demo` |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
 | API (OpenAPI) | http://localhost:8080/docs | — |
 
 Los tokens de demo están en [.env.example](.env.example); sin `.env`, Compose usa esos valores.
+
+Despacho, alertas y cascada (specs/002): los recursos, sus recorridos tipo RFID, la hora estimada
+de llegada, el envío de SMS, la lluvia y la pendiente son **SIMULADOS**. El avance de los recursos
+despachados va 20 veces acelerado (`TRACK_SPEEDUP`); para que un crítico sin despacho se marque
+antes en la demo, baje `UNATTENDED_ALERT_MIN` (por defecto 15 min).
 
 ### Requisitos
 

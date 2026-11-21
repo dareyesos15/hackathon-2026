@@ -30,6 +30,12 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720  #
 
 Los tokens de demo están en [.env.example](.env.example); sin `.env`, Compose usa esos valores.
 
+**Reportar con GPS desde un celular:** los navegadores solo comparten el GPS en conexiones
+seguras. Desde el celular (misma red Wi-Fi que el portátil) abra
+**https://&lt;IP-del-portátil&gt;:8443/reportar/**, acepte una vez la advertencia del certificado
+autofirmado y entre como Ciudadanía. El reporte queda en el punto exacto del GPS en el mapa del
+PMU. Por `http://…:8080` el GPS no está disponible y la PWA ofrece el enlace seguro.
+
 ### Requisitos
 
 - Docker Desktop con Docker Compose v2.

@@ -71,9 +71,23 @@ interface Props {
   layer: CascadeLayer | null;
   selected: CascadeSelection | null;
   onCreateAlert?: (selection: CascadeSelection) => void;
+  /** Solo el PMU y el COE publican lecturas de lluvia SIMULADA. */
+  canControlRain?: boolean;
+  /** Sin conexión: se muestra la última predicción guardada en el dispositivo. */
+  offline?: boolean;
+  savedAt?: string | null;
 }
 
-export function CapaCascada({ enabled, onToggle, layer, selected, onCreateAlert }: Props) {
+export function CapaCascada({
+  enabled,
+  onToggle,
+  layer,
+  selected,
+  onCreateAlert,
+  canControlRain = true,
+  offline = false,
+  savedAt = null,
+}: Props) {
   const [rain, setRain] = useState<number>(layer?.rain_mm_3h ?? 0);
   const [busy, setBusy] = useState(false);
 
@@ -120,25 +134,46 @@ export function CapaCascada({ enabled, onToggle, layer, selected, onCreateAlert 
         ))}
       </ul>
 
-      <label className="flex flex-col gap-1 text-xs">
-        Lluvia acumulada en 3 h · estación LLUVIA-URB-01 (SIMULADA, patente NC2022/0005821)
-        <div className="flex items-center gap-2">
-          <input
-            type="range"
-            min={0}
-            max={60}
-            step={5}
-            value={rain}
-            disabled={busy}
-            onChange={(e) => setRain(Number(e.target.value))}
-            onMouseUp={() => publishRain(rain)}
-            onTouchEnd={() => publishRain(rain)}
-            onKeyUp={() => publishRain(rain)}
-            className="flex-1"
-          />
-          <span className="w-14 text-right tabular-nums">{formatInt(rain)} mm</span>
-        </div>
-      </label>
+      {enabled && offline && (
+        <p className="rounded bg-amber-100 p-2 text-xs text-amber-900">
+          Sin conexión: se muestra la última predicción recibida
+          {savedAt ? ` (${formatDateTime(savedAt)})` : ""}. Se recalcula sola al volver la conexión.
+        </p>
+      )}
+      {enabled && offline && !layer && (
+        <p className="text-xs text-slate-500">
+          Aún no hay una predicción guardada en este dispositivo.
+        </p>
+      )}
+
+      {!canControlRain && layer && (
+        <p className="text-xs text-slate-600">
+          Lluvia acumulada en 3 h: {formatInt(layer.rain_mm_3h ?? 0)} mm (estación LLUVIA-URB-01,
+          SIMULADA)
+        </p>
+      )}
+
+      {canControlRain && (
+        <label className="flex flex-col gap-1 text-xs">
+          Lluvia acumulada en 3 h · estación LLUVIA-URB-01 (SIMULADA, patente NC2022/0005821)
+          <div className="flex items-center gap-2">
+            <input
+              type="range"
+              min={0}
+              max={60}
+              step={5}
+              value={rain}
+              disabled={busy || offline}
+              onChange={(e) => setRain(Number(e.target.value))}
+              onMouseUp={() => publishRain(rain)}
+              onTouchEnd={() => publishRain(rain)}
+              onKeyUp={() => publishRain(rain)}
+              className="flex-1"
+            />
+            <span className="w-14 text-right tabular-nums">{formatInt(rain)} mm</span>
+          </div>
+        </label>
+      )}
 
       {enabled && layer?.cutoff_at && (
         <p className="text-[10px] text-slate-400">

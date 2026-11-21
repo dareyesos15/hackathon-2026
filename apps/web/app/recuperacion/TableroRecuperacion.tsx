@@ -12,11 +12,19 @@ import { Cifra } from "@/components/Cifra";
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import { api } from "@/lib/api/client";
 import { DEMO_MODE } from "@/lib/env";
-import { formatCop, formatDate, formatDateTime, formatInt, formatPercent } from "@/lib/format";
+import {
+  formatCop,
+  formatDate,
+  formatDateTime,
+  formatInt,
+  formatNumber,
+  formatPercent,
+} from "@/lib/format";
 import {
   CHANNEL_LABEL,
   COLOR_HEX,
   NEED_SEVERITY,
+  SCENARIO_LABEL,
   SOURCE_STATUS,
   STAGE_STATUS,
   type BarrioRecovery,
@@ -25,7 +33,10 @@ import {
   type DashFigure,
   type DashIndicator,
   type Need,
+  type ConfidenceStat,
   type RecoveryDashboard,
+  type ScenarioComparison,
+  type ScenarioKey,
   type SourceInfo,
   type Stage,
 } from "@/lib/recovery";
@@ -256,7 +267,7 @@ function CurvaIndice({ points, day }: { points: CurvePoint[]; day: number }) {
   );
 }
 
-function Componentes({ c }: { c: Record<string, number | null> }) {
+function Componentes({ c, simulated }: { c: Record<string, number | null>; simulated: boolean }) {
   const names: [string, string][] = [
     ["habitabilidad", "Habitabilidad (3)"],
     ["familias", "Familias en casa (7)"],
@@ -271,7 +282,9 @@ function Componentes({ c }: { c: Record<string, number | null> }) {
             <dt className="text-xs text-tinta-suave">{label}</dt>
             <dd className="font-semibold tabular-nums">
               {c[k] === null || c[k] === undefined ? (
-                <span className="font-normal text-tinta-suave">sin fuente: no cuenta</span>
+                <span className="font-normal text-tinta-suave">
+                  {simulated ? "sin dato en este corte" : "sin fuente: no cuenta"}
+                </span>
               ) : (
                 formatPercent(c[k])
               )}
@@ -280,8 +293,9 @@ function Componentes({ c }: { c: Record<string, number | null> }) {
         ))}
       </dl>
       <p className="text-xs text-tinta-suave">
-        El índice promedia solo los componentes con fuente; los demás se suman cuando haya convenio
-        con su entidad.
+        {simulated
+          ? "El índice promedia solo los componentes cuya fuente entregó dato en este corte."
+          : "El índice promedia solo los componentes con fuente; los demás se suman cuando haya convenio con su entidad."}
       </p>
     </div>
   );
@@ -620,18 +634,158 @@ function Ciclo({ stages, day }: { stages: Stage[]; day: number }) {
   );
 }
 
+// --------------------------------------------------------------------------- escenarios
+
+function Selector({ value, onChange }: { value: ScenarioKey; onChange: (k: ScenarioKey) => void }) {
+  return (
+    <div role="radiogroup" aria-label="Escenario" className="flex flex-wrap items-center gap-2">
+      <span className="text-sm text-tinta-suave">Ver con:</span>
+      {(Object.keys(SCENARIO_LABEL) as ScenarioKey[]).map((k) => (
+        <button
+          key={k}
+          type="button"
+          role="radio"
+          aria-checked={value === k}
+          onClick={() => onChange(k)}
+          className={`rounded border px-3 py-1.5 text-sm ${
+            value === k
+              ? "border-sangre bg-sangre font-semibold text-white"
+              : "border-linea bg-white text-tinta hover:border-tinta-suave"
+          }`}
+        >
+          {SCENARIO_LABEL[k]}
+          {k !== "real" && <span className="ml-1 text-[11px] opacity-80">(simulado)</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Media (punto) e intervalo del 90 % (barra) en una escala común. */
+function Intervalo({ s, max }: { s: ConfidenceStat; max: number }) {
+  const pos = (x: number) => `${Math.min(100, Math.max(0, (x / max) * 100))}%`;
+  const fmt = (x: number) => (s.unit === "%" ? formatPercent(x, 1) : `${formatNumber(x, 1)} pts`);
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-sm font-semibold tabular-nums">
+        {fmt(s.mean)}{" "}
+        <span className="text-xs font-normal text-tinta-suave">
+          (IC 90 %: {fmt(s.p5)} a {fmt(s.p95)})
+        </span>
+      </span>
+      <span
+        className="relative block h-3 rounded-sm bg-linea/60"
+        title={`Media ${fmt(s.mean)} · P5 ${fmt(s.p5)} · P95 ${fmt(s.p95)}`}
+      >
+        <span
+          className="absolute top-1 h-1 rounded-sm bg-tinta-suave"
+          style={{ left: pos(s.p5), width: `calc(${pos(s.p95)} - ${pos(s.p5)})` }}
+        />
+        <span
+          className="absolute top-0 h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-tinta"
+          style={{ left: pos(s.mean) }}
+        />
+      </span>
+    </div>
+  );
+}
+
+function Confianza({ data }: { data: ScenarioComparison }) {
+  const best = data.scenarios.find((s) => s.key === "mejor");
+  const worst = data.scenarios.find((s) => s.key === "peor");
+  if (!best || !worst) return null;
+  const stat = (sc: typeof best, key: string) => sc.stats.find((s) => s.key === key);
+  return (
+    <Card
+      title="Confianza del sistema según el acceso a datos"
+      extra={DEMO_MODE ? <EtiquetaSimulado /> : undefined}
+    >
+      <p className="text-xs text-tinta-suave">{data.method}</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {[best, worst].map((sc) => {
+          const conf = stat(sc, "confianza");
+          return (
+            <div key={sc.key} className="rounded-md border border-linea p-3">
+              <p className="text-sm font-semibold">{sc.title}</p>
+              <p className="mt-1 font-display text-4xl font-semibold leading-none tabular-nums">
+                {conf ? formatPercent(conf.mean, 1) : "—"}
+              </p>
+              <p className="mt-1 text-xs text-tinta-suave">
+                confianza media · IC 90 %{" "}
+                {conf ? `${formatPercent(conf.p5, 1)} a ${formatPercent(conf.p95, 1)}` : "—"} ·{" "}
+                <span className="font-semibold text-tinta">
+                  {formatPercent(sc.p_high_confidence, 1)}
+                </span>{" "}
+                de las corridas con confianza ≥ 75 %
+              </p>
+              <details className="mt-2 text-xs text-tinta-suave">
+                <summary className="cursor-pointer">Supuestos del escenario</summary>
+                <p className="mt-1">{sc.description}</p>
+                <ul className="mt-1 list-disc pl-4">
+                  {sc.assumptions.map((a) => (
+                    <li key={a}>{a}</li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+          );
+        })}
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[40rem] text-left text-sm">
+          <thead className="text-xs text-tinta-suave">
+            <tr className="border-b border-linea">
+              <th className="w-1/3 py-1 pr-3 font-normal">Métrica</th>
+              <th className="py-1 pr-3 font-normal">Mejor caso</th>
+              <th className="py-1 font-normal">Peor caso</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-linea">
+            {best.stats.map((b) => {
+              const w = stat(worst, b.key);
+              if (!w) return null;
+              const max = b.unit === "%" ? 100 : Math.max(b.p95, w.p95, 1);
+              return (
+                <tr key={b.key}>
+                  <td className="py-2 pr-3">{b.label}</td>
+                  <td className="py-2 pr-3">
+                    <Intervalo s={b} max={max} />
+                  </td>
+                  <td className="py-2">
+                    <Intervalo s={w} max={max} />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-xs text-tinta-suave">
+        Punto: media de {formatInt(best.runs)} corridas por escenario. Barra: intervalo del 90 %
+        (percentiles 5 y 95). En las filas de error, menos es mejor.
+      </p>
+    </Card>
+  );
+}
+
 // --------------------------------------------------------------------------- tablero
 
 export function TableroRecuperacion() {
   const [data, setData] = useState<RecoveryDashboard | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [scenario, setScenario] = useState<ScenarioKey>("real");
+  const [comparison, setComparison] = useState<ScenarioComparison | null>(null);
+
+  useEffect(() => {
+    api.GET("/api/v1/recovery/scenarios").then(({ data: d }) => d && setComparison(d));
+  }, []);
 
   useEffect(() => {
     let active = true;
     let timer: ReturnType<typeof setTimeout> | null = null;
     const loop = () =>
       api
-        .GET("/api/v1/recovery/dashboard")
+        .GET("/api/v1/recovery/dashboard", { params: { query: { scenario } } })
         .then(({ data: d, error: e }) => {
           if (!active) return;
           if (d) {
@@ -648,7 +802,7 @@ export function TableroRecuperacion() {
       active = false;
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [scenario]);
 
   if (!data) {
     return <p className="text-sm text-tinta-suave">{error ?? "Cargando tablero…"}</p>;
@@ -671,6 +825,16 @@ export function TableroRecuperacion() {
           {error}
         </p>
       )}
+      <Selector value={scenario} onChange={setScenario} />
+      {data.scenario !== "real" && (
+        <div className="flex flex-col gap-1 rounded border border-dashed border-[#9a5b00] bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <span className="flex flex-wrap items-center gap-2 font-semibold">
+            <EtiquetaSimulado /> {data.scenario_title}
+          </span>
+          <span className="text-xs">{data.scenario_note}</span>
+        </div>
+      )}
+      {comparison && scenario !== "real" && <Confianza data={comparison} />}
       <section className="grid gap-4 rounded-md bg-sangre p-5 text-white sm:grid-cols-3">
         <div>
           <p className="text-sm text-white/75">Índice de recuperación de la ciudad</p>
@@ -708,8 +872,10 @@ export function TableroRecuperacion() {
         </div>
         <p className="flex flex-wrap items-center gap-2 text-xs text-white/70 sm:col-span-3">
           {DEMO_MODE && <EtiquetaSimulado sobreOscuro />}
-          Corte {formatDateTime(data.cutoff_at)} · predios únicos, no visitas · sin cifras
-          inventadas: ver &ldquo;Respaldo de las cifras&rdquo;
+          Corte {formatDateTime(data.cutoff_at)} · predios únicos, no visitas ·{" "}
+          {data.scenario === "real"
+            ? "sin cifras inventadas: ver «Respaldo de las cifras»"
+            : "escenario SIMULADO: cifras sintéticas para medir la confianza del sistema"}
         </p>
       </section>
 
@@ -720,7 +886,7 @@ export function TableroRecuperacion() {
       <Indicador ind={ind[2]} />
       <Indicador ind={ind[3]} />
       <Indicador ind={ind[4]} cols={2}>
-        <Componentes c={data.index_components} />
+        <Componentes c={data.index_components} simulated={data.scenario !== "real"} />
         <CurvaIndice points={data.index_curve} day={data.day} />
       </Indicador>
       <Indicador ind={ind[5]} cols={4} />
@@ -768,6 +934,7 @@ export function TableroRecuperacion() {
       <Ciclo stages={data.stages} day={data.day} />
 
       <Respaldo sources={data.sources} />
+      {comparison && scenario === "real" && <Confianza data={comparison} />}
     </div>
   );
 }

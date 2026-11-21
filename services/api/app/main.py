@@ -32,6 +32,7 @@ from app.routers import (
     recovery,
     recovery_dashboard,
     recovery_reviews,
+    recovery_scenarios,
     reports,
     review,
     stream,
@@ -162,6 +163,7 @@ for module in (
     recovery,
     recovery_dashboard,
     recovery_reviews,
+    recovery_scenarios,
     zone_sensors,
     demo,
 ):

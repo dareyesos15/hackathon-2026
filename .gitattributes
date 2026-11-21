@@ -1,0 +1,2 @@
+# Los scripts de bash deben llegar con finales de línea LF (macOS/Linux), aunque se editen en Windows.
+*.sh text eol=lf

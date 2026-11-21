@@ -371,3 +371,51 @@ class MassAlertEvent(StrEnum):
     ceniza_volcanica = "ceniza_volcanica"
     incendio_estructural = "incendio_estructural"
     otro = "otro"
+
+
+# --- Censo (RUD · UNGRD), ayudas (acta de entrega) y albergues (EMRE 3.1–3.3) ------------------
+
+
+class Tenure(StrEnum):
+    """Régimen de tenencia de la vivienda (RUD)."""
+
+    propietario = "propietario"
+    arrendatario = "arrendatario"
+    poseedor = "poseedor"
+    ocupante = "ocupante"
+    otro = "otro"
+
+
+class HousingStatus(StrEnum):
+    """Estado de la vivienda (RUD), alineado con el semáforo NSR-10."""
+
+    habitable = "habitable"
+    no_habitable = "no_habitable"
+    destruida = "destruida"
+
+
+class HouseholdLoss(StrEnum):
+    """Pérdidas del hogar (RUD)."""
+
+    enseres = "enseres"
+    herramientas_trabajo = "herramientas_trabajo"
+    animales = "animales"
+    cultivos = "cultivos"
+    vehiculo = "vehiculo"
+
+
+class ShelterStatus(StrEnum):
+    abierto = "abierto"
+    cerrado = "cerrado"
+
+
+class ShelterService(StrEnum):
+    """Servicios del alojamiento temporal (EMRE 3.2)."""
+
+    agua = "agua"
+    energia = "energia"
+    banos = "banos"
+    cocina = "cocina"
+    atencion_salud = "atencion_salud"
+    zona_mascotas = "zona_mascotas"
+    zona_infantil = "zona_infantil"

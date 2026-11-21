@@ -78,6 +78,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             SimulatedZoneSensorFeed(SessionLocal, process, tick_s=settings.zone_tick_s).run()
         )
     rain_task = asyncio.create_task(rain_feed.run(SessionLocal, cascade.rain_changed))
+    demo.schedule_recovery_examples("arranque de la API")
     log.info("Fuente de lluvia de la cascada: %s", rain_feed.source.value)
     yield
     for task in (feed_task, zone_task, rain_task):

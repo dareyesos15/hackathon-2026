@@ -131,6 +131,11 @@ docker compose exec api python scripts/simulate_sms.py --sobre-critico   # se un
 # KPI contra la verdad del escenario (código ≠ 0 si no se cumplen las metas)
 docker compose exec api python scripts/evaluate_kpis.py
 
+# Casos de ejemplo de recuperación (6 predios, guía en docs/guia_recuperacion.md).
+# Con SEED_RECOVERY_EXAMPLES=true (por defecto en Compose) se cargan solos al arrancar la API y
+# después de cada reinicio de la demo; este comando los carga a mano (no duplica nada).
+docker compose exec api python scripts/seed_recovery_example.py
+
 # Fuentes públicas del tablero de recuperación (USGS, SECOP II, CDIAC) — con internet, en el host.
 # Guarda copias fechadas con huella SHA-256 en data/sources/; la API las lee sin internet.
 uv run --project services/api python scripts/fetch_sources.py

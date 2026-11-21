@@ -9,6 +9,7 @@ El rol `admin` maneja las simulaciones desde la interfaz:
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import sys
 from collections import deque
@@ -16,6 +17,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy import text
@@ -30,6 +32,7 @@ from app.db import get_session
 from app.domain import Role
 
 router = APIRouter(prefix="/demo", tags=["demo"])
+log = logging.getLogger("dacora.seed")
 
 
 def _require_demo() -> None:
@@ -44,7 +47,8 @@ def _require_demo() -> None:
 
 
 async def _reset(session: AsyncSession) -> None:
-    await reset_demo_data(Role.admin, session)
+    """Reinicio de la simulación "sin datos": deja todo vacío, sin casos de ejemplo."""
+    await _truncate(session)
 
 
 @router.post("/reset", status_code=status.HTTP_204_NO_CONTENT)
@@ -61,6 +65,11 @@ async def reset_demo_data(
             status.HTTP_403_FORBIDDEN,
             detail={"detail": "Reinicio deshabilitado fuera de modo demo", "code": "forbidden"},
         )
+    await _truncate(session)
+    schedule_recovery_examples("reinicio de la demo")
+
+
+async def _truncate(session: AsyncSession) -> None:
     await session.execute(
         text(
             "TRUNCATE report_events, resource_tracks, dispatches, alert_events, alert_deliveries,"
@@ -83,6 +92,83 @@ async def reset_demo_data(
     cascade.invalidate()
     rain_feed.forget()  # con fuente CDIAC, vuelve a consultar sin esperar al siguiente ciclo
     bus.publish("demo.reset", {})
+
+
+# ------------------------------------------------------------------ casos de recuperación
+
+SEED_SCRIPT = "seed_recovery_example.py"
+_seed_lock = asyncio.Lock()
+_seed_tasks: set[asyncio.Task[None]] = set()
+
+
+def schedule_recovery_examples(reason: str) -> None:
+    """Carga en segundo plano los casos de ejemplo de recuperación (si está activado).
+
+    El script es un cliente más de la API REST (principio X) e idempotente: si los casos ya
+    existen no hace nada. Se espera a que la API responda antes de correrlo.
+    """
+    settings = get_settings()
+    if not (settings.demo_mode and settings.seed_recovery_examples):
+        return
+    task = asyncio.create_task(_run_recovery_examples(reason))
+    _seed_tasks.add(task)
+    task.add_done_callback(_seed_tasks.discard)
+
+
+async def _api_ready(base: str, timeout_s: float = 90.0) -> bool:
+    loop = asyncio.get_running_loop()
+    deadline = loop.time() + timeout_s
+    async with httpx.AsyncClient(timeout=2.0) as client:
+        while loop.time() < deadline:
+            try:
+                if (await client.get(f"{base}/health")).status_code == 200:
+                    return True
+            except httpx.HTTPError:
+                pass
+            await asyncio.sleep(1.0)
+    return False
+
+
+async def _run_recovery_examples(reason: str) -> None:
+    async with _seed_lock:
+        settings = get_settings()
+        base = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000/api/v1")
+        if not await _api_ready(base):
+            log.warning("Casos de recuperación (%s): la API no respondió a tiempo", reason)
+            return
+        try:
+            scripts = _scripts_dir()
+        except HTTPException:
+            log.warning("Casos de recuperación (%s): no se encontró la carpeta scripts", reason)
+            return
+        env = {
+            **os.environ,
+            "API_BASE_URL": base,
+            "TOKEN_OPERADOR_PMU": settings.token_operador_pmu,
+            "TOKEN_AGENCIA": settings.token_agencia,
+            "PYTHONIOENCODING": "utf-8",
+            "PYTHONUNBUFFERED": "1",
+        }
+        process = await asyncio.create_subprocess_exec(
+            sys.executable,
+            str(scripts / SEED_SCRIPT),
+            cwd=str(scripts),
+            env=env,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        output, _ = await process.communicate()
+        lines = [x for x in output.decode("utf-8", errors="replace").splitlines() if x.strip()]
+        if process.returncode == 0:
+            log.info("Casos de recuperación (%s): %s", reason, lines[-1] if lines else "listo")
+            bus.publish("recovery.updated", {"kind": "examples"})
+        else:
+            log.warning(
+                "Casos de recuperación (%s) fallaron (código %s): %s",
+                reason,
+                process.returncode,
+                " | ".join(lines[-5:]),
+            )
 
 
 # ------------------------------------------------------------------ simulaciones (rol admin)

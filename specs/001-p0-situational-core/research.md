@@ -114,9 +114,11 @@ Cada decisión resuelve una incógnita del Technical Context o una restricción 
 - **Definiciones de KPI**:
   - *Detección de duplicados* = reportes con `duplicate_of` en la verdad que quedaron en el mismo
     incidente que su original ÷ total de duplicados reales.
-  - *Detección de falsos* = reportes falsos cuyo incidente quedó con trust < 50 o categoría
-    `rumor_informacion` ÷ total de falsos reales. Se publica también la tasa de legítimos marcados
-    como falsos (falsos positivos).
+  - *Detección de falsos* = reportes falsos cuyo incidente quedó con trust < 25 (Posible falso) o
+    categoría `rumor_informacion` ÷ total de falsos reales. Se publica también la tasa de legítimos
+    marcados así (falsos positivos). *Enmienda (implementación):* el umbral inicial era < 50, pero
+    casi todo reporte legítimo de una sola fuente queda en "Sin verificar" (25–49), lo que habría
+    disparado los falsos positivos.
   - *Críticos descartados automáticamente* = reportes `is_life_threat` con estado `descartado`
     sin evento humano en la bitácora (debe ser 0).
   - *Recall de críticos* = reportes críticos reales marcados `is_life_threat` ÷ críticos reales

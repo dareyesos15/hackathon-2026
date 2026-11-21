@@ -38,6 +38,39 @@ público las cifras menores a 5 se suprimen (se muestran como "< 5").
 | `albergue_personas` / `albergue_mascotas` | Personas · Mascotas en albergue | conteo | Ocupación actual sumada de los albergues. |
 | `albergue_capacidad` | Capacidad de albergues | conteo | Cupos totales de los albergues registrados. |
 
+## Tablero de recuperación unificado (`GET /api/v1/recovery/dashboard`)
+
+Solo para PMU/COE. Regla de oro: cada cifra lleva su nombre de este diccionario, fuente, versión y
+hora de corte, y se cuentan **predios únicos, no visitas**. Lo que Dacora registra se calcula en
+vivo; las fuentes externas (servicios, economía, finanzas, réplicas, solicitudes de visita) son
+**SIMULADAS** y vienen de `data/seed/recovery_context.json` (`scripts/generate_recovery_context.py`).
+
+| N.º | Indicador | Claves | Fuente | Definición |
+|---|---|---|---|---|
+| 1 | Familias damnificadas únicas | `familias_unicas`, `personas_damnificadas`, `rud_inscritos` | Censo de Dacora · RUD (UNGRD) | Hogares distintos por HMAC del documento; exportables en formato RUD. |
+| 2 | Predios evaluados únicos contra pendientes | `predios_evaluados`, `predios_pendientes`, `visitas_repetidas_evitadas` | Inspectores en Dacora · solicitudes de la Alcaldía · catastro | Pendientes = por barrio, solicitudes de visita − predios evaluados (nunca negativo). Visitas repetidas = visitas − predios evaluados. |
+| 3 | Viviendas por semáforo NSR-10 | `predios_verde`, `predios_amarillo`, `predios_rojo`, `predios_colapso` | EDAN en Dacora | Última evaluación de cada predio; **colapsado** = daño `colapso` (se descuenta de rojo). También por barrio. |
+| 4 | Índice de recuperación | `indice_recuperacion`, `barrios_bajo_50` | Calculado por Dacora | Promedio con igual peso de: habitabilidad (verde + ½ amarillo sobre evaluados, ind. 3), servicios (promedio de los 5 servicios, ind. 6), familias en casa (ind. 7) y negocios reabiertos sobre cerrados (ind. 9). Un componente sin datos no cuenta. Curva día 0–90: histórico SIMULADO + valor de hoy en vivo. |
+| 5 | Días desde el evento y riesgo activo | `dias_desde_evento`, `replicas_7d`, `replica_max`, `lluvia_3h` | SGC · estaciones UNAL y Corpocaldas | Días completos desde el 10 ago 2026, 07:34. Lluvia: última lectura de `/sensors/rain` o, si no hay, la del contexto; alerta si alcanza el umbral de deslizamiento (25 mm en 3 h, SIMULADO). |
+| 6 | Servicios básicos | `servicio_agua`, `servicio_energia`, `servicio_gas`, `servicio_telecom`, `servicio_vias` | Aguas de Manizales, CHEC, Efigas, Obras Públicas | % de usuarios o tramos con servicio, promedio de los barrios; por barrio con fecha estimada de restablecimiento. |
+| 7 | Familias por situación y ayudas | `familias_albergue`, `familias_arriendo`, `familias_casa`, `familias_sin_solucion`, `ayudas_entregadas`, `ayudas_repetidas`, `personas_albergue` | UGR, Cruz Roja y Dacora | Situación por la última ayuda de vivienda del hogar (cupo en albergue o subsidio de arriendo). **Sin solución** = predio rojo sin ninguna de las dos. |
+| 8 | Calidad de los reportes | `reports_received`, `incidents_consolidated`, `critical_in_human_queue`, `duplicate_detection_rate`, `fake_detection_rate`, `critical_auto_discarded` | Motor de Dacora y `evaluate_kpis.py` | Las tasas son la última instantánea de `evaluate_kpis.py` (metas > 90 %); críticos en cola = reportes con riesgo vital en estado nuevo o en revisión. |
+| 9 | Negocios reabiertos y empleos recuperados | `negocios_reabiertos`, `negocios_cerrados`, `empleos_recuperados`, `empleos_perdidos` | Cámara de Comercio, DANE | Por comuna y total de la ciudad. |
+| 10 | Recursos y trazabilidad | `perdida_estimada`, `recursos_disponibles`, `brecha`, `comprometido`, `contratado`, `pagado`, `verificado`, `dias_pago` | Hacienda, UNGRD, SECOP, aseguradoras | Brecha = pérdida estimada − recursos por fuente. Embudo en % del comprometido. |
+
+**Necesidades** (lo que se necesita hoy): se derivan de los indicadores y solo aparecen si su
+valor es mayor que cero: críticos en cola humana y lluvia sobre el umbral (críticas); familias sin
+solución de vivienda (crítica); hogares vulnerables sin ninguna ayuda, predios pendientes y
+albergues al 90 % (altas); barrios con un servicio < 80 % y brecha financiera (medias).
+
+**Ciclo económico (parte B):** cinco etapas con su ventana de días. Avance de cada etapa: 1 El
+golpe = predios evaluados ÷ solicitudes de visita; 2 La plata disponible = recursos ÷ pérdida;
+3 La plata en movimiento = beneficios pagados ÷ aprobados; 4 La reactivación = negocios
+reabiertos ÷ cerrados; 5 La estabilización = promedio de ICA, turismo y café frente a antes del
+sismo. Semáforo: el avance esperado crece lineal dentro de la ventana y es 100 % al cerrarla;
+**verde** (a tiempo) si el avance ≥ 90 % de lo esperado, **amarillo** (con retraso) si ≥ 60 %,
+**rojo** (estancada) si es menor; *aún no empieza* antes de la ventana.
+
 ## Sensor de zonas inseguras (`/api/v1/sensors/zones`, patente NC2025/0015763)
 
 Fuente: "SIMULADO · patente NC2025/0015763", con hora de cada evento y fecha de corte del listado.

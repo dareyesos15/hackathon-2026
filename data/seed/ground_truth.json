@@ -4,395 +4,395 @@
  "window_minutes": 720,
  "source": "SIMULADO",
  "reports": {
-  "fdbc1c61-199d-53f0-a06b-df38e4fa95f0": {
+  "a617c08d-a0b7-5d07-9c8b-29718e6c6618": {
    "seq": 0,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-002",
+   "event_id": "EV-029",
    "is_critical": false,
-   "category": "necesidad_albergue"
+   "category": "dano_estructural"
   },
   "sms:1": {
    "seq": 1,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-111",
+   "event_id": "EV-045",
    "is_critical": false,
    "category": "necesidad_ayuda"
   },
-  "deb95aed-2f16-5b36-bbd6-e04266f542b7": {
+  "737483a0-d50b-5133-841b-927a117050c4": {
    "seq": 2,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-081",
+   "event_id": "EV-089",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "bdd7a301-48f8-5395-aa7e-3dc3f189e7c8": {
+  "db9d280f-df02-5380-a29f-8c11d9414504": {
    "seq": 3,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-139",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "ff5ace23-2931-5e1c-9cd8-19c6979ee52e": {
+   "seq": 4,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-018",
    "is_critical": true,
    "category": "personas_atrapadas"
   },
-  "593cd11f-0f66-5504-9a03-a7bb7ac9fdd8": {
-   "seq": 4,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-057",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "1d2facb0-bb3e-52f8-a112-3cb09c1a8ec5": {
+  "sms:5": {
    "seq": 5,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-076",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "9faf7d21-5a93-5498-8e72-082814a563a8": {
-   "seq": 6,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-041",
+   "event_id": "EV-075",
    "is_critical": true,
    "category": "personas_atrapadas"
   },
-  "73630889-1b9c-5bd1-85ca-242214d08067": {
-   "seq": 7,
+  "066f4054-9c46-5dee-9c68-16abdf36513a": {
+   "seq": 6,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-027",
+   "event_id": "EV-088",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "sms:8": {
-   "seq": 8,
+  "33ab9a65-d93b-5243-8e08-52384d0a68f0": {
+   "seq": 7,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-017",
    "is_critical": false,
    "category": "necesidad_ayuda"
   },
-  "sms:9": {
-   "seq": 9,
+  "8fdc4fb3-208e-532d-ac4f-79ddc95edb46": {
+   "seq": 8,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-007",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "513574cd-381a-5be4-a9cd-f691439dfba3": {
+  "1115f0c5-a667-5125-80c9-8bc65533c98e": {
+   "seq": 9,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-132",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "sms:10": {
    "seq": 10,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-108",
+   "event_id": "EV-031",
    "is_critical": false,
    "category": "deslizamiento"
   },
-  "29c2b4ed-01ec-5939-a379-5d21e0488160": {
+  "5b5402d7-f26e-533f-b2e0-8bc1cb58c91d": {
    "seq": 11,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-065",
+   "event_id": "EV-086",
    "is_critical": false,
-   "category": "sismo_sentido"
+   "category": "dano_estructural"
   },
-  "c1968ecc-a365-5572-be65-050e6e55a63f": {
+  "569496ce-ae27-5ba9-a9ec-fa758846b5bd": {
    "seq": 12,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-131",
+   "event_id": "EV-128",
    "is_critical": false,
-   "category": "deslizamiento"
+   "category": "sismo_sentido"
   },
   "sms:13": {
    "seq": 13,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-138",
+   "event_id": "EV-110",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "2e1baac7-1035-50f1-a1eb-1a54cdddec97": {
+  "374a74b1-4ccf-5352-b09e-0e2835244d8a": {
    "seq": 14,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-056",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "053cf757-d7f3-5fbe-91eb-4e62d6d2fd3d": {
-   "seq": 15,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-137",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "sms:16": {
-   "seq": 16,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-087",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:17": {
-   "seq": 17,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-073",
+   "event_id": "EV-072",
    "is_critical": false,
    "category": "via_bloqueada"
   },
-  "d7933c73-9104-5fcf-8425-4aede13a0f0c": {
-   "seq": 18,
+  "sms:15": {
+   "seq": 15,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-054",
+   "event_id": "EV-106",
    "is_critical": true,
    "category": "personas_atrapadas"
   },
-  "c4b985be-0159-5a55-98f1-dee556e247cb": {
-   "seq": 19,
+  "497ca6d0-83e8-5b73-b4b3-16888da9b690": {
+   "seq": 16,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-045",
+   "event_id": "EV-140",
    "is_critical": false,
    "category": "sismo_sentido"
   },
-  "5b8479bf-5de1-50d3-b9b0-a4bdb7961e02": {
-   "seq": 20,
+  "0d2b42cf-948e-519d-85cc-ffc362175084": {
+   "seq": 17,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-107",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "fcc5f432-5f37-5cc0-9e4c-1258ac0fb9d0": {
-   "seq": 21,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-099",
+   "event_id": "EV-133",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "sms:22": {
-   "seq": 22,
+  "f6ec9f74-22fa-56e1-a850-7b2087779df8": {
+   "seq": 18,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-098",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "sms:19": {
+   "seq": 19,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-020",
    "is_critical": true,
    "category": "heridos"
   },
-  "f62ed7e2-cd3b-5a1a-827b-e1ca61b4c22e": {
-   "seq": 23,
+  "361353eb-6932-5c41-94ef-4c4ef25ffbcd": {
+   "seq": 20,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-006",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "f4da60fc-e2be-5e22-a824-31cdd1919496": {
+  "6252dc08-a4ef-5794-94a4-fda1a1414bd5": {
+   "seq": 21,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-052",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "3a2db6d6-b1c0-580c-9d78-e67892a51087": {
+   "seq": 22,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-087",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "ba45ba12-1c90-5b5c-884b-276d3244b559": {
+   "seq": 23,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-131",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "sms:24": {
    "seq": 24,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-031",
+   "event_id": "EV-108",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "dano_estructural"
   },
-  "57ae3144-bd3d-594f-9822-b6e434364981": {
+  "ca0123c7-93c1-5fb5-9b1e-7babed175879": {
    "seq": 25,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-046",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "63ad974b-0f64-59b6-839c-0caf59e1c557": {
+   "seq": 26,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-023",
    "is_critical": true,
    "category": "personas_atrapadas"
   },
-  "efc0e6b9-2677-5c28-a449-74d4e88a682f": {
-   "seq": 26,
+  "58a88674-f64e-5c0b-a761-52afb1355e81": {
+   "seq": 27,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-092",
+   "event_id": "EV-070",
+   "is_critical": false,
+   "category": "deslizamiento"
+  },
+  "sms:28": {
+   "seq": 28,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-030",
+   "is_critical": false,
+   "category": "persona_desaparecida"
+  },
+  "26effd27-9e72-50c9-8dc3-408ae0129c03": {
+   "seq": 29,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-091",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "sms:27": {
-   "seq": 27,
+  "sms:30": {
+   "seq": 30,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-019",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "6d796a12-7c9c-5de5-ae4f-da566db791ac": {
-   "seq": 28,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-040",
-   "is_critical": false,
-   "category": "necesidad_ayuda"
-  },
-  "bde99d8f-520c-526f-a144-024d7d0f3123": {
-   "seq": 29,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-058",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "a7885373-1ce6-5da9-a84d-cc72e36b9389": {
-   "seq": 30,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-042",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
   "sms:31": {
    "seq": 31,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-116",
-   "is_critical": false,
-   "category": "via_bloqueada"
+   "event_id": "EV-136",
+   "is_critical": true,
+   "category": "fuga_gas"
   },
-  "ad6dcc87-e705-59b6-bab7-3a6fa9f05f1a": {
+  "sms:32": {
    "seq": 32,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-049",
-   "is_critical": false,
-   "category": "dano_estructural"
+   "event_id": "EV-126",
+   "is_critical": true,
+   "category": "incendio"
   },
-  "sms:33": {
+  "88ca9c40-ec7f-53d0-86ea-a3c2f04c38f5": {
    "seq": 33,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-051",
+   "event_id": "EV-056",
    "is_critical": false,
    "category": "necesidad_albergue"
   },
-  "4433d5f7-28ad-5083-902a-a87041f83ac7": {
+  "sms:34": {
    "seq": 34,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-034",
+   "event_id": "EV-115",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "867a5aa5-fd51-52a5-bae5-cbe8969190bf": {
+   "seq": 35,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-066",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "sms:36": {
+   "seq": 36,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-060",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "cb3d9775-e8ba-549a-a600-4105dcd556a4": {
-   "seq": 35,
+  "101407ce-67ab-50af-8e7d-bf5907466a81": {
+   "seq": 37,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-012",
    "is_critical": true,
    "category": "heridos"
   },
-  "26153233-9a37-5b83-905e-fa17425604d4": {
-   "seq": 36,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-066",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "sms:37": {
-   "seq": 37,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-059",
-   "is_critical": false,
-   "category": "servicios_caidos"
-  },
-  "sms:38": {
+  "165c5931-ae5c-5af4-952e-1b6128b1e3af": {
    "seq": 38,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-030",
+   "event_id": "EV-107",
    "is_critical": false,
    "category": "deslizamiento"
   },
-  "82bc7d6e-0378-5171-a9ac-748fe65c5fea": {
+  "b07ab346-9e93-583f-a180-58af930c46d7": {
    "seq": 39,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-097",
+   "event_id": "EV-028",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "7dafecfd-5fba-528a-acb1-20ebab7273dd": {
+   "seq": 40,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-096",
    "is_critical": false,
    "category": "necesidad_albergue"
   },
-  "abee6ab8-abc7-511b-8de5-1886a9485577": {
-   "seq": 40,
+  "sms:41": {
+   "seq": 41,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-014",
    "is_critical": true,
    "category": "heridos"
   },
-  "88af50cf-4b8c-5ab3-b644-dd70ce01d449": {
-   "seq": 41,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-077",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "2c948af2-6d6e-5334-8a28-4707fbfb97d8": {
+  "04c66c54-13ce-5d32-9784-d1688333ee92": {
    "seq": 42,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-091",
+   "event_id": "EV-101",
    "is_critical": false,
-   "category": "servicios_caidos"
+   "category": "colapso_estructura"
   },
-  "bc3ad0f7-6d1c-5899-b46b-e349469b3c41": {
+  "sms:43": {
    "seq": 43,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-076",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "sms:44": {
+   "seq": 44,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-055",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "842a465d-9609-5d51-94d6-27826932ac0d": {
+   "seq": 45,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-090",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:46": {
+   "seq": 46,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-008",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "729125c5-d7fc-57a5-b188-5764427c547f": {
-   "seq": 44,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-069",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "dc6f4e5f-7111-522c-b5cd-1cf9dcbb7ab7": {
-   "seq": 45,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-003",
-   "is_critical": true,
-   "category": "incendio"
-  },
-  "15e70e3a-7285-59f7-b423-a2c164ffbcf9": {
-   "seq": 46,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-039",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "6b060fde-a271-5994-90f1-019c8e0cbbea": {
+  "sms:47": {
    "seq": 47,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-115",
+   "event_id": "EV-112",
    "is_critical": false,
-   "category": "dano_estructural"
+   "category": "necesidad_albergue"
   },
-  "48349f23-ccd7-5f5f-8e21-1078bc19fac4": {
+  "sms:48": {
    "seq": 48,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-011",
+   "event_id": "EV-035",
    "is_critical": false,
    "category": "sismo_sentido"
   },
@@ -400,199 +400,199 @@
    "seq": 49,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-029",
+   "event_id": "EV-002",
    "is_critical": false,
-   "category": "necesidad_ayuda"
+   "category": "necesidad_albergue"
   },
-  "fa260f09-1fa0-5e1e-9084-008a3c464373": {
+  "682c8cbd-054f-5666-b5e5-b5e6059aaf77": {
    "seq": 50,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-082",
+   "event_id": "EV-114",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "dano_estructural"
   },
-  "21e1c247-f636-5654-b0d6-352c46bc0f15": {
+  "c0e2a41a-b71d-57e8-b235-aee6d79a36b1": {
    "seq": 51,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-043",
+   "event_id": "EV-011",
    "is_critical": false,
-   "category": "deslizamiento"
+   "category": "sismo_sentido"
   },
-  "cec0726e-8c1a-52ca-bf0f-70636f99054a": {
+  "c77cfd7c-cc9d-50cf-8737-3ff296a398d7": {
    "seq": 52,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-060",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "c9efc8d1-55ea-50b2-a944-b4924407c595": {
-   "seq": 53,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-048",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "a20d9b0f-951e-552a-b1c1-80e0e70b2a7e": {
-   "seq": 54,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-038",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "1aeae628-cfa9-5b93-ba18-c400eae94376": {
-   "seq": 55,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-133",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "851b3522-cd26-5e3b-9873-5ee880138556": {
-   "seq": 56,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-067",
    "is_critical": true,
-   "category": "incendio"
+   "category": "personas_atrapadas"
   },
-  "8ad6e1c9-f6fc-556a-b004-62153b9545f6": {
-   "seq": 57,
+  "c90efbc3-55d8-513e-a522-aaff744442f0": {
+   "seq": 53,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-061",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "f903810c-8fff-5837-81d4-5ad0da6efc56": {
+   "seq": 54,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-078",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "ae68c7c1-4d2f-5b45-a87c-0e5f1cfbfd8c": {
+   "seq": 55,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-036",
+   "is_critical": false,
+   "category": "deslizamiento"
+  },
+  "b027dd81-8a2c-5145-bd15-b1725168238f": {
+   "seq": 56,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-009",
    "is_critical": true,
    "category": "incendio"
   },
-  "sms:58": {
-   "seq": 58,
+  "86df6d38-8b42-5e94-9d95-5d4f4f7c0b44": {
+   "seq": 57,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-053",
-   "is_critical": true,
-   "category": "heridos"
+   "event_id": "EV-138",
+   "is_critical": false,
+   "category": "colapso_estructura"
   },
-  "d7683f35-63c0-5369-a7f9-a4c32b047069": {
-   "seq": 59,
+  "sms:58": {
+   "seq": 58,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-024",
    "is_critical": false,
    "category": "dano_estructural"
   },
+  "e88eb53b-db53-51cf-9d4f-3243c75e3bab": {
+   "seq": 59,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-049",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
   "sms:60": {
    "seq": 60,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-113",
-   "is_critical": false,
-   "category": "deslizamiento"
-  },
-  "55b63b9b-11ba-58c6-befb-09ecbb2611eb": {
-   "seq": 61,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-112",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "43c58537-3046-5efb-8911-78c008bf9f9b": {
-   "seq": 62,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-118",
+   "event_id": "EV-117",
    "is_critical": true,
    "category": "personas_atrapadas"
   },
-  "1d9296c6-1bc6-5243-a425-82176f1a0ff2": {
-   "seq": 63,
+  "a9adba46-0ea9-52e7-a017-19b0119aa01c": {
+   "seq": 61,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-036",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "b6390374-1d23-5c53-bff3-3bfed53eedba": {
-   "seq": 64,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-072",
+   "event_id": "EV-071",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "9b5768b3-8992-5828-9bec-bb3af180d7d6": {
-   "seq": 65,
+  "3b6c47e3-56a6-59b5-9024-0102911b84cc": {
+   "seq": 62,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-127",
-   "is_critical": true,
-   "category": "incendio"
-  },
-  "sms:66": {
-   "seq": 66,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-105",
+   "event_id": "EV-104",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "b52e0bfc-77e2-55b0-873d-eaf237683d9b": {
-   "seq": 67,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-130",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "2d6a7f41-7508-582b-9ff8-d2f8f647fa19": {
-   "seq": 68,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-050",
-   "is_critical": false,
-   "category": "persona_desaparecida"
-  },
-  "db1898af-bdc3-57e6-b0e0-fc3db40900d1": {
-   "seq": 69,
+  "d25a6314-ea0b-5604-9af1-b38e21503404": {
+   "seq": 63,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-010",
    "is_critical": false,
    "category": "sismo_sentido"
   },
-  "3d8b0b3a-b7c8-5122-8960-daf6e937b267": {
-   "seq": 70,
+  "871e5d3f-08eb-580f-b024-8e3581045543": {
+   "seq": 64,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-094",
+   "event_id": "EV-080",
+   "is_critical": false,
+   "category": "necesidad_albergue"
+  },
+  "7e2794b6-c58c-5dac-8604-5f939b04e12b": {
+   "seq": 65,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-093",
    "is_critical": true,
    "category": "fuga_gas"
   },
-  "c0f00f61-5171-50c5-bcdb-a959649a6a1a": {
-   "seq": 71,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-079",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "5056db9d-2f00-50df-b600-137a763aca5b": {
-   "seq": 72,
+  "sms:66": {
+   "seq": 66,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-005",
    "is_critical": false,
    "category": "via_bloqueada"
   },
-  "b797b269-c005-5c29-97bf-c848a3cc9ac2": {
+  "3b1b0c8d-6021-5715-b394-3641911eedb9": {
+   "seq": 67,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-047",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "b5429b0e-e900-5d00-8929-c7f498098a0d": {
+   "seq": 68,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-129",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "b358a47a-2271-5b3d-8cc4-a377cd09ab7d": {
+   "seq": 69,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-004",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "3b985897-4aa9-5795-a005-d779cc522941": {
+   "seq": 70,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-042",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "610d08bc-2e6d-5a25-9449-0cf6f8e511c2": {
+   "seq": 71,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-074",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "52b2e08e-d3d6-533f-8126-3f9182c374e2": {
+   "seq": 72,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-125",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "d253051e-2d76-5c97-9730-426e4d976349": {
    "seq": 73,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-132",
+   "event_id": "EV-084",
    "is_critical": false,
    "category": "dano_estructural"
   },
@@ -600,35 +600,35 @@
    "seq": 74,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-139",
-   "is_critical": true,
-   "category": "heridos"
+   "event_id": "EV-111",
+   "is_critical": false,
+   "category": "servicios_caidos"
   },
-  "e1c0d9a6-7c45-5651-85ee-e7b987dee103": {
+  "e326e16d-c4cd-5a43-93dd-4555c97b06fc": {
    "seq": 75,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-004",
+   "event_id": "EV-097",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "33337fc7-cbc4-5667-beb0-02b1e2eae9aa": {
+  "ddfe8b9c-7234-5ae7-ae34-f457982d8e34": {
    "seq": 76,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-037",
+   "event_id": "EV-038",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "dano_estructural"
   },
-  "c81c2529-7fe3-57b4-b9e0-5e39847bc953": {
+  "8ef32d9e-d221-5098-a5b9-78a8daff9023": {
    "seq": 77,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-126",
-   "is_critical": true,
-   "category": "heridos"
+   "event_id": "EV-065",
+   "is_critical": false,
+   "category": "dano_estructural"
   },
-  "5aaf3714-f7c3-5e8f-81bc-9138c7885981": {
+  "ff2f4000-eca6-5710-9928-cb094b98be8f": {
    "seq": 78,
    "label": "unique",
    "duplicate_of": null,
@@ -636,107 +636,107 @@
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "1823d581-bde4-5714-bfd6-0289b70085ae": {
+  "fb3b6917-5099-5edd-a5e5-91d6776349d7": {
    "seq": 79,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-098",
-   "is_critical": false,
-   "category": "dano_estructural"
+   "event_id": "EV-079",
+   "is_critical": true,
+   "category": "heridos"
   },
-  "9da448ca-947b-50f7-b9d1-da7efeeb505a": {
+  "15e943c5-cfcb-56ec-8ae8-3dff3fa6bebb": {
    "seq": 80,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-063",
-   "is_critical": false,
-   "category": "dano_estructural"
+   "event_id": "EV-051",
+   "is_critical": true,
+   "category": "heridos"
   },
-  "27a8ec00-c71e-5a0b-9617-9f4a11b3e913": {
+  "612eb681-31c1-53e0-a58d-10523c1bfe3f": {
    "seq": 81,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-071",
-   "is_critical": true,
-   "category": "personas_atrapadas"
+   "event_id": "EV-057",
+   "is_critical": false,
+   "category": "sismo_sentido"
   },
-  "sms:82": {
+  "732245e6-82e5-59ad-9f2a-724c2ecee734": {
    "seq": 82,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-129",
+   "event_id": "EV-032",
    "is_critical": false,
-   "category": "dano_estructural"
+   "category": "servicios_caidos"
   },
-  "sms:83": {
+  "3f77d466-0a49-5d74-b44b-4f60373738a9": {
    "seq": 83,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-128",
+   "event_id": "EV-001",
    "is_critical": false,
-   "category": "deslizamiento"
+   "category": "dano_estructural"
   },
-  "5cee5b71-bcaa-5114-a8fd-962aadc5928f": {
+  "e958d13a-775e-58c7-abf8-4ebed1b7ed89": {
    "seq": 84,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-046",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "6b6f8074-6144-578d-b7b5-af9c788b4094": {
-   "seq": 85,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-033",
    "is_critical": true,
-   "category": "personas_atrapadas"
+   "category": "heridos"
   },
-  "f9a9d405-4bfa-5c04-ab44-a032e2b1c815": {
+  "d27b39ca-019a-5694-9049-943f541d5928": {
+   "seq": 85,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-034",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "923d2e0f-1f3e-5696-be74-eff7a85b66b3": {
    "seq": 86,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-068",
-   "is_critical": false,
-   "category": "servicios_caidos"
+   "event_id": "EV-027",
+   "is_critical": true,
+   "category": "fuga_gas"
   },
-  "sms:87": {
+  "72ad3d6e-bd52-549c-b068-f6be3a4e882a": {
    "seq": 87,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-044",
-   "is_critical": true,
-   "category": "heridos"
+   "event_id": "EV-081",
+   "is_critical": false,
+   "category": "necesidad_albergue"
   },
-  "736331e2-7244-5cae-b391-946e2f4d87e1": {
+  "sms:88": {
    "seq": 88,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-136",
-   "is_critical": false,
-   "category": "colapso_estructura"
+   "event_id": "EV-103",
+   "is_critical": true,
+   "category": "personas_atrapadas"
   },
-  "9aed80da-a72e-5d09-9d25-6b1dc97a6ea4": {
+  "sms:89": {
    "seq": 89,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-090",
+   "event_id": "EV-053",
    "is_critical": false,
-   "category": "via_bloqueada"
+   "category": "dano_estructural"
   },
-  "1335a874-d54c-5901-9aa2-df05cf20e0e1": {
+  "sms:90": {
    "seq": 90,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-047",
+   "event_id": "EV-040",
    "is_critical": false,
-   "category": "deslizamiento"
+   "category": "persona_desaparecida"
   },
-  "sms:91": {
+  "07d3cbd8-5a39-558d-a3e3-c47d51efe103": {
    "seq": 91,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-119",
+   "event_id": "EV-077",
    "is_critical": false,
    "category": "dano_estructural"
   },
@@ -744,1003 +744,1003 @@
    "seq": 92,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-086",
-   "is_critical": false,
-   "category": "dano_estructural"
+   "event_id": "EV-121",
+   "is_critical": true,
+   "category": "personas_atrapadas"
   },
-  "sms:93": {
+  "6d203c61-dae5-5485-ad0b-e0f9a0c2f8c2": {
    "seq": 93,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-140",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "sms:94": {
-   "seq": 94,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-135",
+   "event_id": "EV-134",
    "is_critical": true,
    "category": "incendio"
   },
-  "sms:95": {
+  "f9cf0fcc-5620-57a4-9c82-cd9eb7a8d7ee": {
+   "seq": 94,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-058",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "c7183e05-260c-5b63-bacd-12b38624ff83": {
    "seq": 95,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-001",
+   "event_id": "EV-116",
    "is_critical": false,
-   "category": "dano_estructural"
+   "category": "servicios_caidos"
   },
-  "sms:96": {
+  "99ed632e-aea6-5008-b6da-383253d2f7b4": {
    "seq": 96,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-109",
+   "event_id": "EV-063",
    "is_critical": false,
-   "category": "deslizamiento"
+   "category": "dano_estructural"
   },
-  "40d01709-31db-53f8-aa60-992d44d11efc": {
+  "671ea27a-8369-574d-817b-3207ff1e62be": {
    "seq": 97,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-026",
+   "event_id": "EV-105",
    "is_critical": false,
-   "category": "via_bloqueada"
+   "category": "servicios_caidos"
   },
-  "4b163f1c-c08b-504a-ad83-0b61e1f09dfe": {
+  "1e4dd238-605b-5ec0-b6b0-f67e89450e83": {
    "seq": 98,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-032",
-   "is_critical": false,
-   "category": "via_bloqueada"
+   "event_id": "EV-130",
+   "is_critical": true,
+   "category": "personas_atrapadas"
   },
-  "37d4af8c-40bc-5216-ae1d-5d8c316417b3": {
+  "89f23abd-8a48-58ae-8d34-a3036e67b1f3": {
    "seq": 99,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-089",
+   "event_id": "EV-099",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "sms:100": {
+   "seq": 100,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-118",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "b1e7fb33-863b-5370-9ee6-d963170b2e3b": {
+   "seq": 101,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-120",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "sms:102": {
+   "seq": 102,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-092",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "a0ada333-052d-5e31-8ab4-6127c5903fbb": {
+   "seq": 103,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-026",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:104": {
+   "seq": 104,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-041",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "67f2ed34-b7bf-5b6d-b78e-72c0e955bc95": {
-   "seq": 100,
+  "10ef72e4-ad34-5dfa-89bd-99f0f9debe63": {
+   "seq": 105,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-003",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "999e8138-fd94-5017-869e-48ba5db94def": {
+   "seq": 106,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-048",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "53d074de-625b-5eb2-b6ad-c3e10c809cee": {
+   "seq": 107,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-059",
+   "is_critical": false,
+   "category": "servicios_caidos"
+  },
+  "sms:108": {
+   "seq": 108,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-102",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "dano_estructural"
   },
-  "e7139592-8704-559e-9187-1413c02ac47a": {
-   "seq": 101,
+  "22a04c51-dd58-592b-b1d4-08774eec2651": {
+   "seq": 109,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-028",
+   "event_id": "EV-127",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "necesidad_albergue"
   },
-  "45e7aa23-e081-5c8e-9a90-fe61f1d05aaf": {
-   "seq": 102,
+  "665d37f4-e87c-5238-b45b-fe99e7fa9e70": {
+   "seq": 110,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-104",
-   "is_critical": true,
-   "category": "personas_atrapadas"
+   "event_id": "EV-119",
+   "is_critical": false,
+   "category": "sismo_sentido"
   },
-  "sms:103": {
-   "seq": 103,
+  "sms:111": {
+   "seq": 111,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-122",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "5a10a2b1-8296-5a69-bd26-25ebe01b3c69": {
-   "seq": 104,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-134",
+   "event_id": "EV-124",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "sms:105": {
-   "seq": 105,
+  "624ecc6b-5d5b-5df8-b4bf-46b60cfa71e4": {
+   "seq": 112,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-117",
-   "is_critical": false,
-   "category": "servicios_caidos"
-  },
-  "cc82fb67-e568-535a-b8d6-8cf1135efc90": {
-   "seq": 106,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-088",
+   "event_id": "EV-073",
    "is_critical": true,
-   "category": "incendio"
+   "category": "heridos"
   },
-  "sms:107": {
-   "seq": 107,
+  "3747cb07-bdef-529f-b1dd-5df8885eca5b": {
+   "seq": 113,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-106",
+   "event_id": "EV-064",
    "is_critical": false,
-   "category": "servicios_caidos"
+   "category": "colapso_estructura"
   },
-  "86607ee5-6607-5494-8730-a24e40d9925a": {
-   "seq": 108,
+  "14563fa6-627b-5707-8a9a-443e115b1dee": {
+   "seq": 114,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-100",
    "is_critical": false,
    "category": "sismo_sentido"
   },
-  "fd30bdf2-e4e0-518d-b305-978811e48c05": {
-   "seq": 109,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-064",
-   "is_critical": false,
-   "category": "servicios_caidos"
-  },
-  "88b63b58-46a9-520e-95c2-65d08be6d426": {
-   "seq": 110,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-121",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "bd0d2861-518d-504e-b585-9653dcbbb03a": {
-   "seq": 111,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-093",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "5a40d0c0-f79b-57da-aeaa-585bc8b49a4a": {
-   "seq": 112,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-114",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "7e50f8fb-b5ae-55d1-b6eb-a9e9ac194072": {
-   "seq": 113,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-103",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:114": {
-   "seq": 114,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-080",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "bcbc163c-a134-51aa-88b5-abd5642aaa0b": {
+  "sms:115": {
    "seq": 115,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-070",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "c014e64c-e4f1-51ee-ad2e-2de62f712d66": {
-   "seq": 116,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-055",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "b6319fb2-ef44-5209-a3b5-fb00c0520ced": {
-   "seq": 117,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-052",
-   "is_critical": false,
-   "category": "servicios_caidos"
-  },
-  "sms:118": {
-   "seq": 118,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-120",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "540b554b-f7e1-5641-acb7-cb36eec840a2": {
-   "seq": 119,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-125",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "5e83619d-4caf-59c3-b8bf-c352b9781fe8": {
-   "seq": 120,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-101",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "04aed514-5c97-5512-8b13-32f74e51e663": {
-   "seq": 121,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-075",
-   "is_critical": false,
-   "category": "necesidad_ayuda"
-  },
-  "sms:122": {
-   "seq": 122,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-035",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "7e2b1f61-1da5-5d16-b890-cb73b6fd71be": {
-   "seq": 123,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-022",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "1018bb9f-0e8b-575c-b6c7-bd36b239eb12": {
-   "seq": 124,
+  "e0259be9-d946-5aec-9a53-ee229621872f": {
+   "seq": 116,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-016",
    "is_critical": true,
    "category": "fuga_gas"
   },
-  "sms:125": {
-   "seq": 125,
+  "f9b9ba85-8b47-58db-b682-06719ae9e998": {
+   "seq": 117,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-135",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "339eebf3-17ec-59b5-80a4-cac56b5e93c6": {
+   "seq": 118,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-050",
+   "is_critical": false,
+   "category": "servicios_caidos"
+  },
+  "sms:119": {
+   "seq": 119,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-062",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "80742bad-6f59-5cbb-9138-951fcc4a5df2": {
+   "seq": 120,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-021",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "sms:126": {
-   "seq": 126,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-078",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:127": {
-   "seq": 127,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-015",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "81c7dc9c-4f9f-59f5-9c84-32b8c90ac6a0": {
-   "seq": 128,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-062",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "sms:129": {
-   "seq": 129,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-013",
-   "is_critical": false,
-   "category": "deslizamiento"
-  },
-  "75e6b67d-3f3b-5d23-856a-086cfe0bf700": {
-   "seq": 130,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-061",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "697285ae-4c8f-54b3-aabf-8b60b23cb780": {
-   "seq": 131,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-110",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "3be74282-d5fd-51af-9891-68e07591918b": {
-   "seq": 132,
+  "ac1803aa-a2e0-5699-8fe8-bde654bf21ef": {
+   "seq": 121,
    "label": "unique",
    "duplicate_of": null,
    "event_id": "EV-025",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "e23f40a4-cd02-5ffb-9d4c-2b67597c6d5b": {
-   "seq": 133,
+  "sms:122": {
+   "seq": 122,
    "label": "unique",
    "duplicate_of": null,
-   "event_id": "EV-074",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "85429bca-89f6-50ba-b026-659350fa2f02": {
-   "seq": 134,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-096",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:135": {
-   "seq": 135,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-124",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "45e3c9f6-5906-517d-9068-897bfb042ae1": {
-   "seq": 136,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-084",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:137": {
-   "seq": 137,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-123",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "sms:138": {
-   "seq": 138,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-083",
-   "is_critical": false,
-   "category": "necesidad_albergue"
-  },
-  "67be31a0-3490-53f0-9cff-8d8166ce0cfb": {
-   "seq": 139,
-   "label": "unique",
-   "duplicate_of": null,
-   "event_id": "EV-095",
-   "is_critical": false,
-   "category": "necesidad_ayuda"
-  },
-  "892c5c85-56e3-51c6-9d71-08fa0bd4906b": {
-   "seq": 140,
-   "label": "duplicate",
-   "duplicate_of": "sms:60",
-   "event_id": "EV-113",
-   "is_critical": false,
-   "category": "deslizamiento"
-  },
-  "e9c3bb69-56f5-5b27-83e8-40d4c0bde51a": {
-   "seq": 141,
-   "label": "duplicate",
-   "duplicate_of": "sms:22",
-   "event_id": "EV-020",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "11be3aeb-41a2-50e6-aeb2-9bd90d46fb96": {
-   "seq": 142,
-   "label": "duplicate",
-   "duplicate_of": "d7933c73-9104-5fcf-8425-4aede13a0f0c",
-   "event_id": "EV-054",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "4b36848e-87af-5048-805a-6fa6ebc72ea4": {
-   "seq": 143,
-   "label": "duplicate",
-   "duplicate_of": "1018bb9f-0e8b-575c-b6c7-bd36b239eb12",
-   "event_id": "EV-016",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "35736adc-2de8-53bc-84bf-dfc4b519b547": {
-   "seq": 144,
-   "label": "duplicate",
-   "duplicate_of": "d7933c73-9104-5fcf-8425-4aede13a0f0c",
-   "event_id": "EV-054",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "cfc73581-0d94-5e0f-84ad-6c6639bd3d7f": {
-   "seq": 145,
-   "label": "duplicate",
-   "duplicate_of": "bd0d2861-518d-504e-b585-9653dcbbb03a",
-   "event_id": "EV-093",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "192fedcd-b49d-58f2-a72f-301c7aeab2fa": {
-   "seq": 146,
-   "label": "duplicate",
-   "duplicate_of": "sms:118",
-   "event_id": "EV-120",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "a6b8ca04-9cee-5c48-afd0-3ce6e9743d71": {
-   "seq": 147,
-   "label": "duplicate",
-   "duplicate_of": "1d9296c6-1bc6-5243-a425-82176f1a0ff2",
-   "event_id": "EV-036",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "f9532df3-6466-5d13-9916-231d2471228c": {
-   "seq": 148,
-   "label": "duplicate",
-   "duplicate_of": "bdd7a301-48f8-5395-aa7e-3dc3f189e7c8",
-   "event_id": "EV-018",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:149": {
-   "seq": 149,
-   "label": "duplicate",
-   "duplicate_of": "sms:87",
-   "event_id": "EV-044",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "sms:150": {
-   "seq": 150,
-   "label": "duplicate",
-   "duplicate_of": "43c58537-3046-5efb-8911-78c008bf9f9b",
-   "event_id": "EV-118",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "4e1d5fad-867a-5552-8af9-472ec6cf0755": {
-   "seq": 151,
-   "label": "duplicate",
-   "duplicate_of": "26153233-9a37-5b83-905e-fa17425604d4",
-   "event_id": "EV-066",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "7dab999e-6139-5065-b977-b6414c4b76dd": {
-   "seq": 152,
-   "label": "duplicate",
-   "duplicate_of": "db1898af-bdc3-57e6-b0e0-fc3db40900d1",
-   "event_id": "EV-010",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "sms:153": {
-   "seq": 153,
-   "label": "duplicate",
-   "duplicate_of": "6b060fde-a271-5994-90f1-019c8e0cbbea",
-   "event_id": "EV-115",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:154": {
-   "seq": 154,
-   "label": "duplicate",
-   "duplicate_of": "5cee5b71-bcaa-5114-a8fd-962aadc5928f",
-   "event_id": "EV-046",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "sms:155": {
-   "seq": 155,
-   "label": "duplicate",
-   "duplicate_of": "fdbc1c61-199d-53f0-a06b-df38e4fa95f0",
-   "event_id": "EV-002",
-   "is_critical": false,
-   "category": "necesidad_albergue"
-  },
-  "sms:156": {
-   "seq": 156,
-   "label": "duplicate",
-   "duplicate_of": "sms:27",
-   "event_id": "EV-019",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "sms:157": {
-   "seq": 157,
-   "label": "duplicate",
-   "duplicate_of": "bdd7a301-48f8-5395-aa7e-3dc3f189e7c8",
-   "event_id": "EV-018",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "afba009f-940a-5b53-a413-718dc626c376": {
-   "seq": 158,
-   "label": "duplicate",
-   "duplicate_of": "sms:114",
-   "event_id": "EV-080",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "00fe4951-6bcf-59e3-807d-cc86355a0de9": {
-   "seq": 159,
-   "label": "duplicate",
-   "duplicate_of": "sms:16",
-   "event_id": "EV-087",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "20b9e614-b034-598e-8026-03deb3085447": {
-   "seq": 160,
-   "label": "duplicate",
-   "duplicate_of": "57ae3144-bd3d-594f-9822-b6e434364981",
-   "event_id": "EV-023",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "c2546bcb-c71c-5fa1-ad2d-354ea8712c25": {
-   "seq": 161,
-   "label": "duplicate",
-   "duplicate_of": "sms:118",
-   "event_id": "EV-120",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "86457a94-5e77-509a-ae5b-6df065ad7e60": {
-   "seq": 162,
-   "label": "duplicate",
-   "duplicate_of": "40d01709-31db-53f8-aa60-992d44d11efc",
-   "event_id": "EV-026",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "sms:163": {
-   "seq": 163,
-   "label": "duplicate",
-   "duplicate_of": "7e50f8fb-b5ae-55d1-b6eb-a9e9ac194072",
-   "event_id": "EV-103",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "976bc2da-8edf-5939-9701-8db06566285a": {
-   "seq": 164,
-   "label": "duplicate",
-   "duplicate_of": "a7885373-1ce6-5da9-a84d-cc72e36b9389",
-   "event_id": "EV-042",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "eb00b1ae-a905-585a-8a24-c05e75e8b8fa": {
-   "seq": 165,
-   "label": "duplicate",
-   "duplicate_of": "45e3c9f6-5906-517d-9068-897bfb042ae1",
-   "event_id": "EV-084",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "2707104c-5e13-5bc0-9ef9-34055772e4ed": {
-   "seq": 166,
-   "label": "duplicate",
-   "duplicate_of": "sms:103",
-   "event_id": "EV-122",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "3f0f84b1-b163-5b17-b2a0-5bc1374fb2a5": {
-   "seq": 167,
-   "label": "duplicate",
-   "duplicate_of": "736331e2-7244-5cae-b391-946e2f4d87e1",
-   "event_id": "EV-136",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "sms:168": {
-   "seq": 168,
-   "label": "duplicate",
-   "duplicate_of": "851b3522-cd26-5e3b-9873-5ee880138556",
-   "event_id": "EV-067",
-   "is_critical": true,
-   "category": "incendio"
-  },
-  "f5716cff-cc94-5b00-aab5-f2a7348bcfed": {
-   "seq": 169,
-   "label": "duplicate",
-   "duplicate_of": "55b63b9b-11ba-58c6-befb-09ecbb2611eb",
-   "event_id": "EV-112",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "6dc8a9e6-0fad-5f39-b2de-319d24618e77": {
-   "seq": 170,
-   "label": "duplicate",
-   "duplicate_of": "sms:22",
-   "event_id": "EV-020",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "c6c56d48-59a9-5eef-bdf6-4aefd487c7f2": {
-   "seq": 171,
-   "label": "duplicate",
-   "duplicate_of": "sms:27",
-   "event_id": "EV-019",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "23a61631-d4f0-51b4-a1cf-0d5d75105da3": {
-   "seq": 172,
-   "label": "duplicate",
-   "duplicate_of": "1aeae628-cfa9-5b93-ba18-c400eae94376",
-   "event_id": "EV-133",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "sms:173": {
-   "seq": 173,
-   "label": "duplicate",
-   "duplicate_of": "sms:94",
-   "event_id": "EV-135",
-   "is_critical": true,
-   "category": "incendio"
-  },
-  "sms:174": {
-   "seq": 174,
-   "label": "duplicate",
-   "duplicate_of": "85429bca-89f6-50ba-b026-659350fa2f02",
-   "event_id": "EV-096",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:175": {
-   "seq": 175,
-   "label": "duplicate",
-   "duplicate_of": "593cd11f-0f66-5504-9a03-a7bb7ac9fdd8",
-   "event_id": "EV-057",
-   "is_critical": false,
-   "category": "sismo_sentido"
-  },
-  "sms:176": {
-   "seq": 176,
-   "label": "duplicate",
-   "duplicate_of": "5aaf3714-f7c3-5e8f-81bc-9138c7885981",
-   "event_id": "EV-085",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "04dade2c-e41c-5332-8c77-612bbf1c1a2e": {
-   "seq": 177,
-   "label": "duplicate",
-   "duplicate_of": "sms:137",
-   "event_id": "EV-123",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "b25b04ae-7c2a-58dd-aae0-2188f19ccbb6": {
-   "seq": 178,
-   "label": "duplicate",
-   "duplicate_of": "c9efc8d1-55ea-50b2-a944-b4924407c595",
-   "event_id": "EV-048",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "9429f2c6-386b-5eaf-97b3-9975cace5d27": {
-   "seq": 179,
-   "label": "duplicate",
-   "duplicate_of": "27a8ec00-c71e-5a0b-9617-9f4a11b3e913",
-   "event_id": "EV-071",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "d482a2e6-8828-53f7-88bc-3a83dfd96ddd": {
-   "seq": 180,
-   "label": "duplicate",
-   "duplicate_of": "45e7aa23-e081-5c8e-9a90-fe61f1d05aaf",
-   "event_id": "EV-104",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "fd9a3533-4d57-50db-8ee7-e1db98ee9a62": {
-   "seq": 181,
-   "label": "duplicate",
-   "duplicate_of": "sms:9",
-   "event_id": "EV-007",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "sms:182": {
-   "seq": 182,
-   "label": "duplicate",
-   "duplicate_of": "6b6f8074-6144-578d-b7b5-af9c788b4094",
-   "event_id": "EV-033",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:183": {
-   "seq": 183,
-   "label": "duplicate",
-   "duplicate_of": "sms:22",
-   "event_id": "EV-020",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "52d2756b-5231-50d0-b9a2-351f1cd793ec": {
-   "seq": 184,
-   "label": "duplicate",
-   "duplicate_of": "d7933c73-9104-5fcf-8425-4aede13a0f0c",
-   "event_id": "EV-054",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "e7870f47-426d-5ecc-8503-7a2aafe419ca": {
-   "seq": 185,
-   "label": "duplicate",
-   "duplicate_of": "7e2b1f61-1da5-5d16-b890-cb73b6fd71be",
-   "event_id": "EV-022",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "ac67fb4f-1161-548d-a1e4-059434f2f2b3": {
-   "seq": 186,
-   "label": "duplicate",
-   "duplicate_of": "sms:13",
-   "event_id": "EV-138",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "e68bb0d9-a50b-5bce-b444-c4c139a1a46f": {
-   "seq": 187,
-   "label": "duplicate",
-   "duplicate_of": "27a8ec00-c71e-5a0b-9617-9f4a11b3e913",
-   "event_id": "EV-071",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:188": {
-   "seq": 188,
-   "label": "duplicate",
-   "duplicate_of": "9faf7d21-5a93-5498-8e72-082814a563a8",
-   "event_id": "EV-041",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "789e3fa4-1ee5-5508-87f9-760f5feccb21": {
-   "seq": 189,
-   "label": "duplicate",
-   "duplicate_of": "c9efc8d1-55ea-50b2-a944-b4924407c595",
-   "event_id": "EV-048",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "6df64856-15b1-51e4-ac5c-b1c1d6698ee8": {
-   "seq": 190,
-   "label": "duplicate",
-   "duplicate_of": "f62ed7e2-cd3b-5a1a-827b-e1ca61b4c22e",
-   "event_id": "EV-006",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "2f1d4230-30ef-5aff-9184-99113b25e980": {
-   "seq": 191,
-   "label": "duplicate",
-   "duplicate_of": "sms:114",
-   "event_id": "EV-080",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "e276906b-e92d-54a5-96c5-da1812b2b610": {
-   "seq": 192,
-   "label": "duplicate",
-   "duplicate_of": "6b6f8074-6144-578d-b7b5-af9c788b4094",
-   "event_id": "EV-033",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "21ded3f1-d451-52b6-aca9-0318fa9c8a1c": {
-   "seq": 193,
-   "label": "duplicate",
-   "duplicate_of": "cb3d9775-e8ba-549a-a600-4105dcd556a4",
-   "event_id": "EV-012",
-   "is_critical": true,
-   "category": "heridos"
-  },
-  "sms:194": {
-   "seq": 194,
-   "label": "duplicate",
-   "duplicate_of": "c1968ecc-a365-5572-be65-050e6e55a63f",
-   "event_id": "EV-131",
-   "is_critical": false,
-   "category": "deslizamiento"
-  },
-  "sms:195": {
-   "seq": 195,
-   "label": "duplicate",
-   "duplicate_of": "7e2b1f61-1da5-5d16-b890-cb73b6fd71be",
-   "event_id": "EV-022",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "83d3dfcc-214e-597b-b642-a11dba53003c": {
-   "seq": 196,
-   "label": "duplicate",
-   "duplicate_of": "b52e0bfc-77e2-55b0-873d-eaf237683d9b",
-   "event_id": "EV-130",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "0cf1ec20-da80-51e5-ba59-69e002d03e3c": {
-   "seq": 197,
-   "label": "duplicate",
-   "duplicate_of": "fa260f09-1fa0-5e1e-9084-008a3c464373",
-   "event_id": "EV-082",
-   "is_critical": false,
-   "category": "colapso_estructura"
-  },
-  "de24120d-bb92-554a-a1d0-70441855cb2d": {
-   "seq": 198,
-   "label": "duplicate",
-   "duplicate_of": "sms:103",
-   "event_id": "EV-122",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "4fb8bf34-c892-5f34-90ea-e2e89e46fb0c": {
-   "seq": 199,
-   "label": "duplicate",
-   "duplicate_of": "9aed80da-a72e-5d09-9d25-6b1dc97a6ea4",
-   "event_id": "EV-090",
-   "is_critical": false,
-   "category": "via_bloqueada"
-  },
-  "sms:200": {
-   "seq": 200,
-   "label": "duplicate",
-   "duplicate_of": "sms:82",
-   "event_id": "EV-129",
-   "is_critical": false,
-   "category": "dano_estructural"
-  },
-  "a55be87d-8dd2-5919-8b13-70f1516392d2": {
-   "seq": 201,
-   "label": "duplicate",
-   "duplicate_of": "5b8479bf-5de1-50d3-b9b0-a4bdb7961e02",
-   "event_id": "EV-107",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:202": {
-   "seq": 202,
-   "label": "duplicate",
-   "duplicate_of": "cc82fb67-e568-535a-b8d6-8cf1135efc90",
-   "event_id": "EV-088",
-   "is_critical": true,
-   "category": "incendio"
-  },
-  "8e3964e7-588a-52fa-b4fd-947dbfb58233": {
-   "seq": 203,
-   "label": "duplicate",
-   "duplicate_of": "053cf757-d7f3-5fbe-91eb-4e62d6d2fd3d",
    "event_id": "EV-137",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "5008b058-d044-53e8-b59b-f983b8c346cf": {
-   "seq": 204,
-   "label": "duplicate",
-   "duplicate_of": "bde99d8f-520c-526f-a144-024d7d0f3123",
-   "event_id": "EV-058",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "sms:205": {
-   "seq": 205,
-   "label": "duplicate",
-   "duplicate_of": "sms:118",
-   "event_id": "EV-120",
-   "is_critical": true,
-   "category": "fuga_gas"
-  },
-  "bcc3b97b-4e58-5d22-a85d-b0b88f05dba8": {
-   "seq": 206,
-   "label": "duplicate",
-   "duplicate_of": "sms:66",
-   "event_id": "EV-105",
    "is_critical": false,
-   "category": "colapso_estructura"
+   "category": "dano_estructural"
   },
-  "64c2f6b3-4c51-556c-8740-78b087cbc6cb": {
-   "seq": 207,
-   "label": "duplicate",
-   "duplicate_of": "sms:118",
-   "event_id": "EV-120",
+  "ec69e95e-507c-5b31-aa94-fc12d49a2a6a": {
+   "seq": 123,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-015",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "2152d997-9063-5f8f-8e45-ec087c582d9f": {
+   "seq": 124,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-068",
    "is_critical": true,
    "category": "fuga_gas"
   },
-  "c9899d06-9c10-5b63-984a-2f4437f8bdca": {
-   "seq": 208,
-   "label": "duplicate",
-   "duplicate_of": "9faf7d21-5a93-5498-8e72-082814a563a8",
-   "event_id": "EV-041",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "31317ffb-a122-506a-89a1-ff44d20cb200": {
-   "seq": 209,
-   "label": "duplicate",
-   "duplicate_of": "27a8ec00-c71e-5a0b-9617-9f4a11b3e913",
-   "event_id": "EV-071",
-   "is_critical": true,
-   "category": "personas_atrapadas"
-  },
-  "edcc77c3-c76e-5dac-9a60-b75cff8db707": {
-   "seq": 210,
-   "label": "duplicate",
-   "duplicate_of": "33337fc7-cbc4-5667-beb0-02b1e2eae9aa",
+  "cced9d54-b21c-5a64-8873-f3ce04dc19f9": {
+   "seq": 125,
+   "label": "unique",
+   "duplicate_of": null,
    "event_id": "EV-037",
    "is_critical": false,
    "category": "colapso_estructura"
   },
-  "sms:211": {
-   "seq": 211,
-   "label": "duplicate",
-   "duplicate_of": "1d2facb0-bb3e-52f8-a112-3cb09c1a8ec5",
-   "event_id": "EV-076",
-   "is_critical": true,
-   "category": "fuga_gas"
+  "2b16fde9-1ccc-562a-9df9-5ff9c25b7364": {
+   "seq": 126,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-043",
+   "is_critical": false,
+   "category": "servicios_caidos"
   },
-  "8b820840-ae09-578e-a65c-800b201ff714": {
-   "seq": 212,
-   "label": "duplicate",
-   "duplicate_of": "c1968ecc-a365-5572-be65-050e6e55a63f",
-   "event_id": "EV-131",
+  "8371de58-7f43-59f9-8fbe-b3860e8b5f9e": {
+   "seq": 127,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-013",
    "is_critical": false,
    "category": "deslizamiento"
   },
-  "5732f85e-a8a6-5d9e-8a46-ac217845f1f3": {
-   "seq": 213,
-   "label": "duplicate",
-   "duplicate_of": "sms:126",
-   "event_id": "EV-078",
+  "3f0dd086-862e-555e-a7ba-4343f1d99278": {
+   "seq": 128,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-054",
    "is_critical": false,
    "category": "dano_estructural"
   },
-  "28ec0067-ab8d-541a-8c31-6cd23d77d297": {
+  "ef0237d7-fa36-52c7-8551-5f6b758c8be0": {
+   "seq": 129,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-044",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "9bb31fdb-7234-5038-8658-ed40a3314f96": {
+   "seq": 130,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-095",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "78723b0b-ca22-55fe-9ef7-fcd247fe253c": {
+   "seq": 131,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-123",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "7309c7b1-2698-57f7-b5ff-01829eaa1026": {
+   "seq": 132,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-069",
+   "is_critical": false,
+   "category": "necesidad_ayuda"
+  },
+  "83c4d641-eefe-53e9-9206-cf5575e1bbb2": {
+   "seq": 133,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-083",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "8f4b4164-236f-5f96-8ab9-d1c96853e1c4": {
+   "seq": 134,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-122",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "b5392d0d-a115-5b0a-a83a-6384ac7ae29c": {
+   "seq": 135,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-113",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "1cdde2b3-7da2-5b3a-b5e6-5443fbbb9c99": {
+   "seq": 136,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-039",
+   "is_critical": false,
+   "category": "persona_desaparecida"
+  },
+  "ad8fe742-a487-5253-92e0-d09b2b050d69": {
+   "seq": 137,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-082",
+   "is_critical": false,
+   "category": "necesidad_albergue"
+  },
+  "5d3f6f20-308c-574c-9a03-66931ec4dcfe": {
+   "seq": 138,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-094",
+   "is_critical": false,
+   "category": "necesidad_ayuda"
+  },
+  "sms:139": {
+   "seq": 139,
+   "label": "unique",
+   "duplicate_of": null,
+   "event_id": "EV-109",
+   "is_critical": false,
+   "category": "necesidad_ayuda"
+  },
+  "1070910b-ee02-5ed3-946f-334408e13601": {
+   "seq": 140,
+   "label": "duplicate",
+   "duplicate_of": "f6ec9f74-22fa-56e1-a850-7b2087779df8",
+   "event_id": "EV-098",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "sms:141": {
+   "seq": 141,
+   "label": "duplicate",
+   "duplicate_of": "ef0237d7-fa36-52c7-8551-5f6b758c8be0",
+   "event_id": "EV-044",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "sms:142": {
+   "seq": 142,
+   "label": "duplicate",
+   "duplicate_of": "665d37f4-e87c-5238-b45b-fe99e7fa9e70",
+   "event_id": "EV-119",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "99fe2c56-7b6b-57d9-a7dd-7877c831c9cb": {
+   "seq": 143,
+   "label": "duplicate",
+   "duplicate_of": "682c8cbd-054f-5666-b5e5-b5e6059aaf77",
+   "event_id": "EV-114",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "bd962d7b-406a-51b0-9b23-e4fc5aae9bd9": {
+   "seq": 144,
+   "label": "duplicate",
+   "duplicate_of": "101407ce-67ab-50af-8e7d-bf5907466a81",
+   "event_id": "EV-012",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "5235ec63-5494-5c70-b652-26f396c0eae9": {
+   "seq": 145,
+   "label": "duplicate",
+   "duplicate_of": "sms:19",
+   "event_id": "EV-020",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "cb58ce8c-fd45-5de1-8753-60672fc3475b": {
+   "seq": 146,
+   "label": "duplicate",
+   "duplicate_of": "ef0237d7-fa36-52c7-8551-5f6b758c8be0",
+   "event_id": "EV-044",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "df100fc0-e2cb-55e1-a7db-979af68b6a11": {
+   "seq": 147,
+   "label": "duplicate",
+   "duplicate_of": "f9cf0fcc-5620-57a4-9c82-cd9eb7a8d7ee",
+   "event_id": "EV-058",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "d602f755-da7e-52a7-a866-3fd628c7c1aa": {
+   "seq": 148,
+   "label": "duplicate",
+   "duplicate_of": "sms:74",
+   "event_id": "EV-111",
+   "is_critical": false,
+   "category": "servicios_caidos"
+  },
+  "ae79586e-2915-5dff-a18b-d078652815f0": {
+   "seq": 149,
+   "label": "duplicate",
+   "duplicate_of": "f6ec9f74-22fa-56e1-a850-7b2087779df8",
+   "event_id": "EV-098",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "3f7b0196-e978-5344-914d-a1eccbe9e0cf": {
+   "seq": 150,
+   "label": "duplicate",
+   "duplicate_of": "sms:108",
+   "event_id": "EV-102",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "0a213904-3459-56b8-bc61-ef764c0e5231": {
+   "seq": 151,
+   "label": "duplicate",
+   "duplicate_of": "sms:32",
+   "event_id": "EV-126",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "sms:152": {
+   "seq": 152,
+   "label": "duplicate",
+   "duplicate_of": "c7183e05-260c-5b63-bacd-12b38624ff83",
+   "event_id": "EV-116",
+   "is_critical": false,
+   "category": "servicios_caidos"
+  },
+  "8d628d91-0f4c-5c0a-a347-316142da2216": {
+   "seq": 153,
+   "label": "duplicate",
+   "duplicate_of": "a0ada333-052d-5e31-8ab4-6127c5903fbb",
+   "event_id": "EV-026",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:154": {
+   "seq": 154,
+   "label": "duplicate",
+   "duplicate_of": "sms:15",
+   "event_id": "EV-106",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "5f77ad3e-d480-56f7-bbd4-492db5b9da37": {
+   "seq": 155,
+   "label": "duplicate",
+   "duplicate_of": "2152d997-9063-5f8f-8e45-ec087c582d9f",
+   "event_id": "EV-068",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:156": {
+   "seq": 156,
+   "label": "duplicate",
+   "duplicate_of": "db9d280f-df02-5380-a29f-8c11d9414504",
+   "event_id": "EV-139",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:157": {
+   "seq": 157,
+   "label": "duplicate",
+   "duplicate_of": "6d203c61-dae5-5485-ad0b-e0f9a0c2f8c2",
+   "event_id": "EV-134",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "sms:158": {
+   "seq": 158,
+   "label": "duplicate",
+   "duplicate_of": "sms:88",
+   "event_id": "EV-103",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:159": {
+   "seq": 159,
+   "label": "duplicate",
+   "duplicate_of": "923d2e0f-1f3e-5696-be74-eff7a85b66b3",
+   "event_id": "EV-027",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:160": {
+   "seq": 160,
+   "label": "duplicate",
+   "duplicate_of": "sms:47",
+   "event_id": "EV-112",
+   "is_critical": false,
+   "category": "necesidad_albergue"
+  },
+  "cdf7e31e-0204-5373-bcbc-87e349695041": {
+   "seq": 161,
+   "label": "duplicate",
+   "duplicate_of": "80742bad-6f59-5cbb-9138-951fcc4a5df2",
+   "event_id": "EV-021",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "sms:162": {
+   "seq": 162,
+   "label": "duplicate",
+   "duplicate_of": "63ad974b-0f64-59b6-839c-0caf59e1c557",
+   "event_id": "EV-023",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "7d928a0f-691a-544d-85d0-be141693ac39": {
+   "seq": 163,
+   "label": "duplicate",
+   "duplicate_of": "sms:19",
+   "event_id": "EV-020",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "1e056449-b28b-58c1-80e0-0190996e87bf": {
+   "seq": 164,
+   "label": "duplicate",
+   "duplicate_of": "6d203c61-dae5-5485-ad0b-e0f9a0c2f8c2",
+   "event_id": "EV-134",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "sms:165": {
+   "seq": 165,
+   "label": "duplicate",
+   "duplicate_of": "f9b9ba85-8b47-58db-b682-06719ae9e998",
+   "event_id": "EV-135",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:166": {
+   "seq": 166,
+   "label": "duplicate",
+   "duplicate_of": "9bb31fdb-7234-5038-8658-ed40a3314f96",
+   "event_id": "EV-095",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:167": {
+   "seq": 167,
+   "label": "duplicate",
+   "duplicate_of": "c90efbc3-55d8-513e-a522-aaff744442f0",
+   "event_id": "EV-061",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:168": {
+   "seq": 168,
+   "label": "duplicate",
+   "duplicate_of": "sms:13",
+   "event_id": "EV-110",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "sms:169": {
+   "seq": 169,
+   "label": "duplicate",
+   "duplicate_of": "f9cf0fcc-5620-57a4-9c82-cd9eb7a8d7ee",
+   "event_id": "EV-058",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "fc79b806-4866-5c9d-9c31-03936111951f": {
+   "seq": 170,
+   "label": "duplicate",
+   "duplicate_of": "sms:60",
+   "event_id": "EV-117",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:171": {
+   "seq": 171,
+   "label": "duplicate",
+   "duplicate_of": "sms:5",
+   "event_id": "EV-075",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "51fc7a08-0510-5a11-9c42-e403c316f6fe": {
+   "seq": 172,
+   "label": "duplicate",
+   "duplicate_of": "610d08bc-2e6d-5a25-9449-0cf6f8e511c2",
+   "event_id": "EV-074",
+   "is_critical": false,
+   "category": "via_bloqueada"
+  },
+  "f9ec3608-ad94-51e9-89e6-2c327f229e8e": {
+   "seq": 173,
+   "label": "duplicate",
+   "duplicate_of": "3b6c47e3-56a6-59b5-9024-0102911b84cc",
+   "event_id": "EV-104",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "a0c02bdc-13ef-505b-b2ac-88f3d79e608f": {
+   "seq": 174,
+   "label": "duplicate",
+   "duplicate_of": "sms:46",
+   "event_id": "EV-008",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "9dc405c8-bfe9-50cc-aebd-4a683d35ac43": {
+   "seq": 175,
+   "label": "duplicate",
+   "duplicate_of": "d25a6314-ea0b-5604-9af1-b38e21503404",
+   "event_id": "EV-010",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "c3a3096c-a9bc-58a3-a8fe-c091290e90b3": {
+   "seq": 176,
+   "label": "duplicate",
+   "duplicate_of": "ca0123c7-93c1-5fb5-9b1e-7babed175879",
+   "event_id": "EV-046",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "4e3e62a3-3ca1-5700-aabb-41e58f192d36": {
+   "seq": 177,
+   "label": "duplicate",
+   "duplicate_of": "63ad974b-0f64-59b6-839c-0caf59e1c557",
+   "event_id": "EV-023",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "a4f43e3f-6530-513b-86f8-4fa843ed7274": {
+   "seq": 178,
+   "label": "duplicate",
+   "duplicate_of": "86df6d38-8b42-5e94-9d95-5d4f4f7c0b44",
+   "event_id": "EV-138",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "629c5a49-8b94-5571-ab35-2fe7a862ee6e": {
+   "seq": 179,
+   "label": "duplicate",
+   "duplicate_of": "sms:60",
+   "event_id": "EV-117",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "e6b5d031-93ce-5d29-b5ee-ee53b425cc64": {
+   "seq": 180,
+   "label": "duplicate",
+   "duplicate_of": "ad8fe742-a487-5253-92e0-d09b2b050d69",
+   "event_id": "EV-082",
+   "is_critical": false,
+   "category": "necesidad_albergue"
+  },
+  "58f299f8-64d8-5376-baa2-a7b582e024c4": {
+   "seq": 181,
+   "label": "duplicate",
+   "duplicate_of": "c90efbc3-55d8-513e-a522-aaff744442f0",
+   "event_id": "EV-061",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "9f33696a-c9ba-5743-9be4-4f2d0da0c86b": {
+   "seq": 182,
+   "label": "duplicate",
+   "duplicate_of": "sms:102",
+   "event_id": "EV-092",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "sms:183": {
+   "seq": 183,
+   "label": "duplicate",
+   "duplicate_of": "sms:41",
+   "event_id": "EV-014",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "7eb9600d-f314-5486-8a75-278a912e82ef": {
+   "seq": 184,
+   "label": "duplicate",
+   "duplicate_of": "8f4b4164-236f-5f96-8ab9-d1c96853e1c4",
+   "event_id": "EV-122",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "sms:185": {
+   "seq": 185,
+   "label": "duplicate",
+   "duplicate_of": "f6ec9f74-22fa-56e1-a850-7b2087779df8",
+   "event_id": "EV-098",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "7bbc88cc-543c-5170-add5-8b91c0579ddc": {
+   "seq": 186,
+   "label": "duplicate",
+   "duplicate_of": "c77cfd7c-cc9d-50cf-8737-3ff296a398d7",
+   "event_id": "EV-067",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:187": {
+   "seq": 187,
+   "label": "duplicate",
+   "duplicate_of": "1115f0c5-a667-5125-80c9-8bc65533c98e",
+   "event_id": "EV-132",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "8ef68db5-4acc-570b-a169-3a0435f0fd0d": {
+   "seq": 188,
+   "label": "duplicate",
+   "duplicate_of": "63ad974b-0f64-59b6-839c-0caf59e1c557",
+   "event_id": "EV-023",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "sms:189": {
+   "seq": 189,
+   "label": "duplicate",
+   "duplicate_of": "f903810c-8fff-5837-81d4-5ad0da6efc56",
+   "event_id": "EV-078",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "93215847-18ed-582b-8760-2a61337e91f8": {
+   "seq": 190,
+   "label": "duplicate",
+   "duplicate_of": "86df6d38-8b42-5e94-9d95-5d4f4f7c0b44",
+   "event_id": "EV-138",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "sms:191": {
+   "seq": 191,
+   "label": "duplicate",
+   "duplicate_of": "101407ce-67ab-50af-8e7d-bf5907466a81",
+   "event_id": "EV-012",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "sms:192": {
+   "seq": 192,
+   "label": "duplicate",
+   "duplicate_of": "db9d280f-df02-5380-a29f-8c11d9414504",
+   "event_id": "EV-139",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:193": {
+   "seq": 193,
+   "label": "duplicate",
+   "duplicate_of": "6d203c61-dae5-5485-ad0b-e0f9a0c2f8c2",
+   "event_id": "EV-134",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "338308c1-9184-54cb-83a8-6fcb6aa1a689": {
+   "seq": 194,
+   "label": "duplicate",
+   "duplicate_of": "9bb31fdb-7234-5038-8658-ed40a3314f96",
+   "event_id": "EV-095",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "4be3155c-15ca-5840-8d54-f1ca93f42c71": {
+   "seq": 195,
+   "label": "duplicate",
+   "duplicate_of": "db9d280f-df02-5380-a29f-8c11d9414504",
+   "event_id": "EV-139",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "sms:196": {
+   "seq": 196,
+   "label": "duplicate",
+   "duplicate_of": "sms:60",
+   "event_id": "EV-117",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "a015d56b-9182-55dc-a460-dd7a572d31f3": {
+   "seq": 197,
+   "label": "duplicate",
+   "duplicate_of": "db9d280f-df02-5380-a29f-8c11d9414504",
+   "event_id": "EV-139",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "d143f39b-8c4c-5cf3-9fa7-cabbf18df9f9": {
+   "seq": 198,
+   "label": "duplicate",
+   "duplicate_of": "3f0dd086-862e-555e-a7ba-4343f1d99278",
+   "event_id": "EV-054",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "6f744d0e-a7a8-5f4a-986d-1630f58dc162": {
+   "seq": 199,
+   "label": "duplicate",
+   "duplicate_of": "cced9d54-b21c-5a64-8873-f3ce04dc19f9",
+   "event_id": "EV-037",
+   "is_critical": false,
+   "category": "colapso_estructura"
+  },
+  "sms:200": {
+   "seq": 200,
+   "label": "duplicate",
+   "duplicate_of": "923d2e0f-1f3e-5696-be74-eff7a85b66b3",
+   "event_id": "EV-027",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "6280673e-8fd1-5b94-a445-4749addc3171": {
+   "seq": 201,
+   "label": "duplicate",
+   "duplicate_of": "8fdc4fb3-208e-532d-ac4f-79ddc95edb46",
+   "event_id": "EV-007",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "sms:202": {
+   "seq": 202,
+   "label": "duplicate",
+   "duplicate_of": "ad8fe742-a487-5253-92e0-d09b2b050d69",
+   "event_id": "EV-082",
+   "is_critical": false,
+   "category": "necesidad_albergue"
+  },
+  "4ba95d75-96aa-5784-9309-e7b81d9080d1": {
+   "seq": 203,
+   "label": "duplicate",
+   "duplicate_of": "1e4dd238-605b-5ec0-b6b0-f67e89450e83",
+   "event_id": "EV-130",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "5f80fc55-2410-54c2-87a1-eb7f023631fd": {
+   "seq": 204,
+   "label": "duplicate",
+   "duplicate_of": "f903810c-8fff-5837-81d4-5ad0da6efc56",
+   "event_id": "EV-078",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "d66af782-7650-5ae7-b390-2098ef31b9e4": {
+   "seq": 205,
+   "label": "duplicate",
+   "duplicate_of": "624ecc6b-5d5b-5df8-b4bf-46b60cfa71e4",
+   "event_id": "EV-073",
+   "is_critical": true,
+   "category": "heridos"
+  },
+  "82ab7c7e-e476-5056-aba0-1039a3f23d1b": {
+   "seq": 206,
+   "label": "duplicate",
+   "duplicate_of": "867a5aa5-fd51-52a5-bae5-cbe8969190bf",
+   "event_id": "EV-066",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "cec16e4e-1dd9-5335-b732-7dba531499f1": {
+   "seq": 207,
+   "label": "duplicate",
+   "duplicate_of": "842a465d-9609-5d51-94d6-27826932ac0d",
+   "event_id": "EV-090",
+   "is_critical": true,
+   "category": "personas_atrapadas"
+  },
+  "cc373016-ee1b-5e93-a23d-812dee3e8270": {
+   "seq": 208,
+   "label": "duplicate",
+   "duplicate_of": "5b5402d7-f26e-533f-b2e0-8bc1cb58c91d",
+   "event_id": "EV-086",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "a4bcc0ee-e8c1-58b3-a169-932b69616ef6": {
+   "seq": 209,
+   "label": "duplicate",
+   "duplicate_of": "d27b39ca-019a-5694-9049-943f541d5928",
+   "event_id": "EV-034",
+   "is_critical": true,
+   "category": "fuga_gas"
+  },
+  "dc4848f0-160a-5a25-9697-5bf93528ce26": {
+   "seq": 210,
+   "label": "duplicate",
+   "duplicate_of": "d25a6314-ea0b-5604-9af1-b38e21503404",
+   "event_id": "EV-010",
+   "is_critical": false,
+   "category": "sismo_sentido"
+  },
+  "7fcef6c5-b824-57e1-a3a3-5a99ed248034": {
+   "seq": 211,
+   "label": "duplicate",
+   "duplicate_of": "ff2f4000-eca6-5710-9928-cb094b98be8f",
+   "event_id": "EV-085",
+   "is_critical": false,
+   "category": "dano_estructural"
+  },
+  "91db1b54-457c-5a9b-8042-052d688d6e83": {
+   "seq": 212,
+   "label": "duplicate",
+   "duplicate_of": "sms:1",
+   "event_id": "EV-045",
+   "is_critical": false,
+   "category": "necesidad_ayuda"
+  },
+  "0186c6d1-916f-5fa1-81f8-0da03833c1c8": {
+   "seq": 213,
+   "label": "duplicate",
+   "duplicate_of": "b027dd81-8a2c-5145-bd15-b1725168238f",
+   "event_id": "EV-009",
+   "is_critical": true,
+   "category": "incendio"
+  },
+  "31d8a51c-bba4-5b92-b391-80d835a0c468": {
    "seq": 214,
    "label": "duplicate",
-   "duplicate_of": "c014e64c-e4f1-51ee-ad2e-2de62f712d66",
-   "event_id": "EV-055",
+   "duplicate_of": "f9cf0fcc-5620-57a4-9c82-cd9eb7a8d7ee",
+   "event_id": "EV-058",
    "is_critical": true,
    "category": "heridos"
   },
   "sms:215": {
    "seq": 215,
    "label": "duplicate",
-   "duplicate_of": "e23f40a4-cd02-5ffb-9d4c-2b67597c6d5b",
-   "event_id": "EV-074",
+   "duplicate_of": "sms:5",
+   "event_id": "EV-075",
    "is_critical": true,
-   "category": "heridos"
+   "category": "personas_atrapadas"
   },
-  "bfa47829-5963-51af-a22b-c0132a40090e": {
+  "54eea630-a503-5b81-823c-4aa60a14140f": {
    "seq": 216,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-hospital",
+   "event_id": "FAKE-hospital_atrapados",
    "is_critical": false,
    "category": null
   },
-  "dc7c2fbd-4b23-5b04-ab73-f004865701f9": {
+  "sms:217": {
    "seq": 217,
    "label": "fake",
    "duplicate_of": null,
@@ -1748,63 +1748,63 @@
    "is_critical": false,
    "category": null
   },
-  "b894737e-3830-5372-9430-289b43600c75": {
+  "da07aff2-5499-5f7b-9825-1c1a06304a9d": {
    "seq": 218,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-va_a_temblar",
+   "event_id": "FAKE-hospital",
    "is_critical": false,
    "category": null
   },
-  "5b6a92d2-8208-5429-ba5a-ba7fd2d1d511": {
+  "65747492-f937-57a4-ab08-e83ede68e115": {
    "seq": 219,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-va_a_temblar",
+   "event_id": "FAKE-hospital",
    "is_critical": false,
    "category": null
   },
-  "53dd5a39-429a-5535-9b5e-3cef01a73eb5": {
+  "sms:220": {
    "seq": 220,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-hospital_atrapados",
-   "is_critical": false,
-   "category": null
-  },
-  "d1670fbd-1fd4-5412-af92-84fdd8e30dfc": {
-   "seq": 221,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-muertos",
-   "is_critical": false,
-   "category": null
-  },
-  "9b3cbfff-e57f-50cb-ac12-a2d0452d6f1a": {
-   "seq": 222,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-nasa",
-   "is_critical": false,
-   "category": null
-  },
-  "b78ee7dc-344c-5f3d-a17e-1e0c405d4032": {
-   "seq": 223,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
-   "is_critical": false,
-   "category": null
-  },
-  "12eac697-fc89-5bc6-9a20-7c3f1ac91385": {
-   "seq": 224,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "6e6d1403-2439-5f8d-91c7-777c67d33733": {
+  "03b59741-8d10-562b-a231-a14210727f6a": {
+   "seq": 221,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "a503f850-3870-5f14-a020-a2f6434d1477": {
+   "seq": 222,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:223": {
+   "seq": 223,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-replica_9",
+   "is_critical": false,
+   "category": null
+  },
+  "64467ac2-78ff-5ce1-8bc9-7934c9ca18e9": {
+   "seq": 224,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "3f268267-f86e-5c50-8d30-78a22ebf35a7": {
    "seq": 225,
    "label": "fake",
    "duplicate_of": null,
@@ -1812,47 +1812,47 @@
    "is_critical": false,
    "category": null
   },
-  "bab3955c-9de1-5c17-90bc-85dc3bec5be3": {
+  "sms:226": {
    "seq": 226,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
-   "is_critical": false,
-   "category": null
-  },
-  "ed78ad1b-f068-5149-82fc-a37eea012ca3": {
-   "seq": 227,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-nasa",
-   "is_critical": false,
-   "category": null
-  },
-  "sms:228": {
-   "seq": 228,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-hospital",
-   "is_critical": false,
-   "category": null
-  },
-  "d7c904b8-04a6-5f0d-a4a0-3ec8e89be75a": {
-   "seq": 229,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "5d3fb625-0afa-5d55-a90f-6acdd99d99b5": {
-   "seq": 230,
+  "25bd844e-7fa6-5812-8064-92bdb49ff820": {
+   "seq": 227,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-hospital",
+   "event_id": "FAKE-hospital_atrapados",
    "is_critical": false,
    "category": null
   },
-  "sms:231": {
+  "42c8d0a9-f181-56d5-8337-f4e935a36d6c": {
+   "seq": 228,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "4f47aa88-9c3a-52d4-92ec-b625f066c2ae": {
+   "seq": 229,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-nasa",
+   "is_critical": false,
+   "category": null
+  },
+  "e9d8c444-b69e-5191-b539-49effe90b5b2": {
+   "seq": 230,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-hospital_atrapados",
+   "is_critical": false,
+   "category": null
+  },
+  "c2d3500f-2c7c-541a-8d74-dfbfa11a6206": {
    "seq": 231,
    "label": "fake",
    "duplicate_of": null,
@@ -1860,39 +1860,39 @@
    "is_critical": false,
    "category": null
   },
-  "1823eb64-474b-5eef-ae21-480b36c6dc80": {
+  "sms:232": {
    "seq": 232,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
+   "event_id": "FAKE-muertos",
    "is_critical": false,
    "category": null
   },
-  "efda302b-5885-5164-bd74-f38c08b219d1": {
+  "852a49a3-d0c1-5a8e-8083-5f69640a171e": {
    "seq": 233,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
+   "event_id": "FAKE-va_a_temblar",
    "is_critical": false,
    "category": null
   },
-  "sms:234": {
+  "adf8e4cf-4c33-5cca-a542-d3f5cd6a0b47": {
    "seq": 234,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
-   "is_critical": false,
-   "category": null
-  },
-  "7e98accb-3d2a-561c-992a-f4f12fd22215": {
-   "seq": 235,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "41ea89a4-5f1d-59c4-8c4e-8378f102d846": {
+  "d07765de-b935-5eb3-9106-c8a634f138be": {
+   "seq": 235,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-hospital",
+   "is_critical": false,
+   "category": null
+  },
+  "186b61d8-08b0-5ba3-80f5-1a4353202ece": {
    "seq": 236,
    "label": "fake",
    "duplicate_of": null,
@@ -1904,91 +1904,91 @@
    "seq": 237,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
+   "event_id": "FAKE-va_a_temblar",
    "is_critical": false,
    "category": null
   },
-  "6cf28f19-d714-5dcf-930f-a0b35c73c948": {
+  "sms:238": {
    "seq": 238,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-hospital_atrapados",
-   "is_critical": false,
-   "category": null
-  },
-  "ca4efd14-375e-57b8-95d2-34eafb96a645": {
-   "seq": 239,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
-   "is_critical": false,
-   "category": null
-  },
-  "8e812971-c97a-5214-962c-9741dfaedc7f": {
-   "seq": 240,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-nasa",
-   "is_critical": false,
-   "category": null
-  },
-  "cf3b346b-f993-59dd-95c5-ccb299f20c8a": {
-   "seq": 241,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-hospital_atrapados",
-   "is_critical": false,
-   "category": null
-  },
-  "3f946e1d-c9a7-5005-a5be-168c61a33ddf": {
-   "seq": 242,
-   "label": "fake",
-   "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "sms:243": {
-   "seq": 243,
+  "sms:239": {
+   "seq": 239,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-muertos",
    "is_critical": false,
    "category": null
   },
-  "5576e570-6ab2-52b3-9c22-d69a24b1c101": {
-   "seq": 244,
+  "8ca21514-6481-5808-afdc-1775d3a6745e": {
+   "seq": 240,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-va_a_temblar",
+   "event_id": "FAKE-muertos",
    "is_critical": false,
    "category": null
   },
-  "642ed73d-1c3b-5211-a5ba-c11e90470fe1": {
-   "seq": 245,
+  "sms:241": {
+   "seq": 241,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-puente_santander",
    "is_critical": false,
    "category": null
   },
-  "936ae359-5782-5920-97da-6278b43f84a8": {
-   "seq": 246,
+  "e98a1a11-b7d3-5960-ae94-54e0fd61fc9b": {
+   "seq": 242,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-nasa",
+   "is_critical": false,
+   "category": null
+  },
+  "2de0d1de-98c5-5e1f-90be-04c24fecd665": {
+   "seq": 243,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "d0a94255-ca73-5333-ba08-224d4415d608": {
+   "seq": 244,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "sms:245": {
+   "seq": 245,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-hospital",
    "is_critical": false,
    "category": null
   },
-  "f2e1bc5e-5b4d-541f-b96a-27fdf0621f48": {
-   "seq": 247,
+  "13ed2c03-e0c1-5cb5-ae77-edca2690db06": {
+   "seq": 246,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-replica_9",
+   "event_id": "FAKE-va_a_temblar",
    "is_critical": false,
    "category": null
   },
-  "sms:248": {
+  "c2a11357-1225-51d4-aa9a-91a2a60fe8ca": {
+   "seq": 247,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-puente_santander",
+   "is_critical": false,
+   "category": null
+  },
+  "f53034b6-65eb-58a9-968c-156b30c96943": {
    "seq": 248,
    "label": "fake",
    "duplicate_of": null,
@@ -1996,27 +1996,27 @@
    "is_critical": false,
    "category": null
   },
-  "sms:249": {
+  "50baf813-9982-5ece-bb42-a332abd866e9": {
    "seq": 249,
+   "label": "fake",
+   "duplicate_of": null,
+   "event_id": "FAKE-cable_sin_senales",
+   "is_critical": false,
+   "category": null
+  },
+  "07a17208-fb57-50f1-a1bb-750e4bad2fd1": {
+   "seq": 250,
    "label": "fake",
    "duplicate_of": null,
    "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "sms:250": {
-   "seq": 250,
-   "label": "fake",
-   "duplicate_of": null,
-   "event_id": "FAKE-muertos",
-   "is_critical": false,
-   "category": null
-  },
-  "39a17351-0f00-5928-b300-87b4bf7418ff": {
+  "d099b2dd-b2de-5028-af5a-031209cc20b7": {
    "seq": 251,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-muertos",
+   "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
@@ -2024,11 +2024,11 @@
    "seq": 252,
    "label": "fake",
    "duplicate_of": null,
-   "event_id": "FAKE-puente_santander",
+   "event_id": "FAKE-replica_9",
    "is_critical": false,
    "category": null
   },
-  "704b4312-2573-56c5-9ffe-9816f9246ac3": {
+  "23efc94b-94f1-5f75-9eb9-4da1ed5f4547": {
    "seq": 253,
    "label": "fake",
    "duplicate_of": null,

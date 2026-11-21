@@ -166,6 +166,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/demo/simulation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Simulation Status */
+        get: operations["simulation_status_api_v1_demo_simulation_get"];
+        put?: never;
+        /**
+         * Start Simulation
+         * @description Con datos: reinicia y reproduce el escenario. Sin datos: deja la demo vacía.
+         */
+        post: operations["start_simulation_api_v1_demo_simulation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/simulation/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop Simulation */
+        post: operations["stop_simulation_api_v1_demo_simulation_stop_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dispatches": {
         parameters: {
             query?: never;
@@ -1409,7 +1447,46 @@ export interface components {
          * Role
          * @enum {string}
          */
-        Role: "ciudadano" | "operador_pmu" | "publico" | "coe" | "inspector" | "agencia" | "sistema";
+        Role: "ciudadano" | "operador_pmu" | "publico" | "coe" | "inspector" | "agencia" | "sistema" | "admin";
+        /** SimulationIn */
+        SimulationIn: {
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "con_datos" | "sin_datos";
+            /**
+             * Rain
+             * @description Curva de lluvia SIMULADA para la cascada
+             * @default true
+             */
+            rain: boolean;
+            /**
+             * Speed
+             * @default rapida
+             * @enum {string}
+             */
+            speed: "normal" | "rapida";
+        };
+        /** SimulationStatus */
+        SimulationStatus: {
+            /** Exit Code */
+            exit_code: number | null;
+            /** Finished At */
+            finished_at: string | null;
+            /** Log Tail */
+            log_tail: string[];
+            /** Mode */
+            mode: ("con_datos" | "sin_datos") | null;
+            /** Rain */
+            rain: boolean;
+            /** Running */
+            running: boolean;
+            /** Speed */
+            speed: ("normal" | "rapida") | null;
+            /** Started At */
+            started_at: string | null;
+        };
         /** SmsIn */
         SmsIn: {
             /** Body */
@@ -1844,6 +1921,97 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    simulation_status_api_v1_demo_simulation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimulationStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_simulation_api_v1_demo_simulation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SimulationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimulationStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stop_simulation_api_v1_demo_simulation_stop_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimulationStatus"];
+                };
             };
             /** @description Validation Error */
             422: {

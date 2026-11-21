@@ -2414,10 +2414,139 @@
           "coe",
           "inspector",
           "agencia",
-          "sistema"
+          "sistema",
+          "admin"
         ],
         "title": "Role",
         "type": "string"
+      },
+      "SimulationIn": {
+        "properties": {
+          "mode": {
+            "enum": [
+              "con_datos",
+              "sin_datos"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "rain": {
+            "default": true,
+            "description": "Curva de lluvia SIMULADA para la cascada",
+            "title": "Rain",
+            "type": "boolean"
+          },
+          "speed": {
+            "default": "rapida",
+            "enum": [
+              "normal",
+              "rapida"
+            ],
+            "title": "Speed",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "title": "SimulationIn",
+        "type": "object"
+      },
+      "SimulationStatus": {
+        "properties": {
+          "exit_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exit Code"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "log_tail": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Log Tail",
+            "type": "array"
+          },
+          "mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "con_datos",
+                  "sin_datos"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mode"
+          },
+          "rain": {
+            "title": "Rain",
+            "type": "boolean"
+          },
+          "running": {
+            "title": "Running",
+            "type": "boolean"
+          },
+          "speed": {
+            "anyOf": [
+              {
+                "enum": [
+                  "normal",
+                  "rapida"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speed"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          }
+        },
+        "required": [
+          "running",
+          "mode",
+          "speed",
+          "rain",
+          "started_at",
+          "finished_at",
+          "exit_code",
+          "log_tail"
+        ],
+        "title": "SimulationStatus",
+        "type": "object"
       },
       "SmsIn": {
         "properties": {
@@ -3201,6 +3330,123 @@
           }
         ],
         "summary": "Reset Demo Data",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/demo/simulation": {
+      "get": {
+        "operationId": "simulation_status_api_v1_demo_simulation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Simulation Status",
+        "tags": [
+          "demo"
+        ]
+      },
+      "post": {
+        "description": "Con datos: reinicia y reproduce el escenario. Sin datos: deja la demo vacía.",
+        "operationId": "start_simulation_api_v1_demo_simulation_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Start Simulation",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/demo/simulation/stop": {
+      "post": {
+        "operationId": "stop_simulation_api_v1_demo_simulation_stop_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Stop Simulation",
         "tags": [
           "demo"
         ]

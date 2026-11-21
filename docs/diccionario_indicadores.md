@@ -38,6 +38,20 @@ público las cifras menores a 5 se suprimen (se muestran como "< 5").
 | `albergue_personas` / `albergue_mascotas` | Personas · Mascotas en albergue | conteo | Ocupación actual sumada de los albergues. |
 | `albergue_capacidad` | Capacidad de albergues | conteo | Cupos totales de los albergues registrados. |
 
+## Sensor de zonas inseguras (`/api/v1/sensors/zones`, patente NC2025/0015763)
+
+Fuente: "SIMULADO · patente NC2025/0015763", con hora de cada evento y fecha de corte del listado.
+
+| Término | Definición |
+|---|---|
+| Cono de vigilancia | Espacio configurado del sensor: alcance (m) y semiapertura (°) alrededor de su rumbo. Por defecto 12 m y ±30°. |
+| Intrusión | Persona u objeto dentro del cono detectado por ultrasonido, infrarrojo o ambos, **sin** tarjeta RFID registrada (o con una desconocida). Es alarma hasta que alguien la marca *Atendida*. |
+| Acceso autorizado | Detección dentro del cono con una tarjeta RFID registrada (personal de Bomberos, Defensa Civil, Cruz Roja o Infraestructura). No es alarma. |
+| Batería baja | Lectura con batería del equipo < 15 %. |
+| Manipulación | Apertura de la carcasa del equipo. Es alarma. |
+| Alarmas sin atender | Intrusiones y manipulaciones sin atención registrada. |
+| Confirmación por sensor de campo | Señal del puntaje de veracidad (10 pts): intrusión detectada por **ambos** detectores a ≤ 150 m del incidente, en las últimas 3 h, para incidentes de personas atrapadas, colapso de estructura o daño estructural. |
+
 ## Etiquetas del puntaje de veracidad
 
 | Etiqueta | Rango |

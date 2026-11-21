@@ -24,11 +24,12 @@ from app.routers import (
     ingest,
     map,
     metrics,
+    recovery,
     reports,
     review,
     stream,
 )
-from app.seed import seed_catalog, seed_geography
+from app.seed import seed_catalog, seed_geography, seed_shelters
 from app.state import load_state
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -42,6 +43,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     async with SessionLocal() as session:
         await seed_geography(session)
         await seed_catalog(session)
+        await seed_shelters(session)
         await load_state(session)
     settings = get_settings()
     log.info("Dacora API lista (similitud: %s)", settings.similarity_provider)
@@ -131,6 +133,7 @@ for module in (
     map,
     stream,
     metrics,
+    recovery,
     demo,
 ):
     app.include_router(module.router, prefix=API_PREFIX)

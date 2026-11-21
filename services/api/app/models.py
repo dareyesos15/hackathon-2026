@@ -29,15 +29,18 @@ from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.domain import (
+    AidType,
     AlertAction,
     AlertStatus,
     AlertType,
     Category,
     Channel,
+    DamageLevel,
     DispatchStatus,
     EmreFunction,
     GeoPrecision,
     IncidentStatus,
+    InspectionColor,
     MetricUnit,
     PlaceKind,
     ReportAction,
@@ -45,6 +48,7 @@ from app.domain import (
     ResourceStatus,
     ResourceType,
     Role,
+    RudStatus,
     TrackKind,
     TrackOrigin,
     TriageLevel,
@@ -414,3 +418,89 @@ class RainReading(CommonMixin, Base):
     station_code: Mapped[str] = mapped_column(String(32), nullable=False)
     mm_3h: Mapped[float] = mapped_column(Numeric(5, 1), nullable=False)
     at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+# ---------------------------------------------------------------- recuperación (specs/003)
+
+
+class BuildingInspection(CommonMixin, Base):
+    """Evaluación de habitabilidad (semáforo). Solo-agregar: el estado vigente es la última."""
+
+    __tablename__ = "building_inspections"
+    __table_args__ = (Index("ix_building_inspections_property", "property_id", "at"),)
+
+    property_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    manzana_id: Mapped[str | None] = mapped_column(ForeignKey("manzanas.id"), nullable=True)
+    color: Mapped[InspectionColor] = mapped_column(
+        _enum(InspectionColor, "inspection_color"), nullable=False
+    )
+    damage_level: Mapped[DamageLevel] = mapped_column(
+        _enum(DamageLevel, "damage_level"), nullable=False
+    )
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    inspector_role: Mapped[str] = mapped_column(String(32), nullable=False)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class Household(CommonMixin, Base):
+    """Hogar del censo único. Solo el hash con sal del documento del jefe de hogar."""
+
+    __tablename__ = "households"
+
+    household_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    members_count: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    property_id: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    manzana_id: Mapped[str | None] = mapped_column(ForeignKey("manzanas.id"), nullable=True)
+    rud_status: Mapped[RudStatus] = mapped_column(
+        _enum(RudStatus, "rud_status"), nullable=False, default=RudStatus.pendiente
+    )
+    pets_count: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+
+
+class HouseholdVulnerability(Base):
+    """Datos sensibles (Ley 1581): tabla separada, acceso solo PMU/COE."""
+
+    __tablename__ = "household_vulnerability"
+
+    household_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("households.id", ondelete="CASCADE"), primary_key=True
+    )
+    children: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    elderly: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    disability: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    pregnancy: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+
+class AidDelivery(CommonMixin, Base):
+    """Ayuda entregada a un hogar. `is_duplicate` marca entregas repetidas justificadas."""
+
+    __tablename__ = "aid_deliveries"
+    __table_args__ = (Index("ix_aid_deliveries_household", "household_id", "aid_type", "at"),)
+
+    household_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("households.id"), nullable=False)
+    aid_type: Mapped[AidType] = mapped_column(_enum(AidType, "aid_type"), nullable=False)
+    source_fund: Mapped[str] = mapped_column(String(80), nullable=False)
+    is_duplicate: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    justification: Mapped[str | None] = mapped_column(Text, nullable=True)
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class Shelter(CommonMixin, Base):
+    """Albergue temporal (SIMULADO)."""
+
+    __tablename__ = "shelters"
+    __table_args__ = (
+        CheckConstraint("people >= 0 AND people <= capacity", name="ck_shelter_capacity"),
+        CheckConstraint("pets >= 0", name="ck_shelter_pets"),
+    )
+
+    code: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    barrio: Mapped[str] = mapped_column(String(80), nullable=False)
+    capacity: Mapped[int] = mapped_column(Integer, nullable=False)
+    people: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    pets: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

@@ -24,6 +24,7 @@ docker compose exec api python scripts/replay_scenario.py --reset --speed 720  #
 | Inicio (elegir rol) | http://localhost:8080 | — |
 | Tablero del PMU | http://localhost:8080/pmu/ | Operador PMU · `pmu-demo` |
 | Panel de KPI | http://localhost:8080/pmu/kpi/ | Operador PMU o Público · `publico-demo` |
+| Mapa público (agregado por manzana, k ≥ 5) | http://localhost:8080/mapa/ | Público · `publico-demo` |
 | Reporte ciudadano (PWA offline) | http://localhost:8080/reportar/ | Ciudadanía · `ciudadano-demo` |
 | API (OpenAPI) | http://localhost:8080/docs | — |
 

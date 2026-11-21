@@ -21,4 +21,18 @@ const auth: Middleware = {
 export const api = createClient<paths>({ baseUrl: API_BASE });
 api.use(auth);
 
+/**
+ * Vista pública (inicio): siempre consulta como `publico`, con o sin sesión, para que la
+ * ciudadanía, el administrador y cualquier visitante vean lo mismo: solo agregados (k ≥ 5).
+ */
+const publicAuth: Middleware = {
+  onRequest({ request }) {
+    request.headers.set("Authorization", `Bearer ${PUBLIC_TOKEN}`);
+    return request;
+  },
+};
+
+export const publicApi = createClient<paths>({ baseUrl: API_BASE });
+publicApi.use(publicAuth);
+
 export type { paths, components } from "./schema";

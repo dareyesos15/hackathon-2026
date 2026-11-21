@@ -100,6 +100,9 @@ interface Props {
   alertAreas?: FeatureCollection | null;
   /** Capa de cascada por manzana; `null` la oculta. */
   cascade?: FeatureCollection | null;
+  /** Sensores de zonas inseguras (conos y equipos, patente NC2025/0015763). */
+  zones?: FeatureCollection | null;
+  onZoneSelect?: (sensorId: string) => void;
   onCascadeSelect?: (properties: Record<string, unknown>) => void;
   /** Si está definido, un clic en el mapa entrega el punto (p. ej. centro de un área). */
   onMapClick?: (lat: number, lon: number) => void;
@@ -107,12 +110,13 @@ interface Props {
   leyenda?: boolean;
 }
 
-type Extra = "resources" | "trails" | "alertAreas" | "cascade";
+type Extra = "resources" | "trails" | "alertAreas" | "cascade" | "zones";
 const EXTRA_SOURCES: Record<Extra, string> = {
   resources: "recursos",
   trails: "recorridos",
   alertAreas: "alertas",
   cascade: "cascada",
+  zones: "zonas",
 };
 
 export function Mapa({
@@ -126,6 +130,8 @@ export function Mapa({
   alertAreas = null,
   cascade = null,
   onCascadeSelect,
+  zones = null,
+  onZoneSelect,
   onMapClick,
   leyenda = true,
 }: Props) {
@@ -134,6 +140,7 @@ export function Mapa({
   const ready = useRef(false);
   const onSelectRef = useRef(onSelect);
   const onCascadeRef = useRef(onCascadeSelect);
+  const onZoneRef = useRef(onZoneSelect);
   const onMapClickRef = useRef(onMapClick);
   const latest = useRef({ incidents, barrios, manzanas, selectedId });
   const extras = useRef<Record<Extra, FeatureCollection | null>>({
@@ -141,15 +148,17 @@ export function Mapa({
     trails,
     alertAreas,
     cascade,
+    zones,
   });
   const [basemap, setBasemap] = useState<Basemap>("cargando");
 
   useEffect(() => {
     onSelectRef.current = onSelect;
     onCascadeRef.current = onCascadeSelect;
+    onZoneRef.current = onZoneSelect;
     onMapClickRef.current = onMapClick;
     latest.current = { incidents, barrios, manzanas, selectedId };
-    extras.current = { resources, trails, alertAreas, cascade };
+    extras.current = { resources, trails, alertAreas, cascade, zones };
   });
 
   useEffect(() => {
@@ -335,12 +344,35 @@ export function Mapa({
             "circle-stroke-color": "#ffffff",
           },
         });
+        // Sensor de zonas inseguras: cono de vigilancia + equipo (rojo si hay alarma abierta).
+        map.addLayer({
+          id: "zonas-cono",
+          type: "fill",
+          source: "zonas",
+          filter: ["==", ["get", "part"], "cone"],
+          paint: {
+            "fill-color": ["case", ["get", "alarm"], "#d21f2b", "#0e7490"],
+            "fill-opacity": ["case", ["get", "alarm"], 0.45, 0.25],
+          },
+        });
+        map.addLayer({
+          id: "zonas-equipo",
+          type: "circle",
+          source: "zonas",
+          filter: ["==", ["get", "part"], "device"],
+          paint: {
+            "circle-color": ["case", ["get", "alarm"], "#d21f2b", "#0e7490"],
+            "circle-radius": ["case", ["get", "alarm"], 8, 6],
+            "circle-stroke-width": 2.5,
+            "circle-stroke-color": ["case", ["get", "alarm"], "#fbe7e8", "#ffffff"],
+          },
+        });
         map.on("click", (e: MapMouseEvent) => {
           if (onMapClickRef.current) {
             onMapClickRef.current(e.lngLat.lat, e.lngLat.lng);
             return;
           }
-          const layers = ["incidentes", "recursos", "cascada-relleno"].filter((l) =>
+          const layers = ["zonas-equipo", "incidentes", "recursos", "cascada-relleno"].filter((l) =>
             map.getLayer(l),
           );
           const [hit] = map.queryRenderedFeatures(e.point, { layers });
@@ -355,11 +387,21 @@ export function Mapa({
                 `${props.label} · ${RESOURCE_STATUS_LABEL[props.status as keyof typeof RESOURCE_STATUS_LABEL] ?? props.status}${simulado(" (SIMULADO)")}`,
               )
               .addTo(map);
+          } else if (hit.layer.id === "zonas-equipo") {
+            new maplibre.Popup({ closeButton: false })
+              .setLngLat(e.lngLat)
+              .setText(
+                `${props.code} · ${props.label} · ${
+                  props.open_alarms > 0 ? `${props.open_alarms} alarmas sin atender` : "sin alarmas"
+                } · batería ${props.battery} %${simulado(" (SIMULADO)")}`,
+              )
+              .addTo(map);
+            if (typeof props.id === "string") onZoneRef.current?.(props.id);
           } else if (hit.layer.id === "cascada-relleno") {
             onCascadeRef.current?.(props);
           }
         });
-        for (const layer of ["incidentes", "recursos"]) {
+        for (const layer of ["incidentes", "recursos", "zonas-equipo"]) {
           map.on("mouseenter", layer, () => (map.getCanvas().style.cursor = "pointer"));
           map.on("mouseleave", layer, () => (map.getCanvas().style.cursor = ""));
         }
@@ -414,11 +456,12 @@ export function Mapa({
       trails,
       alertAreas,
       cascade,
+      zones,
     };
     for (const [key, id] of Object.entries(EXTRA_SOURCES) as [Extra, string][]) {
       map.getSource<GeoJSONSource>(id)?.setData(data[key] ?? EMPTY);
     }
-  }, [resources, trails, alertAreas, cascade]);
+  }, [resources, trails, alertAreas, cascade, zones]);
 
   useEffect(() => {
     const map = mapRef.current;

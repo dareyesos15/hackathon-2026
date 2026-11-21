@@ -81,8 +81,18 @@ export default function Ingresar() {
 
   return (
     <main className="flex flex-1 flex-col">
-      <header className="bg-sangre text-white">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pt-6 pb-8">
+      <header className="relative overflow-hidden bg-sangre text-white">
+        {/* Grabados decorativos: colibrí (izquierda) y Nevado del Ruiz con cafetal (derecha).
+            En pantallas angostas se atenúan para no competir con el texto. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 aspect-[372/287] bg-[url('/img/cabecera-colibri.jpg')] bg-cover bg-left opacity-25 [mask-image:linear-gradient(to_right,black_75%,transparent)] min-[1440px]:opacity-100"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 aspect-[421/287] bg-[url('/img/cabecera-volcan.jpg')] bg-cover bg-right opacity-25 [mask-image:linear-gradient(to_left,black_75%,transparent)] min-[1440px]:opacity-100"
+        />
+        <div className="relative mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pt-6 pb-8">
           <Link href="/" className="text-sm text-white/80 underline underline-offset-4">
             ← Volver al mapa y los indicadores
           </Link>

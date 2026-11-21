@@ -1,0 +1,25 @@
+{
+  "description": "Casos compartidos de redacción de datos personales (principio I). Los usan services/api/tests/unit/test_privacy.py y apps/web/tests/redact.test.ts. Todos los datos son sintéticos.",
+  "cases": [
+    {"input": "me llamo Ana Gómez, mi cel 3001234567, cédula 1053123456", "expected": "me llamo [NOMBRE], mi cel [TEL], cédula [CC]"},
+    {"input": "Llamar al +57 310 555 1234 urgente", "expected": "Llamar al [TEL] urgente"},
+    {"input": "llamen al 57-3205551234", "expected": "llamen al [TEL]"},
+    {"input": "escribir a ayuda.familia@gmail.com por favor", "expected": "escribir a [CORREO] por favor"},
+    {"input": "carro de placas KLM 452 bloquea la via", "expected": "carro de placas [PLACA] bloquea la via"},
+    {"input": "moto placa ABC12D en el andén", "expected": "moto placa [PLACA] en el andén"},
+    {"input": "documento 1.053.123.456 de mi papá Jorge", "expected": "documento [CC] de mi papá [NOMBRE]"},
+    {"input": "soy María y estoy atrapada en Milán", "expected": "soy [NOMBRE] y estoy atrapada en Milán"},
+    {"input": "me llamo pedro perez y estoy en Chipre", "expected": "me llamo [NOMBRE] y estoy en Chipre"},
+    {"input": "mi hija Laura Sofía no aparece desde el sismo", "expected": "mi hija [NOMBRE] no aparece desde el sismo"},
+    {"input": "Mi mamá se llama Rosa y está herida", "expected": "Mi mamá se llama [NOMBRE] y está herida"},
+    {"input": "3001234567", "expected": "[TEL]"},
+    {"input": "edificio caido cra 23 con calle 65, 3 personas atrapadas", "expected": "edificio caido cra 23 con calle 65, 3 personas atrapadas"},
+    {"input": "coordenadas 5.0561,-75.4842 hay heridos", "expected": "coordenadas 5.0561,-75.4842 hay heridos"},
+    {"input": "hay 120 personas en el coliseo", "expected": "hay 120 personas en el coliseo"},
+    {"input": "dicen que habrá réplica de 9 a las 3 pm", "expected": "dicen que habrá réplica de 9 a las 3 pm"},
+    {"input": "soy de Milán y huele a gas", "expected": "soy de Milán y huele a gas"},
+    {"input": "DACORA ATR MILAN 3 edificio caido cra 23", "expected": "DACORA ATR MILAN 3 edificio caido cra 23"},
+    {"input": "se necesitan 2.000 mercados en La Enea", "expected": "se necesitan 2.000 mercados en La Enea"},
+    {"input": "mi nombre es Carlos, cc 75.123.456, tel 3157654321", "expected": "mi nombre es [NOMBRE], cc [CC], tel [TEL]"}
+  ]
+}

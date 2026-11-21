@@ -43,7 +43,8 @@ def main() -> None:
     services: dict[str, dict[str, object]] = {}
     for name, _comuna in barrios:
         hard = name in HARD_HIT
-        visit_requests[name] = rng.randint(70, 140) if hard else rng.randint(8, 45)
+        # Escala de la demo (decenas de predios), coherente con el censo y las inspecciones.
+        visit_requests[name] = rng.randint(4, 8) if hard else rng.randint(0, 3)
         row: dict[str, object] = {}
         for svc in SERVICES:
             low, high = (62, 92) if hard else (88, 100)
@@ -81,7 +82,7 @@ def main() -> None:
     # Curva histórica del índice (día 0 a 90), forma logística con ruido: SIMULADA.
     history = []
     for day in range(0, 91, 3):
-        base = 18 + 52 / (1 + 2.718 ** (-(day - 38) / 11))
+        base = 15 + 47 / (1 + 2.718 ** (-(day - 35) / 11))
         history.append({"day": day, "value": round(min(100.0, base + rng.uniform(-1.5, 1.5)), 1)})
 
     billion = 1_000_000_000

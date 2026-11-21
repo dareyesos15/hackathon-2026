@@ -54,46 +54,46 @@
     }
   },
   "visit_requests": {
-    "La Francia": 28,
-    "Villa Pilar": 34,
-    "Asturias": 10,
-    "Aranjuez": 20,
-    "Chipre": 38,
-    "Campohermoso": 31,
-    "San José": 106,
-    "Los Agustinos": 85,
-    "Centro": 77,
-    "Galán": 125,
-    "El Carmen": 23,
-    "Marmato": 33,
-    "Cervantes": 21,
-    "Fundadores": 109,
-    "Bosques del Norte": 18,
-    "Lleras": 26,
-    "Persia": 34,
-    "Versalles": 17,
-    "Bengala": 37,
-    "Fátima": 25,
-    "La Florida": 36,
-    "Belén": 41,
-    "Sancancio": 35,
-    "La Estrella": 16,
-    "Milán": 130,
-    "Palermo": 74,
-    "Palogrande": 41,
-    "Sinaí": 18,
-    "Solferino": 36,
-    "La Sultana": 15,
-    "Alta Suiza": 37,
-    "El Cable": 25,
-    "Laureles": 29,
-    "Lusitania": 37,
-    "Baja Suiza": 18,
-    "Chachafruto": 29,
-    "El Trébol": 33,
-    "San Marcel": 30,
-    "Bosques de la Enea": 26,
-    "La Enea": 33
+    "La Francia": 2,
+    "Villa Pilar": 3,
+    "Asturias": 0,
+    "Aranjuez": 1,
+    "Chipre": 3,
+    "Campohermoso": 2,
+    "San José": 8,
+    "Los Agustinos": 4,
+    "Centro": 4,
+    "Galán": 7,
+    "El Carmen": 1,
+    "Marmato": 3,
+    "Cervantes": 1,
+    "Fundadores": 6,
+    "Bosques del Norte": 1,
+    "Lleras": 2,
+    "Persia": 3,
+    "Versalles": 1,
+    "Bengala": 3,
+    "Fátima": 2,
+    "La Florida": 3,
+    "Belén": 0,
+    "Sancancio": 3,
+    "La Estrella": 1,
+    "Milán": 7,
+    "Palermo": 4,
+    "Palogrande": 1,
+    "Sinaí": 0,
+    "Solferino": 3,
+    "La Sultana": 0,
+    "Alta Suiza": 3,
+    "El Cable": 2,
+    "Laureles": 2,
+    "Lusitania": 3,
+    "Baja Suiza": 1,
+    "Chachafruto": 2,
+    "El Trébol": 3,
+    "San Marcel": 2,
+    "Bosques de la Enea": 2,
+    "La Enea": 3
   },
   "services": {
     "La Francia": {
@@ -145,11 +145,11 @@
       "eta": "2026-12-07"
     },
     "San José": {
-      "agua": 63,
-      "energia": 74,
-      "gas": 66,
-      "telecom": 80,
-      "vias": 89,
+      "agua": 71,
+      "energia": 63,
+      "gas": 74,
+      "telecom": 66,
+      "vias": 80,
       "eta": "2026-12-06"
     },
     "Los Agustinos": {
@@ -265,11 +265,11 @@
       "eta": "2026-11-30"
     },
     "Belén": {
-      "agua": 89,
-      "energia": 95,
-      "gas": 90,
-      "telecom": 91,
-      "vias": 89,
+      "agua": 95,
+      "energia": 90,
+      "gas": 91,
+      "telecom": 89,
+      "vias": 100,
       "eta": "2026-11-24"
     },
     "Sancancio": {
@@ -305,19 +305,19 @@
       "eta": "2026-11-24"
     },
     "Palogrande": {
-      "agua": 99,
-      "energia": 90,
-      "gas": 95,
-      "telecom": 92,
-      "vias": 94,
-      "eta": "2026-11-25"
+      "agua": 95,
+      "energia": 92,
+      "gas": 94,
+      "telecom": 88,
+      "vias": 98,
+      "eta": "2026-11-29"
     },
     "Sinaí": {
-      "agua": 88,
+      "agua": 94,
       "energia": 94,
-      "gas": 94,
-      "telecom": 93,
-      "vias": 88,
+      "gas": 93,
+      "telecom": 88,
+      "vias": 99,
       "eta": "2026-11-24"
     },
     "Solferino": {
@@ -577,127 +577,127 @@
   "index_history": [
     {
       "day": 0,
-      "value": 19.1
+      "value": 16.4
     },
     {
       "day": 3,
-      "value": 20.5
+      "value": 17.9
     },
     {
       "day": 6,
-      "value": 21.1
+      "value": 18.5
     },
     {
       "day": 9,
-      "value": 20.9
+      "value": 18.5
     },
     {
       "day": 12,
-      "value": 23.0
+      "value": 20.7
     },
     {
       "day": 15,
-      "value": 22.7
+      "value": 20.5
     },
     {
       "day": 18,
-      "value": 26.1
+      "value": 24.1
     },
     {
       "day": 21,
-      "value": 28.1
+      "value": 26.3
     },
     {
       "day": 24,
-      "value": 28.6
+      "value": 26.8
     },
     {
       "day": 27,
-      "value": 33.5
+      "value": 31.8
     },
     {
       "day": 30,
-      "value": 35.9
+      "value": 34.2
     },
     {
       "day": 33,
-      "value": 38.9
+      "value": 37.1
     },
     {
       "day": 36,
-      "value": 41.8
+      "value": 39.7
     },
     {
       "day": 39,
-      "value": 46.4
+      "value": 44.0
     },
     {
       "day": 42,
-      "value": 48.6
+      "value": 45.7
     },
     {
       "day": 45,
-      "value": 52.9
+      "value": 49.4
     },
     {
       "day": 48,
-      "value": 55.5
+      "value": 51.4
     },
     {
       "day": 51,
-      "value": 57.4
+      "value": 52.7
     },
     {
       "day": 54,
-      "value": 59.6
+      "value": 54.4
     },
     {
       "day": 57,
-      "value": 63.0
+      "value": 57.2
     },
     {
       "day": 60,
-      "value": 64.6
+      "value": 58.4
     },
     {
       "day": 63,
-      "value": 64.3
+      "value": 57.8
     },
     {
       "day": 66,
-      "value": 65.2
+      "value": 58.4
     },
     {
       "day": 69,
-      "value": 67.0
+      "value": 59.9
     },
     {
       "day": 72,
-      "value": 68.1
+      "value": 60.8
     },
     {
       "day": 75,
-      "value": 66.8
+      "value": 59.4
     },
     {
       "day": 78,
-      "value": 68.9
+      "value": 61.3
     },
     {
       "day": 81,
-      "value": 68.2
+      "value": 60.5
     },
     {
       "day": 84,
-      "value": 69.0
+      "value": 61.2
     },
     {
       "day": 87,
-      "value": 68.4
+      "value": 60.6
     },
     {
       "day": 90,
-      "value": 70.0
+      "value": 62.1
     }
   ]
 }

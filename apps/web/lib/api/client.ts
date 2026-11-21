@@ -4,16 +4,16 @@
  */
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./schema";
-import { PUBLIC_TOKEN, getSession } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
 /** Mismo origen en producción (Nginx hace proxy de /api/). En `next dev`, apuntar a la API. */
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
-/** Sin sesión, la página de inicio consulta como `publico`: solo agregados (k ≥ 5) y KPI. */
+/** Con sesión de entidad, envía su token; sin sesión la solicitud es anónima (rol `publico`). */
 const auth: Middleware = {
   onRequest({ request }) {
-    const token = getSession()?.token ?? PUBLIC_TOKEN;
-    request.headers.set("Authorization", `Bearer ${token}`);
+    const token = getSession()?.token;
+    if (token) request.headers.set("Authorization", `Bearer ${token}`);
     return request;
   },
 };
@@ -22,17 +22,10 @@ export const api = createClient<paths>({ baseUrl: API_BASE });
 api.use(auth);
 
 /**
- * Vista pública (inicio): siempre consulta como `publico`, con o sin sesión, para que la
- * ciudadanía, el administrador y cualquier visitante vean lo mismo: solo agregados (k ≥ 5).
+ * Vista pública y reporte ciudadano: siempre anónimos (sin token), con o sin sesión, para que
+ * cualquier visitante vea lo mismo (agregados k ≥ 5, triaje sin datos personales) y para que un
+ * reporte ciudadano nunca quede atado a la sesión de una entidad.
  */
-const publicAuth: Middleware = {
-  onRequest({ request }) {
-    request.headers.set("Authorization", `Bearer ${PUBLIC_TOKEN}`);
-    return request;
-  },
-};
-
 export const publicApi = createClient<paths>({ baseUrl: API_BASE });
-publicApi.use(publicAuth);
 
 export type { paths, components } from "./schema";

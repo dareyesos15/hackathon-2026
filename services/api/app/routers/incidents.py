@@ -36,6 +36,7 @@ from app.schemas import (
     IncidentDetail,
     IncidentList,
     IncidentRouting,
+    IncidentSummary,
     PlanLineOut,
     RecipientOut,
 )
@@ -68,11 +69,16 @@ async def list_incidents(
     trust_label: TrustLabel | None = None,
     since: datetime | None = Query(default=None, description="Actualizados después de"),
     limit: int = Query(default=500, ge=1, le=2000),
-    _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
+    role: Role = Depends(require_role(Role.operador_pmu, Role.coe, Role.publico)),
     session: AsyncSession = Depends(get_session),
 ) -> IncidentList:
+    """Incidentes con triaje. El público (sin sesión) ve la misma matriz, sin los descartados y
+    con la ubicación redondeada a ~100 m (sin direcciones exactas; Ley 1581). Los incidentes no
+    llevan texto de reportes ni datos personales."""
     cutoff = datetime.now(UTC)
     stmt = select(Incident).where(Incident.report_count > 0)
+    if role == Role.publico:
+        stmt = stmt.where(Incident.status != IncidentStatus.descartado)
     if triage:
         stmt = stmt.where(Incident.triage_level == triage)
     if status_:
@@ -85,7 +91,20 @@ async def list_incidents(
         stmt = stmt.where(Incident.updated_at > since)
     stmt = stmt.order_by(TRIAGE_ORDER.desc(), Incident.first_seen).limit(limit)
     rows = list((await session.execute(stmt)).scalars())
-    return IncidentList(items=await incidents_out(session, rows), cutoff_at=cutoff)
+    items = await incidents_out(session, rows)
+    if role == Role.publico:
+        items = [_public_incident(i) for i in items]
+    return IncidentList(items=items, cutoff_at=cutoff)
+
+
+PUBLIC_COORD_DECIMALS = 3  # ~110 m: ubica la manzana, no la puerta
+
+
+def _public_incident(item: IncidentSummary) -> IncidentSummary:
+    def r(v: float | None) -> float | None:
+        return round(v, PUBLIC_COORD_DECIMALS) if v is not None else None
+
+    return item.model_copy(update={"lat": r(item.lat), "lon": r(item.lon)})
 
 
 def _ref(agency: Agency | None) -> AgencyRef | None:

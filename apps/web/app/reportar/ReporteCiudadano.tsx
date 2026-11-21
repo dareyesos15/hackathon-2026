@@ -2,16 +2,16 @@
 /**
  * PWA ciudadana (US4): aviso de privacidad + consentimiento, formulario corto, redacción en el
  * borde, guardado en el teléfono (outbox) y envío automático al volver la señal.
+ * Sin iniciar sesión: cualquier persona reporta como anónima.
  */
 import { EtiquetaSimulado } from "@/components/EtiquetaSimulado";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { api } from "@/lib/api/client";
+import { publicApi as api } from "@/lib/api/client";
 import { db, enqueue, flush, newClientUuid, startSync, type OutboxItem } from "@/lib/db";
 import { formatTime } from "@/lib/format";
 import { CATEGORY_LABEL, type Category } from "@/lib/labels";
 import { redact } from "@/lib/redact";
-import { DEMO_TOKENS, getSession, setSession } from "@/lib/session";
 
 const CONSENT_KEY = "dacora.consent.v1";
 const CATEGORIES: Category[] = [
@@ -37,11 +37,6 @@ function readConsent(): boolean {
   }
 }
 
-function ensureCitizenSession() {
-  const s = getSession();
-  if (!s || s.role !== "ciudadano") setSession({ role: "ciudadano", token: DEMO_TOKENS.ciudadano });
-}
-
 export default function ReporteCiudadano() {
   const [consent, setConsent] = useState(readConsent);
   const [online, setOnline] = useState(() => navigator.onLine);
@@ -63,7 +58,6 @@ export default function ReporteCiudadano() {
   }, []);
 
   useEffect(() => {
-    ensureCitizenSession();
     const up = () => setOnline(true);
     const down = () => setOnline(false);
     window.addEventListener("online", up);

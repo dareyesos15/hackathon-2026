@@ -66,12 +66,13 @@ class Settings(BaseSettings):
     similarity_provider: str = "tfidf"
 
     token_operador_pmu: str = "pmu-demo"
-    token_ciudadano: str = "ciudadano-demo"
     token_publico: str = "publico-demo"
     token_coe: str = "coe-demo"
     token_inspector: str = "inspector-demo"
     token_agencia: str = "agencia-demo"
     token_admin: str = "admin-demo"
+    # Contraseña de los usuarios de prueba (app.core.users). Solo para la demo.
+    demo_password: str = Field(default="dacora2026", min_length=6)
 
     dedup: DedupSettings = DedupSettings()
     trust: TrustWeights = TrustWeights()
@@ -107,7 +108,6 @@ class Settings(BaseSettings):
         """Mapa token → rol."""
         return {
             self.token_operador_pmu: "operador_pmu",
-            self.token_ciudadano: "ciudadano",
             self.token_publico: "publico",
             self.token_coe: "coe",
             self.token_inspector: "inspector",

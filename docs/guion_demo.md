@@ -11,9 +11,11 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
    ```
    Al final debe decir **"Todas las metas P0 cumplidas"**.
 2. En el navegador del portátil, tres pestañas:
-   - **A:** http://localhost:8080 → Operador del PMU → *Entrar* (queda en `/pmu/`).
+   - **A:** http://localhost:8080/ingresar/ → usuario `coe`, contraseña `dacora2026` → *Entrar*
+     (queda en `/pmu/`). Use `coe` y no `pmu`: solo el COE aprueba alertas oficiales.
    - **B:** http://localhost:8080/pmu/kpi/ (abrirla desde la A con "Panel de KPI").
-   - **C:** http://localhost:8080/reportar/ → aceptar el aviso de privacidad.
+   - **C:** http://localhost:8080/reportar/ → aceptar el aviso de privacidad (sin iniciar sesión:
+     la ciudadanía reporta como anónima).
    - **D:** http://localhost:8080/recuperacion/ (desde la A con "Recuperación").
 3. Celular (opcional), misma red Wi-Fi: `http://<IP-del-portátil>:8080/reportar/`, aceptar el aviso
    y **dejar la página abierta**. (Sin https no hay service worker; el outbox sí funciona.)
@@ -36,7 +38,8 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | 6 | 2:40–3:10 | "La IA solo sugiere: un reporte con riesgo vital nunca se descarta solo. Para descartarlo, un humano deja una nota que queda en la bitácora." | Abrir un incidente **Crítico** → intentar *Descartar* sin nota (botón deshabilitado) → *Confirmar* → mostrar la bitácora con rol y hora. |
 | 6b | +0:30 | "Cada incidente le llega a quien debe: el sistema dice qué agencia lidera, cuáles apoyan y cuáles solo se informan, citando la tarea EMRE, y arma el despacho multiagencia con el recurso adecuado más cercano. Un humano lo confirma con un clic." | Abrir el incidente **Crítico** de Milán → sección *A quién le llega* (Bomberos líder; Cruz Roja, Defensa Civil y Policía de apoyo; COE informado) → *Generar despacho multiagencia*. Ver los recorridos morados en el mapa (llegan en ~20 s). Intentar despachar otro recurso en *Despacho*: pide justificar un refuerzo. |
 | 6c | +0:15 | "La agencia ve en su pantalla los avisos que le corresponden y su papel, aunque todavía no tenga recurso despachado." | Abrir `/agencia/`, elegir *Policía* → *Avisos para su agencia* → luego *Llegamos al sitio* en su despacho. |
-| 6d | +0:30 | "Llueve sobre laderas ya golpeadas: Dacora anticipa el siguiente deslizamiento, pero solo el COE emite la alerta." | Pestaña *Cascada* → activar la capa → subir la lluvia a 40 mm → tocar una manzana **Muy alto** → *Crear alerta preventiva* → mensaje corto → *Guardar borrador*. Pestaña *Alertas* → *Aprobar y emitir* (Entidades y PMU incluye la autoridad del COE). Mostrar el aviso rojo en el tablero y en la página de inicio pública (`/`, en una pestaña sin sesión). |
+| 6d | +0:30 | "Llueve sobre laderas ya golpeadas: Dacora anticipa el siguiente deslizamiento, pero solo el COE emite la alerta." | Pestaña *Cascada* → activar la capa → subir la lluvia a 40 mm → tocar una manzana **Muy alto** → *Crear alerta preventiva* → mensaje corto → *Guardar borrador*. Pestaña *Alertas* → *Aprobar y emitir* (con el usuario `coe`; el usuario `pmu` solo redacta). Mostrar el aviso rojo en el tablero y en el tablero público (`/`, en una pestaña sin sesión), que también muestra el triaje, la
+cascada y las zonas inseguras. |
 | 6e | +0:30 | "En los edificios acordonados, el dispositivo UNAL de monitoreo de zonas inseguras (patente NC2025/0015763) avisa si alguien entra. Reconoce por RFID a los rescatistas y no da falsas alarmas; si detecta a alguien dentro de un colapso, eso corrobora el reporte." | Pestaña *Zonas*: el contador rojo muestra alarmas abiertas y el mapa solo los sensores. Elegir un incidente de **Colapso** → *Instalar*. En el sensor nuevo: *Simular rescatista con RFID* (acceso autorizado, sin alarma) → *Simular intrusión* (alarma roja + "corrobora 1 incidente: +10 pts"). *Ver incidente* → desglose: **sensor de campo 10/10**. Volver a *Zonas* → *Atender*. |
 | 7 | 3:10–3:40 | "Resultados medidos contra la verdad del escenario: más de 90 % de duplicados y falsos detectados, cero críticos descartados por la IA, cada hecho en el mapa en minutos y no en días. Cada cifra con fuente y fecha de corte." | Pestaña B (Panel de KPI). |
 | 7b | +0:40 | "Después de la emergencia viene la recuperación. En el sismo hubo hasta 3 visitas al mismo inmueble y ayudas que se entregaban dos veces. Aquí cada predio es uno solo y cada hogar también." | Pestaña D → *Habitabilidad*: registrar un predio **Rojo / Mayor** en una manzana de Milán con `Cra 23 # 45-10`; repetir con `carrera 23 45 10` → aviso "visita n.º 2" unida al mismo predio. *Censo único*: registrar el documento `1053123456`, 4 personas, niñez; repetirlo como `1.053.123.456` → "ya estaba registrado". *Ayudas*: entregar *Mercado* a ese documento y repetir → bloqueada; pide justificación. *Resumen*: predios vs. visitas, hogares, ayudas, con fuente y fecha de corte. |
@@ -52,7 +55,7 @@ Para cualquier integrante del equipo. Todos los datos son **SIMULADOS**.
 | El celular no abre la página | Usar la pestaña C del portátil con DevTools *Offline*. |
 | El recurso no avanza en el mapa | Esperar ~20 s (`TRACK_SPEEDUP=20`) o, en *Despachos por agencia*, marcar *Llegamos al sitio*. |
 | La capa de cascada no cambia | Mover de nuevo el control de lluvia y soltarlo; se recalcula en < 10 s. |
-| Hay que repetir la demo desde cero | Entrar como **Administrador** (`/admin/`) → *Iniciar simulación con datos* (o *Empezar sin datos* para reportes en vivo). |
+| Hay que repetir la demo desde cero | Entrar con el usuario `admin` (`/ingresar/` → `/admin/`) → *Iniciar simulación con datos* (o *Empezar sin datos* para reportes en vivo). |
 | Nada responde | `docker compose down && docker compose up -d` (los datos se conservan) y repetir la reproducción con `--speed 720`. |
 | La recuperación se ve vacía tras reiniciar | Normal: el reinicio también borra inspecciones, censo y ayudas. Registrar de nuevo en la pestaña D. |
 | No veo incidentes en el mapa | El mapa muestra solo el módulo de la pestaña activa: volver a *Triaje*, o en *Capas del mapa* desmarcar "solo el módulo de la pestaña activa" y elegir los módulos. |

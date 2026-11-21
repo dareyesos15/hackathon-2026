@@ -19,6 +19,7 @@ from app.config import get_settings
 from app.db import SessionLocal
 from app.routers import (
     alerts,
+    auth,
     cascade,
     demo,
     dispatch,
@@ -141,6 +142,7 @@ async def health() -> Health:
 
 app.include_router(health_router, prefix=API_PREFIX)
 for module in (
+    auth,
     ingest,
     reports,
     incidents,

@@ -4,7 +4,7 @@
  * que reenviar nunca duplica (data-model.md Report.client_uuid). El texto llega ya redactado.
  */
 import Dexie, { type Table } from "dexie";
-import { api } from "@/lib/api/client";
+import { publicApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 
 export type ReportIn = components["schemas"]["ReportIn"];
@@ -62,7 +62,7 @@ export type Sender = (items: ReportIn[]) => Promise<BatchResult[]>;
 
 /** Envío real: POST /api/v1/ingest/batch (lanza si no hay red o el servidor falla). */
 export const sendBatch: Sender = async (items) => {
-  const { data, error } = await api.POST("/api/v1/ingest/batch", { body: { items } });
+  const { data, error } = await publicApi.POST("/api/v1/ingest/batch", { body: { items } });
   if (error || !data) throw new Error("No se pudo sincronizar");
   return data.results;
 };

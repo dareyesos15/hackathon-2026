@@ -173,8 +173,8 @@ export default function TableroPmu() {
   const incidents = useMemo(() => Array.from(live.incidents.values()), [live.incidents]);
   const resourcesFc = useMemo(() => resourcesToGeoJSON(live.resources.values()), [live.resources]);
   const trailsFc = useMemo(() => trailsToGeoJSON(live.trails), [live.trails]);
-  // Entidades y PMU incluye al COE: puede aprobar alertas oficiales.
-  const isCoe = session?.role === "pmu";
+  // Solo el COE aprueba alertas oficiales (EMRE tarea 5.5); el operador del PMU las redacta.
+  const isCoe = session?.apiRole === "coe";
   const [tab, setTab] = useState<Tab>("triaje");
   const [activeAlerts, setActiveAlerts] = useState<FC | null>(null);
   const [draft, setDraft] = useState<AlertDraft | null>(null);
@@ -309,7 +309,9 @@ export default function TableroPmu() {
       <header className="flex flex-wrap items-stretch bg-sangre text-white">
         <div className="flex items-center gap-3 px-4 py-2">
           <h1 className="font-display text-2xl font-semibold leading-none">Dacora</h1>
-          <span className="text-sm text-white/75">Tablero de entidades y PMU</span>
+          <span className="text-sm text-white/75">
+            Tablero de entidades y PMU{session ? ` · ${session.displayName}` : ""}
+          </span>
           <EtiquetaSimulado sobreOscuro />
           <span className={`rounded-sm px-2 py-0.5 text-xs font-bold ${mode.cls}`}>
             {live.mode === "en_vivo" && (

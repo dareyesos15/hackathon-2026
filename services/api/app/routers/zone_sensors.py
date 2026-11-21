@@ -249,9 +249,11 @@ async def _sensor(session: AsyncSession, sensor_id: uuid.UUID) -> ZoneSensor:
 
 @router.get("", response_model=ZoneSensorList)
 async def list_sensors(
-    _: Role = Depends(require_role(*READERS)),
+    _: Role = Depends(require_role(*READERS, Role.publico)),
     session: AsyncSession = Depends(get_session),
 ) -> ZoneSensorList:
+    """Sensores y su estado. Visible también para el público (tablero para todos): no lleva
+    credenciales RFID ni personas, solo el edificio vigilado, el cono y las alarmas abiertas."""
     sensors = list((await session.execute(select(ZoneSensor).order_by(ZoneSensor.code))).scalars())
     return ZoneSensorList(items=await sensors_out(session, sensors), cutoff_at=datetime.now(UTC))
 

@@ -68,7 +68,9 @@ async def to_result(session: AsyncSession, result: PipelineResult) -> ReportResu
 
 
 def incoming_from(body: ReportIn, role: Role) -> IncomingReport:
-    allowed = CITIZEN_CHANNELS if role == Role.ciudadano else OPERATOR_CHANNELS
+    # La ciudadanía reporta sin iniciar sesión (rol `publico`): mismos canales que `ciudadano`.
+    citizen = role in (Role.ciudadano, Role.publico)
+    allowed = CITIZEN_CHANNELS if citizen else OPERATOR_CHANNELS
     if body.channel not in allowed:
         raise HTTPException(
             status.HTTP_403_FORBIDDEN,
@@ -109,7 +111,7 @@ def incoming_from(body: ReportIn, role: Role) -> IncomingReport:
 async def ingest_report(
     body: ReportIn,
     response: Response,
-    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu, Role.coe)),
+    role: Role = Depends(require_role(Role.publico, Role.ciudadano, Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
     engine: Engine = Depends(get_engine),
 ) -> ReportResult:
@@ -161,7 +163,7 @@ async def ingest_sms(
 @router.post("/batch", response_model=BatchOut)
 async def ingest_batch(
     body: BatchIn,
-    role: Role = Depends(require_role(Role.ciudadano, Role.operador_pmu, Role.coe)),
+    role: Role = Depends(require_role(Role.publico, Role.ciudadano, Role.operador_pmu, Role.coe)),
     engine: Engine = Depends(get_engine),
 ) -> BatchOut:
     """Sincronización del outbox de la PWA. Un ítem inválido no hace fallar el lote."""

@@ -933,6 +933,73 @@
         "title": "DeliveryOut",
         "type": "object"
       },
+      "DemoUserList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DemoUserOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "password_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Contraseña de prueba; solo se publica en modo demo",
+            "title": "Password Hint"
+          }
+        },
+        "required": [
+          "items",
+          "password_hint"
+        ],
+        "title": "DemoUserList",
+        "type": "object"
+      },
+      "DemoUserOut": {
+        "properties": {
+          "api_role": {
+            "title": "Api Role",
+            "type": "string"
+          },
+          "area": {
+            "enum": [
+              "pmu",
+              "agencia",
+              "admin"
+            ],
+            "title": "Area",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "organization": {
+            "title": "Organization",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "display_name",
+          "organization",
+          "area",
+          "api_role"
+        ],
+        "title": "DemoUserOut",
+        "type": "object"
+      },
       "DispatchIn": {
         "description": "Despacho idempotente por `client_uuid` (data-model.md Dispatch.client_uuid).",
         "properties": {
@@ -2396,6 +2463,83 @@
           "lon"
         ],
         "title": "LocationIn",
+        "type": "object"
+      },
+      "LoginIn": {
+        "properties": {
+          "password": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginIn",
+        "type": "object"
+      },
+      "LoginOut": {
+        "properties": {
+          "agency_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agency Code"
+          },
+          "api_role": {
+            "title": "Api Role",
+            "type": "string"
+          },
+          "area": {
+            "enum": [
+              "pmu",
+              "agencia",
+              "admin"
+            ],
+            "title": "Area",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "organization": {
+            "title": "Organization",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "area",
+          "api_role",
+          "username",
+          "display_name",
+          "organization",
+          "agency_code"
+        ],
+        "title": "LoginOut",
         "type": "object"
       },
       "LookupIn": {
@@ -5112,6 +5256,69 @@
         ]
       }
     },
+    "/api/v1/auth/demo-users": {
+      "get": {
+        "description": "Usuarios de prueba para la pantalla de inicio de sesión (vacío fuera de modo demo).",
+        "operationId": "demo_users_api_v1_auth_demo_users_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoUserList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Demo Users",
+        "tags": [
+          "autenticación"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "autenticación"
+        ]
+      }
+    },
     "/api/v1/demo/reset": {
       "post": {
         "description": "Borra reportes, incidentes, despachos, alertas, lluvia, bitácora y métricas.\n\nConserva la geografía. Solo existe en modo demo: en producción los reportes son solo-agregar.",
@@ -5533,6 +5740,7 @@
     },
     "/api/v1/incidents": {
       "get": {
+        "description": "Incidentes con triaje. El público (sin sesión) ve la misma matriz, sin los descartados y\ncon la ubicación redondeada a ~100 m (sin direcciones exactas; Ley 1581). Los incidentes no\nllevan texto de reportes ni datos personales.",
         "operationId": "list_incidents_api_v1_incidents_get",
         "parameters": [
           {
@@ -7383,6 +7591,7 @@
     },
     "/api/v1/sensors/zones": {
       "get": {
+        "description": "Sensores y su estado. Visible también para el público (tablero para todos): no lleva\ncredenciales RFID ni personas, solo el edificio vigilado, el cono y las alarmas abiertas.",
         "operationId": "list_sensors_api_v1_sensors_zones_get",
         "responses": {
           "200": {

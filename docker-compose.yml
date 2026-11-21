@@ -9,12 +9,12 @@ x-api-env: &api-env
   PII_SALT: ${PII_SALT:-demo-salt-cambiar-en-produccion}
   SIMILARITY_PROVIDER: ${SIMILARITY_PROVIDER:-tfidf}
   TOKEN_OPERADOR_PMU: ${TOKEN_OPERADOR_PMU:-pmu-demo}
-  TOKEN_CIUDADANO: ${TOKEN_CIUDADANO:-ciudadano-demo}
   TOKEN_PUBLICO: ${TOKEN_PUBLICO:-publico-demo}
   TOKEN_COE: ${TOKEN_COE:-coe-demo}
   TOKEN_INSPECTOR: ${TOKEN_INSPECTOR:-inspector-demo}
   TOKEN_AGENCIA: ${TOKEN_AGENCIA:-agencia-demo}
   TOKEN_ADMIN: ${TOKEN_ADMIN:-admin-demo}
+  DEMO_PASSWORD: ${DEMO_PASSWORD:-dacora2026}
   API_BASE_URL: http://127.0.0.1:8000/api/v1
   SIMULATE_TRACKS: ${SIMULATE_TRACKS:-true}
   SIMULATE_ZONE_SENSORS: ${SIMULATE_ZONE_SENSORS:-true}

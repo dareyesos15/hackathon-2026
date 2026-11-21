@@ -42,8 +42,8 @@ export const COLOR_DAMAGE: Record<InspectionColor, DamageLevel[]> = {
 
 export const AID_LABEL: Record<AidType, string> = {
   subsidio_arriendo: "Subsidio de arriendo",
-  kit: "Kit de aseo / cocina",
-  mercado: "Mercado",
+  kit: "Kit de aseo y cocina",
+  mercado: "Kit alimentario (mercado)",
   albergue: "Cupo en albergue",
 };
 
@@ -75,6 +75,16 @@ export type Stage = S["Stage"];
 export type StageStatus = Stage["status"];
 export type ContractRow = S["ContractRow"];
 export type SourceInfo = S["SourceInfo"];
+export type ScenarioComparison = S["ScenarioComparison"];
+export type ScenarioSummary = S["ScenarioSummary"];
+export type ConfidenceStat = S["ConfidenceStat"];
+export type ScenarioKey = "real" | "mejor" | "peor";
+
+export const SCENARIO_LABEL: Record<ScenarioKey, string> = {
+  real: "Datos reales",
+  mejor: "Mejor caso",
+  peor: "Peor caso",
+};
 
 /** Semáforo de etapas: siempre con texto, el color no va solo. */
 export const STAGE_STATUS: Record<StageStatus, { label: string; hex: string }> = {
@@ -104,4 +114,146 @@ export const CHANNEL_LABEL: Record<string, string> = {
   call_123: "Línea 123",
   entity: "Entidades",
   lora: "LoRa",
+};
+
+// ------------------------------------------------- revisión a predio (formato GUE-RPD-FR-02 v4)
+
+export type PropertyReviewIn = S["PropertyReviewIn"];
+export type PropertyReviewOut = S["PropertyReviewOut"];
+export type ReferralList = S["ReferralList"];
+export type ReferralRow = S["ReferralRow"];
+export type Affectation = S["Affectation"];
+export type EventType = S["EventType"];
+export type EventStatus = S["EventStatus"];
+export type StructuralCause = S["StructuralCause"];
+export type ReferralEntity = S["ReferralEntity"];
+export type RespondentRelation = S["RespondentRelation"];
+export type AffectedInfrastructure = S["AffectedInfrastructure"];
+
+export const RELATION_LABEL: Record<RespondentRelation, string> = {
+  propietario: "Propietario",
+  arrendatario: "Arrendatario",
+  sucesion: "Sucesión",
+  otro: "Otro",
+};
+
+export const EVENT_STATUS_LABEL: Record<EventStatus, string> = {
+  inminente: "Inminente",
+  sucedido: "Sucedido",
+};
+
+export const EVENT_TYPE_LABEL: Record<EventType, string> = {
+  sismo: "Sismo",
+  deslizamiento: "Deslizamiento",
+  incendio: "Incendio",
+  vendaval: "Vendaval",
+  avalancha: "Avalancha",
+  inundacion: "Inundación",
+  otro: "Otro",
+};
+
+export const CAUSE_LABEL: Record<StructuralCause, string> = {
+  falta_mantenimiento: "Falta de mantenimiento",
+  intervencion_antropica: "Intervención antrópica",
+  evento_natural: "Evento natural",
+};
+
+export const AFFECTATION_LABEL: Record<Affectation, string> = {
+  total: "Total",
+  parcial: "Parcial",
+  ninguna: "Ninguna",
+};
+
+export const INFRA_LABEL: Record<AffectedInfrastructure, string> = {
+  vivienda: "Infraestructura de vivienda",
+  vial: "Infraestructura vial",
+  educativa: "Infraestructura educativa",
+  comunitaria: "Infraestructura comunitaria",
+};
+
+export const ENTITY_LABEL: Record<ReferralEntity, string> = {
+  ugr: "UGR",
+  corpocaldas: "Corpocaldas",
+  aguas_de_manizales: "Aguas de Manizales",
+  obras_publicas: "Obras Públicas Municipales",
+  invias: "Invías",
+  chec: "CHEC",
+  invama: "Invama",
+  planeacion: "Planeación",
+  infraestructura_depto: "Sec. Infraestructura Depto.",
+  inspeccion_policia: "Inspección de Policía",
+  otro: "Otra entidad",
+};
+
+/** Semáforo sugerido por la afectación y la evacuación (espejo de app/core/recovery.py). */
+export function suggestSemaphore(
+  affectation: Affectation,
+  evacuation: boolean,
+): [InspectionColor, DamageLevel] {
+  if (affectation === "ninguna" && !evacuation) return ["verde", "menor"];
+  if (affectation === "parcial" && !evacuation) return ["amarillo", "mediano_uso_restringido"];
+  return ["rojo", "mayor"];
+}
+
+/** Combinaciones que el formato no admite (espejo de la API). `null` si es coherente. */
+export function reviewInconsistency(
+  color: InspectionColor,
+  affectation: Affectation,
+  evacuation: boolean,
+): string | null {
+  if (evacuation && color !== "rojo")
+    return "Si se recomienda evacuar, el predio no es habitable: el semáforo debe ser rojo.";
+  if (affectation === "ninguna" && evacuation) return "Sin afectación no se recomienda evacuación.";
+  if (affectation === "ninguna" && color !== "verde")
+    return "Sin afectación el semáforo debe ser verde.";
+  if (affectation === "total" && color !== "rojo")
+    return "Con afectación total el semáforo debe ser rojo.";
+  return null;
+}
+
+// ---------------------------------------- censo (RUD), actas de entrega y albergues (EMRE 3.1–3.3)
+
+export type Tenure = S["Tenure"];
+export type HousingStatus = S["HousingStatus"];
+export type HouseholdLoss = S["HouseholdLoss"];
+export type ShelterService = S["ShelterService"];
+export type ShelterStatus = S["ShelterStatus"];
+
+export const TENURE_LABEL: Record<Tenure, string> = {
+  propietario: "Propietario",
+  arrendatario: "Arrendatario",
+  poseedor: "Poseedor",
+  ocupante: "Ocupante",
+  otro: "Otro",
+};
+
+export const HOUSING_STATUS_LABEL: Record<HousingStatus, string> = {
+  habitable: "Habitable",
+  no_habitable: "No habitable",
+  destruida: "Destruida",
+};
+
+export const LOSS_LABEL: Record<HouseholdLoss, string> = {
+  enseres: "Enseres",
+  herramientas_trabajo: "Herramientas de trabajo",
+  animales: "Animales",
+  cultivos: "Cultivos",
+  vehiculo: "Vehículo",
+};
+
+export const SERVICE_LABEL: Record<ShelterService, string> = {
+  agua: "Agua",
+  energia: "Energía",
+  banos: "Baños",
+  cocina: "Cocina",
+  atencion_salud: "Atención en salud",
+  zona_mascotas: "Zona de mascotas",
+  zona_infantil: "Zona infantil",
+};
+
+export const SITUATION_LABEL: Record<string, { label: string; cls: string }> = {
+  albergue: { label: "En albergue", cls: "bg-sky-100 text-sky-900" },
+  arriendo: { label: "En arriendo temporal", cls: "bg-indigo-100 text-indigo-900" },
+  casa: { label: "En su vivienda", cls: "bg-emerald-100 text-emerald-900" },
+  sin_solucion: { label: "Sin solución de vivienda", cls: "bg-senal-fondo text-senal" },
 };

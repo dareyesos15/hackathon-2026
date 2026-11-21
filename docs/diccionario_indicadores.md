@@ -38,6 +38,33 @@ público las cifras menores a 5 se suprimen (se muestran como "< 5").
 | `albergue_personas` / `albergue_mascotas` | Personas · Mascotas en albergue | conteo | Ocupación actual sumada de los albergues. |
 | `albergue_capacidad` | Capacidad de albergues | conteo | Cupos totales de los albergues registrados. |
 
+## Revisión a predio (formato GUE-RPD-FR-02 v4, `POST /api/v1/recovery/reviews`)
+
+Versión digital del formato oficial **"Revisión a predio"** de la Alcaldía de Manizales (Gestión
+para la Prevención y Atención de Urgencias y Emergencias), con sus mismas secciones. Un solo envío
+alimenta habitabilidad, censo único y derivaciones.
+
+| Sección del papel | En Dacora | Habeas Data (Ley 1581) |
+|---|---|---|
+| N.º impreso | `form_number`: llave única; el mismo formato no se registra dos veces (409) | — |
+| 1. Dirección y barrio | Predio único: código catastral o manzana + dirección normalizada | — |
+| 2. Encuestado | Calidad (propietario, arrendatario, sucesión, otro). El documento solo liga el hogar del censo por HMAC; el del propietario se guarda solo como HMAC | Nombre, teléfono y fecha de nacimiento **no se transcriben** |
+| 3. Residentes | Conteos: residentes, menores de 18, mayores de 60, con discapacidad, gestantes, mascotas → banderas de vulnerabilidad del hogar | Nombres, documentos y fechas **quedan solo en el papel** |
+| 4. Evento | Inminente o sucedido; tipo (se agrega **sismo** a las opciones del papel); causa del deterioro estructural | Texto "otro" redactado |
+| 5. Afectación | Total, parcial o ninguna; área afectada (m²) por infraestructura; pérdida de bienes | Texto redactado |
+| 6. Requiere visita | Derivaciones a UGR, Corpocaldas, Aguas de Manizales, Obras Públicas, Invías, CHEC, Invama, Planeación, Sec. Infraestructura Depto., Inspección de Policía u otra; pendientes hasta que la entidad marca su visita (`PATCH /reviews/{id}/referrals/{entidad}`) | — |
+| 7. Evacuación | Sí/No. Si sí: ruta de la Cruz Roja (886 6300) y la familia aparece en *Familias en predio rojo sin solución de vivienda* hasta recibir albergue o arriendo | — |
+| Fecha, hora, bombero, notificado | `reviewed_at`, entidad que revisa, "la persona notificada firmó" | Firmas, nombres y cédulas **solo en el papel** |
+
+**Semáforo NSR-10 sugerido:** afectación ninguna → verde (daño menor); parcial → amarillo (uso
+restringido); total o evacuación recomendada → rojo (daño mayor). El revisor puede ajustarlo,
+pero el sistema rechaza combinaciones incoherentes: evacuar un predio que no esté en rojo, evacuar
+sin afectación, o marcar afectación total sin rojo.
+
+En el tablero: `formatos_revision`, `evacuaciones_recomendadas` (indicador 2) y
+`derivaciones_pendientes` (indicador 6), con la necesidad *Predios revisados que esperan la visita
+de una entidad*.
+
 ## Tablero de recuperación unificado (`GET /api/v1/recovery/dashboard`)
 
 Solo para PMU/COE. Regla de oro: cada cifra lleva su nombre de este diccionario, fuente, versión y

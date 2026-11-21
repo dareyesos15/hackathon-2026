@@ -505,6 +505,17 @@ class Household(CommonMixin, Base):
         _enum(RudStatus, "rud_status"), nullable=False, default=RudStatus.pendiente
     )
     pets_count: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    # Campos del RUD (UNGRD). Solo conteos: nada identifica a una persona (Ley 1581).
+    census_form_number: Mapped[str | None] = mapped_column(String(20), nullable=True, unique=True)
+    tenure: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    housing_status: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    age_0_5: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    age_6_17: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    age_18_59: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    age_60_plus: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    female_members: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    ethnic_members: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    losses: Mapped[list[str]] = mapped_column(ARRAY(String(24)), nullable=False, default=list)
 
 
 class HouseholdVulnerability(Base):
@@ -521,6 +532,47 @@ class HouseholdVulnerability(Base):
     pregnancy: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
 
+class PropertyReview(CommonMixin, Base):
+    """Revisión a predio (formato GUE-RPD-FR-02 v4). Una por formulario; liga la evaluación de
+    habitabilidad y el hogar del censo. Ley 1581: sin nombres, teléfonos, cédulas ni fechas de
+    nacimiento; el propietario (si el encuestado es arrendatario) solo como HMAC con sal.
+    """
+
+    __tablename__ = "property_reviews"
+    __table_args__ = (Index("ix_property_reviews_property", "property_id", "reviewed_at"),)
+
+    form_number: Mapped[str | None] = mapped_column(String(20), nullable=True, unique=True)
+    inspection_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("building_inspections.id"), nullable=False, unique=True
+    )
+    property_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    household_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("households.id"), nullable=True
+    )
+    respondent_relation: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    owner_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    residents: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    event_status: Mapped[str] = mapped_column(String(16), nullable=False)
+    event_types: Mapped[list[str]] = mapped_column(ARRAY(String(24)), nullable=False)
+    event_other: Mapped[str | None] = mapped_column(Text, nullable=True)
+    structural_causes: Mapped[list[str]] = mapped_column(
+        ARRAY(String(32)), nullable=False, default=list
+    )
+    affectation: Mapped[str] = mapped_column(String(16), nullable=False)
+    affected_areas_m2: Mapped[dict[str, float]] = mapped_column(JSONB, nullable=False, default=dict)
+    belongings_loss: Mapped[str | None] = mapped_column(Text, nullable=True)
+    referrals: Mapped[list[str]] = mapped_column(ARRAY(String(32)), nullable=False, default=list)
+    referral_other: Mapped[str | None] = mapped_column(Text, nullable=True)
+    referrals_done: Mapped[list[str]] = mapped_column(
+        ARRAY(String(32)), nullable=False, default=list
+    )
+    evacuation_recommended: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    reviewer_agency: Mapped[str] = mapped_column(String(80), nullable=False)
+    notified_signed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    recorded_by_role: Mapped[str] = mapped_column(String(32), nullable=False)
+
+
 class AidDelivery(CommonMixin, Base):
     """Ayuda entregada a un hogar. `is_duplicate` marca entregas repetidas justificadas."""
 
@@ -533,6 +585,15 @@ class AidDelivery(CommonMixin, Base):
     is_duplicate: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     justification: Mapped[str | None] = mapped_column(Text, nullable=True)
     at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Acta de entrega de ayuda humanitaria.
+    act_number: Mapped[str | None] = mapped_column(String(20), nullable=True, unique=True)
+    delivered_by: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    quantity: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=1)
+    amount_cop: Mapped[float | None] = mapped_column(Numeric(14, 2), nullable=True)
+    months: Mapped[int | None] = mapped_column(SmallInteger, nullable=True)
+    shelter_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("shelters.id"), nullable=True)
+    signed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Shelter(CommonMixin, Base):
@@ -551,6 +612,9 @@ class Shelter(CommonMixin, Base):
     people: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     pets: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     geom: Mapped[Any] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    operator: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    status: Mapped[str] = mapped_column(String(12), nullable=False, default="abierto")
+    services: Mapped[list[str]] = mapped_column(ARRAY(String(24)), nullable=False, default=list)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

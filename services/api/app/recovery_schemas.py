@@ -8,7 +8,24 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from app.domain import AidType, DamageLevel, InspectionColor, RudStatus
+from app.domain import (
+    Affectation,
+    AffectedInfrastructure,
+    AidType,
+    DamageLevel,
+    EventStatus,
+    EventType,
+    HouseholdLoss,
+    HousingStatus,
+    InspectionColor,
+    ReferralEntity,
+    RespondentRelation,
+    RudStatus,
+    ShelterService,
+    ShelterStatus,
+    StructuralCause,
+    Tenure,
+)
 
 
 class PropertyRef(BaseModel):
@@ -76,6 +93,21 @@ class HouseholdIn(PropertyRef):
     pets_count: int = Field(default=0, ge=0, le=30)
     rud_status: RudStatus = RudStatus.pendiente
     vulnerability: Vulnerability = Vulnerability()
+    # Campos del RUD (UNGRD): solo conteos, nunca datos de una persona (Ley 1581).
+    census_form_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º de la planilla de censo"
+    )
+    tenure: Tenure | None = None
+    housing_status: HousingStatus | None = Field(
+        default=None, description="Si no se envía, se toma del semáforo vigente del predio"
+    )
+    age_0_5: int = Field(default=0, ge=0, le=30)
+    age_6_17: int = Field(default=0, ge=0, le=30)
+    age_18_59: int = Field(default=0, ge=0, le=30)
+    age_60_plus: int = Field(default=0, ge=0, le=30)
+    female_members: int = Field(default=0, ge=0, le=30)
+    ethnic_members: int = Field(default=0, ge=0, le=30)
+    losses: list[HouseholdLoss] = Field(default_factory=list)
 
 
 class HouseholdOut(BaseModel):
@@ -91,6 +123,19 @@ class HouseholdOut(BaseModel):
     vulnerability_score: int
     aid_count: int
     created_at: datetime
+    census_form_number: str | None = None
+    tenure: Tenure | None = None
+    housing_status: HousingStatus | None = None
+    age_0_5: int = 0
+    age_6_17: int = 0
+    age_18_59: int = 0
+    age_60_plus: int = 0
+    female_members: int = 0
+    ethnic_members: int = 0
+    losses: list[HouseholdLoss] = Field(default_factory=list)
+    situation: str | None = Field(
+        default=None, description="albergue, arriendo, casa o sin_solucion (vivienda hoy)"
+    )
 
 
 class HouseholdCreated(BaseModel):
@@ -103,15 +148,131 @@ class HouseholdList(BaseModel):
     cutoff_at: datetime
 
 
+# ---------------------------------------------------------------- revisión a predio
+
+
+class PropertyReviewIn(PropertyRef):
+    """Formato GUE-RPD-FR-02 v4 "Revisión a predio" (Alcaldía de Manizales), en digital.
+
+    Ley 1581: los nombres, teléfonos, cédulas y fechas de nacimiento del papel NO se transcriben.
+    El documento del encuestado solo sirve para ligar el hogar del censo (HMAC con sal) y el del
+    propietario se guarda solo como HMAC. De los residentes se registran conteos.
+    """
+
+    form_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º impreso del formato en papel"
+    )
+    reviewed_at: datetime | None = Field(default=None, description="Fecha y hora del formato")
+    # 2. Encuestado
+    respondent_document: str | None = Field(default=None, min_length=5, max_length=20)
+    respondent_relation: RespondentRelation | None = None
+    owner_document: str | None = Field(default=None, min_length=5, max_length=20)
+    # 3. Residentes (solo conteos)
+    residents: int = Field(default=0, ge=0, le=30)
+    minors: int = Field(default=0, ge=0, le=30)
+    elderly: int = Field(default=0, ge=0, le=30)
+    disability: int = Field(default=0, ge=0, le=30)
+    pregnancy: int = Field(default=0, ge=0, le=30)
+    pets: int = Field(default=0, ge=0, le=30)
+    # 4. Evento
+    event_status: EventStatus = EventStatus.sucedido
+    event_types: list[EventType] = Field(min_length=1)
+    event_other: str | None = Field(default=None, max_length=200)
+    structural_causes: list[StructuralCause] = Field(default_factory=list)
+    # 5. Afectación
+    affectation: Affectation
+    affected_areas_m2: dict[AffectedInfrastructure, float] = Field(default_factory=dict)
+    belongings_loss: str | None = Field(default=None, max_length=300)
+    # 6. Requiere visita
+    referrals: list[ReferralEntity] = Field(default_factory=list)
+    referral_other: str | None = Field(default=None, max_length=120)
+    # 7. Evacuación
+    evacuation_recommended: bool = False
+    # Semáforo NSR-10 (si no se envía, se usa el sugerido por la afectación)
+    color: InspectionColor | None = None
+    damage_level: DamageLevel | None = None
+    notes: str | None = Field(default=None, max_length=500)
+    reviewer_agency: str = Field(default="Cuerpo Oficial de Bomberos", max_length=80)
+    notified_signed: bool = False
+
+
+class PropertyReviewOut(BaseModel):
+    id: uuid.UUID
+    form_number: str | None
+    property_id: str
+    barrio: str | None
+    visit_number: int
+    color: InspectionColor
+    damage_level: DamageLevel
+    suggested_color: InspectionColor
+    residents: int
+    respondent_relation: RespondentRelation | None
+    event_status: EventStatus
+    event_types: list[EventType]
+    event_other: str | None
+    structural_causes: list[StructuralCause]
+    affectation: Affectation
+    affected_areas_m2: dict[str, float]
+    belongings_loss: str | None
+    referrals: list[ReferralEntity]
+    referrals_done: list[ReferralEntity]
+    referral_other: str | None
+    evacuation_recommended: bool
+    reviewed_at: datetime
+    reviewer_agency: str
+    notified_signed: bool
+    household_code: str | None
+    household_created: bool
+    next_steps: list[str] = Field(description="Qué sigue después de esta revisión")
+
+
+class ReferralRow(BaseModel):
+    review_id: uuid.UUID
+    form_number: str | None
+    property_id: str
+    barrio: str | None
+    entity: ReferralEntity
+    evacuation_recommended: bool
+    affectation: Affectation
+    reviewed_at: datetime
+
+
+class ReferralSummary(BaseModel):
+    entity: ReferralEntity
+    pending: int
+    done: int
+
+
+class ReferralList(BaseModel):
+    summary: list[ReferralSummary]
+    pending: list[ReferralRow]
+    cutoff_at: datetime
+
+
+class ReferralPatch(BaseModel):
+    done: bool = True
+
+
 class LookupIn(BaseModel):
     document: str = Field(min_length=5, max_length=20)
 
 
 class AidIn(BaseModel):
+    """Acta de entrega de ayuda humanitaria (una por entrega)."""
+
     document: str = Field(min_length=5, max_length=20)
     aid_type: AidType
     source_fund: str = Field(default="Fondo Municipal de Gestión del Riesgo", max_length=80)
     justification: str | None = Field(default=None, max_length=300)
+    act_number: str | None = Field(
+        default=None, pattern=r"^[0-9]{1,20}$", description="N.º del acta de entrega"
+    )
+    delivered_by: str | None = Field(default=None, max_length=80)
+    quantity: int = Field(default=1, ge=1, le=100)
+    amount_cop: float | None = Field(default=None, ge=0, description="Valor mensual del subsidio")
+    months: int | None = Field(default=None, ge=1, le=24)
+    shelter_id: uuid.UUID | None = Field(default=None, description="Albergue de destino")
+    signed: bool = Field(default=False, description="El jefe de hogar firmó el acta")
 
 
 class AidOut(BaseModel):
@@ -122,6 +283,16 @@ class AidOut(BaseModel):
     is_duplicate: bool
     justification: str | None
     at: datetime
+    act_number: str | None = None
+    delivered_by: str | None = None
+    quantity: int = 1
+    amount_cop: float | None = None
+    months: int | None = None
+    shelter_id: uuid.UUID | None = None
+    shelter_name: str | None = None
+    signed: bool = False
+    ended_at: datetime | None = None
+    members: int = 0
 
 
 class AidList(BaseModel):
@@ -141,6 +312,10 @@ class ShelterOut(BaseModel):
     lon: float
     source: str
     updated_at: datetime
+    operator: str | None = None
+    status: ShelterStatus = ShelterStatus.abierto
+    services: list[ShelterService] = Field(default_factory=list)
+    families: int = Field(default=0, description="Hogares del censo alojados hoy")
 
 
 class ShelterList(BaseModel):
@@ -149,8 +324,14 @@ class ShelterList(BaseModel):
 
 
 class ShelterPatch(BaseModel):
-    people: int = Field(ge=0)
-    pets: int = Field(ge=0)
+    """Ajustes del albergue. La ocupación sube y baja sola con las entradas y salidas de hogares;
+    `people`/`pets` solo corrigen el conteo (p. ej. personas no censadas)."""
+
+    people: int | None = Field(default=None, ge=0)
+    pets: int | None = Field(default=None, ge=0)
+    operator: str | None = Field(default=None, max_length=120)
+    status: ShelterStatus | None = None
+    services: list[ShelterService] | None = None
 
 
 class Figure(BaseModel):
@@ -285,7 +466,46 @@ class Stage(BaseModel):
     figures: list[DashFigure]
 
 
+ScenarioKey = Literal["real", "mejor", "peor"]
+
+
+class ConfidenceStat(BaseModel):
+    """Estadístico de una métrica sobre las corridas Monte Carlo (media e IC del 90 %)."""
+
+    key: str
+    label: str
+    unit: Literal["%", "pts"]
+    mean: float
+    p5: float
+    p50: float
+    p95: float
+    n: int
+
+
+class ScenarioSummary(BaseModel):
+    key: Literal["mejor", "peor"]
+    title: str
+    description: str
+    assumptions: list[str]
+    runs: int
+    seed: int
+    p_high_confidence: float = Field(description="% de corridas con confianza ≥ 75")
+    stats: list[ConfidenceStat]
+
+
+class ScenarioComparison(BaseModel):
+    """Confianza que tendría Dacora en el mejor y el peor caso de acceso a datos (SIMULADO)."""
+
+    day: int
+    method: str
+    weights: dict[str, float]
+    scenarios: list[ScenarioSummary]
+
+
 class RecoveryDashboard(BaseModel):
+    scenario: ScenarioKey = "real"
+    scenario_title: str | None = None
+    scenario_note: str | None = None
     cutoff_at: datetime
     event_at: datetime | None
     event_label: str | None

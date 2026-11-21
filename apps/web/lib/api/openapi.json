@@ -1,6 +1,27 @@
 {
   "components": {
     "schemas": {
+      "Affectation": {
+        "description": "Sección 5: afectación del predio.",
+        "enum": [
+          "total",
+          "parcial",
+          "ninguna"
+        ],
+        "title": "Affectation",
+        "type": "string"
+      },
+      "AffectedInfrastructure": {
+        "description": "Sección 5: infraestructura afectada (con área en m²).",
+        "enum": [
+          "vivienda",
+          "vial",
+          "educativa",
+          "comunitaria"
+        ],
+        "title": "AffectedInfrastructure",
+        "type": "string"
+      },
       "AgencyList": {
         "properties": {
           "items": {
@@ -80,9 +101,48 @@
         "type": "object"
       },
       "AidIn": {
+        "description": "Acta de entrega de ayuda humanitaria (una por entrega).",
         "properties": {
+          "act_number": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{1,20}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "N.º del acta de entrega",
+            "title": "Act Number"
+          },
           "aid_type": {
             "$ref": "#/components/schemas/AidType"
+          },
+          "amount_cop": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Valor mensual del subsidio",
+            "title": "Amount Cop"
+          },
+          "delivered_by": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered By"
           },
           "document": {
             "maxLength": 20,
@@ -101,6 +161,45 @@
               }
             ],
             "title": "Justification"
+          },
+          "months": {
+            "anyOf": [
+              {
+                "maximum": 24.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Months"
+          },
+          "quantity": {
+            "default": 1,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "shelter_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Albergue de destino",
+            "title": "Shelter Id"
+          },
+          "signed": {
+            "default": false,
+            "description": "El jefe de hogar firmó el acta",
+            "title": "Signed",
+            "type": "boolean"
           },
           "source_fund": {
             "default": "Fondo Municipal de Gestión del Riesgo",
@@ -140,13 +239,58 @@
       },
       "AidOut": {
         "properties": {
+          "act_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Number"
+          },
           "aid_type": {
             "$ref": "#/components/schemas/AidType"
+          },
+          "amount_cop": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Cop"
           },
           "at": {
             "format": "date-time",
             "title": "At",
             "type": "string"
+          },
+          "delivered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered By"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
           },
           "household_code": {
             "title": "Household Code",
@@ -171,6 +315,55 @@
               }
             ],
             "title": "Justification"
+          },
+          "members": {
+            "default": 0,
+            "title": "Members",
+            "type": "integer"
+          },
+          "months": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Months"
+          },
+          "quantity": {
+            "default": 1,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "shelter_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shelter Id"
+          },
+          "shelter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shelter Name"
+          },
+          "signed": {
+            "default": false,
+            "title": "Signed",
+            "type": "boolean"
           },
           "source_fund": {
             "title": "Source Fund",
@@ -979,6 +1172,59 @@
         "title": "CircleIn",
         "type": "object"
       },
+      "ConfidenceStat": {
+        "description": "Estadístico de una métrica sobre las corridas Monte Carlo (media e IC del 90 %).",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "mean": {
+            "title": "Mean",
+            "type": "number"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "p5": {
+            "title": "P5",
+            "type": "number"
+          },
+          "p50": {
+            "title": "P50",
+            "type": "number"
+          },
+          "p95": {
+            "title": "P95",
+            "type": "number"
+          },
+          "unit": {
+            "enum": [
+              "%",
+              "pts"
+            ],
+            "title": "Unit",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "unit",
+          "mean",
+          "p5",
+          "p50",
+          "p95",
+          "n"
+        ],
+        "title": "ConfidenceStat",
+        "type": "object"
+      },
       "ContractRow": {
         "description": "Contrato de SECOP II ligado al sismo (sin datos personales del contratista).",
         "properties": {
@@ -1640,6 +1886,29 @@
         "title": "EmreFunction",
         "type": "string"
       },
+      "EventStatus": {
+        "description": "Sección 4: el evento es inminente o ya sucedió.",
+        "enum": [
+          "inminente",
+          "sucedido"
+        ],
+        "title": "EventStatus",
+        "type": "string"
+      },
+      "EventType": {
+        "description": "Sección 4: tipo de evento (el formato no trae sismo; se agrega para este evento).",
+        "enum": [
+          "sismo",
+          "deslizamiento",
+          "incendio",
+          "vendaval",
+          "avalancha",
+          "inundacion",
+          "otro"
+        ],
+        "title": "EventType",
+        "type": "string"
+      },
       "Figure": {
         "description": "Cifra con trazabilidad (fuente, versión, fecha de corte). `None` = suprimida (k < 5).",
         "properties": {
@@ -1753,6 +2022,34 @@
             ],
             "title": "Address"
           },
+          "age_0_5": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 0 5",
+            "type": "integer"
+          },
+          "age_18_59": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 18 59",
+            "type": "integer"
+          },
+          "age_60_plus": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 60 Plus",
+            "type": "integer"
+          },
+          "age_6_17": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Age 6 17",
+            "type": "integer"
+          },
           "cadastral_code": {
             "anyOf": [
               {
@@ -1765,12 +2062,57 @@
             ],
             "title": "Cadastral Code"
           },
+          "census_form_number": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{1,20}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "N.º de la planilla de censo",
+            "title": "Census Form Number"
+          },
           "document": {
             "description": "Documento del jefe de hogar. Solo se usa para calcular el hash; no se guarda.",
             "maxLength": 20,
             "minLength": 5,
             "title": "Document",
             "type": "string"
+          },
+          "ethnic_members": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Ethnic Members",
+            "type": "integer"
+          },
+          "female_members": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Female Members",
+            "type": "integer"
+          },
+          "housing_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HousingStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Si no se envía, se toma del semáforo vigente del predio"
+          },
+          "losses": {
+            "items": {
+              "$ref": "#/components/schemas/HouseholdLoss"
+            },
+            "title": "Losses",
+            "type": "array"
           },
           "manzana_id": {
             "anyOf": [
@@ -1800,6 +2142,16 @@
           "rud_status": {
             "$ref": "#/components/schemas/RudStatus",
             "default": "pendiente"
+          },
+          "tenure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tenure"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "vulnerability": {
             "$ref": "#/components/schemas/Vulnerability",
@@ -1840,8 +2192,40 @@
         "title": "HouseholdList",
         "type": "object"
       },
+      "HouseholdLoss": {
+        "description": "Pérdidas del hogar (RUD).",
+        "enum": [
+          "enseres",
+          "herramientas_trabajo",
+          "animales",
+          "cultivos",
+          "vehiculo"
+        ],
+        "title": "HouseholdLoss",
+        "type": "string"
+      },
       "HouseholdOut": {
         "properties": {
+          "age_0_5": {
+            "default": 0,
+            "title": "Age 0 5",
+            "type": "integer"
+          },
+          "age_18_59": {
+            "default": 0,
+            "title": "Age 18 59",
+            "type": "integer"
+          },
+          "age_60_plus": {
+            "default": 0,
+            "title": "Age 60 Plus",
+            "type": "integer"
+          },
+          "age_6_17": {
+            "default": 0,
+            "title": "Age 6 17",
+            "type": "integer"
+          },
           "aid_count": {
             "title": "Aid Count",
             "type": "integer"
@@ -1857,6 +2241,17 @@
             ],
             "title": "Barrio"
           },
+          "census_form_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Census Form Number"
+          },
           "code": {
             "description": "Prefijo corto del hash, para mostrar",
             "title": "Code",
@@ -1867,10 +2262,37 @@
             "title": "Created At",
             "type": "string"
           },
+          "ethnic_members": {
+            "default": 0,
+            "title": "Ethnic Members",
+            "type": "integer"
+          },
+          "female_members": {
+            "default": 0,
+            "title": "Female Members",
+            "type": "integer"
+          },
+          "housing_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HousingStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
             "type": "string"
+          },
+          "losses": {
+            "items": {
+              "$ref": "#/components/schemas/HouseholdLoss"
+            },
+            "title": "Losses",
+            "type": "array"
           },
           "manzana_id": {
             "anyOf": [
@@ -1905,6 +2327,28 @@
           "rud_status": {
             "$ref": "#/components/schemas/RudStatus"
           },
+          "situation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "albergue, arriendo, casa o sin_solucion (vivienda hoy)",
+            "title": "Situation"
+          },
+          "tenure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tenure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "vulnerability": {
             "$ref": "#/components/schemas/Vulnerability"
           },
@@ -1929,6 +2373,16 @@
         ],
         "title": "HouseholdOut",
         "type": "object"
+      },
+      "HousingStatus": {
+        "description": "Estado de la vivienda (RUD), alineado con el semáforo NSR-10.",
+        "enum": [
+          "habitable",
+          "no_habitable",
+          "destruida"
+        ],
+        "title": "HousingStatus",
+        "type": "string"
       },
       "InboxItem": {
         "properties": {
@@ -3500,6 +3954,487 @@
         "title": "PropertyOut",
         "type": "object"
       },
+      "PropertyReviewIn": {
+        "description": "Formato GUE-RPD-FR-02 v4 \"Revisión a predio\" (Alcaldía de Manizales), en digital.\n\nLey 1581: los nombres, teléfonos, cédulas y fechas de nacimiento del papel NO se transcriben.\nEl documento del encuestado solo sirve para ligar el hogar del censo (HMAC con sal) y el del\npropietario se guarda solo como HMAC. De los residentes se registran conteos.",
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "affectation": {
+            "$ref": "#/components/schemas/Affectation"
+          },
+          "affected_areas_m2": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/AffectedInfrastructure"
+            },
+            "title": "Affected Areas M2",
+            "type": "object"
+          },
+          "belongings_loss": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Belongings Loss"
+          },
+          "cadastral_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cadastral Code"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InspectionColor"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "damage_level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DamageLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "disability": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Disability",
+            "type": "integer"
+          },
+          "elderly": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Elderly",
+            "type": "integer"
+          },
+          "evacuation_recommended": {
+            "default": false,
+            "title": "Evacuation Recommended",
+            "type": "boolean"
+          },
+          "event_other": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Other"
+          },
+          "event_status": {
+            "$ref": "#/components/schemas/EventStatus",
+            "default": "sucedido"
+          },
+          "event_types": {
+            "items": {
+              "$ref": "#/components/schemas/EventType"
+            },
+            "minItems": 1,
+            "title": "Event Types",
+            "type": "array"
+          },
+          "form_number": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{1,20}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "N.º impreso del formato en papel",
+            "title": "Form Number"
+          },
+          "manzana_id": {
+            "anyOf": [
+              {
+                "maxLength": 16,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manzana Id"
+          },
+          "minors": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Minors",
+            "type": "integer"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "notified_signed": {
+            "default": false,
+            "title": "Notified Signed",
+            "type": "boolean"
+          },
+          "owner_document": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 5,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Document"
+          },
+          "pets": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Pets",
+            "type": "integer"
+          },
+          "pregnancy": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Pregnancy",
+            "type": "integer"
+          },
+          "referral_other": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referral Other"
+          },
+          "referrals": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralEntity"
+            },
+            "title": "Referrals",
+            "type": "array"
+          },
+          "residents": {
+            "default": 0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Residents",
+            "type": "integer"
+          },
+          "respondent_document": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "minLength": 5,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Respondent Document"
+          },
+          "respondent_relation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RespondentRelation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Fecha y hora del formato",
+            "title": "Reviewed At"
+          },
+          "reviewer_agency": {
+            "default": "Cuerpo Oficial de Bomberos",
+            "maxLength": 80,
+            "title": "Reviewer Agency",
+            "type": "string"
+          },
+          "structural_causes": {
+            "items": {
+              "$ref": "#/components/schemas/StructuralCause"
+            },
+            "title": "Structural Causes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "event_types",
+          "affectation"
+        ],
+        "title": "PropertyReviewIn",
+        "type": "object"
+      },
+      "PropertyReviewOut": {
+        "properties": {
+          "affectation": {
+            "$ref": "#/components/schemas/Affectation"
+          },
+          "affected_areas_m2": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Affected Areas M2",
+            "type": "object"
+          },
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "belongings_loss": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Belongings Loss"
+          },
+          "color": {
+            "$ref": "#/components/schemas/InspectionColor"
+          },
+          "damage_level": {
+            "$ref": "#/components/schemas/DamageLevel"
+          },
+          "evacuation_recommended": {
+            "title": "Evacuation Recommended",
+            "type": "boolean"
+          },
+          "event_other": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Other"
+          },
+          "event_status": {
+            "$ref": "#/components/schemas/EventStatus"
+          },
+          "event_types": {
+            "items": {
+              "$ref": "#/components/schemas/EventType"
+            },
+            "title": "Event Types",
+            "type": "array"
+          },
+          "form_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Form Number"
+          },
+          "household_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Household Code"
+          },
+          "household_created": {
+            "title": "Household Created",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "next_steps": {
+            "description": "Qué sigue después de esta revisión",
+            "items": {
+              "type": "string"
+            },
+            "title": "Next Steps",
+            "type": "array"
+          },
+          "notified_signed": {
+            "title": "Notified Signed",
+            "type": "boolean"
+          },
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "referral_other": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referral Other"
+          },
+          "referrals": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralEntity"
+            },
+            "title": "Referrals",
+            "type": "array"
+          },
+          "referrals_done": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralEntity"
+            },
+            "title": "Referrals Done",
+            "type": "array"
+          },
+          "residents": {
+            "title": "Residents",
+            "type": "integer"
+          },
+          "respondent_relation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RespondentRelation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewed_at": {
+            "format": "date-time",
+            "title": "Reviewed At",
+            "type": "string"
+          },
+          "reviewer_agency": {
+            "title": "Reviewer Agency",
+            "type": "string"
+          },
+          "structural_causes": {
+            "items": {
+              "$ref": "#/components/schemas/StructuralCause"
+            },
+            "title": "Structural Causes",
+            "type": "array"
+          },
+          "suggested_color": {
+            "$ref": "#/components/schemas/InspectionColor"
+          },
+          "visit_number": {
+            "title": "Visit Number",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "form_number",
+          "property_id",
+          "barrio",
+          "visit_number",
+          "color",
+          "damage_level",
+          "suggested_color",
+          "residents",
+          "respondent_relation",
+          "event_status",
+          "event_types",
+          "event_other",
+          "structural_causes",
+          "affectation",
+          "affected_areas_m2",
+          "belongings_loss",
+          "referrals",
+          "referrals_done",
+          "referral_other",
+          "evacuation_recommended",
+          "reviewed_at",
+          "reviewer_agency",
+          "notified_signed",
+          "household_code",
+          "household_created",
+          "next_steps"
+        ],
+        "title": "PropertyReviewOut",
+        "type": "object"
+      },
       "RainIn": {
         "properties": {
           "mm_3h": {
@@ -3861,6 +4796,38 @@
             "title": "Needs",
             "type": "array"
           },
+          "scenario": {
+            "default": "real",
+            "enum": [
+              "real",
+              "mejor",
+              "peor"
+            ],
+            "title": "Scenario",
+            "type": "string"
+          },
+          "scenario_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Note"
+          },
+          "scenario_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Title"
+          },
           "sources": {
             "items": {
               "$ref": "#/components/schemas/SourceInfo"
@@ -3931,6 +4898,149 @@
           "figures"
         ],
         "title": "RecoverySummary",
+        "type": "object"
+      },
+      "ReferralEntity": {
+        "description": "Sección 6: entidades que deben visitar el predio.",
+        "enum": [
+          "ugr",
+          "corpocaldas",
+          "aguas_de_manizales",
+          "obras_publicas",
+          "invias",
+          "chec",
+          "invama",
+          "planeacion",
+          "infraestructura_depto",
+          "inspeccion_policia",
+          "otro"
+        ],
+        "title": "ReferralEntity",
+        "type": "string"
+      },
+      "ReferralList": {
+        "properties": {
+          "cutoff_at": {
+            "format": "date-time",
+            "title": "Cutoff At",
+            "type": "string"
+          },
+          "pending": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralRow"
+            },
+            "title": "Pending",
+            "type": "array"
+          },
+          "summary": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralSummary"
+            },
+            "title": "Summary",
+            "type": "array"
+          }
+        },
+        "required": [
+          "summary",
+          "pending",
+          "cutoff_at"
+        ],
+        "title": "ReferralList",
+        "type": "object"
+      },
+      "ReferralPatch": {
+        "properties": {
+          "done": {
+            "default": true,
+            "title": "Done",
+            "type": "boolean"
+          }
+        },
+        "title": "ReferralPatch",
+        "type": "object"
+      },
+      "ReferralRow": {
+        "properties": {
+          "affectation": {
+            "$ref": "#/components/schemas/Affectation"
+          },
+          "barrio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Barrio"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/ReferralEntity"
+          },
+          "evacuation_recommended": {
+            "title": "Evacuation Recommended",
+            "type": "boolean"
+          },
+          "form_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Form Number"
+          },
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "review_id": {
+            "format": "uuid",
+            "title": "Review Id",
+            "type": "string"
+          },
+          "reviewed_at": {
+            "format": "date-time",
+            "title": "Reviewed At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "review_id",
+          "form_number",
+          "property_id",
+          "barrio",
+          "entity",
+          "evacuation_recommended",
+          "affectation",
+          "reviewed_at"
+        ],
+        "title": "ReferralRow",
+        "type": "object"
+      },
+      "ReferralSummary": {
+        "properties": {
+          "done": {
+            "title": "Done",
+            "type": "integer"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/ReferralEntity"
+          },
+          "pending": {
+            "title": "Pending",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entity",
+          "pending",
+          "done"
+        ],
+        "title": "ReferralSummary",
         "type": "object"
       },
       "ReportAction": {
@@ -4505,6 +5615,17 @@
         "title": "ResourceType",
         "type": "string"
       },
+      "RespondentRelation": {
+        "description": "Sección 2: calidad del encuestado frente al predio.",
+        "enum": [
+          "propietario",
+          "arrendatario",
+          "sucesion",
+          "otro"
+        ],
+        "title": "RespondentRelation",
+        "type": "string"
+      },
       "ReviewIn": {
         "properties": {
           "action": {
@@ -4602,6 +5723,100 @@
         "title": "RudStatus",
         "type": "string"
       },
+      "ScenarioComparison": {
+        "description": "Confianza que tendría Dacora en el mejor y el peor caso de acceso a datos (SIMULADO).",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "integer"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioSummary"
+            },
+            "title": "Scenarios",
+            "type": "array"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Weights",
+            "type": "object"
+          }
+        },
+        "required": [
+          "day",
+          "method",
+          "weights",
+          "scenarios"
+        ],
+        "title": "ScenarioComparison",
+        "type": "object"
+      },
+      "ScenarioSummary": {
+        "properties": {
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "key": {
+            "enum": [
+              "mejor",
+              "peor"
+            ],
+            "title": "Key",
+            "type": "string"
+          },
+          "p_high_confidence": {
+            "description": "% de corridas con confianza ≥ 75",
+            "title": "P High Confidence",
+            "type": "number"
+          },
+          "runs": {
+            "title": "Runs",
+            "type": "integer"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "stats": {
+            "items": {
+              "$ref": "#/components/schemas/ConfidenceStat"
+            },
+            "title": "Stats",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "description",
+          "assumptions",
+          "runs",
+          "seed",
+          "p_high_confidence",
+          "stats"
+        ],
+        "title": "ScenarioSummary",
+        "type": "object"
+      },
       "ShelterList": {
         "properties": {
           "cutoff_at": {
@@ -4638,6 +5853,12 @@
             "title": "Code",
             "type": "string"
           },
+          "families": {
+            "default": 0,
+            "description": "Hogares del censo alojados hoy",
+            "title": "Families",
+            "type": "integer"
+          },
           "id": {
             "format": "uuid",
             "title": "Id",
@@ -4655,6 +5876,17 @@
             "title": "Name",
             "type": "string"
           },
+          "operator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator"
+          },
           "people": {
             "title": "People",
             "type": "integer"
@@ -4663,9 +5895,20 @@
             "title": "Pets",
             "type": "integer"
           },
+          "services": {
+            "items": {
+              "$ref": "#/components/schemas/ShelterService"
+            },
+            "title": "Services",
+            "type": "array"
+          },
           "source": {
             "title": "Source",
             "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ShelterStatus",
+            "default": "abierto"
           },
           "updated_at": {
             "format": "date-time",
@@ -4690,24 +5933,93 @@
         "type": "object"
       },
       "ShelterPatch": {
+        "description": "Ajustes del albergue. La ocupación sube y baja sola con las entradas y salidas de hogares;\n`people`/`pets` solo corrigen el conteo (p. ej. personas no censadas).",
         "properties": {
+          "operator": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator"
+          },
           "people": {
-            "minimum": 0.0,
-            "title": "People",
-            "type": "integer"
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "People"
           },
           "pets": {
-            "minimum": 0.0,
-            "title": "Pets",
-            "type": "integer"
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pets"
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ShelterService"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ShelterStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
-        "required": [
-          "people",
-          "pets"
-        ],
         "title": "ShelterPatch",
         "type": "object"
+      },
+      "ShelterService": {
+        "description": "Servicios del alojamiento temporal (EMRE 3.2).",
+        "enum": [
+          "agua",
+          "energia",
+          "banos",
+          "cocina",
+          "atencion_salud",
+          "zona_mascotas",
+          "zona_infantil"
+        ],
+        "title": "ShelterService",
+        "type": "string"
+      },
+      "ShelterStatus": {
+        "enum": [
+          "abierto",
+          "cerrado"
+        ],
+        "title": "ShelterStatus",
+        "type": "string"
       },
       "SimulationIn": {
         "properties": {
@@ -5124,6 +6436,28 @@
         ],
         "title": "Stage",
         "type": "object"
+      },
+      "StructuralCause": {
+        "description": "Sección 4: deterioro estructural, posible causa.",
+        "enum": [
+          "falta_mantenimiento",
+          "intervencion_antropica",
+          "evento_natural"
+        ],
+        "title": "StructuralCause",
+        "type": "string"
+      },
+      "Tenure": {
+        "description": "Régimen de tenencia de la vivienda (RUD).",
+        "enum": [
+          "propietario",
+          "arrendatario",
+          "poseedor",
+          "ocupante",
+          "otro"
+        ],
+        "title": "Tenure",
+        "type": "string"
       },
       "TrackIn": {
         "properties": {
@@ -7904,7 +9238,7 @@
         ]
       },
       "post": {
-        "description": "Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo justificación.",
+        "description": "Acta de entrega. Bloquea la misma ayuda al mismo hogar dentro de su ventana, salvo\njustificación. Un cupo en albergue aloja al hogar y sube la ocupación del albergue.",
         "operationId": "post_aid_api_v1_recovery_aid_post",
         "requestBody": {
           "content": {
@@ -7918,6 +9252,58 @@
         },
         "responses": {
           "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AidOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "Ayuda repetida sin justificación o acta ya registrada"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Aid",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/aid/{aid_id}/end": {
+      "post": {
+        "description": "Salida del albergue: libera los cupos del hogar (la ocupación baja sola).",
+        "operationId": "end_stay_api_v1_recovery_aid__aid_id__end_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "aid_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Aid Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "content": {
               "application/json": {
                 "schema": {
@@ -7943,7 +9329,7 @@
             "HTTPBearer": []
           }
         ],
-        "summary": "Post Aid",
+        "summary": "End Stay",
         "tags": [
           "recuperación"
         ]
@@ -7953,6 +9339,25 @@
       "get": {
         "description": "Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico.",
         "operationId": "dashboard_api_v1_recovery_dashboard_get",
+        "parameters": [
+          {
+            "description": "real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+            "in": "query",
+            "name": "scenario",
+            "required": false,
+            "schema": {
+              "default": "real",
+              "description": "real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+              "enum": [
+                "real",
+                "mejor",
+                "peor"
+              ],
+              "title": "Scenario",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -8388,6 +9793,254 @@
           }
         ],
         "summary": "List Properties",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/referrals": {
+      "get": {
+        "description": "Derivaciones de la sección 6 por entidad: pendientes y atendidas.",
+        "operationId": "list_referrals_api_v1_recovery_referrals_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferralList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Referrals",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/reviews": {
+      "get": {
+        "description": "Formatos registrados (de un predio, o los últimos 200).",
+        "operationId": "list_reviews_api_v1_recovery_reviews_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "property_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Property Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PropertyReviewOut"
+                  },
+                  "title": "Response List Reviews Api V1 Recovery Reviews Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Reviews",
+        "tags": [
+          "recuperación"
+        ]
+      },
+      "post": {
+        "description": "Registra un formato de revisión a predio y alimenta habitabilidad, censo y derivaciones.",
+        "operationId": "post_review_api_v1_recovery_reviews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyReviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "description": "Ese N.º de formato ya fue registrado"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Post Review",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/reviews/{review_id}/referrals/{entity}": {
+      "patch": {
+        "description": "Marca (o desmarca) la visita de una entidad derivada.",
+        "operationId": "patch_referral_api_v1_recovery_reviews__review_id__referrals__entity__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "review_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Review Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReferralEntity"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferralPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferralSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Referral",
+        "tags": [
+          "recuperación"
+        ]
+      }
+    },
+    "/api/v1/recovery/scenarios": {
+      "get": {
+        "description": "Confianza del sistema en el mejor y el peor caso de acceso a datos (SIMULADO).",
+        "operationId": "scenarios_api_v1_recovery_scenarios_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioComparison"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Scenarios",
         "tags": [
           "recuperación"
         ]

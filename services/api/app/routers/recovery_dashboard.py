@@ -16,7 +16,7 @@ from datetime import UTC, date, datetime, timedelta
 from functools import lru_cache
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -42,6 +42,7 @@ from app.models import (
     Incident,
     Manzana,
     MetricSnapshot,
+    PropertyReview,
     RainReading,
     Report,
     Shelter,
@@ -57,6 +58,7 @@ from app.recovery_schemas import (
     Indicator,
     Need,
     RecoveryDashboard,
+    ScenarioKey,
     SourceInfo,
     Stage,
 )
@@ -220,10 +222,18 @@ def _families(
 async def dashboard(
     _: Role = Depends(require_role(Role.operador_pmu, Role.coe)),
     session: AsyncSession = Depends(get_session),
+    scenario: ScenarioKey = Query(
+        "real",
+        description="real: fuentes conectadas; mejor / peor: escenarios SIMULADOS de datos",
+    ),
 ) -> RecoveryDashboard:
     """Tablero de recuperación para el COE: 10 indispensables, necesidades y ciclo económico."""
     settings = get_settings()
     now = datetime.now(UTC)
+    if scenario != "real":
+        from app.routers.recovery_scenarios import scenario_dashboard
+
+        return scenario_dashboard(scenario, now)
     usgs = load_snapshot("usgs_sismos")
     secop = load_snapshot("secop_sismo_manizales")
     cdiac = load_snapshot("cdiac_lluvia")
@@ -298,6 +308,22 @@ async def dashboard(
         service_by_barrio[barrio or "Sin barrio"].add(incident_id)
     service_incidents = len({i for _, i in service_rows})
 
+    # Revisiones a predio (formato GUE-RPD-FR-02): evacuaciones y derivaciones a entidades.
+    reviews = (
+        await session.execute(
+            select(
+                PropertyReview.referrals,
+                PropertyReview.referrals_done,
+                PropertyReview.evacuation_recommended,
+            )
+        )
+    ).all()
+    evacuations = sum(1 for _, _, ev in reviews if ev)
+    referral_pending: Counter[str] = Counter(
+        e for refs, done, _ in reviews for e in refs if e not in done
+    )
+    from app.routers.recovery_reviews import ENTITY_LABEL
+
     hh_rows = (
         await session.execute(
             select(
@@ -316,7 +342,7 @@ async def dashboard(
         for h, t, at in (
             await session.execute(
                 select(AidDelivery.household_id, AidDelivery.aid_type, AidDelivery.at)
-                .where(AidDelivery.aid_type.in_(HOUSING_AID))
+                .where(AidDelivery.aid_type.in_(HOUSING_AID), AidDelivery.ended_at.is_(None))
                 .order_by(AidDelivery.at)
             )
         ).all()
@@ -656,6 +682,13 @@ async def dashboard(
                     "Visitas repetidas unidas a su predio",
                     max(visits - evaluated, 0),
                 ),
+                registry.fig("formatos_revision", "Formatos de revisión a predio", len(reviews)),
+                registry.fig(
+                    "evacuaciones_recomendadas",
+                    "Formatos con evacuación recomendada",
+                    evacuations,
+                    state="alerta" if evacuations else "neutral",
+                ),
             ],
         ),
         Indicator(
@@ -711,6 +744,12 @@ async def dashboard(
                     "barrios_servicios",
                     "Barrios con servicios caídos reportados",
                     sum(1 for b in barrios if b.service_incidents),
+                ),
+                registry.fig(
+                    "derivaciones_pendientes",
+                    "Visitas de entidades pendientes (formato, sección 6)",
+                    sum(referral_pending.values()),
+                    state="alerta" if referral_pending else "ok",
                 ),
                 _missing("servicios", "Cobertura de servicios por barrio", "%", now),
             ],
@@ -917,6 +956,20 @@ async def dashboard(
                 detail="Más pendientes: " + ", ".join(f"{b.barrio} ({b.pending})" for b in worst),
                 severity="alta",
                 value=len(pending_manzanas),
+            )
+        )
+    if referral_pending:
+        top = ", ".join(
+            f"{ENTITY_LABEL.get(e, e)} ({n})"  # type: ignore[call-overload]
+            for e, n in referral_pending.most_common(3)
+        )
+        needs.append(
+            Need(
+                key="derivaciones_pendientes",
+                title="Visitas de entidades pendientes en predios revisados",
+                detail=f"Más pendientes: {top}.",
+                severity="alta",
+                value=sum(referral_pending.values()),
             )
         )
     if full_shelters:

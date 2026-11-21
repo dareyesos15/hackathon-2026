@@ -87,12 +87,51 @@ async def test_red_property_family_becomes_a_need_until_housed(
     assert _fig(after, "familias_sin_solucion") == _fig(before, "familias_sin_solucion") + 1
     assert "familias_sin_solucion" in {n["key"] for n in after["needs"]}
 
+    from app.db import SessionLocal
+    from app.seed import seed_shelters
+
+    async with SessionLocal() as session:
+        await seed_shelters(session)
+    shelters = (await client.get("/recovery/shelters", headers=PMU)).json()["items"]
+    shelter = max(shelters, key=lambda x: x["capacity"] - x["people"])
     resp = await client.post(
         "/recovery/aid",
         headers=PMU,
-        json={"document": document, "aid_type": "albergue"},
+        json={"document": document, "aid_type": "albergue", "shelter_id": shelter["id"]},
     )
     assert resp.status_code == 201, resp.text
     housed = await _dashboard(client)
     assert _fig(housed, "familias_sin_solucion") == _fig(before, "familias_sin_solucion")
     assert _fig(housed, "familias_albergue") == _fig(before, "familias_albergue") + 1
+
+
+async def test_scenarios_compare_confidence(client: httpx.AsyncClient) -> None:
+    resp = await client.get("/recovery/scenarios", headers=PMU)
+    assert resp.status_code == 200, resp.text
+    data = resp.json()
+    by_key = {s["key"]: s for s in data["scenarios"]}
+    best = {s["key"]: s for s in by_key["mejor"]["stats"]}["confianza"]
+    worst = {s["key"]: s for s in by_key["peor"]["stats"]}["confianza"]
+    assert best["p5"] > worst["p95"]
+    assert by_key["mejor"]["runs"] == by_key["peor"]["runs"] >= 1000
+    assert (await client.get("/recovery/scenarios", headers=PUBLICO)).status_code == 403
+
+
+async def test_scenario_dashboard_is_fully_marked_simulated(client: httpx.AsyncClient) -> None:
+    for key in ("mejor", "peor"):
+        resp = await client.get(f"/recovery/dashboard?scenario={key}", headers=PMU)
+        assert resp.status_code == 200, resp.text
+        dash = resp.json()
+        assert dash["scenario"] == key and "SIMULADO" in dash["scenario_note"]
+        figures = [f for i in dash["indicators"] for f in i["figures"]]
+        assert [i["number"] for i in dash["indicators"]] == list(range(1, 11))
+        # Todo lo del escenario va marcado; solo el día del evento viene del USGS real.
+        for f in figures:
+            if f["key"] != "dias_desde_evento":
+                assert f["simulated"], f["key"]
+    best = (await client.get("/recovery/dashboard?scenario=mejor", headers=PMU)).json()
+    worst = (await client.get("/recovery/dashboard?scenario=peor", headers=PMU)).json()
+    missing = lambda d: sum(  # noqa: E731
+        f["state"] == "sin_fuente" for i in d["indicators"] for f in i["figures"]
+    )
+    assert missing(worst) > missing(best)

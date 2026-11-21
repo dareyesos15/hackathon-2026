@@ -30,7 +30,7 @@ INDICATORS: dict[str, tuple[str, str | None]] = {
     "false_positive_rate": ("Legítimos marcados como falsos", "lo más bajo posible"),
     "critical_auto_discarded": ("Críticos descartados por la IA", "0"),
     "critical_recall": ("Críticos identificados", "≥ 98 %"),
-    "time_to_consolidated_map_min": ("Mapa consolidado en", None),
+    "time_to_consolidated_map_min": ("Hecho en el mapa en (p90)", "minutos, no días"),
     "p95_processing_ms": ("Procesamiento por reporte (p95)", "< 1.000 ms"),
 }
 

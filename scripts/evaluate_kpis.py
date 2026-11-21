@@ -104,6 +104,7 @@ def evaluate(client: Any, mapping: dict[str, str], truth: dict[str, Any]) -> Res
     missed_dups: list[int] = []
     missed_fakes: list[int] = []
     event_first_map: dict[str, float] = {}
+    event_first_report: dict[str, float] = {}
     event_incidents: dict[str, set[str]] = defaultdict(set)
     incident_events: dict[str, set[str]] = defaultdict(set)
     max_minute = 0.0
@@ -122,6 +123,10 @@ def evaluate(client: Any, mapping: dict[str, str], truth: dict[str, Any]) -> Res
             if rep.get("incident_id"):
                 event_incidents[t["event_id"]].add(rep["incident_id"])
                 incident_events[rep["incident_id"]].add(t["event_id"])
+            prev_first = event_first_report.get(t["event_id"])
+            event_first_report[t["event_id"]] = (
+                minute if prev_first is None else min(prev_first, minute)
+            )
             if rep.get("lat") is not None:
                 prev = event_first_map.get(t["event_id"])
                 event_first_map[t["event_id"]] = minute if prev is None else min(prev, minute)
@@ -151,9 +156,15 @@ def evaluate(client: Any, mapping: dict[str, str], truth: dict[str, Any]) -> Res
 
     events = {t["event_id"] for t in gt.values() if t["label"] != "fake"}
     seen_events = {by_seq[s]["event_id"] for s in processed if by_seq[s]["label"] != "fake"}
-    mapped_times = sorted(event_first_map.values())
-    needed = int(0.9 * len(events) + 0.999)
-    time_to_map = round(mapped_times[needed - 1]) if len(mapped_times) >= needed else None
+    # Latencia por hecho: desde su primer reporte hasta que tiene un incidente ubicado en el mapa.
+    latencies = sorted(
+        event_first_map[e] - event_first_report[e]
+        for e in event_first_map
+        if e in event_first_report
+    )
+    unmapped = len(seen_events) - len(latencies)
+    needed = int(0.9 * len(seen_events) + 0.999) if seen_events else 0
+    time_to_map = round(latencies[needed - 1], 1) if needed and len(latencies) >= needed else None
     merged_events = sum(1 for evs in incident_events.values() if len(evs) > 1)
     split_events = sum(1 for incs in event_incidents.values() if len(incs) > 1)
 
@@ -182,8 +193,9 @@ def evaluate(client: Any, mapping: dict[str, str], truth: dict[str, Any]) -> Res
         "time_to_consolidated_map_min": {
             "hechos_reales": len(events),
             "hechos_vistos": len(seen_events),
-            "hechos_en_mapa": len(mapped_times),
-            "umbral": "90 % de los hechos",
+            "hechos_en_mapa": len(latencies),
+            "hechos_sin_ubicar": unmapped,
+            "definicion": "p90 de minutos entre el primer reporte de un hecho y verlo en el mapa",
         },
         "_calidad_agrupacion": {
             "incidentes_que_mezclan_hechos": merged_events,

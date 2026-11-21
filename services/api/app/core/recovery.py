@@ -97,3 +97,41 @@ def is_duplicate_aid(aid_type: AidType, previous: list[datetime], now: datetime)
 def suppress(value: int, k: int) -> int | None:
     """Supresión k-anónima para cifras públicas (k ≥ 5)."""
     return value if value >= k else None
+
+
+# --------------------------------------------- revisión a predio (formato GUE-RPD-FR-02 v4)
+
+#: Semáforo sugerido por la afectación del formato (el revisor confirma el nivel de daño).
+SUGGESTED: dict[tuple[str, bool], tuple[InspectionColor, DamageLevel]] = {
+    ("ninguna", False): (InspectionColor.verde, DamageLevel.menor),
+    ("parcial", False): (InspectionColor.amarillo, DamageLevel.mediano_uso_restringido),
+    ("parcial", True): (InspectionColor.rojo, DamageLevel.mayor),
+    ("total", False): (InspectionColor.rojo, DamageLevel.mayor),
+    ("total", True): (InspectionColor.rojo, DamageLevel.mayor),
+}
+
+
+def suggest_semaphore(affectation: str, evacuation: bool) -> tuple[InspectionColor, DamageLevel]:
+    """Semáforo NSR-10 sugerido a partir de las secciones 5 (afectación) y 7 (evacuación)."""
+    return SUGGESTED.get((affectation, evacuation), (InspectionColor.rojo, DamageLevel.mayor))
+
+
+def review_inconsistency(color: InspectionColor, affectation: str, evacuation: bool) -> str | None:
+    """Combinaciones que el formato no admite. `None` si la revisión es coherente."""
+    if evacuation and color != InspectionColor.rojo:
+        return "Si se recomienda evacuar, el predio no es habitable: el semáforo debe ser rojo"
+    if affectation == "ninguna" and evacuation:
+        return "Sin afectación no se recomienda evacuación"
+    if affectation == "ninguna" and color != InspectionColor.verde:
+        return "Sin afectación el semáforo debe ser verde"
+    if affectation == "total" and color != InspectionColor.rojo:
+        return "Con afectación total el semáforo debe ser rojo"
+    return None
+
+
+def owner_hash(document: str, *, salt: str) -> str:
+    """HMAC del documento del propietario (formato, sección 2). El documento nunca se guarda."""
+    normalized = normalize_document(document)
+    if len(normalized) < 5:
+        raise ValueError("Documento del propietario inválido")
+    return hmac.new(salt.encode(), f"propietario:{normalized}".encode(), hashlib.sha256).hexdigest()

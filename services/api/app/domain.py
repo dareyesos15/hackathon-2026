@@ -105,6 +105,6 @@ class PlaceKind(StrEnum):
 
 class MetricUnit(StrEnum):
     percent = "%"
-    count = "conteo"
+    conteo = "conteo"
     minutes = "min"
     ms = "ms"

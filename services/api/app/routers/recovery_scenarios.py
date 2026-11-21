@@ -177,6 +177,8 @@ def scenario_dashboard(key: ScenarioKey, now: datetime) -> RecoveryDashboard:  #
 
     evaluated, requested = get("predios_evaluados"), get("solicitudes")
     pending = max(requested - evaluated, 0) if requested and evaluated is not None else None
+    # Más evaluados que solicitudes: las fuentes no cuadran (duplicados o subregistro distinto).
+    inconsistent = bool(requested and evaluated and evaluated > requested * 1.02)
     loss, available = get("perdida"), get("recursos")
     gap = max(loss - available, 0) if loss and available is not None else None
     index = index_from(v)
@@ -205,6 +207,14 @@ def scenario_dashboard(key: ScenarioKey, now: datetime) -> RecoveryDashboard:  #
                 fig("predios_evaluados", "Predios evaluados únicos", "dacora"),
                 fig("solicitudes", "Predios con solicitud de visita", "alcaldia"),
                 fig(
+                    "evaluados_de_mas",
+                    "Inconsistencia: evaluados de más frente a solicitudes",
+                    "alcaldia",
+                    value=(evaluated or 0.0) - (requested or 0.0),
+                    state="alerta",
+                )
+                if inconsistent
+                else fig(
                     "pendientes",
                     "Predios pendientes de visita",
                     "alcaldia",
@@ -525,6 +535,20 @@ def scenario_dashboard(key: ScenarioKey, now: datetime) -> RecoveryDashboard:  #
                 detail="Asignar albergue o subsidio de arriendo.",
                 severity="critica",
                 value=round(get("familias_sin_solucion") or 0),
+            )
+        )
+    if inconsistent and evaluated and requested:
+        needs.append(
+            Need(
+                key="cifras_inconsistentes",
+                title="Cifras que no cuadran entre fuentes",
+                detail=(
+                    f"El registro reporta {evaluated:,.0f} predios evaluados y la Alcaldía "
+                    f"{requested:,.0f} solicitudes: sin identificador común no se pueden "
+                    "conciliar."
+                ).replace(",", "."),
+                severity="alta",
+                value=round(evaluated - requested),
             )
         )
     if pending:

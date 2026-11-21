@@ -155,7 +155,7 @@ precargada.
 ### Implementation for User Story 3
 
 - [X] T052 [P] [US3] Implementar `TerrainProvider` y `SyntheticTerrain` (pendiente por zona y hash del id de manzana, SIMULADO) en `services/api/app/adapters/terrain.py`
-- [ ] T053 [US3] Implementar el modelo de cascada con caché en memoria invalidada por lluvia o reportes relevantes (factores, pesos y cortes de research R11 desde `Settings.cascade`; versión `cascade-v1`) en `services/api/app/core/cascade.py`
+- [X] T053 [US3] Implementar el modelo de cascada con caché en memoria invalidada por lluvia o reportes relevantes (factores, pesos y cortes de research R11 desde `Settings.cascade`; versión `cascade-v1`) en `services/api/app/core/cascade.py`
 - [ ] T054 [US3] Agregar los esquemas `RainIn`, `RainOut` y las propiedades GeoJSON de la estimación de cascada (data-model.md §Estimación de cascada) en `services/api/app/schemas.py`
 - [ ] T055 [US3] Implementar `POST /sensors/rain`, `GET /sensors/rain/latest` y `GET /map/cascade`, y registrar el router en `services/api/app/routers/cascade.py` y `services/api/app/main.py`
 - [ ] T056 [US3] Publicar `cascade.invalidated` (como máximo uno cada 3 s) al procesar reportes de `dano_estructural`, `colapso_estructura` o `deslizamiento`, en `services/api/app/routers/ingest.py`

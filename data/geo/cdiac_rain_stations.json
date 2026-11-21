@@ -1,0 +1,229 @@
+{
+  "source": "CDIAC/SIMAC — getListStationsByTypology/hydrometeorological",
+  "retrieved_at": "2026-11-21T08:35:00Z",
+  "license": "Datos del Observatorio/CDIAC (citar CDIAC-SIMAC, UNAL Manizales)",
+  "bbox": [
+    -75.56,
+    5.02,
+    -75.44,
+    5.11
+  ],
+  "stations": [
+    {
+      "id": 4,
+      "name": "Villamaría - Hospital",
+      "lat": 5.0461,
+      "lon": -75.5152
+    },
+    {
+      "id": 7,
+      "name": "Q. Olivares - El Popal",
+      "lat": 5.0624,
+      "lon": -75.4738
+    },
+    {
+      "id": 18,
+      "name": "Alcázares",
+      "lat": 5.066656,
+      "lon": -75.5278
+    },
+    {
+      "id": 19,
+      "name": "Aranjuez",
+      "lat": 5.042833,
+      "lon": -75.500444
+    },
+    {
+      "id": 20,
+      "name": "Bosques del Norte",
+      "lat": 5.0831,
+      "lon": -75.4887
+    },
+    {
+      "id": 21,
+      "name": "Chec - Uribe",
+      "lat": 5.0491,
+      "lon": -75.5317
+    },
+    {
+      "id": 22,
+      "name": "El Carmen",
+      "lat": 5.0615,
+      "lon": -75.519778
+    },
+    {
+      "id": 23,
+      "name": "Emas",
+      "lat": 5.0806,
+      "lon": -75.5078
+    },
+    {
+      "id": 24,
+      "name": "La Nubia",
+      "lat": 5.029731,
+      "lon": -75.471642
+    },
+    {
+      "id": 25,
+      "name": "Hospital de Caldas",
+      "lat": 5.06285,
+      "lon": -75.500539
+    },
+    {
+      "id": 26,
+      "name": "Observatorio Vulcanológico",
+      "lat": 5.071444,
+      "lon": -75.524306
+    },
+    {
+      "id": 27,
+      "name": "La Palma",
+      "lat": 5.095953,
+      "lon": -75.529456
+    },
+    {
+      "id": 28,
+      "name": "Milán - Planta Niza",
+      "lat": 5.051428,
+      "lon": -75.476533
+    },
+    {
+      "id": 29,
+      "name": "Posgrados",
+      "lat": 5.056167,
+      "lon": -75.492242
+    },
+    {
+      "id": 30,
+      "name": "Q. Palogrande - Ruta 30",
+      "lat": 5.0557,
+      "lon": -75.5008
+    },
+    {
+      "id": 31,
+      "name": "Yarumos",
+      "lat": 5.063128,
+      "lon": -75.481247
+    },
+    {
+      "id": 69,
+      "name": "Río Chinchiná - Bocatoma Municipal",
+      "lat": 5.050981,
+      "lon": -75.517339
+    },
+    {
+      "id": 70,
+      "name": "Río Chinchiná - Bocatoma Sancancio",
+      "lat": 5.040631,
+      "lon": -75.485481
+    },
+    {
+      "id": 76,
+      "name": "Liceo Isabel La Católica",
+      "lat": 5.068142,
+      "lon": -75.510644
+    },
+    {
+      "id": 153,
+      "name": "Q. La Francia - Los Puentes",
+      "lat": 5.062217,
+      "lon": -75.546147
+    },
+    {
+      "id": 154,
+      "name": "Q. El Rosario - San Marcos de León",
+      "lat": 5.063928,
+      "lon": -75.547631
+    },
+    {
+      "id": 155,
+      "name": "Q. El Guamo - CDI San Sebastián",
+      "lat": 5.0869,
+      "lon": -75.487
+    },
+    {
+      "id": 158,
+      "name": "Q. Marmato - Planta Chec",
+      "lat": 5.050967,
+      "lon": -75.517686
+    },
+    {
+      "id": 160,
+      "name": "Q. Palogrande - Terminal de Transportes",
+      "lat": 5.0506,
+      "lon": -75.5071
+    },
+    {
+      "id": 161,
+      "name": "Río Chinchiná - Bosque Popular",
+      "lat": 5.031778,
+      "lon": -75.477914
+    },
+    {
+      "id": 162,
+      "name": "Q. Salinas - Relleno Sanitario Emas",
+      "lat": 5.078944,
+      "lon": -75.508167
+    },
+    {
+      "id": 163,
+      "name": "Q. Olivares - Bomberos Voluntarios",
+      "lat": 5.070728,
+      "lon": -75.500128
+    },
+    {
+      "id": 164,
+      "name": "Q. El Guamo - Lavadero Los Puentes",
+      "lat": 5.070833,
+      "lon": -75.495781
+    },
+    {
+      "id": 165,
+      "name": "Q. El Perro - Expoferias",
+      "lat": 5.042136,
+      "lon": -75.474889
+    },
+    {
+      "id": 166,
+      "name": "Q. El Triunfo - Mirador de Villapilar",
+      "lat": 5.089147,
+      "lon": -75.526181
+    },
+    {
+      "id": 167,
+      "name": "Q. Olivares - Aguas de Manizales",
+      "lat": 5.063133,
+      "lon": -75.485444
+    },
+    {
+      "id": 169,
+      "name": "Peralonso - Chec",
+      "lat": 5.073933,
+      "lon": -75.499394
+    },
+    {
+      "id": 170,
+      "name": "Q. Cristales - Valles de La Alhambra",
+      "lat": 5.038003,
+      "lon": -75.456817
+    },
+    {
+      "id": 175,
+      "name": "Q. Olivares - Bocatoma",
+      "lat": 5.065356,
+      "lon": -75.447136
+    },
+    {
+      "id": 177,
+      "name": "Antenas - Alto del Guamo",
+      "lat": 5.096592,
+      "lon": -75.478925
+    },
+    {
+      "id": 209,
+      "name": "Q. Guayabal - Recinto del Pensamiento",
+      "lat": 5.041431,
+      "lon": -75.445681
+    }
+  ]
+}

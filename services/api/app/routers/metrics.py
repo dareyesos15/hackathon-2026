@@ -17,8 +17,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.adapters.event_bus import bus
 from app.auth import require_role
 from app.db import get_session
-from app.domain import MetricUnit, Role
-from app.models import Incident, MetricSnapshot, Report
+from app.domain import DispatchStatus, IncidentStatus, MetricUnit, ReportAction, Role
+from app.models import Dispatch, Incident, MetricSnapshot, Report, ReportEvent
 
 router = APIRouter(prefix="/metrics", tags=["métricas"])
 
@@ -32,6 +32,10 @@ INDICATORS: dict[str, tuple[str, str | None]] = {
     "critical_recall": ("Críticos identificados", "≥ 98 %"),
     "time_to_consolidated_map_min": ("Hecho en el mapa en (p90)", "minutos, no días"),
     "p95_processing_ms": ("Procesamiento por reporte (p95)", "< 1.000 ms"),
+    # Despacho (specs/002, research R13): calculados en vivo.
+    "critical_without_dispatch": ("Críticos sin despacho", "0"),
+    "median_time_to_dispatch_min": ("Tiempo a despacho de críticos (mediana)", "minutos"),
+    "double_dispatch_prevented": ("Despachos dobles evitados", None),
 }
 
 
@@ -148,6 +152,7 @@ async def get_kpi(
             reports,
             cutoff,
         ),
+        *await _dispatch_kpis(session, cutoff, reports),
     ]
 
     latest = (
@@ -180,3 +185,54 @@ async def get_kpi(
             )
         )
     return KpiList(items=items, cutoff_at=cutoff)
+
+
+async def _dispatch_kpis(session: AsyncSession, cutoff: datetime, version: int) -> list[Kpi]:
+    """KPI de despacho (specs/002 FR-013): solo incidentes de riesgo vital."""
+    live = select(Dispatch.incident_id).where(Dispatch.status != DispatchStatus.cancelado)
+    without = await session.scalar(
+        select(func.count())
+        .select_from(Incident)
+        .where(
+            Incident.is_life_threat.is_(True),
+            Incident.report_count > 0,
+            Incident.status.in_(
+                [IncidentStatus.abierto, IncidentStatus.en_revision, IncidentStatus.verificado]
+            ),
+            Incident.id.not_in(live),
+        )
+    )
+    # Desde que el incidente se consolidó (hora real), no la hora sintética del evento (R13).
+    first = (
+        select(
+            Dispatch.incident_id,
+            func.min(Dispatch.created_at).label("first_at"),
+        )
+        .where(Dispatch.status != DispatchStatus.cancelado)
+        .group_by(Dispatch.incident_id)
+        .subquery()
+    )
+    minutes = func.extract("epoch", first.c.first_at - Incident.created_at) / 60.0
+    median = await session.scalar(
+        select(func.percentile_cont(0.5).within_group(minutes))
+        .select_from(Incident)
+        .join(first, first.c.incident_id == Incident.id)
+        .where(Incident.is_life_threat.is_(True))
+    )
+    blocked = await session.scalar(
+        select(func.count())
+        .select_from(ReportEvent)
+        .where(ReportEvent.action == ReportAction.despacho_doble_bloqueado)
+    )
+    return [
+        _kpi("critical_without_dispatch", without or 0, MetricUnit.conteo, "api", version, cutoff),
+        _kpi(
+            "median_time_to_dispatch_min",
+            round(float(median), 1) if median is not None else None,
+            MetricUnit.minutes,
+            "api",
+            version,
+            cutoff,
+        ),
+        _kpi("double_dispatch_prevented", blocked or 0, MetricUnit.conteo, "api", version, cutoff),
+    ]

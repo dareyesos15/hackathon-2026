@@ -16,6 +16,9 @@ fecha/hora de corte (constitución, principio V). No se admiten sinónimos suelt
 | `critical_recall` | Críticos identificados | % | `evaluate_kpis.py` | Reportes críticos reales marcados con riesgo vital ÷ total de críticos reales. | ≥ 98 % |
 | `time_to_consolidated_map_min` | Hecho en el mapa en (p90) | min | `evaluate_kpis.py` | Percentil 90, sobre los hechos reales recibidos, de los minutos simulados entre el primer reporte de un hecho y el momento en que su incidente queda ubicado en el mapa. Referencia del evento real: las cifras consolidadas tardaron días (1.449 → 2.700 → 1.512 viviendas entre el 13 y el 15 de agosto). | minutos, no días |
 | `p95_processing_ms` | Procesamiento por reporte (p95) | ms | `api` | Percentil 95 del tiempo de procesamiento del motor por reporte. | < 1.000 ms |
+| `critical_without_dispatch` | Críticos sin despacho | conteo | `api` | Incidentes con riesgo vital (abiertos, en revisión o verificados) sin ningún despacho que no esté cancelado. | **0** |
+| `median_time_to_dispatch_min` | Tiempo a despacho de críticos (mediana) | min | `api` | Mediana, sobre los incidentes con riesgo vital despachados, de los minutos entre la consolidación del incidente en Dacora y su primer despacho no cancelado. Se mide en hora real, no en la hora sintética del sismo. | minutos |
+| `double_dispatch_prevented` | Despachos dobles evitados | conteo | `api` | Intentos de despachar un incidente que ya tenía un despacho activo, bloqueados por no ser un refuerzo justificado (evento `despacho_doble_bloqueado` en la bitácora). | — |
 
 ## Etiquetas del puntaje de veracidad
 

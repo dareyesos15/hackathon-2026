@@ -1,4 +1,8 @@
-"""Reproduce el sismo SIMULADO del 10 ago 2026 contra la API REST, en tiempo acelerado.
+"""Reproduce un escenario de crisis SIMULADO contra la API REST, en tiempo acelerado.
+
+Por defecto las fechas se anclan al presente: la crisis empieza hace 12 h y su último reporte
+es de ahora, así el tablero muestra la fecha de hoy. --fecha-original conserva las fechas del
+escenario (sismo de referencia del 10 ago 2026).
 
 --speed 60 (defecto): 1 hora del evento = 1 minuto real (12 min en total).
 --speed 720: todo el escenario en ~1 minuto (ensayo).  --speed 0: sin esperas.
@@ -11,10 +15,12 @@ Uso (dentro del contenedor api):
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import sys
 import time
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import evaluate_kpis
@@ -22,6 +28,34 @@ from _client import api_client
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parents[1] / "data"))
 MAP_PATH = evaluate_kpis.MAP_PATH
+SHIFT_PATH = evaluate_kpis.SHIFT_PATH
+WINDOW = timedelta(hours=12)
+COLOMBIA = timedelta(hours=-5)
+TIME_FIELDS = ("occurred_at", "received_at")
+
+
+def compute_shift(original_dates: bool, reuse: bool) -> timedelta:
+    """Desplazamiento para que la ventana del escenario termine ahora (reutilizable sin --reset)."""
+    if original_dates:
+        shift = timedelta(0)
+    elif reuse and SHIFT_PATH.exists():
+        return evaluate_kpis.time_shift()
+    else:
+        event_start = datetime.fromisoformat(evaluate_kpis.load_truth()["event_start"])
+        anchor = (datetime.now(UTC) - WINDOW).replace(second=0, microsecond=0)
+        shift = anchor - event_start
+    SHIFT_PATH.write_text(json.dumps({"seconds": shift.total_seconds()}), encoding="utf-8")
+    return shift
+
+
+def shifted(body: dict, shift: timedelta) -> dict:
+    if not shift:
+        return body
+    out = copy.deepcopy(body)
+    for key in TIME_FIELDS:
+        if out.get(key):
+            out[key] = (datetime.fromisoformat(out[key]) + shift).isoformat()
+    return out
 
 
 def load_scenario(limit: int | None) -> list[dict]:
@@ -41,6 +75,11 @@ def main() -> int:
     parser.add_argument("--no-eval", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--fecha-original",
+        action="store_true",
+        help="Conserva las fechas del escenario en vez de anclarlas al presente",
+    )
     args = parser.parse_args()
 
     lines = load_scenario(args.limit)
@@ -53,10 +92,14 @@ def main() -> int:
             client.post("/demo/reset").raise_for_status()
             MAP_PATH.unlink(missing_ok=True)
             print("Datos de demo reiniciados.")
+        shift = compute_shift(args.fecha_original, reuse=not args.reset)
+        event_start = datetime.fromisoformat(evaluate_kpis.load_truth()["event_start"]) + shift
+        local_start = event_start + COLOMBIA
         start = time.monotonic()
         print(
-            f"Reproduciendo {len(lines)} reportes del sismo del 10 ago 2026 "
-            f"(velocidad ×{args.speed:g}; datos SIMULADOS)…"
+            f"Reproduciendo {len(lines)} reportes de una crisis simulada que inicia el "
+            f"{local_start:%d/%m/%Y %H:%M} (hora de Colombia; velocidad ×{args.speed:g}; "
+            "datos SIMULADOS)…"
         )
         for n, line in enumerate(lines, 1):
             if args.speed > 0:
@@ -64,7 +107,7 @@ def main() -> int:
                 wait = due - (time.monotonic() - start)
                 if wait > 0:
                     time.sleep(wait)
-            resp = client.post(line["endpoint"], json=line["body"])
+            resp = client.post(line["endpoint"], json=shifted(line["body"], shift))
             if resp.status_code >= 400:
                 print(
                     f"  [{line['seq']}] error {resp.status_code}: {resp.text[:200]}",
@@ -75,9 +118,9 @@ def main() -> int:
             mapping[str(line["seq"])] = data["report"]["id"]
             if not args.quiet:
                 r, i = data["report"], data["incident"]
-                hh, mm = divmod(int(line["minute"]) + 7 * 60 + 34, 60)
+                at = local_start + timedelta(minutes=line["minute"])
                 print(
-                    f"  {hh:02d}:{mm:02d} {line['channel']:9s} {r['category']:22s} "
+                    f"  {at:%H:%M} {line['channel']:9s} {r['category']:22s} "
                     f"{r['triage_level']:8s} {'+' if data['joined_existing_incident'] else ' '} "
                     f"trust {i['trust_score']:3d} {r['barrio'] or '—'}"
                 )

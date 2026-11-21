@@ -24,6 +24,8 @@ from _client import api_client
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parents[1] / "data"))
 MAP_PATH = Path(os.environ.get("REPLAY_MAP", "/tmp/dacora_replay_map.json"))
+# Desplazamiento (s) que replay_scenario.py aplicó a las fechas para anclar la crisis al presente.
+SHIFT_PATH = MAP_PATH.with_name("dacora_replay_shift.json")
 SOURCE = "evaluate_kpis.py"
 
 TARGETS = {
@@ -40,6 +42,14 @@ class Result:
     details: dict[str, dict[str, Any]]
     cutoff: datetime
     processed: int
+
+
+def time_shift() -> timedelta:
+    """Desplazamiento de fechas de la última reproducción (0 si se usaron las originales)."""
+    try:
+        return timedelta(seconds=json.loads(SHIFT_PATH.read_text(encoding="utf-8"))["seconds"])
+    except (FileNotFoundError, KeyError, ValueError):
+        return timedelta(0)
 
 
 def load_truth() -> dict[str, Any]:
@@ -82,7 +92,7 @@ def evaluate(client: Any, mapping: dict[str, str], truth: dict[str, Any]) -> Res
     gt: dict[str, dict] = truth["reports"]
     by_seq = {str(v["seq"]): v for v in gt.values()}
     seq_of_key = {k: str(v["seq"]) for k, v in gt.items()}
-    start = datetime.fromisoformat(truth["event_start"])
+    start = datetime.fromisoformat(truth["event_start"]) + time_shift()
 
     def report_for(seq: str) -> dict | None:
         rid = mapping.get(seq)

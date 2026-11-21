@@ -42,8 +42,8 @@ export const COLOR_DAMAGE: Record<InspectionColor, DamageLevel[]> = {
 
 export const AID_LABEL: Record<AidType, string> = {
   subsidio_arriendo: "Subsidio de arriendo",
-  kit: "Kit de aseo / cocina",
-  mercado: "Mercado",
+  kit: "Kit de aseo y cocina",
+  mercado: "Kit alimentario (mercado)",
   albergue: "Cupo en albergue",
 };
 
@@ -200,3 +200,50 @@ export function reviewInconsistency(
     return "Con afectación total el semáforo debe ser rojo.";
   return null;
 }
+
+// ---------------------------------------- censo (RUD), actas de entrega y albergues (EMRE 3.1–3.3)
+
+export type Tenure = S["Tenure"];
+export type HousingStatus = S["HousingStatus"];
+export type HouseholdLoss = S["HouseholdLoss"];
+export type ShelterService = S["ShelterService"];
+export type ShelterStatus = S["ShelterStatus"];
+
+export const TENURE_LABEL: Record<Tenure, string> = {
+  propietario: "Propietario",
+  arrendatario: "Arrendatario",
+  poseedor: "Poseedor",
+  ocupante: "Ocupante",
+  otro: "Otro",
+};
+
+export const HOUSING_STATUS_LABEL: Record<HousingStatus, string> = {
+  habitable: "Habitable",
+  no_habitable: "No habitable",
+  destruida: "Destruida",
+};
+
+export const LOSS_LABEL: Record<HouseholdLoss, string> = {
+  enseres: "Enseres",
+  herramientas_trabajo: "Herramientas de trabajo",
+  animales: "Animales",
+  cultivos: "Cultivos",
+  vehiculo: "Vehículo",
+};
+
+export const SERVICE_LABEL: Record<ShelterService, string> = {
+  agua: "Agua",
+  energia: "Energía",
+  banos: "Baños",
+  cocina: "Cocina",
+  atencion_salud: "Atención en salud",
+  zona_mascotas: "Zona de mascotas",
+  zona_infantil: "Zona infantil",
+};
+
+export const SITUATION_LABEL: Record<string, { label: string; cls: string }> = {
+  albergue: { label: "En albergue", cls: "bg-sky-100 text-sky-900" },
+  arriendo: { label: "En arriendo temporal", cls: "bg-indigo-100 text-indigo-900" },
+  casa: { label: "En su vivienda", cls: "bg-emerald-100 text-emerald-900" },
+  sin_solucion: { label: "Sin solución de vivienda", cls: "bg-senal-fondo text-senal" },
+};

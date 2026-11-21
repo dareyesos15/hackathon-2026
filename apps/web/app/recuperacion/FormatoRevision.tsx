@@ -50,7 +50,7 @@ import {
 } from "./ui";
 
 /** Sección numerada como en el formato en papel. */
-function Seccion({ n, title, children }: { n: string; title: string; children: ReactNode }) {
+export function Seccion({ n, title, children }: { n: string; title: string; children: ReactNode }) {
   return (
     <fieldset className="flex flex-col gap-2 rounded-md border border-linea p-3">
       <legend className="px-1 text-sm font-semibold">
@@ -62,7 +62,7 @@ function Seccion({ n, title, children }: { n: string; title: string; children: R
   );
 }
 
-function Casillas<T extends string>({
+export function Casillas<T extends string>({
   options,
   value,
   onChange,
@@ -89,7 +89,7 @@ function Casillas<T extends string>({
   );
 }
 
-function Opciones<T extends string>({
+export function Opciones<T extends string>({
   name,
   options,
   value,
@@ -112,7 +112,7 @@ function Opciones<T extends string>({
   );
 }
 
-function Numero({
+export function Numero({
   label,
   value,
   onChange,

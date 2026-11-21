@@ -48,6 +48,105 @@ const TAB_LABEL: Record<Tab, string> = {
   zonas: "Zonas",
 };
 
+/** Qué dibuja cada módulo en el mapa. */
+const LAYER_HINT: Record<Tab, string> = {
+  triaje: "incidentes, calor por manzana y recursos despachados",
+  alertas: "áreas de alertas vigentes y borrador",
+  cascada: "riesgo de efectos en cascada por manzana",
+  zonas: "sensores de zonas inseguras y sus conos",
+};
+
+const EMPTY_FC: FC = { type: "FeatureCollection", features: [] };
+const LAYERS_KEY = "dacora.pmu.capas";
+
+interface LayerPrefs {
+  /** `true`: el mapa muestra solo el módulo de la pestaña activa. */
+  followTab: boolean;
+  modules: Record<Tab, boolean>;
+}
+
+function storedLayers(): LayerPrefs {
+  const fallback: LayerPrefs = {
+    followTab: true,
+    modules: { triaje: true, alertas: true, cascada: true, zonas: true },
+  };
+  try {
+    const raw = window.sessionStorage.getItem(LAYERS_KEY);
+    return raw ? { ...fallback, ...(JSON.parse(raw) as LayerPrefs) } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Control sobre el mapa: capas según la pestaña o elegidas a mano por módulo. */
+function FiltroCapas({
+  prefs,
+  tab,
+  onChange,
+}: {
+  prefs: LayerPrefs;
+  tab: Tab;
+  onChange: (next: LayerPrefs) => void;
+}) {
+  return (
+    <details className="absolute top-2 left-2 z-10 w-64 max-w-[calc(100%-4rem)] rounded-md border border-linea bg-white/95 text-xs shadow-sm backdrop-blur">
+      <summary className="cursor-pointer px-3 py-2 font-display text-sm font-semibold">
+        Capas del mapa
+        <span className="ml-1 font-normal text-tinta-suave">
+          ·{" "}
+          {prefs.followTab
+            ? TAB_LABEL[tab]
+            : (Object.keys(TAB_LABEL) as Tab[])
+                .filter((t) => prefs.modules[t])
+                .map((t) => TAB_LABEL[t])
+                .join(", ") || "ninguna"}
+        </span>
+      </summary>
+      <div className="flex flex-col gap-2 px-3 pb-3">
+        <label className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            className="mt-0.5"
+            checked={prefs.followTab}
+            onChange={(e) => onChange({ ...prefs, followTab: e.target.checked })}
+          />
+          <span>
+            Mostrar solo el módulo de la pestaña activa
+            <span className="block text-tinta-suave">Ahora: {LAYER_HINT[tab]}.</span>
+          </span>
+        </label>
+        <fieldset
+          disabled={prefs.followTab}
+          className="flex flex-col gap-1 border-t border-linea pt-2 disabled:opacity-50"
+        >
+          <legend className="sr-only">Módulos visibles</legend>
+          {(Object.keys(TAB_LABEL) as Tab[]).map((t) => (
+            <label key={t} className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={prefs.modules[t]}
+                onChange={(e) =>
+                  onChange({ ...prefs, modules: { ...prefs.modules, [t]: e.target.checked } })
+                }
+              />
+              <span>
+                <span className="font-medium">{TAB_LABEL[t]}</span>
+                <span className="block text-tinta-suave">{LAYER_HINT[t]}</span>
+              </span>
+            </label>
+          ))}
+          {!prefs.followTab && prefs.modules.cascada && (
+            <p className="text-tinta-suave">
+              La cascada se dibuja cuando está activada en su pestaña.
+            </p>
+          )}
+        </fieldset>
+      </div>
+    </details>
+  );
+}
+
 const MODE_LABEL = {
   conectando: { text: "Conectando…", cls: "bg-white/10 text-white/80" },
   en_vivo: { text: "En vivo", cls: "bg-white text-sangre" },
@@ -94,6 +193,18 @@ export default function TableroPmu() {
   const [zoneSel, setZoneSel] = useState<string | null>(null);
   const zonesFc = useMemo(() => zonesToGeoJSON(zoneSensors), [zoneSensors]);
   const zoneAlarms = zoneSensors.reduce((n, s) => n + s.open_alarms, 0);
+  // Capas visibles en el mapa: por defecto solo las del módulo de la pestaña activa.
+  const [layerPrefs, setLayerPrefs] = useState<LayerPrefs>(storedLayers);
+  function changeLayers(next: LayerPrefs) {
+    setLayerPrefs(next);
+    try {
+      window.sessionStorage.setItem(LAYERS_KEY, JSON.stringify(next));
+    } catch {
+      /* sin almacenamiento: la preferencia vive solo en memoria */
+    }
+  }
+  const shows = (module: Tab) =>
+    layerPrefs.followTab ? tab === module : layerPrefs.modules[module];
   const barrioNames = useMemo(
     () => ((barrios as (FC & { names?: string[] }) | null)?.names ?? []).slice(),
     [barrios],
@@ -312,19 +423,20 @@ export default function TableroPmu() {
       </section>
 
       <main className="grid flex-1 grid-cols-1 gap-3 overflow-hidden px-4 pb-4 lg:grid-cols-[1fr_420px]">
-        <div className="min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
+        <div className="relative min-h-[420px] overflow-hidden rounded-md border border-linea bg-white">
+          <FiltroCapas prefs={layerPrefs} tab={tab} onChange={changeLayers} />
           <Mapa
-            incidents={incidents}
+            incidents={shows("triaje") ? incidents : []}
             barrios={barrios}
-            manzanas={manzanas}
+            manzanas={shows("triaje") ? manzanas : EMPTY_FC}
             selectedId={selectedId}
             onSelect={select}
-            resources={resourcesFc}
-            trails={trailsFc}
-            alertAreas={alertAreasFc}
-            cascade={cascadeOn ? cascade : null}
+            resources={shows("triaje") ? resourcesFc : null}
+            trails={shows("triaje") ? trailsFc : null}
+            alertAreas={shows("alertas") ? alertAreasFc : null}
+            cascade={shows("cascada") && cascadeOn ? cascade : null}
             onCascadeSelect={(props) => setCascadeSel(selectionFrom(props, cascade))}
-            zones={zonesFc}
+            zones={shows("zonas") ? zonesFc : null}
             onZoneSelect={(id) => {
               setZoneSel(id);
               setTab("zonas");

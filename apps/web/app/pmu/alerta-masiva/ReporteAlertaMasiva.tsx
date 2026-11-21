@@ -1,8 +1,8 @@
 "use client";
 /**
  * Reporte de una alerta masiva: problemas atendidos, su trazabilidad (bitácora y despachos) y
- * tiempos de solución. Final cuando la alerta se resolvió (todos sus incidentes cerrados);
- * preliminar al corte mientras siga activa. Sin datos personales (Ley 1581).
+ * tiempos de solución. Final cuando el PMU/COE cerró la alerta (a mano); preliminar al corte
+ * mientras siga activa. Sin datos personales (Ley 1581).
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -288,7 +288,7 @@ export default function ReporteAlertaMasiva() {
             report.preliminar ? "bg-[#ffd27a] text-tinta" : "bg-white text-verificado"
           }`}
         >
-          {report.preliminar ? "PRELIMINAR · alerta activa" : "FINAL · alerta resuelta"}
+          {report.preliminar ? "PRELIMINAR · alerta activa" : "FINAL · alerta cerrada"}
         </span>
         <nav className="ml-auto flex flex-wrap gap-2 text-sm print:hidden">
           <button
@@ -342,6 +342,22 @@ export default function ReporteAlertaMasiva() {
             Fuente: {report.fuente} · generado {dt(report.generado_at)} · versión {report.version}.
             Los tiempos se miden desde que Dacora registra cada incidente.
           </p>
+          {report.cierre && (
+            <p
+              className={`mt-2 rounded px-2 py-1 text-sm ${
+                report.cierre.incidentes_eliminados ? "bg-senal-fondo" : "bg-papel"
+              }`}
+            >
+              Cerrada a mano por {ROLE_LABEL[report.cierre.por] ?? report.cierre.por} el{" "}
+              {dt(report.cierre.at)}.{" "}
+              {report.cierre.incidentes_eliminados
+                ? `Se eliminaron ${report.cierre.eliminados} incidentes asociados ` +
+                  `(${report.cierre.abiertos_al_cierre} seguían abiertos y ` +
+                  `${report.cierre.despachos_activos_al_cierre} despachos activos); ` +
+                  "este reporte conserva su trazabilidad."
+                : "Todos sus incidentes estaban cerrados."}
+            </p>
+          )}
         </section>
 
         <section className="grid grid-cols-2 gap-2 md:grid-cols-6">

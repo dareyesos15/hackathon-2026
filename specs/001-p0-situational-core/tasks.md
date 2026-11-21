@@ -143,14 +143,14 @@ personales; verificar categoría, triaje, unión al incidente, desglose y ausenc
 
 ### Implementation for User Story 3
 
-- [ ] T054 [US3] Escribir `scripts/generate_scenario.py` (semilla fija; 150–300 reportes 07:34–19:34 del 10 ago 2026; ~55 % únicos, ~30 % duplicados multicanal, ~15 % falsos/rumores; concentración en Centro, Milán, Av. Santander, Av. Paralela, carrera 23; datos personales sintéticos en el texto para probar la redacción) y generar `data/seed/scenario.jsonl` y `data/seed/ground_truth.json` — formato de verdad según data-model.md (Verdad del escenario)
-- [ ] T055 [P] [US3] Escribir `docs/diccionario_indicadores.md` con los 9 indicadores P0 y sus definiciones (research R8)
-- [ ] T056 [US3] Implementar `POST /metrics/snapshots` (emite `kpi.updated`) y `GET /metrics/kpi` (última instantánea por indicador + indicadores operativos calculados por la API) en `services/api/app/routers/metrics.py` — data-model.md `MetricSnapshot.indicator`, `MetricSnapshot.unit`, `MetricSnapshot.cutoff_at`
-- [ ] T057 [US3] Escribir `scripts/evaluate_kpis.py` (lee `data/seed/ground_truth.json` y `GET /reports`/`GET /incidents`, calcula los KPI de research R8, imprime tabla y publica instantánea; código de salida ≠ 0 si no cumple metas)
-- [ ] T058 [US3] Escribir `scripts/replay_scenario.py` (`--speed` defecto 60, `--reset`, envía por el canal de cada reporte, llama a `evaluate_kpis` cada 25 reportes y al final)
-- [ ] T059 [US3] Prueba de integración: reproducir todo el escenario en modo rápido y verificar 0 coincidencias de PII en `reports.text_redacted`/`location_text` en `services/api/tests/integration/test_pii_scenario.py`
-- [ ] T060 [US3] Calibrar umbrales de similitud y léxico con `evaluate_kpis.py` hasta duplicados > 90 %, falsos > 90 %, recall de críticos ≥ 98 % y 0 críticos descartados; fijar valores en `services/api/app/config.py`
-- [ ] T061 [US3] Regenerar OpenAPI y tipos del frontend tras T056 en `apps/web/lib/api/schema.d.ts`
+- [X] T054 [US3] Escribir `scripts/generate_scenario.py` (semilla fija; 150–300 reportes 07:34–19:34 del 10 ago 2026; ~55 % únicos, ~30 % duplicados multicanal, ~15 % falsos/rumores; concentración en Centro, Milán, Av. Santander, Av. Paralela, carrera 23; datos personales sintéticos en el texto para probar la redacción) y generar `data/seed/scenario.jsonl` y `data/seed/ground_truth.json` — formato de verdad según data-model.md (Verdad del escenario)
+- [X] T055 [P] [US3] Escribir `docs/diccionario_indicadores.md` con los 9 indicadores P0 y sus definiciones (research R8)
+- [X] T056 [US3] Implementar `POST /metrics/snapshots` (emite `kpi.updated`) y `GET /metrics/kpi` (última instantánea por indicador + indicadores operativos calculados por la API) en `services/api/app/routers/metrics.py` — data-model.md `MetricSnapshot.indicator`, `MetricSnapshot.unit`, `MetricSnapshot.cutoff_at`
+- [X] T057 [US3] Escribir `scripts/evaluate_kpis.py` (lee `data/seed/ground_truth.json` y `GET /reports`/`GET /incidents`, calcula los KPI de research R8, imprime tabla y publica instantánea; código de salida ≠ 0 si no cumple metas)
+- [X] T058 [US3] Escribir `scripts/replay_scenario.py` (`--speed` defecto 60, `--reset`, envía por el canal de cada reporte, llama a `evaluate_kpis` cada 25 reportes y al final)
+- [X] T059 [US3] Prueba de integración: reproducir todo el escenario en modo rápido y verificar 0 coincidencias de PII en `reports.text_redacted`/`location_text` en `services/api/tests/integration/test_pii_scenario.py`
+- [X] T060 [US3] Calibrar umbrales de similitud y léxico con `evaluate_kpis.py` hasta duplicados > 90 %, falsos > 90 %, recall de críticos ≥ 98 % y 0 críticos descartados; fijar valores en `services/api/app/config.py`
+- [X] T061 [US3] Regenerar OpenAPI y tipos del frontend tras T056 en `apps/web/lib/api/schema.d.ts`
 - [ ] T062 [US3] Implementar el panel de KPI `/pmu/kpi` (todas las cifras con `Cifra`, actualización por `kpi.updated`, "N reportes → M incidentes", "mapa consolidado en X min") en `apps/web/app/pmu/kpi/page.tsx`
 
 **Checkpoint**: quickstart §6 con metas cumplidas y visibles en el panel.
